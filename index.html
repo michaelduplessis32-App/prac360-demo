@@ -2433,6 +2433,25 @@ label.vf-filled input{animation:vff 2.2s ease-out;border-color:#c026d3}
 .pt-list td.pt-acts .btn+.btn{margin-left:4px}
 .fu-pulse-d>summary{cursor:pointer;padding:2px 0}
 .fu-pulse-d[open]>summary{margin-bottom:10px}
+/* ---- highlight the field a red message is about */
+.fld-err{outline:2px solid #dc2626;outline-offset:3px;border-radius:8px;background:#fef2f2;animation:fldPulse .9s ease-out 2}
+.fld-err input,.fld-err select,.fld-err textarea{border-color:#dc2626!important;box-shadow:0 0 0 3px rgba(220,38,38,.15)!important}
+.fld-err>span:first-child,.fld-err>label{color:#b91c1c}
+@keyframes fldPulse{0%{outline-color:#dc2626}50%{outline-color:#fca5a5}100%{outline-color:#dc2626}}
+[data-theme="dark"] .fld-err{background:rgba(220,38,38,.12)}
+/* ---- conversation guide as a dropdown */
+.cx-guide details>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0}
+.cx-guide details>summary::-webkit-details-marker{display:none}
+.cx-guide-t{min-width:0}
+.cx-guide-chev{transition:transform .2s;font-size:14px;color:#86198f}
+.cx-guide.is-open .cx-guide-chev{transform:rotate(180deg)}
+.cx-guide details[open] .cx-gsteps{margin-top:8px}
+.cx-gnext{margin-top:6px;font-size:13.5px;line-height:1.35}
+.cx-gmiss{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:6px}
+.cx-gchip{display:inline-flex;align-items:center;gap:2px;background:#fff;border:1px solid #f0abfc;color:#86198f;border-radius:999px;padding:1px 4px 1px 8px;font-size:12px;font-weight:600}
+.cx-gchip-x{border:0;background:none;color:#a21caf;cursor:pointer;font-size:13px;line-height:1;padding:0 3px}
+[data-theme="dark"] .cx-gchip{background:var(--surface)}
+.cx-cancel{color:#b91c1c}
 </style>
 </head>
 <body>
@@ -16027,10 +16046,18 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
       { id: 'dx', t: 'Explain what it is', q: [['dx', () => has(c, 'working') || has(c, 'confirmed') || c.lists.icd.some((i) => i.status !== 'rejected' && i.kind !== 'symptom' && i.kind !== 'differential'), 'Tell the patient what you think it is — saying the diagnosis out loud lets AI Scribe suggest the ICD-10 code.']] },
       { id: 'plan', t: 'Agree the plan', q: [['treat', () => has(c, 'management') || listed('meds') || listed('inv') || listed('ref'), 'Explain the treatment: each medicine with the dose and for how long, and any tests or referral.'], ['safety', () => has(c, 'safety') || has(c, 'fuWarning'), 'Safety-net: “Come back straight away if … (gets worse, high fever, can’t breathe).”'], ['fu', () => has(c, 'fuInterval') || has(c, 'fuDate'), '“Let’s see you again in … ” (or say no follow-up is needed).']] }];
     steps.forEach((st) => { st.left = st.q.filter(([k, ok]) => !ok() && !sk[k]); st.done = !st.left.length; }); return steps; };
-  const guideHtml = (e, c) => { if (e.status === 'signed' || !editableOf(e)) return ''; const steps = guideSteps(e, c); const cur = steps.findIndex((x) => !x.done); const all = cur < 0;
-    return `<div class="cx-guide" aria-label="Conversation guide"><div class="cx-guide-h"><strong>Conversation guide</strong><span class="tiny muted">${all ? 'All covered' : `Step ${cur + 1} of ${steps.length}`}</span></div><ol class="cx-gsteps">${steps.map((st, i) => `<li class="${st.done ? 'done' : i === cur ? 'on' : ''}"><span class="cx-gn" aria-hidden="true">${st.done ? '✓' : i + 1}</span><div class="cx-gb"><div class="cx-gt">${esc(st.t)}</div>${i === cur ? st.left.slice(0, 3).map(([k, , q]) => `<div class="cx-gq"><span>${esc(q)}</span><button class="cx-gskip" data-act="cx-guide-skip" data-k="${esc(k)}" title="Not needed for this patient" aria-label="Skip this">Skip</button></div>`).join('') : ''}</div></li>`).join('')}
-      <li class="${all ? 'on' : ''}"><span class="cx-gn" aria-hidden="true">${steps.length + 1}</span><div class="cx-gb"><div class="cx-gt">Finish and review</div>${all ? '<div class="cx-gq"><span>Everything is covered. Press <strong>Finish consultation</strong>, then review and approve the note.</span></div>' : ''}</div></li></ol>
-      <p class="tiny muted cx-gnote">A guide only — follow the patient. It updates as you talk; nothing is asked or written for you.</p></div>`; };
+  const SHORT = { complaint: 'Main problem', duration: 'How long', severity: 'How bad', associated: 'Other symptoms', allergy: 'Allergies & medicines', vitals: 'Vitals', exam: 'Examination', dx: 'Diagnosis', treat: 'Treatment', safety: 'When to come back', fu: 'Follow-up' };
+  const shortOf = (k) => SHORT[k] || (k.startsWith('p-') && PANELS[k.slice(2)] ? PANELS[k.slice(2)].t : k);
+  // a dropdown: closed it is one line with the current step and chips for what is still missing; open it shows every step and the suggested questions
+  const guideHtml = (e, c) => { if (e.status === 'signed' || !editableOf(e)) return ''; const steps = guideSteps(e, c); const cur = steps.findIndex((x) => !x.done); const all = cur < 0; const open = !!prefs().guideOpen;
+    const missing = steps.flatMap((st) => st.left.map(([k]) => k)); const st = all ? null : steps[cur];
+    return `<div class="cx-guide ${open ? 'is-open' : ''}" aria-label="Conversation guide"><details data-guide ${open ? 'open' : ''}><summary class="cx-guide-h"><span class="cx-guide-t"><strong>Conversation guide</strong> <span class="tiny muted">${all ? '— all covered ✓' : `— step ${cur + 1} of ${steps.length}: ${esc(st.t)}`}</span></span><span class="cx-guide-chev" aria-hidden="true">▾</span></summary>
+      <ol class="cx-gsteps">${steps.map((x, i) => `<li class="${x.done ? 'done' : i === cur ? 'on' : ''}"><span class="cx-gn" aria-hidden="true">${x.done ? '✓' : i + 1}</span><div class="cx-gb"><div class="cx-gt">${esc(x.t)}</div>${i === cur ? x.left.slice(0, 3).map(([k, , q]) => `<div class="cx-gq"><span>${esc(q)}</span><button class="cx-gskip" data-act="cx-guide-skip" data-k="${esc(k)}" title="Not needed for this patient" aria-label="Skip this">Skip</button></div>`).join('') : ''}</div></li>`).join('')}
+      <li class="${all ? 'on' : ''}"><span class="cx-gn" aria-hidden="true">${steps.length + 1}</span><div class="cx-gb"><div class="cx-gt">Finish and review</div></div></li></ol>
+      <p class="tiny muted cx-gnote">A guide only — follow the patient. It updates as you talk; nothing is asked or written for you.</p></details>
+      ${!open && st && st.left[0] ? `<div class="cx-gnext"><span class="tiny muted">Next:</span> ${esc(st.left[0][2])}</div>` : ''}
+      <div class="cx-gmiss">${missing.length ? `<span class="tiny muted">Still to cover:</span> ${missing.map((k) => `<span class="cx-gchip">${esc(shortOf(k))}<button class="cx-gchip-x" data-act="cx-guide-skip" data-k="${esc(k)}" title="Not needed for this patient" aria-label="Skip ${esc(shortOf(k))}">×</button></span>`).join('')}` : '<span class="tiny">Everything is covered. Press <strong>Finish consultation</strong>, then review and approve.</span>'}</div>
+    </div>`; };
   const glance = (p) => { const d = db(); const alg = d.allergies.filter((a) => a.patientId === p.id); const meds = d.meds.filter((m) => m.patientId === p.id && m.active); const probs = d.problems.filter((x) => x.patientId === p.id && x.active);
     const prev = d.encounters.filter((x) => x.patientId === p.id && x.status === 'signed').sort((a, b) => (a.date < b.date ? 1 : -1))[0];
     return `<div class="cx-glance">${alg.length ? alg.map((a) => `<span class="cx-gl alg">⚠ ${esc(a.allergen)}</span>`).join('') : '<span class="cx-gl ok">No known allergies</span>'}
@@ -16064,7 +16091,7 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
         <div class="actions">${viewSwitch(e, 'ai')}${e.status === 'signed' ? '' : '<span class="badge warn" id="cx-save">Draft — saves as you go</span>'}${scribeBtn(e)}</div></div>
       ${A.patientBar(p)}
       <div class="cx-ws simple">${main}<aside class="cx-side" id="cx-side" aria-label="AI Scribe">${sideInner(e)}</aside></div>
-      <div class="actionbar cx-bar" role="region" aria-label="Finish consultation"><div class="cx-bar-l">${c.versions.length ? `<span class="tiny muted">Version ${c.versions.length}</span>` : ''}</div>
+      <div class="actionbar cx-bar" role="region" aria-label="Finish consultation"><div class="cx-bar-l">${ed ? '<button class="btn ghost cx-cancel" data-act="cx-cancel">Cancel consultation</button>' : ''}${c.versions.length ? `<span class="tiny muted">Version ${c.versions.length}</span>` : ''}</div>
         <div class="cx-bar-r">${ed ? `<button class="btn" data-act="cx-save">Save draft</button>` : ''}${ed && c.scribe.used ? `<button class="btn ${approvalValid(e) ? '' : 'primary'}" data-act="cx-review">Review AI documentation</button>` : ''}${ed && A.can('clinical.sign') ? `<button class="btn ${!c.scribe.used || approvalValid(e) ? 'primary' : ''}" data-act="cx-sign" ${c.scribe.used && !approvalValid(e) ? 'aria-disabled="true" title="Approve the AI documentation first"' : ''}>Sign and finalise</button>` : ''}${e.status === 'signed' && A.can('clinical.write') ? `<button class="btn" data-act="addendum" data-id="${e.id}">Add addendum</button>` : ''}${e.status === 'signed' && A.can('billing.review') ? `<a class="btn primary" href="#/billing/${e.id}">Billing review →</a>` : ''}</div></div>`; };
   const workspace = (e, p) => (simpleMode() ? workspaceSimple(e, p) : workspaceFull(e, p));
   const workspaceFull = (e, p) => { const c = cxOf(e); const ed = editableOf(e); const pr = prefs(); const tpl = TPL[c.template] || TPL['gp-acute']; const panels = panelList(c, e); const st = c.scribe.state;
@@ -16085,7 +16112,7 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
         ${e.status === 'signed' ? '' : '<span class="badge warn" id="cx-save">Draft — saves as you go</span>'}${scribeBtn(e)}${viewSwitch(e, 'ai')}<button class="btn sm ghost" data-act="cx-layout" data-v="simple">Simple view</button></div></div>
       ${A.patientBar(p)}
       <div class="cx-ws ${pr.side ? '' : 'no-side'}">${leftPanel(e, p)}${main}<aside class="cx-side" id="cx-side" aria-label="AI Scribe">${sideInner(e)}</aside>${pr.side ? '' : '<button class="cx-side-open" data-act="cx-side-toggle" aria-label="Show the AI Scribe panel">⟨ AI Scribe</button>'}</div>
-      <div class="actionbar cx-bar" role="region" aria-label="Finish consultation"><div class="cx-bar-l">${c.versions.length ? `<span class="tiny muted">Version ${c.versions.length}</span>` : ''}</div>
+      <div class="actionbar cx-bar" role="region" aria-label="Finish consultation"><div class="cx-bar-l">${ed ? '<button class="btn ghost cx-cancel" data-act="cx-cancel">Cancel consultation</button>' : ''}${c.versions.length ? `<span class="tiny muted">Version ${c.versions.length}</span>` : ''}</div>
         <div class="cx-bar-r">${ed ? `<button class="btn" data-act="cx-save">Save draft</button>` : ''}${ed && c.scribe.used ? `<button class="btn ${approvalValid(e) ? '' : 'primary'}" data-act="cx-review">Review AI documentation</button>` : ''}${ed && A.can('clinical.sign') ? `<button class="btn ${!c.scribe.used || approvalValid(e) ? 'primary' : ''}" data-act="cx-sign" ${c.scribe.used && !approvalValid(e) ? 'aria-disabled="true" title="Approve the AI documentation first"' : ''}>Sign and finalise</button>` : ''}${e.status === 'signed' && A.can('clinical.write') ? `<button class="btn" data-act="addendum" data-id="${e.id}">Add addendum</button>` : ''}${e.status === 'signed' && A.can('billing.review') ? `<a class="btn primary" href="#/billing/${e.id}">Billing review →</a>` : ''}</div></div>`; };
 
   // ---------------------------------------------------------------- review screen
@@ -16194,10 +16221,22 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   H['cx-panel-hide'] = (el) => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); c.hidden.push(el.dataset.id); c.added = c.added.filter((x) => x !== el.dataset.id); A.save(); A.render(); };
   H['cx-sec-toggle'] = (el) => { const pr = prefs(); pr.collapsed[el.dataset.id] = !pr.collapsed[el.dataset.id]; A.save(); const s = el.closest('.cx-sec'); if (s) { s.classList.toggle('closed', !!pr.collapsed[el.dataset.id]); el.setAttribute('aria-expanded', String(!pr.collapsed[el.dataset.id])); } };
   H['cx-more'] = (el) => { const pr = prefs(); pr.more = pr.more || {}; pr.more[el.dataset.id] = !pr.more[el.dataset.id]; A.save(); A.render(); setTimeout(() => { const s = document.getElementById('cx-sec-' + el.dataset.id); if (s) s.scrollIntoView({ block: 'nearest' }); }, 30); };
+  H['cx-cancel'] = () => { const e = cur(); if (!e || !editableOf(e)) return; const c = cxOf(e); const p = E.patient(db(), e.patientId);
+    A.modal('Cancel this consultation?', `<p>The draft consultation for <strong>${esc(p.firstName + ' ' + p.lastName)}</strong> will be removed${c.scribe.segs.length ? `, together with everything AI Scribe heard (${c.scribe.segs.length} lines)` : ''}. Nothing has been signed or billed.</p>
+      <form id="cxc"><label class="f"><span>Why <small>(kept in the audit log)</small></span><select name="why"><option>Started by mistake</option><option>Wrong patient</option><option>Patient left before the consultation</option><option>Patient declined to be seen</option><option>Will be seen by another doctor</option><option>Other</option></select></label></form>
+      ${e.appointmentId ? '<p class="tiny muted">The appointment goes back to Waiting so the patient can be seen later.</p>' : ''}`, '<button class="btn" data-act="modal-close">Keep the consultation</button><button class="btn danger" data-act="cx-cancel-go">Cancel consultation</button>'); };
+  H['cx-cancel-go'] = () => { const e = cur(); if (!e || !editableOf(e)) return; const v = A.fv('cxc'); A.closeModal(); const d = db();
+    if (L.encId === e.id) { stopListening(e); L.encId = null; } A.cxListening = false;
+    const pid = e.patientId; const segs = ((e.cx || {}).scribe || {}).segs ? e.cx.scribe.segs.length : 0;
+    A.act(() => { if (e.appointmentId) { const a = d.appointments.find((x) => x.id === e.appointmentId); if (a && a.status === 'in-consult') a.status = 'arrived'; }
+      (d.invoices || []).filter((i) => i.encounterId === e.id && i.status === 'draft').forEach((i) => { d.invoices.splice(d.invoices.indexOf(i), 1); });
+      d.encounters.splice(d.encounters.indexOf(e), 1); E.audit(d, A.user, 'consult-cancelled', 'encounter', e.id, pid, `${v.why || 'Cancelled'} — draft removed${segs ? `, ${segs} transcript lines deleted` : ''}`); }, 'Consultation cancelled. The draft was removed.');
+    A.go('#/patient/' + pid); };
   H['cx-layout'] = (el) => { prefs().layout = el.dataset.v === 'full' ? 'full' : 'simple'; A.save(); A.render(); };
   H['cx-guide-skip'] = (el) => { const e = cur(); if (!e) return; const c = cxOf(e); c.guideSkip = c.guideSkip || {}; c.guideSkip[el.dataset.k] = true; A.save(); paintSide(e); };
   H['cx-view-ai'] = (el, ev) => { const e = cur() || encById((A.params || [])[0]); if (ev && ev.preventDefault) ev.preventDefault(); location.hash = '#/consult/' + ((e && e.id) || (A.params || [])[0]); };
-  document.addEventListener('toggle', (ev) => { const t = ev.target; if (t && t.matches && t.matches('details[data-tr-toggle]')) { const pr = prefs(); if (!!pr.trOpen !== t.open) { pr.trOpen = t.open; A.save(); } } }, true);
+  document.addEventListener('toggle', (ev) => { const t = ev.target; if (t && t.matches && t.matches('details[data-tr-toggle]')) { const pr = prefs(); if (!!pr.trOpen !== t.open) { pr.trOpen = t.open; A.save(); } }
+    if (t && t.matches && t.matches('details[data-guide]')) { const pr = prefs(); if (!!pr.guideOpen !== t.open) { pr.guideOpen = t.open; A.save(); const e = cur(); if (e) setTimeout(() => paintSide(e), 0); } } }, true);
   H['cx-side-toggle'] = () => { const pr = prefs(); pr.side = !pr.side; A.save(); A.render(); };
   const _gotoHold = (el) => { const k = el.dataset.k || ''; if (simpleMode() && k && !document.querySelector(`[data-row="${CSS.escape(k)}"]`) && (LABEL(k) !== k || /^ros\./.test(k))) { prefs().layout = 'full'; A.save(); A.render(); A.toast('Switched to the detailed form to show that field.'); } };
   H['cx-goto'] = (el) => { _gotoHold(el); const e = cur(); if (!e) return; const k = el.dataset.k || ''; const go = () => { const c = cxOf(e); const pr = prefs(); const sec = k.startsWith('v.') || k.startsWith('vital') ? 'vitals' : k.startsWith('exam') ? 'exam' : k.startsWith('ros') ? 'ros' : ['icd', 'dx'].includes(k) ? 'icd' : k === 'med' ? 'plan' : k === 'followUp' ? 'fu' : k === 'allergies' ? 'history' : k === 'assessment' ? 'assessment' : k === 'complaint' || k === 'symptoms' ? 'complaint' : '';
@@ -16539,6 +16578,84 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   upd('aiscribe', 'Vitals by voice', 'In Capture vitals press Start listening and say the readings as you take them — any reading on the form, numbers in words are fine. It keeps listening until you press Stop. Say “sorry, make that 37.6” to correct. Home readings the patient mentions are ignored, and what you type is never overwritten. No recording or transcript is kept.');
   add('front', L('Find patients fast', 'Patients: search by name or ID, then use the buttons — Booked today, Oncology, In hospital, Owes money. Each row shows today’s status and has Book and Consult buttons.', 'patientlist'));
   upd('start', 'Follow-up manager', 'Every reminder for your role in one place — clinical, money, medical aid and stock. Work from the top: do it, Mark done or Snooze. The practice money figures are folded away under Practice pulse. The Clinical dashboard shows only the clinical to-do list.');
+})();
+
+
+/* ===== ui-fielderr.js ===== */
+/* Prac360 — show WHICH field is missing. When a red "required" message appears (A.toast(..., 'error')), the
+ * fields it is about are outlined in red on the open popup or page, the first one is scrolled into view and
+ * focused, and the red clears as soon as that field is filled in. Fields are matched by the words in the message
+ * against each field's label ("Give the reason" → the Reason / Why field; "Choose the patient" → Patient).
+ * Messages that are not about a field (e.g. "Your role cannot do this") highlight nothing. */
+(function () {
+  'use strict';
+  const A = window.APP; if (!A || !A.toast) return;
+  const STOP = new Set('please give choose enter type write check tick the and from list this that your with for first least one valid required must need needs are can cannot not already uses another there always only select also make sure what when where which who whom how than then into onto out its it\'s been being have has had was were will would should could may might give a an to of in on at or be is it by as if no yes all any some more less here other same new number format between characters long short e.g eg ie use used using change open first last value values field fields enter correct right wrong'.split(' '));
+  const SYN = { reason: ['why', 'reason'], why: ['reason', 'why'], icd: ['icd', 'diagnos'], diagnosis: ['icd', 'diagnos'], diagnoses: ['icd', 'diagnos'], cellphone: ['cell', 'mobile', 'phone'], phone: ['cell', 'mobile', 'phone'], mobile: ['cell', 'mobile', 'phone'], email: ['email', 'e-mail'], doctor: ['doctor', 'provider', 'practitioner', 'oncologist'], oncologist: ['oncologist', 'prescribed', 'doctor'], date: ['date', 'when', 'day'], time: ['time', 'when'], amount: ['amount', 'value', 'total', 'rand'], code: ['code', 'tariff'], person: ['person', 'user', 'name'], name: ['name'], test: ['test', 'investigation'], note: ['note', 'text'], height: ['height'], weight: ['weight'] };
+  const words = (s) => String(s || '').toLowerCase().replace(/[“”"'’()\/.,:;!?\-–—]+/g, ' ').split(/\s+/).filter((w) => w.length >= 3 && !STOP.has(w) && !/^\d+$/.test(w));
+  const stem = (w) => w.replace(/(ies|es|s|ed|ing)$/, '').slice(0, 6);
+  const labelOf = (el) => { const parts = []; const lab = el.closest('label'); if (lab) parts.push(lab.textContent); if (el.id) { const l2 = document.querySelector(`label[for="${CSS.escape(el.id)}"]`); if (l2) parts.push(l2.textContent); }
+    const fs = el.closest('fieldset'); if (fs) { const lg = fs.querySelector('legend, :scope > span'); if (lg) parts.push(lg.textContent); }
+    ['aria-label', 'placeholder', 'name', 'title'].forEach((a) => { const v = el.getAttribute(a); if (v) parts.push(a === 'name' ? v.replace(/[_-]/g, ' ') : v); }); return parts.join(' ').toLowerCase(); };
+  const empty = (el) => (el.type === 'checkbox' || el.type === 'radio' ? !el.checked : !String(el.value || '').trim());
+  const visible = (el) => !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+  const boxOf = (el) => el.closest('label.f, .f, label.check, .check, fieldset, .cx-row, .cx-vital, .vf-grid > label') || el;
+  const clear = () => document.querySelectorAll('.fld-err').forEach((x) => x.classList.remove('fld-err'));
+  const mark = (els) => { clear(); els.forEach((el) => { const b = boxOf(el); b.classList.add('fld-err'); const off = () => { if (!empty(el)) { b.classList.remove('fld-err'); el.removeEventListener('input', off); el.removeEventListener('change', off); } }; el.addEventListener('input', off); el.addEventListener('change', off); });
+    const f = els[0]; if (f) { try { boxOf(f).scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { /* ignore */ } if (!/checkbox|radio/.test(f.type)) setTimeout(() => { try { f.focus({ preventScroll: true }); } catch (e) { /* ignore */ } }, 250); } };
+  A.markFields = mark;
+  const find = (msg) => { const modal = document.querySelector('#modal'); const scope = modal || document.getElementById('main') || document.body;
+    const fields = [...scope.querySelectorAll('input, select, textarea')].filter((el) => visible(el) && !el.disabled && !el.readOnly && !/^(hidden|submit|button|search|file)$/.test(el.type) && el.id !== 'pq' && !el.closest('.as-panel, #assist, .pi'));
+    if (!fields.length) return [];
+    const kw = words(msg); const keys = new Set(); kw.forEach((w) => { keys.add(stem(w)); (SYN[w] || []).forEach((s) => keys.add(stem(s))); });
+    const scored = fields.map((el) => { const lw = words(labelOf(el)).map(stem); let sc = 0; keys.forEach((k) => { if (k.length >= 3 && lw.some((x) => x === k || (x.length >= 4 && k.length >= 4 && (x.startsWith(k) || k.startsWith(x))))) sc++; }); return { el, sc }; }).filter((x) => x.sc > 0);
+    const first = (el) => { const lab = el.closest('label'); const sp = lab && lab.querySelector('span'); const w = words(sp ? sp.textContent : labelOf(el))[0]; return w ? stem(w) : ''; };
+    if (scored.length) { const max = Math.max(...scored.map((x) => x.sc)); let pick = scored.filter((x) => x.sc === max).map((x) => x.el);
+      const lead = pick.filter((el) => { const f = first(el); return f && [...keys].some((k) => f === k || (f.length >= 4 && k.length >= 4 && (f.startsWith(k) || k.startsWith(f)))); }); if (lead.length) pick = lead; const em = pick.filter(empty); if (em.length) pick = em; return pick.slice(0, 6); }
+    if (/\b(required|fill in|at least one|enter at least|tick at least)\b/i.test(msg)) { const req = fields.filter((el) => el.required && empty(el)); if (req.length) return req; }
+    return []; };
+  const _toast = A.toast;
+  A.toast = function (msg, kind) { const r = _toast.apply(this, arguments); if (kind === 'error') { try { const els = find(msg); if (els.length) mark(els); } catch (e) { /* never block the message */ } } return r; };
+  // a popup closing or a new page clears old highlights
+  addEventListener('hashchange', clear);
+})();
+
+
+/* ===== ui-v036.js ===== */
+/* Prac360 v0.36 — What's new, help topics, walkthroughs and lessons for: red outline on the field a "required"
+ * message is about, cancel an AI Scribe consultation, and the conversation guide as a dropdown with "still to cover". */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || [];
+  const kb = (id) => KB.find((k) => k.id === id);
+  const putKB = (k) => { const i = KB.findIndex((x) => x.id === k.id); if (i >= 0) KB[i] = Object.assign({}, KB[i], k); else KB.push(k); };
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.36')) A.RELEASES.unshift({ v: '0.36', date: '2026-11-20', title: 'See what is missing, cancel a consultation, a smaller guide', items: [
+    { type: 'improved', area: 'help', title: 'Missing fields are outlined in red', text: 'When a red message says something is missing or wrong — “Choose the patient”, “Give the reason”, “Check the weight” — the field it is about now gets a red box, the screen scrolls to it and the cursor goes into it. The red disappears as soon as you fill it in.', link: '#/patients', guide: 'requiredfields' },
+    { type: 'new', area: 'clinical', title: 'Cancel an AI Scribe consultation', text: 'Started a consultation by mistake, or for the wrong patient? Press Cancel consultation at the bottom left of the consultation screen and choose why. The draft and everything AI Scribe heard are removed, the appointment goes back to Waiting, and the reason is kept in the audit log. Signed consultations cannot be cancelled — use an addendum.', link: '#/patients', guide: 'cxcancel' },
+    { type: 'improved', area: 'clinical', title: 'Conversation guide is now a dropdown', text: 'The conversation guide takes less space: closed, it shows the step you are on, the next suggested question and chips for everything still missing from the conversation (click × on a chip if it is not needed). Click the guide to open the full list of steps and questions. Your choice is remembered.', link: '#/patients', guide: 'aiscribe' }] });
+
+  putKB({ id: 'requiredfields', title: 'Red message: which field is missing?', keys: ['required', 'missing field', 'red message', 'what is not filled in', 'cannot save', 'red box', 'field is required'], screens: ['today'], link: '#/today',
+    steps: ['When you press Save (or Book, Start, Create…) and something is missing or wrong, a red message appears at the bottom.', 'The field it is about gets a red box and the screen scrolls to it, with the cursor in it.', 'Fill it in — the red box disappears straight away — then press the button again.', 'Messages that are not about a field (for example “Only a doctor can do this”) do not outline anything.'] });
+  putKB({ id: 'cxcancel', title: 'Cancel a consultation (AI Scribe)', keys: ['cancel consultation', 'cancel consult', 'started by mistake', 'wrong patient consult', 'delete draft consultation', 'discard consultation'], screens: ['consult'], link: '#/patients',
+    steps: ['On the consultation screen press Cancel consultation (bottom left).', 'Choose why — started by mistake, wrong patient, patient left, declined, seen by another doctor or other — and press Cancel consultation.', 'The draft note and everything AI Scribe heard are removed. If the patient had an appointment it goes back to Waiting. The reason is kept in the audit log.', 'Only unsigned (draft) consultations can be cancelled. A signed note is corrected with an addendum.'] });
+  const ai = kb('aiscribe'); if (ai) ai.steps = ['Open the patient and click Start consultation. The screen opens in AI Scribe view (use the Classic | ✦ AI Scribe switch at the top to change).', 'Press AI Scribe. Ask the patient if Prac360 may listen and record their answer — it only starts after they agree.',
+    'Talk normally. The five cards fill in as you speak (✦ AI shows a value came from the conversation). Type over anything — your words win.',
+    'The Conversation guide on the right shows the step you are on, the next question and chips for what is still missing. Click it to open every step and suggested question; click × on a chip if it is not needed.',
+    'Press Finish consultation, then Review AI documentation: check the flagged items, accept or reject each suggestion, and approve.', 'Sign and finalise. Nothing is ever approved or signed for you.',
+    'Started by mistake or for the wrong patient? Press Cancel consultation (bottom left) — the draft and transcript are removed and the reason is logged.'];
+  if (A.GUIDES) {
+    if (A.GUIDES.aiscribe) A.GUIDES.aiscribe.steps = A.GUIDES.aiscribe.steps.map((s) => (s.sel === '.cx-guide' ? Object.assign({}, s, { text: 'The Conversation guide: the step you are on, the next question and chips for what is still missing. Click it to open every step; × on a chip skips it.' }) : s))
+      .concat(A.GUIDES.aiscribe.steps.some((s) => s.sel === '[data-act="cx-cancel"]') ? [] : [{ sel: '[data-act="cx-cancel"]', text: 'Started by mistake? Cancel consultation removes the draft and what AI Scribe heard, and logs the reason.', expect: 'next' }]);
+    A.GUIDES.cxcancel = { title: 'Cancel a consultation', steps: [{ sel: '[data-act="cx-cancel"]', text: 'Press Cancel consultation, choose why, and confirm. Only unsigned consultations can be cancelled.', expect: 'next', missing: 'Open a consultation first (patient → Start consultation), then press Show me again.' }] };
+    A.GUIDES.requiredfields = { title: 'Red message: which field is missing?', steps: [{ sel: '#main', text: 'When a red message appears after you press Save, the field it is about is outlined in red and the cursor goes into it. Fill it in and press Save again.', expect: 'next' }] };
+  }
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => x[0] === 'Consultation'); if (g && !g[1].some((x) => x[1] === 'cxcancel')) g[1].splice(2, 0, ['Cancel a consultation', 'cxcancel']);
+    const ga = A.FUNCTIONS.find((x) => x[0] === 'Getting around'); if (ga && !ga[1].some((x) => x[1] === 'requiredfields')) ga[1].push(['Red message: which field is missing?', 'requiredfields']); }
+  const C = A.COURSES; if (!C) return;
+  const course = (id) => C.find((c) => c.id === id);
+  const sc = course('aiscribe'); if (sc) { const l = sc.lessons.find((x) => x.t === 'Let the guide lead the conversation'); if (l) l.body = 'The Conversation guide on the right is a dropdown. Closed, it shows the step you are on, the next question and chips for everything still missing from the conversation. Open it to see every step — hear the story, history and medicines, measure and examine, explain what it is, agree the plan — with suggested questions. Click × on a chip, or Skip, when something is not needed. It only suggests; you lead.';
+    if (!sc.lessons.some((x) => x.t === 'Cancel a consultation')) sc.lessons.push({ t: 'Cancel a consultation', body: 'Started by mistake or for the wrong patient? Press Cancel consultation (bottom left) and choose why. The draft and everything AI Scribe heard are removed, the appointment goes back to Waiting and the reason is logged. Signed notes cannot be cancelled — add an addendum.', guide: 'cxcancel' }); }
+  const st = course('start'); if (st && !st.lessons.some((x) => x.t === 'When something is missing')) st.lessons.push({ t: 'When something is missing', body: 'If a red message appears when you save, look for the red box: that is the field to fill in or fix. The cursor is already in it. The red goes away as soon as you fill it in.', guide: 'requiredfields' });
 })();
 
 

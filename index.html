@@ -2512,6 +2512,11 @@ div.appt[role="button"]:focus-visible{outline:2px solid var(--accent,#2563eb);ou
 tr.ls-new{animation:lsNew 3s ease-out 1}
 @keyframes lsNew{0%{background:#bbf7d0}100%{background:transparent}}
 @media (prefers-reduced-motion:reduce){.ls-pulse,.ls-refresh.busy .ls-spin,tr.ls-new{animation:none}}
+/* ---- compulsory fields */
+.req-star::after{content:" *";color:#dc2626;font-weight:800}
+label.check.req-star::after,.check.req-star::after{content:" *"}
+.req-legend{font-size:12px;color:var(--muted,#6b7280);margin-right:auto;align-self:center}
+.req-legend .req-dot{color:#dc2626;font-weight:800}
 </style>
 </head>
 <body>
@@ -13998,8 +14003,16 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
       acc.demoUsers = acc.demoUsers || {}; acc.demoUsers[entry.dataset.id] = u.id; PL.save(); A.save(); A.render(); } return r; };
   // the shared login cannot be changed, so testers cannot lock each other out
   const NO = ['adm-acc-status', 'adm-acc-temppw', 'adm-rp-go', 'adm-acc-mustpw', 'adm-acc-reset', 'adm-acc-mfa', 'adm-acc-revoke', 'adm-trk-start'];
-  NO.forEach((k) => { const f = H[k]; if (!f) return; H[k] = function (el) { const a = el && el.dataset && PL.acct(el.dataset.id); if (isDemo(a)) return A.toast('The shared demo login cannot be changed.', 'error'); return f.apply(this, arguments); }; });
-  const gdel = H['adm-grant-del']; if (gdel) H['adm-grant-del'] = function (el) { const g = PL.s.grants.find((x) => x.id === el.dataset.id); if (g && isDemo(PL.acct(g.accountId))) return A.toast('The shared demo login cannot be changed.', 'error'); return gdel.apply(this, arguments); };
+  // missing compulsory fields are pointed out first (red box), then the lock is explained
+  const missingFirst = () => { const scope = document.getElementById('modal') || document.getElementById('main'); const miss = (A.reqFields ? A.reqFields(scope) : []).filter((x) => x.always && (x.el.type === 'checkbox' ? !x.el.checked : !String(x.el.value || '').trim()) && (x.el.offsetWidth || x.el.offsetHeight));
+    if (!miss.length) return false; const m = (window.P360_REQ || {})[(miss[0].el.form || {}).id] || {}; A.toast(String(m[miss[0].el.name] || 'Fill in the fields marked *.').replace(/^\?/, ''), 'error'); return true; };
+  const LOCK = 'This is the shared demo login (🔒 locked) — it cannot be changed, so testers cannot lock each other out. Try this on another user.';
+  NO.forEach((k) => { const f = H[k]; if (!f) return; H[k] = function (el) { const a = el && el.dataset && PL.acct(el.dataset.id); if (isDemo(a)) { if (missingFirst()) return; return A.toast(LOCK, 'error'); } return f.apply(this, arguments); }; });
+  // say it up front on the Admin tool page of the shared demo login
+  const banner = () => { const m = /^#admin\/user\/([^/]+)/.exec(location.hash); const main = document.getElementById('main'); if (!m || !main || main.querySelector('.demo-lock')) return; const a = PL.acct(decodeURIComponent(m[1])); if (!isDemo(a)) return; const nav = main.querySelector('nav.tabs'); if (!nav) return;
+    nav.insertAdjacentHTML('afterend', '<div class="alert info demo-lock"><span class="ico">🔒</span><div class="body"><strong>Shared demo login — locked.</strong> Its status, password, two-step, access and activity tracking cannot be changed, so testers cannot lock each other out. Open another user to try these functions.</div></div>'); };
+  new MutationObserver(() => setTimeout(banner, 30)).observe(document.documentElement, { childList: true, subtree: true });
+  const gdel = H['adm-grant-del']; if (gdel) H['adm-grant-del'] = function (el) { const g = PL.s.grants.find((x) => x.id === el.dataset.id); if (g && isDemo(PL.acct(g.accountId))) return A.toast(LOCK, 'error'); return gdel.apply(this, arguments); };
   const pwc = H['submit:pw-change']; if (pwc) H['submit:pw-change'] = function () { if (isDemo(PL.current())) return A.toast('The shared demo login keeps its password so every tester can use it.', 'error'); return pwc.apply(this, arguments); };
   // after signing in: choose where to go (a practice, the Support console or the Admin tool)
   const _after = A.afterSignIn; A.afterSignIn = function (acc) { if (isDemo(acc)) { A.db = null; A.dsEntry = null; location.hash = '#choose'; A.render(); return; } return _after.apply(this, arguments); };
@@ -16757,15 +16770,24 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   const find = (msg) => { const modal = document.querySelector('#modal'); const scope = modal || document.getElementById('main') || document.body;
     const fields = [...scope.querySelectorAll('input, select, textarea')].filter((el) => visible(el) && !el.disabled && !el.readOnly && !/^(hidden|submit|button|search|file)$/.test(el.type) && el.id !== 'pq' && !el.closest('.as-panel, #assist, .pi'));
     if (!fields.length) return [];
+    const req = A.reqFields ? A.reqFields(scope) : []; const reqSet = new Set(req.map((x) => x.el));
+    // the message was written by the save check for exactly these fields: use that first
+    const exact = req.filter((x) => { const m = (window.P360_REQ || {})[(x.el.form || {}).id]; return m && String(m[x.el.name] || '').replace(/^\?/, '') === String(msg); }).map((x) => x.el).filter((el) => fields.includes(el));
+    if (exact.length) { const em = exact.filter(empty); return (em.length ? em : exact).slice(0, 6); }
     const kw = words(msg); const keys = new Set(); kw.forEach((w) => { keys.add(stem(w)); (SYN[w] || []).forEach((s) => keys.add(stem(s))); });
     const scored = fields.map((el) => { const lw = words(labelOf(el)).map(stem); let sc = 0; keys.forEach((k) => { if (k.length >= 3 && lw.some((x) => x === k || (x.length >= 4 && k.length >= 4 && (x.startsWith(k) || k.startsWith(x))))) sc++; }); return { el, sc }; }).filter((x) => x.sc > 0);
     const first = (el) => { const lab = el.closest('label'); const sp = lab && lab.querySelector('span'); const w = words(sp ? sp.textContent : labelOf(el))[0]; return w ? stem(w) : ''; };
+    scored.forEach((x) => { if (reqSet.has(x.el)) x.sc += 0.5; });
     if (scored.length) { const max = Math.max(...scored.map((x) => x.sc)); let pick = scored.filter((x) => x.sc === max).map((x) => x.el);
       const lead = pick.filter((el) => { const f = first(el); return f && [...keys].some((k) => f === k || (f.length >= 4 && k.length >= 4 && (f.startsWith(k) || k.startsWith(f)))); }); if (lead.length) pick = lead; const em = pick.filter(empty); if (em.length) pick = em; return pick.slice(0, 6); }
-    if (/\b(required|fill in|at least one|enter at least|tick at least)\b/i.test(msg)) { const req = fields.filter((el) => el.required && empty(el)); if (req.length) return req; }
+    // nothing named in the message: outline the compulsory fields that are still empty on this form
+    const emptyReq = req.filter((x) => x.always && fields.includes(x.el) && empty(x.el)).map((x) => x.el); if (emptyReq.length) return emptyReq.slice(0, 6);
+    if (/\b(required|fill in|at least one|enter at least|tick at least)\b/i.test(msg)) { const r2 = fields.filter((el) => el.required && empty(el)); if (r2.length) return r2; }
     return []; };
   const _toast = A.toast;
   A.toast = function (msg, kind) { const r = _toast.apply(this, arguments); if (kind === 'error') { try { const els = find(msg); if (els.length) mark(els); } catch (e) { /* never block the message */ } } return r; };
+  // forms that use the browser's own "required" check: outline every field it stopped on
+  let inv = [], invT = null; document.addEventListener('invalid', (e) => { const el = e.target; if (!el || !el.form) return; inv.push(el); clearTimeout(invT); invT = setTimeout(() => { const els = inv.filter((x, i) => inv.indexOf(x) === i); inv = []; if (els.length) mark(els); }, 30); }, true);
   // a popup closing or a new page clears old highlights
   addEventListener('hashchange', clear);
 })();
@@ -17108,6 +17130,52 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.41')) A.RELEASES.unshift({ v: '0.41', date: '2026-11-20', title: 'Live support: see it refresh', items: [
     { type: 'fixed', area: 'support', title: 'Live support shows when it is refreshing', text: 'Support console → Live support now shows a status line with a pulsing dot — how many people are live in how many practices, and the time it last checked (it checks again every 5 seconds by itself). Pressing Refresh spins the button, shows “Checking which practices and users are online…” and fades the list while it checks, then confirms “Updated — 2 people live in 1 practice”. Someone who has just come online is highlighted with “just came online”.', link: '#console', guide: 'livesupport' }] });
   if (kb && !(kb.steps || []).some((x) => /last checked/.test(x))) kb.steps = kb.steps.concat(['The line under the heading shows how many people are live and when it last checked; it checks again every 5 seconds. Press Refresh to check now — the button spins and you get “Updated — …” when it is done. People who just came online are highlighted.']);
+})();
+
+
+/* ===== ui-v042.js ===== */
+/* Prac360 v0.42 — compulsory fields marked with a red *; red box on every screen (incl. browser checks and the Admin tool). */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.42')) A.RELEASES.unshift({ v: '0.42', date: '2026-11-20', title: 'See what is compulsory', items: [
+    { type: 'new', area: 'help', title: 'Compulsory fields have a red *', text: 'Every field you must fill in now has a red * next to its name, on every screen and popup — patient registration, bookings, consultations, oncology, billing, Practice setup, the Support console and the Admin tool. Popups with compulsory fields say “* compulsory” at the bottom. Fields that are only needed in some cases (for example the membership number when the patient is on a medical aid) have no *, but are still outlined in red if they are missing.', link: '#/patients/new', guide: 'requiredfields' },
+    { type: 'improved', area: 'help', title: 'The red box now works everywhere', text: 'When a red message says something is missing, the field gets a red box on every screen — including forms that use the browser’s own “please fill in this field” check (such as New patient) and the Admin tool (for example the Reason for activity tracking). If several compulsory fields are empty, all of them are outlined.', link: '#/patients/new', guide: 'requiredfields' },
+    { type: 'fixed', area: 'platform', title: 'Clearer message on the shared demo login', text: 'On the Admin tool page of the shared demo login a 🔒 notice now explains up front that it cannot be changed (so testers cannot lock each other out). Missing fields are pointed out first, and the message says to try the function on another user.', link: '#admin' }] });
+  const k = kb('requiredfields'); if (k) { k.title = 'Compulsory fields (*) and the red box'; k.keys = (k.keys || []).concat(['compulsory', 'mandatory', 'asterisk', 'red star', 'must fill in']); k.steps = ['Fields with a red * next to their name are compulsory — fill them in before you save. Popups say “* compulsory” at the bottom.', 'If you press Save (or Book, Start…) and something is missing, a red message appears and the field gets a red box; the screen scrolls to it and the cursor goes into it.', 'Fill it in — the red box disappears straight away — then press the button again.', 'Some fields are only needed in certain cases (for example the membership number for a medical aid patient): they have no *, but get a red box if they are missing.', 'Messages that are not about a field (for example “Only a doctor can do this”) do not outline anything.']; }
+  const C = A.COURSES || []; const st = C.find((c) => c.id === 'start'); const l = st && st.lessons.find((x) => x.t === 'When something is missing'); if (l) l.body = 'Fields with a red * are compulsory. If a red message appears when you save, look for the red box: that is the field to fill in or fix, and the cursor is already in it. The red goes away as soon as you fill it in.';
+  if (st && !st.quiz.some((q) => /red \*/.test(q.q))) st.quiz.push({ q: 'What does a red * next to a field name mean?', o: ['The field has an error', 'The field is compulsory — fill it in before saving', 'The field is optional'], a: 1 });
+})();
+
+
+/* ===== req-map.js ===== */
+/* generated by tools/gen-req.js — do not edit */
+window.P360_REQ = {"ao":{"name":"Name is required."},"aon":{"name":"Name and licence holder are required.","lhName":"Name and licence holder are required."},"adn":{"name":"Give a name and a 7-digit practice number."},"agr":{"acc":"Choose the person."},"trk":{"why":"Please give a reason (at least 5 characters)."},"aun":{"name":"Give a full name and a valid email.","why":"Please give a reason (at least 5 characters).","reg":"?Doctors, dentists and nurses need their HPCSA / registration number."},"apv":{"heard":"Fill in both words.","means":"Fill in both words."},"breq":{"detail":"?Please say what you need."},"ctt":{"name":"Give the contract a name."},"la":{"name":"Name needed."},"dv":{"name":"Name the device."},"ix":{"why":"Give the reason for the exposure."},"fa":{"title":"Say what needs to happen."},"ha":{"pid":"Choose the patient.","bed":"?Choose a free bed.","auth":"?This practice requires an authorisation number before admission (Practice setup → Hospital)."},"hv":{"bed":"Choose a bed."},"hm":{"bed":"Choose the new bed.","why":"?Give the clinical reason for ICU or high care."},"hz":{"no":"Type the authorisation number."},"hn":{"text":"Write the note first."},"ht":{"sig":"Say how to take the medicine."},"hw":{"name":"Give the ward a name."},"lrf":{"name":"Give a name and a valid email.","reg":"?Doctors, dentists and nurses need their registration number.","setpw":"?Type the password you want to give them."},"lm":{"why":"Please give a reason."},"lb":{"why":"Please give a reason."},"oma":{"c":"Choose a patient."},"omd":{"d":"Write the decision."},"org":{"name":"Give a name and at least one medicine.","drugs":"Give a name and at least one medicine.","ref":"Give the protocol reference."},"olb":{"t":"Give the test and value.","v":"Give the test and value."},"ost":{"g":"?Give at least the T category or the stage group.","t":"?Give at least the T category or the stage group.","ev":"Record the evidence (which reports)."},"oiv":{"t":"Name the test."},"oir":{"r":"Write the result."},"opl":{"name":"?Choose a regimen or describe the treatment."},"opc":{"why":"Give the reason."},"ocm":{"why":"Give the reason (it counts as a delay if later)."},"ohd":{"why":"Give the reason."},"ohdd":{"why":"Record your reasoning."},"olr":{"ok":"Tick the confirmation, or put the cycle on hold."},"oph":{"a":"?Tick all three checks."},"oas":{"chk":"Choose the second checker (a different person).","id":"?Confirm identity and observations."},"otx":{"t":"Name the adverse event."},"ort":{"site":"Give the site."},"ofu":{"w":"Say what the follow-up is."},"ont":{"t":"Write the note."},"oas2":{"ref":"?Enter the authorisation number."},"ocs":{"onc":"Choose who prescribed / is the treating oncologist.","pc":"Write the presenting complaint or history.","hpi":"?Write the presenting complaint or history."},"rf":{"firstName":"First name, surname and date of birth are needed.","lastName":"First name, surname and date of birth are needed.","dob":"First name, surname and date of birth are needed.","memberNo":"?Add the membership number, or choose Private.","label":"Give the role a name."},"ams":{"memberNo":"Membership number is needed."},"rcv":{"batchNo":"Batch, expiry and quantity are needed.","expiry":"Batch, expiry and quantity are needed."},"ua":{"name":"Name needed.","reg":"?Roles that treat patients need an HPCSA or SANC number."},"prid":{"dob":"Give the date of birth — a passport is matched with the date of birth."},"prf":{"dob":"Give the date of birth — passports are matched with it."},"pri":{"ok":"Tick that the patient is in your care."},"shrf":{"ok":"Tick the confirmation once the patient agreed.","name":"Give the name of the person consenting.","rel":"?Give their relationship to the patient."},"sg":{"cur":"Enter your current PIN to make changes.","pin":"?Choose a PIN."},"tsa":{"code":"Code and name are needed.","name":"Code and name are needed."},"tsp":{"name":"Plan name is needed."},"tsq":{"name":"Code and name are needed."},"tsr":{"code":"Code, amount and date are needed.","from":"Code, amount and date are needed."},"tsc":{"code":"Code and description are needed.","desc":"Code and description are needed."},"tsm":{"code":"Code and name are needed.","name":"Code and name are needed."},"nt":{"title":"Please give a title and a message.","body":"Please give a title and a message."}};
+
+
+/* ===== ui-reqmark.js ===== */
+/* Prac360 — compulsory fields get a red * next to their name, on every screen and popup.
+ * Which fields are compulsory comes from the app's own save checks (req-map.js, generated at build time by
+ * tools/gen-req.js) plus any field marked required in the page. Fields that are only needed in some cases
+ * (e.g. membership number when the patient is on a medical aid) get no * but are still outlined when missing. */
+(function () {
+  'use strict';
+  const A = window.APP; const MAP = window.P360_REQ = window.P360_REQ || {};
+  // checks the build-time scan cannot read (the value is looked up, not just checked for empty)
+  const EXTRA = { onr: { q: 'Choose the patient from the list.' }, bf: { pid: 'Choose the patient.' }, prf: {}, olb: {} };
+  Object.entries(EXTRA).forEach(([f, m]) => { MAP[f] = Object.assign({}, m, MAP[f] || {}); });
+  const boxOf = (el) => el.closest('label.f, .f, label.check, .check, fieldset') || el.closest('label');
+  const titleOf = (box) => (box ? box.querySelector(':scope > span:first-child, :scope > legend, :scope > strong') || (box.matches('label.check, .check') ? box : null) : null);
+  A.reqFields = (scope) => { const out = []; (scope || document).querySelectorAll('form[id]').forEach((f) => { const m = MAP[f.id]; if (m) Object.entries(m).forEach(([n, msg]) => { f.querySelectorAll(`[name="${CSS.escape(n)}"]`).forEach((el) => out.push({ el, always: !String(msg).startsWith('?') })); }); });
+    (scope || document).querySelectorAll('input[required], select[required], textarea[required]').forEach((el) => { if (!out.some((x) => x.el === el)) out.push({ el, always: true }); });
+    // a label that already says "(required…)" is compulsory too
+    (scope || document).querySelectorAll('label.f > span:first-child').forEach((sp) => { if (!/\(required\b/i.test(sp.textContent)) return; const el = sp.parentElement.querySelector('input, select, textarea'); if (el && !out.some((x) => x.el === el)) out.push({ el, always: true }); });
+    return out; };
+  const mark = () => { A.reqFields(document).forEach(({ el, always }) => { if (!always || el.type === 'hidden') return; if (el.dataset.reqMarked) return; el.dataset.reqMarked = '1'; el.setAttribute('aria-required', 'true'); const t = titleOf(boxOf(el)); if (t && !t.classList.contains('req-star')) t.classList.add('req-star'); }); };
+  let t = null; new MutationObserver(() => { clearTimeout(t); t = setTimeout(mark, 40); }).observe(document.documentElement, { childList: true, subtree: true });
+  // one line on popups with compulsory fields, so the * is understood
+  const legend = () => { const m = document.getElementById('modal'); if (!m || m.querySelector('.req-legend')) return; if (!m.querySelector('.req-star')) return; const foot = m.querySelector('.modal-f, .modal-foot, footer') || m; const n = document.createElement('div'); n.className = 'req-legend'; n.innerHTML = '<span class="req-dot">*</span> compulsory'; foot.insertBefore(n, foot.firstChild); };
+  new MutationObserver(() => setTimeout(legend, 60)).observe(document.documentElement, { childList: true, subtree: true });
 })();
 
 

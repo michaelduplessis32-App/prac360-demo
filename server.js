@@ -203,6 +203,17 @@ const handler = async (req, res) => {
         return json(res, 200, { ok: true, invite: inv, org: org || null, dataset: ds || null }); }
       return json(res, 400, { ok: false }); }
 
+    // optional AI model step for AI Scribe: only through a provider the practice approved (key set on the server)
+    if (p === '/api/ai/scribe' && req.method === 'POST') { if (!who || who.level !== 'full') return json(res, 401, { ok: false });
+      const KEY = process.env.SCRIBE_AI_KEY; if (!KEY) return json(res, 501, { ok: false, configured: false, need: 'Set SCRIBE_AI_KEY (and optionally SCRIBE_AI_URL, SCRIBE_AI_MODEL) for a provider covered by a POPIA operator agreement.' });
+      if (hit('ai:' + who.acc, 30, 60 * 60e3)) return json(res, 429, { ok: false });
+      const b = JSON.parse(await readBody(req, 400000) || '{}'); const prompt = String(b.prompt || '').slice(0, 120000); if (!prompt) return json(res, 400, { ok: false });
+      const url = new URL(process.env.SCRIBE_AI_URL || 'https://api.anthropic.com/v1/messages'); const body = JSON.stringify({ model: process.env.SCRIBE_AI_MODEL || 'claude-sonnet-5-5', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] });
+      const out = await new Promise((ok) => { const r2 = https.request({ hostname: url.hostname, path: url.pathname, method: 'POST', headers: { 'content-type': 'application/json', 'x-api-key': KEY, 'anthropic-version': '2023-06-01', 'content-length': Buffer.byteLength(body) } }, (rs) => { const parts = []; rs.on('data', (d) => parts.push(d)); rs.on('end', () => ok({ status: rs.statusCode, text: Buffer.concat(parts).toString('utf8') })); });
+        r2.on('error', () => ok({ status: 502, text: '' })); r2.setTimeout(60000, () => { r2.destroy(); ok({ status: 504, text: '' }); }); r2.write(body); r2.end(); });
+      console.log(`  AI Scribe model call by ${who.acc}: ${out.status}`); // the prompt is never logged
+      if (out.status !== 200) return json(res, 502, { ok: false, status: out.status });
+      try { const j = JSON.parse(out.text); return json(res, 200, { ok: true, text: (j.content || []).map((x) => x.text || '').join('') }); } catch (e) { return json(res, 502, { ok: false }); } }
     if (p === '/api/kv' && req.method === 'GET') { const out = {};
       Object.keys(kv).forEach((k) => { if (k === PKEY) { const v = view(P, who, client); if (v) { out[k] = JSON.stringify(v); remember(who, client, v); } } else if (canKey(P, who, k)) out[k] = kv[k]; });
       return json(res, 200, out); }

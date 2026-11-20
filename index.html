@@ -2180,6 +2180,105 @@ details[open]>summary .tcx-chev{transform:rotate(90deg)}
 #p360-robot .rb-x{width:20px;height:20px;font-size:13px}
 #p360-robot .rb-bot,#p360-robot .rb-bot svg{width:80px}
 #p360-robot .rb-bubble::after{border-width:6px;bottom:5px;right:-7px}
+/* ===================== Consultation workspace + AI Scribe ===================== */
+.cx-head .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cx-tpl{display:flex;flex-direction:column;gap:2px}.cx-tpl select{min-width:220px}
+.cx-scribe{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border:0;border-radius:999px;font:700 .95rem var(--font);cursor:pointer;color:#fff;background:linear-gradient(120deg,#7c3aed,#db2777);box-shadow:0 6px 18px rgba(124,58,237,.35);position:relative}
+.cx-scribe.ready{animation:cxPulse 2.4s ease-in-out infinite}
+@keyframes cxPulse{0%,100%{box-shadow:0 6px 18px rgba(124,58,237,.35),0 0 0 0 rgba(219,39,119,.35)}50%{box-shadow:0 6px 18px rgba(124,58,237,.35),0 0 0 8px rgba(219,39,119,0)}}
+.cx-scribe.live{background:linear-gradient(120deg,#be123c,#db2777)}
+.cx-scribe.paused{background:#64748b}.cx-scribe.busy{background:#6366f1}.cx-scribe.review{background:linear-gradient(120deg,#b45309,#d97706)}.cx-scribe.ok{background:#15803d;box-shadow:none}.cx-scribe.off{background:#94a3b8;box-shadow:none}.cx-scribe.warn{background:#c2410c}
+.cx-scribe:disabled{opacity:.6;cursor:not-allowed;animation:none}
+.cx-rec{width:10px;height:10px;border-radius:50%;background:#fff;animation:cxRec 1.1s ease-in-out infinite}
+@keyframes cxRec{50%{opacity:.25;transform:scale(.8)}}
+.cx-time{font-variant-numeric:tabular-nums;font-weight:600;opacity:.92}
+@media (prefers-reduced-motion:reduce){.cx-scribe.ready,.cx-rec{animation:none}}
+.cx-ws{display:grid;grid-template-columns:250px minmax(0,1fr) 330px;gap:16px;align-items:start;margin-top:12px;position:relative}
+.cx-ws.no-side{grid-template-columns:250px minmax(0,1fr)}
+.cx-left,.cx-side{position:sticky;top:12px;max-height:calc(100vh - 160px);overflow:auto}
+.cx-left{display:flex;flex-direction:column;gap:10px}
+.cx-pt{padding:12px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}.cx-pt-n{font-weight:700;font-size:1.02rem}
+.cx-box{padding:10px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-size:.86rem}
+.cx-box h4{margin:0 0 6px;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2)}.cx-box ul{margin:0;padding-left:16px}
+.cx-box.alert-box{border-color:#fecaca;background:#fff5f5}.cx-allergy{color:#b91c1c;margin:2px 0}
+.cx-prev{margin:4px 0;line-height:1.3}
+.cx-main{min-width:0;display:flex;flex-direction:column;gap:12px}
+.cx-info{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px 10px;padding:12px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.cx-info label{display:flex;flex-direction:column;gap:3px;font-size:.78rem;color:var(--ink-2)}.cx-info .wide{grid-column:span 2}
+.cx-sec{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.cx-sec>header{display:flex;align-items:center;gap:8px;padding:0 10px 0 0}
+.cx-sec-h{flex:1;display:flex;align-items:center;gap:8px;padding:12px 14px;border:0;background:none;font:700 .98rem var(--font);color:var(--ink);cursor:pointer;text-align:left}
+.cx-chev{transition:transform .15s;color:var(--ink-2)}.cx-sec:not(.closed) .cx-chev{transform:rotate(90deg)}
+.cx-sec.closed .cx-sec-b{display:none}.cx-sec-b{padding:4px 14px 14px}
+.cx-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--surface-2,#eef2f7);color:var(--ink-2);font-size:.72rem;font-weight:700}
+.cx-count.warn{background:#fef3c7;color:#92400e}
+.cx-row{display:grid;grid-template-columns:190px minmax(0,1fr) auto;gap:6px 12px;align-items:start;padding:6px 6px 6px 8px;border-left:3px solid transparent;border-radius:6px}
+.cx-row>label{font-size:.85rem;color:var(--ink-2);padding-top:8px;line-height:1.25}
+.cx-row input,.cx-row textarea{width:100%;box-sizing:border-box}
+.cx-row.is-ai{border-left-color:#d946ef;background:linear-gradient(90deg,rgba(217,70,239,.06),transparent 60%)}
+.cx-row.is-me,.cx-vital.is-me{border-left-color:#3b82f6}
+.cx-upd{animation:cxUpd 2.6s ease-out}
+@keyframes cxUpd{0%{background:rgba(217,70,239,.22)}100%{background:transparent}}
+.cx-flash{outline:3px solid #f59e0b;outline-offset:2px;border-radius:8px}
+.cx-chip{align-self:center;white-space:nowrap;border:0;border-radius:999px;padding:3px 9px;font:700 .7rem var(--font);cursor:pointer;background:var(--surface-2,#eef2f7);color:var(--ink-2)}
+.cx-chip.none{background:none;padding:0;cursor:default;min-width:46px}
+.cx-chip.ai{background:#fae8ff;color:#86198f}.cx-chip.ai.model{background:#ede9fe;color:#5b21b6}.cx-chip.me{background:#dbeafe;color:#1d4ed8}.cx-chip.calc{background:#e0f2fe;color:#075985}.cx-chip.rec{background:#dcfce7;color:#166534}
+.cx-alt{margin-top:4px;padding:6px 8px;border-radius:8px;background:#fdf4ff;border:1px dashed #e879f9;font-size:.82rem;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cx-empty{margin:4px 0 8px;font-size:.86rem;color:var(--ink-2)}
+.cx-add{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}.cx-add select,.cx-add input{flex:1;min-width:180px}
+.cx-add-panel{padding:10px 12px;border:1px dashed var(--line);border-radius:12px}
+.cx-sub{margin:14px 0 6px;font-size:.88rem}
+.cx-vitals{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.cx-vital{display:flex;flex-direction:column;gap:4px;padding:8px;border:1px solid var(--line);border-left:3px solid var(--line);border-radius:10px}
+.cx-vital.is-ai{border-left-color:#d946ef;background:#fdf4ff}
+.cx-vital label{font-size:.78rem;color:var(--ink-2)}.cx-vin{display:flex;align-items:center;gap:6px}.cx-vin input{width:100%;min-width:0;font-weight:700}.cx-vin span{font-size:.75rem;color:var(--ink-2);white-space:nowrap}
+.cx-vital .cx-chip{align-self:flex-start}
+.cx-record{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f0fdf4;border:1px solid #bbf7d0;font-size:.86rem}
+.cx-record-h{font-weight:700;margin-bottom:6px}.cx-record dl{display:grid;grid-template-columns:150px 1fr;gap:4px 10px;margin:0}.cx-record dt{color:var(--ink-2)}.cx-record dd{margin:0}
+.crit-t{color:#b91c1c}.warn-t{color:#b45309}
+.cx-list{display:flex;flex-direction:column;gap:8px}
+.cx-li{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px}
+.cx-li.suggested{border-left:3px solid #d946ef}.cx-li.accepted{border-left:3px solid #16a34a}.cx-li.rejected{opacity:.55}
+.cx-li-main{min-width:0}.cx-code{font-weight:700}
+.cx-dec{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.cx-prim{font-size:.8rem;display:flex;align-items:center;gap:4px;white-space:nowrap}.cx-prim.off{opacity:.45}
+.cx-med{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}.cx-med label{display:flex;flex-direction:column;font-size:.74rem;color:var(--ink-2);gap:2px}.cx-med input,.cx-med select{width:150px}.cx-med .wide input{width:280px}
+.cx-docs{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cx-task{margin-top:10px}
+.cx-side{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:12px;border-top:4px solid #c026d3}
+.cx-side-h{display:flex;justify-content:space-between;align-items:center}.cx-x{border:0;background:none;font-size:1.1rem;cursor:pointer;color:var(--ink-2)}
+.cx-side-open{position:fixed;right:0;top:45%;z-index:20;writing-mode:vertical-rl;border:0;border-radius:10px 0 0 10px;padding:12px 6px;background:linear-gradient(180deg,#7c3aed,#db2777);color:#fff;font:700 .8rem var(--font);cursor:pointer}
+.cx-status{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:10px;background:var(--surface-2,#f3f4f6)}
+.cx-dot{flex:none;width:12px;height:12px;border-radius:50%;margin-top:4px;background:#94a3b8}
+.cx-status.live{background:#fff1f2}.cx-status.live .cx-dot{background:#e11d48;animation:cxRec 1.1s infinite}.cx-status.ready .cx-dot{background:#c026d3}.cx-status.review .cx-dot{background:#d97706}.cx-status.ok .cx-dot{background:#16a34a}.cx-status.warn{background:#fff7ed}.cx-status.warn .cx-dot{background:#ea580c}
+.cx-ctrl{display:flex;gap:8px;flex-wrap:wrap}.cx-ctrl .btn{flex:1}
+.cx-d summary{cursor:pointer;font-weight:700;font-size:.9rem;padding:4px 0}
+.cx-tr{max-height:260px;overflow:auto;display:flex;flex-direction:column;gap:6px;padding:6px 0}
+.cx-seg{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px;align-items:start;font-size:.84rem;line-height:1.35}
+.cx-spk{border:0;border-radius:6px;padding:2px 6px;font:700 .68rem var(--font);cursor:pointer;background:#e5e7eb;color:#374151;min-width:52px}
+.cx-spk.clinician{background:#dbeafe;color:#1e40af}.cx-spk.patient{background:#fce7f3;color:#9d174d}.cx-spk.other{background:#fef3c7;color:#92400e}.cx-spk.unknown{background:#f3f4f6;color:#6b7280;outline:1px dashed #9ca3af}.cx-spk:not(.set){font-style:italic}
+.cx-partial{font-size:.82rem;color:#be185d;font-style:italic;min-height:1em}
+.cx-type{display:flex;gap:6px;margin-top:6px}.cx-type input{flex:1;min-width:0}.cx-type select{width:90px}
+.cx-block h4{margin:0 0 6px;font-size:.88rem;display:flex;align-items:center;gap:6px}
+.cx-flag{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 8px;margin-bottom:6px;font:.8rem var(--font);cursor:pointer;color:var(--ink)}
+.cx-ft{display:inline-block;margin-right:6px;padding:1px 6px;border-radius:4px;font-size:.68rem;font-weight:800;text-transform:uppercase;background:#e5e7eb;color:#374151}
+.safety .cx-ft{background:#fee2e2;color:#991b1b}.conflict .cx-ft,.corrected .cx-ft{background:#ffedd5;color:#9a3412}.uncertain .cx-ft,.speaker .cx-ft{background:#fef3c7;color:#92400e}.missing .cx-ft{background:#e0e7ff;color:#3730a3}
+.cx-det{display:flex;flex-direction:column;gap:4px}.cx-detrow{display:flex;justify-content:space-between;gap:8px;border:0;background:#fdf4ff;border-radius:6px;padding:5px 8px;font:.8rem var(--font);cursor:pointer;text-align:left}.cx-detrow span{color:var(--ink-2)}.cx-detrow strong{text-align:right}
+.cx-priv p{margin:4px 0}
+.cx-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.cx-bar-l,.cx-bar-r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.cx-bar [aria-disabled="true"]{opacity:.55}
+.cx-consent blockquote,.cx-srcl blockquote{margin:8px 0;padding:8px 12px;border-left:4px solid #c026d3;background:#fdf4ff;border-radius:0 8px 8px 0}
+.cx-srcl{list-style:none;padding:0;margin:0}.cx-srcl li{margin-bottom:10px}
+.cx-review{display:flex;flex-direction:column;gap:14px;margin-top:12px;max-width:1100px}
+.cx-steps{display:flex;gap:8px}.cx-steps span{flex:1;text-align:center;padding:8px;border-radius:8px;background:var(--surface-2,#eef2f7);font-weight:700;font-size:.85rem;color:var(--ink-2)}.cx-steps .on{background:#fae8ff;color:#86198f}.cx-steps .done{background:#dcfce7;color:#166534}
+.cx-rflag{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}.cx-rflag.resolved,.cx-rflag.dismissed{opacity:.6}
+.cx-rvlist{display:flex;flex-direction:column}.cx-rv{display:grid;grid-template-columns:220px minmax(0,1fr) auto auto;gap:10px;align-items:start;padding:7px 8px;border-left:3px solid transparent;border-bottom:1px solid var(--line);font-size:.88rem}
+.cx-rv.is-ai{border-left-color:#d946ef}.cx-rv.is-me{border-left-color:#3b82f6}.cx-rv-l{color:var(--ink-2)}.cx-rv-v{white-space:pre-wrap}
+.cx-key{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px}.cx-key.ai{background:#d946ef}.cx-key.me{background:#3b82f6}
+@media (max-width:1280px){.cx-ws{grid-template-columns:minmax(0,1fr) 310px}.cx-ws.no-side{grid-template-columns:minmax(0,1fr)}.cx-left{position:static;max-height:none;grid-column:1/-1;flex-direction:row;overflow-x:auto}.cx-left>*{min-width:200px}}
+@media (max-width:900px){.cx-ws,.cx-ws.no-side{grid-template-columns:minmax(0,1fr)}.cx-side{position:static;max-height:none;order:-1}.cx-row{grid-template-columns:minmax(0,1fr) auto}.cx-row>label{grid-column:1/-1;padding:0}.cx-li{grid-template-columns:minmax(0,1fr)}.cx-dec{justify-content:flex-start}.cx-rv{grid-template-columns:minmax(0,1fr) auto}.cx-info .wide{grid-column:auto}}
+@media print{.cx-side,.cx-left,.cx-scribe,.cx-bar{display:none}}
+.cx-more{margin:6px 0 2px 8px;border:0;background:none;color:var(--brand,#015BF0);font:600 .82rem var(--font);cursor:pointer;padding:4px 6px;border-radius:6px}.cx-more:hover{background:var(--surface-2,#eef2f7)}
 </style>
 </head>
 <body>
@@ -10573,7 +10672,7 @@ Answer with JSON only:
     if (listening) stop(); sink = sk;
     if (A.caps.dictation) { const d = A.caps.dictation; engine = 'cap'; wireCap(d); const lang = A.voicePrefs ? A.voicePrefs().lang : ''; return d.start(lang && lang !== 'auto' ? { language: lang } : undefined).then(() => true).catch((e) => { if (sink) sink.state('error', e && e.code); return false; }); }
     if (SR) { engine = 'native'; native = new SR(); native.lang = (A.voicePrefs && A.voicePrefs().lang !== 'auto' && A.voicePrefs().lang) || 'en-ZA'; native.continuous = true; native.interimResults = true; native.maxAlternatives = 1;
-      native.onresult = (ev) => { let interim = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { const r = ev.results[i]; if (r.isFinal) sink && sink.final(r[0].transcript); else interim += r[0].transcript; } if (sink) sink.partial(interim); };
+      native.onresult = (ev) => { let interim = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { const r = ev.results[i]; if (r.isFinal) sink && sink.final(r[0].transcript, r[0].confidence); else interim += r[0].transcript; } if (sink) sink.partial(interim); };
       native.onerror = (ev) => { if (sink) sink.state('error', ev.error); };
       native.onend = () => { if (sink) sink.state('idle', 'ended'); };
       try { native.start(); sink.state('listening'); return Promise.resolve(true); } catch (e) { return Promise.resolve(false); } }
@@ -14829,7 +14928,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
 
   const pill = () => { const p = document.querySelector('#assist .as-pill'); if (!p) return null; const r = p.getBoundingClientRect(); return r.width ? r : null; };
   const busy = () => { const VM = A.voiceMode || {}; const s = A.assistState || {};
-    return !A.user || !A.db || VM.on || (s.open && !s.min) || (s.scribe && s.scribe.on) || s.listening || document.getElementById('modal') || document.getElementById('notice-gate')
+    return !A.user || !A.db || A.cxListening || VM.on || (s.open && !s.min) || (s.scribe && s.scribe.on) || s.listening || document.getElementById('modal') || document.getElementById('notice-gate')
       || document.getElementById('guide-tip') || document.getElementById('tour-tip') || document.getElementById('learn-back') || document.hidden || (A.featureOn && !A.featureOn('assist')); };
 
   const place = () => { const r = pill(), box = document.getElementById('p360-robot'); if (!r || !box) return false;
@@ -14860,6 +14959,733 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     A.toast(o ? 'Helper robot on. It will pop up from behind the Assist button every 2 minutes.' : 'Helper robot off. Switch it back on with the robot button at the top of Assist.'); };
 })();
 (function () { const A = window.APP; if (!A.RELEASES) return; const r = A.RELEASES.find((x) => x.v === '0.33'); if (r && !r.items.some((i) => i.title === 'Helper robot and a new default voice')) r.items.unshift({ type: 'new', area: 'assist', title: 'Helper robot and a new default voice', text: 'Every 2 minutes a small robot peeks out from behind the Assist button to offer help. Click it to start talking. Switch it on or off with the robot button at the top of Assist, next to the speaker. Spoken replies now use Microsoft Andrew (Natural) at 1.20× when this computer has it; otherwise your browser’s own voice.', link: '#/whatsnew' }); })();
+
+
+/* ===== cx-engine.js ===== */
+/* Prac360 — clinical extraction engine for the AI Scribe (schema cx v1).
+ * Turns transcript segments into structured consultation fields. Deterministic, local (no network), and traceable:
+ * every value carries the segment ids and the words it came from.
+ * Rules it follows:
+ *  - only what was said: nothing is invented, silence is never a negative, intended examinations are not findings;
+ *  - doctor's questions are not findings — the patient's answer decides;
+ *  - later corrections win and the earlier value is kept as a conflict for review;
+ *  - diagnoses are working / provisional / differential unless the clinician states them as confirmed;
+ *  - ICD-10 codes are suggested only from the practice's own ICD-10 table (SA MIT), never invented;
+ *  - medicines become drafts only, with dose / frequency / duration only when stated.
+ * Works in the browser (window.CX) and in Node (module.exports) for tests. */
+(function (root) {
+  'use strict';
+  const CX = {};
+  CX.VERSION = 1;
+  const low = (s) => String(s || '').toLowerCase();
+  const NUMW = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, fourteen: 14, twenty: 20, couple: 2, few: 3,
+    een: 1, twee: 2, drie: 3, vier: 4, vyf: 5, ses: 6, sewe: 7, agt: 8, nege: 9, tien: 10 };
+  const num = (w) => { if (w == null) return null; const x = low(w).trim(); if (/^\d+([.,]\d+)?$/.test(x)) return +x.replace(',', '.'); return NUMW[x] != null ? NUMW[x] : null; };
+  // "thirty eight point four" is rare from speech engines (they send digits), but "38 point 4" is common
+  const normNums = (t) => String(t || '').replace(/(\d+)\s*(?:point|komma)\s*(\d)/gi, '$1.$2').replace(/(\d),(\d)/g, '$1.$2');
+
+  // ---------------------------------------------------------------- lexicons (English + Afrikaans basics)
+  const SYMPTOMS = [
+    ['Headache', /\b(headaches?|head ache|my head (?:is )?(?:sore|hurts|pain)|hoofpyn)\b/], ['Sore throat', /\b(sore throat|throat (?:is )?(?:sore|pain)|painful to swallow|hurts to swallow|keelseer|seer keel)\b/],
+    ['Cough', /\b(cough(?:ing)?|hoes)\b/], ['Fever', /\b(fevers?|feverish|temperature at home|koors)\b/], ['Nausea', /\b(nausea|nauseous|naar|naarheid|feel sick to my stomach)\b/],
+    ['Vomiting', /\b(vomit(?:ing|ed)?|throwing up|threw up|braak|opgooi)\b/], ['Diarrhoea', /\b(diarrh(?:o)?ea|loose stools?|runny tummy|diarree)\b/], ['Abdominal pain', /\b(abdominal pain|tummy (?:pain|ache|is sore)|stomach (?:pain|ache|cramps?)|maagpyn|pain in my (?:tummy|stomach|abdomen))\b/],
+    ['Chest pain or tightness', /\b(chest pains?|pain in (?:my|the) chest|chest (?:has been |is |feels )?tight(?:ness)?|borspyn)\b/], ['Shortness of breath', /\b(short(?:ness)? of breath|breathless|can'?t breathe|difficulty breathing|kortasem)\b/],
+    ['Dizziness', /\b(dizz(?:y|iness)|light ?headed|duiselig)\b/], ['Fatigue', /\b(tired(?:ness)?|fatigue|exhausted|no energy|moeg)\b/], ['Rash', /\b(rash|skin (?:is )?itchy|uitslag)\b/],
+    ['Back pain', /\b(back pain|backache|my back (?:is sore|hurts)|lower back|rugpyn)\b/], ['Joint pain', /\b(joint pains?|(?:knee|hip|shoulder|ankle|wrist) (?:pain|is sore|hurts))\b/],
+    ['Runny nose', /\b(runny nose|blocked nose|congest(?:ed|ion)|sneez(?:ing|e)|loopneus)\b/], ['Earache', /\b(ear ?ache|ear (?:is )?(?:sore|pain)|oorpyn)\b/],
+    ['Painful urination', /\b(burning (?:when|on) (?:i )?(?:pass(?:ing)? urine|urinat\w*|wee)|pain(?:ful)? (?:when )?urinat\w*|dysuria)\b/], ['Palpitations', /\b(palpitations?|heart (?:is )?racing|heart pounding)\b/],
+    ['Swelling', /\b(swollen (?:legs?|feet|ankles?)|swelling)\b/], ['Wheeze', /\b(wheez(?:e|ing|y))\b/], ['Constipation', /\b(constipat\w+|hardlywig)\b/], ['Loss of appetite', /\b(loss of appetite|no appetite|not eating)\b/],
+    ['Weight loss', /\b(weight loss|losing weight|lost weight)\b/], ['Difficulty sleeping', /\b(can'?t sleep|insomnia|not sleeping|trouble sleeping)\b/], ['Low mood', /\b(low mood|depressed|feeling down|sad all the time)\b/],
+    ['Anxiety', /\b(anxious|anxiety|panic attacks?|worried all the time)\b/], ['Itch', /\b(itch(?:y|ing)?|jeuk)\b/], ['Numbness', /\b(numb(?:ness)?|pins and needles|tingling)\b/], ['Blurred vision', /\b(blurr?(?:ed|y) vision)\b/],
+    ['Thirst / frequent urination', /\b(thirsty all the time|very thirsty|passing (?:a lot of )?urine (?:often|a lot)|urinating (?:a lot|often)|polyuria)\b/]];
+  // WHO ICD-10 symptom codes (R chapter etc.) — only offered when they exist in the practice's ICD-10 table
+  const SYMPTOM_CODE = { Headache: 'R51', Cough: 'R05', Fever: 'R50.9', Nausea: 'R11', Vomiting: 'R11', 'Abdominal pain': 'R10.4', 'Chest pain or tightness': 'R07.4', 'Shortness of breath': 'R06.0', Dizziness: 'R42', Fatigue: 'R53', Rash: 'R21',
+    'Back pain': 'M54.9', 'Sore throat': 'J02.9', Diarrhoea: 'A09.9', Palpitations: 'R00.2', Swelling: 'R60.0', Wheeze: 'R06.2', Constipation: 'K59.0', 'Loss of appetite': 'R63.0', 'Weight loss': 'R63.4', 'Difficulty sleeping': 'G47.0', Itch: 'L29.9', 'Painful urination': 'R30.0', Earache: 'H92.0' };
+  const SYSTEMS = { general: /\b(fever|tired|fatigue|weight|appetite|night sweats)\b/, cardiovascular: /\b(chest pain|palpitation|swollen (?:legs|ankles|feet)|heart)\b/, respiratory: /\b(cough|breath|wheez|sputum|phlegm)\b/,
+    gastrointestinal: /\b(nausea|vomit|diarrh|abdominal|tummy|stomach|constipat|stool|appetite)\b/, neurological: /\b(headache|dizz|numb|tingling|weakness|seizure|fits?|vision)\b/, musculoskeletal: /\b(back|joint|knee|hip|shoulder|muscle|ankle)\b/,
+    genitourinary: /\b(urin|burning|discharge|period|bleeding)\b/, endocrine: /\b(thirst|sugar|thyroid)\b/, dermatological: /\b(rash|itch|skin|lesion|mole)\b/, psychiatric: /\b(mood|anxious|anxiety|sleep|depress|panic)\b/ };
+  const EXAM_SYS = [['Respiratory', /\b(chest (?:is )?clear|lungs?|breath sounds|crackles|wheeze on|air entry|creps)\b/], ['Cardiovascular', /\b(heart sounds|murmur|peripheral pulses|apex beat|jvp|cap(?:illary)? refill)\b/],
+    ['ENT', /\b(tonsils?|throat (?:is )?(?:red|inflamed)|pharynx|ear ?drums?|tympanic|nasal)\b/], ['Abdominal', /\b(abdomen|tummy is soft|soft (?:and )?non.?tender|guarding|liver|spleen|bowel sounds)\b/],
+    ['Neurological', /\b(reflexes|power|sensation|cranial nerves|pupils|gait|neck stiffness)\b/], ['Musculoskeletal', /\b(range of motion|joint is|swollen knee|tender over|effusion)\b/], ['Skin', /\b(rash (?:is|on)|lesion|erythema|skin (?:is|shows))\b/],
+    ['General', /\b(looks (?:well|unwell|ill|pale)|alert|well hydrated|dehydrated|jaundice|pallor)\b/], ['Lymph nodes', /\b(glands?|lymph nodes?)\b/]];
+  const INVESTIGATIONS = [['Full blood count (FBC)', /\b(fbc|full blood count)\b/], ['CRP', /\b(crp|c.?reactive protein)\b/], ['Urea and electrolytes / kidney function', /\b(u ?(?:and|&) ?e|urea and electrolytes|kidney function|creatinine|egfr)\b/],
+    ['Liver function tests', /\b(lft|liver function)\b/], ['HbA1c', /\b(hba1c|a1c|glycated)\b/], ['Fasting glucose', /\b(fasting (?:glucose|sugar))\b/], ['Lipid profile', /\b(lipids?|cholesterol (?:test|levels?)|lipogram)\b/],
+    ['Thyroid function (TSH)', /\b(tsh|thyroid (?:function|test))\b/], ['Urine dipstick', /\b(urine dip(?:stick)?|dip(?:stick)? (?:the|your) urine|urinalysis)\b/], ['Urine MCS', /\b(urine (?:mcs|culture))\b/],
+    ['ECG', /\b(ecg|ekg|electrocardiogram|heart tracing)\b/], ['Chest X-ray', /\b(chest x.?ray|cxr)\b/], ['X-ray', /\b(x.?ray of (?:the |your )?\w+)\b/], ['Ultrasound', /\b(ultrasound|sonar|sonogram)\b/],
+    ['CT scan', /\b(ct scan|cat scan)\b/], ['MRI', /\b(mri)\b/], ['Pregnancy test', /\b(pregnancy test|beta hcg)\b/], ['HIV test', /\b(hiv test)\b/], ['PSA', /\b(psa)\b/], ['Throat swab', /\b(throat swab)\b/], ['Rapid strep test', /\b(strep test)\b/], ['Peak flow', /\b(peak flow)\b/]];
+  const SPECIALISTS = /\b(cardiologist|physician|surgeon|neurologist|dermatologist|gyn(?:a)?ecologist|obstetrician|paediatrician|pediatrician|psychiatrist|psychologist|orthopa?edic(?: surgeon)?|urologist|ent(?: specialist)?|ophthalmologist|oncologist|endocrinologist|physiotherapist|dietitian|specialist|hospital|emergency)\b/;
+  const Q_START = /^(?:and |so |okay |ok |right |now )?(?:any|how (?:have|has|are|is|was|often)|do you|did you|have you|has it|are you|is there|is it|does it|how long|how many|how much|when did|where is|where does|what (?:makes|brings)|can you|could you|tell me|enige|het jy|is daar)\b/;
+  const NEG = /\b(no|not|never|denies|denied|without|none|nee|geen|nie)\b/;
+  const CORR = /\b(sorry|i mean|correction|actually|let me correct|i meant|rather|eintlik|ek bedoel)\b/;
+
+  // ---------------------------------------------------------------- speaker attribution (inferred unless the clinician sets it)
+  CX.inferSpeaker = (text) => { const t = low(text);
+    if (/^(doctor|dr|dokter|clinician|nurse|verpleegster)\s*:/.test(t)) return { spk: 'clinician', how: 'label' }; if (/^(patient|pt|pasi[eë]nt)\s*:/.test(t)) return { spk: 'patient', how: 'label' }; if (/^(mother|father|parent|caregiver|carer|mom|mum|dad|ma|pa)\s*:/.test(t)) return { spk: 'other', how: 'label' };
+    if (Q_START.test(t) || /\b(your (?:blood pressure|temperature|pulse|sats?|sugar)|let me|i'?ll (?:give|prescribe|refer|send|examine|listen|check)|i will (?:give|prescribe|refer|send|examine|check|start)|this (?:looks|sounds|seems) like|the temperature|(?:sorry|i mean)[, ]+(?:the|your) |i am going to|i'?m going to|i think|let'?s|we need|your [a-z0-9]+ (?:is|was|came|looks)|on examination|we'?ll|review you|come back|prescribe)\b/.test(t)) return { spk: 'clinician', how: 'inferred' };
+    if (/\b(i have|i'?ve (?:had|been)|i feel|i got|it hurts|my (?:head|throat|chest|back|stomach|tummy|leg|arm|sugar|feet|knee|ear|eyes?)|i can'?t|i took|i am|i'?m|ek het|ek voel|ek is)\b/.test(t)) return { spk: 'patient', how: 'inferred' };
+    return { spk: 'unknown', how: 'inferred' }; };
+  const strip = (t) => String(t || '').replace(/^\s*(doctor|dr|dokter|clinician|nurse|verpleegster|patient|pt|pasi[eë]nt|mother|father|parent|caregiver|carer|mom|mum|dad|ma|pa)\s*:\s*/i, '');
+
+  // ---------------------------------------------------------------- helpers
+  const span = (text, m) => (m ? text.slice(Math.max(0, m.index - 0), m.index + m[0].length) : '');
+  const ev = (seg, quote) => ({ seg: seg.id, quote: String(quote || '').slice(0, 160), at: seg.at || null });
+  const negatedNear = (t, idx, len) => { const before = t.slice(Math.max(0, idx - 28), idx); const clause = before.split(/[,.;]|\bbut\b|\band\b(?! no)/).pop(); return NEG.test(clause) && !/\bnot (?:only|sure)\b/.test(clause); };
+  const dur = (t) => { const m = t.match(/\b(?:for|vir|since|past|last|about|already)\s+(?:about |around |roughly |nearly |almost |the (?:last|past) |a good )?(\d+|couple of|[a-z]+)\s+(hours?|days?|weeks?|months?|years?|dae|weke|maande|ure)\b/)
+      || t.match(/\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+(days?|weeks?|months?) (?:now|ago)\b/);
+    if (m) { const n = num(m[1].replace(' of', '')) || (m[1] === 'couple of' ? 2 : m[1] === 'few' ? 3 : null); const u = m[2].replace(/s$/, '').replace(/^dae$/, 'day').replace(/^weke$/, 'week').replace(/^maande$/, 'month'); if (n) return { value: `${n} ${u}${n === 1 ? '' : 's'}`, quote: m[0] }; }
+    const s = t.match(/\bsince (yesterday|this morning|last night|monday|tuesday|wednesday|thursday|friday|saturday|sunday|last week|the weekend)\b/); if (s) return { value: 'Since ' + s[1].replace(/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/, (d) => d.charAt(0).toUpperCase() + d.slice(1)), quote: s[0] }; return null; };
+  const clauseAt = (t, idx) => { const parts = t.split(/(?:,|;|\.(?!\d)|\band (?=since|i |it |my |for )|\bbut\b)/); let pos = 0; for (const p of parts) { if (idx >= pos && idx < pos + p.length + 1) return p; pos += p.length + 1; } return t; };
+  const sev = (t) => { const m = t.match(/\b(a little|a bit|slight(?:ly)?|mild(?:ly)?|moderate(?:ly)?|severe(?:ly)?|terrible|very bad|really bad|worst|excruciating|bietjie)\b/); if (!m) { const s = t.match(/\b(\d{1,2}) (?:out of|over|uit) 10\b/); return s ? { value: s[1] + '/10', quote: s[0] } : null; }
+    const w = m[1]; return { value: /little|bit|slight|mild|bietjie/.test(w) ? 'Mild' : /moderate/.test(w) ? 'Moderate' : 'Severe', quote: m[0] }; };
+
+  // ---------------------------------------------------------------- vitals (validated ranges and units)
+  const VITALS = [
+    { key: 'bp', label: 'Blood pressure', unit: 'mmHg', re: /\b(?:blood pressure|bp|pressure|bloeddruk)\b[^0-9]{0,25}(\d{2,3})\s*(?:\/|over|oor)\s*(\d{2,3})/, val: (m) => { const s = +m[1], d = +m[2]; return s >= 60 && s <= 260 && d >= 30 && d <= 160 && s > d ? `${s}/${d}` : null; } },
+    { key: 'hr', label: 'Heart rate', unit: 'bpm', re: /\b(?:pulse|heart rate|hr|pols)\b(?: rate)?[^0-9]{0,15}(\d{2,3})/, val: (m) => (+m[1] >= 25 && +m[1] <= 250 ? m[1] : null) },
+    { key: 'rr', label: 'Respiratory rate', unit: '/min', re: /\b(?:resp(?:iratory)? rate|breathing rate|rr)\b[^0-9]{0,15}(\d{1,2})/, val: (m) => (+m[1] >= 5 && +m[1] <= 70 ? m[1] : null) },
+    { key: 'temp', label: 'Temperature', unit: '°C', re: /\b(?:temperature|temp|temperatuur)\b[^0-9]{0,18}(\d{2}(?:\.\d)?)/, val: (m) => (+m[1] >= 30 && +m[1] <= 44 ? m[1] : null) },
+    { key: 'spo2', label: 'Oxygen saturation', unit: '%', re: /\b(?:sats?|saturation|oxygen(?: level| saturation)?|spo2|pulse ox)\b[^0-9]{0,15}(\d{2,3})/, val: (m) => (+m[1] >= 50 && +m[1] <= 100 ? m[1] : null) },
+    { key: 'weight', label: 'Weight', unit: 'kg', re: /\b(?:weight|weigh(?:s|ing)?|gewig)\b[^0-9]{0,15}(\d{1,3}(?:\.\d)?)\s*(?:kg|kilos?|kilograms?)?/, val: (m) => (+m[1] >= 1 && +m[1] <= 350 ? m[1] : null) },
+    { key: 'height', label: 'Height', unit: 'cm', re: /\b(?:height|tall|lengte)\b[^0-9]{0,15}(\d(?:\.\d{1,2})|\d{2,3})\s*(m|metres?|meters?|cm|centimet(?:re|er)s?)?/, val: (m) => { let v = +m[1]; if (v < 3) v = Math.round(v * 100); return v >= 40 && v <= 230 ? String(v) : null; } },
+    { key: 'pain', label: 'Pain score', unit: '/10', re: /\b(?:pain(?: score)?|pyn)\b[^0-9]{0,20}(\d{1,2})\s*(?:out of|over|uit|\/)\s*10\b/, val: (m) => (+m[1] <= 10 ? m[1] : null) },
+    { key: 'glucose', label: 'Blood glucose', unit: 'mmol/L', re: /\b(?:glucose|sugar|hgt|finger ?prick|suiker)\b[^0-9]{0,18}(\d{1,2}(?:\.\d)?)/, val: (m) => (+m[1] >= 1 && +m[1] <= 40 ? m[1] : null) }];
+  CX.VITALS = VITALS.map(({ key, label, unit }) => ({ key, label, unit }));
+
+  // ---------------------------------------------------------------- main extraction
+  // segs: [{id, text, spk?, spkHow?, at?, conf?}]; ctx: {icd:[{code,desc}], icdKeywords:[{code,words}], medicines:[{id,name}], allergies:[{allergen}], meds:[{name}], problems:[{code,desc}]}
+  CX.extract = (segs, ctx) => {
+    ctx = ctx || {}; const out = { fields: {}, complaints: [], negatives: [], ros: {}, vitals: {}, exam: [], intendedExam: [], history: [], allergies: [], dx: [], icd: [], meds: [], inv: [], ref: [], followUp: null, safetyNet: [], advice: [], docs: [], flags: [], management: [], extras: {}, triggers: {} };
+    const list = []; (segs || []).filter((s) => s && s.text && s.text.trim()).forEach((s) => { let sp = s.spk && s.spkHow === 'manual' ? { spk: s.spk, how: 'manual' } : CX.inferSpeaker(s.text); const t = low(normNums(strip(s.text))); const prev = list[list.length - 1];
+      if (sp.spk === 'unknown' && prev && prev.spk === 'clinician' && Q_START.test(prev.t)) sp = { spk: 'patient', how: 'inferred' }; list.push(Object.assign({}, s, { t, spk: sp.spk, spkHow: sp.how })); });
+    const setField = (key, value, e, extra) => { const prev = out.fields[key]; if (prev && prev.value !== value) { (prev.history = prev.history || []).push({ value: prev.value, ev: prev.ev });
+        out.flags.push({ type: CORR.test(list.find((x) => x.id === e.seg).t) ? 'corrected' : 'conflict', field: key, text: `${extra && extra.label || key}: "${prev.value}" earlier, "${value}" later`, ev: [prev.ev[0], e] }); }
+      out.fields[key] = Object.assign({ value, ev: [e], history: prev ? prev.history : undefined }, extra || {}); };
+    let lastQ = null; let lastVital = null; // the clinician's last question (symptoms asked about), for yes/no answers
+    list.forEach((s, i) => { const t = s.t; const isQ = Q_START.test(t) && s.spk !== 'patient';
+      // --- symptoms
+      const found = []; SYMPTOMS.forEach(([name, re]) => { const m = t.match(re); if (m) found.push({ name, m }); });
+      if (isQ) { lastQ = { seg: s, asked: found.map((f) => f.name) }; }
+      else {
+        found.forEach(({ name, m }) => { const neg = negatedNear(t, m.index, m[0].length) || (/\bnot really\b|\bno\b/.test(t.slice(0, 12)) && lastQ && lastQ.asked.includes(name) && !/\byes\b/.test(t.slice(0, 8)));
+          const e = ev(s, span(t, m)); if (s.spk === 'clinician' && !/\b(you (?:have|said|mentioned)|your)\b/.test(t)) return; // a clinician naming a symptom is not the patient reporting it
+          if (neg) { if (!out.negatives.some((x) => x.name === name)) out.negatives.push({ name, ev: [e] }); return; }
+          let c = out.complaints.find((x) => x.name === name); if (!c) { c = { name, ev: [e] }; out.complaints.push(c); } else c.ev.push(e);
+          const cl = clauseAt(t, m.index); let d = dur(cl) || (found.length === 1 ? dur(t) : null);
+          if (d) { const dAt = t.indexOf(d.quote), me = m.index; const between = found.some((o) => o.m.index !== me && ((o.m.index > me && o.m.index < dAt) || (o.m.index < me && o.m.index > dAt))); const closer = found.some((o) => o.m.index !== me && Math.abs(o.m.index - dAt) < Math.abs(me - dAt) && (o.m.index < dAt) === (me < dAt)); const ownedBefore = me > dAt && !/^since/.test(d.quote) && found.some((o) => o.m.index !== me && o.m.index < dAt); if (between || closer || ownedBefore) d = null; }
+          if (d && !c.duration) c.duration = { value: d.value, ev: [ev(s, d.quote)] }; const sv = sev(t.slice(Math.max(0, m.index - 20), m.index + m[0].length + 30)); if (sv && !c.severity) c.severity = { value: sv.value, ev: [ev(s, sv.quote)] };
+          const pat = t.match(/\b(?:it'?s |it gets |gets )?worse (?:in the |at )(morning|afternoon|evening|night)s?\b|\bworse (?:when|with|after) ([a-z ]{3,30})/); if (pat && !c.aggravating) c.aggravating = { value: pat[1] ? `Worse in the ${pat[1]}` : `Worse ${pat[0].replace(/^.*worse /, '')}`, ev: [ev(s, pat[0])] };
+          const rel = t.match(/\b(?:better|easier|helps?|relieved) (?:when|with|after|by) ([a-z ]{3,30})/); if (rel && !c.relieving) c.relieving = { value: rel[0], ev: [ev(s, rel[0])] };
+          const on = t.match(/\b(started|came on|began) (suddenly|gradually|slowly|all of a sudden)\b/); if (on && !c.onset) c.onset = { value: /sudden/.test(on[2]) ? 'Sudden' : 'Gradual', ev: [ev(s, on[0])] };
+          const fr = t.match(/\b(comes and goes|on and off|all the time|constant(?:ly)?|every (?:day|night|morning))\b/); if (fr && !c.frequency) c.frequency = { value: fr[1], ev: [ev(s, fr[0])] }; });
+        // a plain "yes" / "a little" / "no" after a question applies to what was asked
+        if (lastQ && lastQ.asked.length && !found.length && s.spk !== 'clinician') { const yes = /^(yes|yeah|ja|a little|a bit|sometimes|slightly)\b/.test(t), no = /^(no|nope|not really|nee|never)\b/.test(t);
+          lastQ.asked.forEach((name) => { if (no) { if (!out.negatives.some((x) => x.name === name)) out.negatives.push({ name, ev: [ev(lastQ.seg, lastQ.seg.t.slice(0, 80)), ev(s, t.slice(0, 40))] }); } else if (yes && !out.complaints.some((x) => x.name === name)) out.complaints.push({ name, ev: [ev(lastQ.seg, lastQ.seg.t.slice(0, 80)), ev(s, t.slice(0, 40))], severity: /little|bit|slightly/.test(t) ? { value: 'Mild', ev: [ev(s, t.slice(0, 30))] } : undefined }); }); }
+        if (!isQ) lastQ = found.length ? null : lastQ; }
+      // review of systems: only what was discussed
+      Object.entries(SYSTEMS).forEach(([sys, re]) => { if (re.test(t) && !isQ) (out.ros[sys] = out.ros[sys] || []).push(ev(s, (t.match(re) || [''])[0])); });
+      // --- vitals (correction aware)
+      let vitalHit = false;
+      VITALS.forEach((v) => { let m = t.match(v.re); if (!m && v.key === 'bp') { const b = t.match(/\b(\d{2,3})\s*(?:over|oor)\s*(\d{2,3})\b/); if (b && /\b(pressure|bp|bloeddruk)\b/.test((list[i - 1] || {}).t + ' ' + t)) m = b; }
+        if (!m) return; if (CORR.test(t)) { const all = [...t.matchAll(new RegExp(v.re.source, 'g'))]; if (all.length > 1) m = all[all.length - 1]; } const val = v.val(m); if (!val) { out.flags.push({ type: 'uncertain', field: 'vital.' + v.key, text: `${v.label}: "${m[0]}" is outside the expected range — please check.`, ev: [ev(s, m[0])] }); return; }
+        const e = ev(s, m[0]); if (s.conf != null && s.conf < 0.6) out.flags.push({ type: 'uncertain', field: 'vital.' + v.key, text: `${v.label} ${val} ${v.unit} was heard with low speech-recognition confidence — confirm the number.`, ev: [e] });
+        const prev = out.vitals[v.key]; if (prev && prev.value !== val) out.flags.push({ type: CORR.test(t) ? 'corrected' : 'conflict', field: 'vital.' + v.key, text: `${v.label}: ${prev.value} earlier, ${val} later${CORR.test(t) ? ' (corrected)' : ''}. The later value is used — confirm.`, ev: [prev.ev[0], e] });
+        out.vitals[v.key] = { value: val, unit: v.unit, label: v.label, ev: [e], src: s.spk === 'patient' ? 'patient-reported' : 'transcript' }; vitalHit = true; lastVital = { key: v.key, i }; });
+      if (!vitalHit && CORR.test(t) && lastVital && i - lastVital.i <= 2) { const v = VITALS.find((y) => y.key === lastVital.key); const m = v.key === 'bp' ? t.match(/(\d{2,3})\s*(?:\/|over|oor)\s*(\d{2,3})/) : t.match(/(\d{1,3}(?:\.\d)?)/);
+        if (m) { const val = v.val(m); if (val) { const prev = out.vitals[v.key]; const e = ev(s, m[0]); if (prev && prev.value !== val) out.flags.push({ type: 'corrected', field: 'vital.' + v.key, text: `${v.label}: ${prev.value} earlier, ${val} later (corrected). The later value is used — confirm.`, ev: [prev.ev[0], e] }); out.vitals[v.key] = { value: val, unit: v.unit, label: v.label, ev: [e], src: 'transcript' }; } } }
+      // --- examination: findings vs intentions
+      t.split(/(?:,|;|\.(?!\d)|\band (?=the |your |his |her |there )|\bbut\b)/).map((x) => x.trim()).filter(Boolean).forEach((cl) => EXAM_SYS.forEach(([sys, re]) => { const m = cl.match(re); if (!m) return;
+        const intent = /\b(let me|i'?ll|i will|i'?m going to|going to|can i|may i|we'?ll)\b[^.]{0,30}\b(examine|listen|check|look|feel)\b/.test(cl) || (/\b(let me|i'?ll|i will|going to)\b/.test(t) && !/\b(is|are|sounds?|shows?|has|have|looks?)\b/.test(cl));
+        if (intent) { if (!out.intendedExam.some((x) => x.sys === sys)) out.intendedExam.push({ sys, ev: [ev(s, m[0])] }); return; }
+        if (s.spk === 'patient' || !/\b(is|are|sounds?|shows?|has|have|looks?|no|normal|clear|soft|tender|swollen|red|inflamed|enlarged|present|absent)\b/.test(cl)) return;
+        const text = cl.replace(/^(?:and |so |also )?(?:your |his |her )/, '').trim(); if (!out.exam.some((x) => x.sys === sys && x.text.toLowerCase() === text)) out.exam.push({ sys, text: text.charAt(0).toUpperCase() + text.slice(1), ev: [ev(s, m[0])] }); }));
+      const ix = t.match(/\b(?:let me|i'?ll|i will|i'?m going to|going to|can i|may i|we'?ll)\b[^.]{0,20}?\b(?:examine|listen to|check|look (?:at|in)|feel)\s+(?:your |the |his |her )?([a-z]+)/);
+      if (ix) { const part = ix[1]; const sys = /chest|lungs?|breathing/.test(part) ? 'Respiratory' : /heart/.test(part) ? 'Cardiovascular' : /tummy|abdomen|stomach|belly/.test(part) ? 'Abdominal' : /throat|ears?|nose|tonsils?/.test(part) ? 'ENT' : /skin|rash/.test(part) ? 'Skin' : /knee|back|shoulder|hip|ankle|neck|leg|arm|feet|foot/.test(part) ? 'Musculoskeletal' : /eyes?|reflexes|head/.test(part) ? 'Neurological' : null;
+        if (sys && !out.intendedExam.some((y) => y.sys === sys)) out.intendedExam.push({ sys, ev: [ev(s, ix[0])] }); }
+      // --- history from this conversation
+      const al = t.match(/\b(?:allergic to|allergy to|allergies? (?:to|is)|allergies?:)\s+([a-z][a-z -]{2,30}?)(?=[,.;]|\band\b|$)/); if (al && !negatedNear(t, al.index, 5)) out.allergies.push({ allergen: al[1].trim(), ev: [ev(s, al[0])] });
+      if (/\b(no (?:known )?allergies|not allergic to anything|not that i know of)\b/.test(t) && /allerg/.test(t + ' ' + ((list[i - 1] || {}).t || ''))) out.allergies.push({ allergen: 'None reported', none: true, ev: [ev(s, t.slice(0, 50))] });
+      const smk = t.match(/\b(i smoke[^,.]{0,30}|i don'?t smoke|non.?smoker|ex.?smoker|stopped smoking[^,.]{0,20}|rook nie|ek rook)\b/); if (smk) out.history.push({ kind: 'Smoking', text: smk[0], ev: [ev(s, smk[0])] });
+      const alc = t.match(/\b(i (?:drink|don'?t drink)[^,.]{0,30}|drinks? (?:alcohol|socially|on weekends)[^,.]{0,20})\b/); if (alc) out.history.push({ kind: 'Alcohol', text: alc[0], ev: [ev(s, alc[0])] });
+      const fam = t.match(/\bmy (mother|father|mom|mum|dad|brother|sister|granny|grandfather|grandmother) (?:had|has|died of|passed away from) ([a-z ]{3,40})/); if (fam) out.history.push({ kind: 'Family history', text: `${fam[1]}: ${fam[2].trim()}`, ev: [ev(s, fam[0])] });
+      const preg = t.match(/\b(i'?m pregnant|i am pregnant|(\d+) weeks pregnant|could be pregnant|not pregnant|swanger)\b/); if (preg) out.history.push({ kind: 'Pregnancy', text: preg[0], ev: [ev(s, preg[0])] });
+      const chron = t.match(/\bi (?:have|was diagnosed with|got) (diabetes|sugar diabetes|high blood(?: pressure)?|hypertension|asthma|epilepsy|hiv|arthritis|thyroid|cholesterol|depression|tb)\b/); if (chron) out.history.push({ kind: 'Condition mentioned', text: chron[1], ev: [ev(s, chron[0])] });
+      const took = t.match(/\bi (?:took|tried|have been taking|used|am taking|take)\s+([a-z][a-z0-9 -]{2,30}?)(?=[,.;]|\bbut\b|\band\b|$)/); if (took) out.history.push({ kind: s.spk === 'patient' ? 'Treatment tried / taking' : 'Medication mentioned', text: took[1].trim(), ev: [ev(s, took[0])], response: /didn'?t help|no help|not help|no difference/.test(t) ? 'Did not help' : /\bhelped|better\b/.test(t) ? 'Helped' : null });
+      // --- assessment / diagnosis (clinician statements only)
+      if (s.spk !== 'patient') { const dxm = t.match(/\b(?:i think (?:that )?(?:this|it|you|your)?(?: is| has| have|'?s)?|(?:this|it) (?:looks|sounds) like|probably|most likely|likely|in keeping with|consistent with|my impression is|the diagnosis is|you have(?: got)?|this is|it'?s|diagnosed with|confirmed|could be|might be|rule out|differential(?:s)? (?:is|are|include))\s+(?:an? |the )?([a-z][a-z0-9 ,'-]{2,60})/);
+        if (dxm && !isQ) { const cue = dxm[0]; const kind = /confirmed|the diagnosis is|diagnosed with/.test(cue) ? 'confirmed' : /could be|might be|rule out|differential/.test(cue) ? 'differential' : 'working';
+          let term = dxm[1].split(/\b(?:so|and i|i'?ll|we'?ll|because|which|but|let'?s)\b|[.;]/)[0].trim(); if (term.length > 2 && !/^(fine|ok|okay|normal|good|nothing|clear|a bit|very)\b/.test(term)) {
+            const parts = kind === 'differential' ? term.split(/\s*(?:,|\bor\b)\s*/).filter((x) => x.length > 2) : [term];
+            parts.forEach((p) => { const e = ev(s, dxm[0].split(/\b(?:so|and i|i'?ll|we'?ll|because|which|but|let'?s)\b|[.;]/)[0].trim()); const prev = out.dx.find((x) => x.kind !== 'differential' && kind !== 'differential' && x.term !== p && !x.superseded);
+              if (prev && /\b(actually|rather|on second thought|instead|not .* but)\b/.test(t)) { prev.superseded = true; out.flags.push({ type: 'corrected', field: 'dx', text: `Diagnosis changed from "${prev.term}" to "${p}" during the consultation.`, ev: [prev.ev[0], e] }); }
+              if (!out.dx.some((x) => x.term === p && x.kind === kind)) out.dx.push({ term: p, kind, ev: [e] }); }); } } }
+      // --- medicines (drafts only; clinician statements)
+      if (s.spk !== 'patient' && /\b(give|prescrib|start (?:you )?on|put you on|take|use|apply|continue|increase|decrease|reduce|stop|change|make (?:that|it))\w*\b/.test(t)) (ctx.medicines || []).forEach((md) => { const gens = low(md.generic || md.name.split(/[\s(]/)[0]).split(/[+/]/).map((g) => g.trim().slice(0, 8)).filter((g) => g.length >= 4); if (!gens.length) return;
+        const brandHit = /clavulan/.test(low(md.generic || '')) && /\b(augmentin|co-?amoxiclav)\b/.test(t); if (!brandHit && !gens.every((g) => t.includes(g))) return; if (gens.length === 1 && (ctx.medicines || []).some((o) => o !== md && low(o.generic || '').startsWith(gens[0]) && low(o.generic || '').split(/[+/]/).length > 1 && low(o.generic).split(/[+/]/).every((g) => t.includes(g.trim().slice(0, 8))))) return;
+        const at = t.search(new RegExp(brandHit ? '\\b(augmentin|co-?amoxiclav)' : gens[0])); if (at < 0) return;
+        const tail = t.slice(at, at + 160).split(/\.(?!\d)|;|\band (?:paracetamol|ibuprofen|drink|rest|come|i'?ll)\b/)[0]; const pre = t.slice(Math.max(0, at - 40), at);
+        const dose = (tail.match(/\b(\d+(?:\.\d+)?)\s*(mg|milligrams?|mcg|micrograms?|g|grams?|ml|millilit(?:re|er)s?|units?|puffs?)\b/) || []); const freq = (tail.match(/\b(once|twice|three times|four times|one time|two times)(?: a| per)? day|\b(?:daily|at night|in the morning|every (?:\d+|four|six|eight|twelve) hours|(\d+)\s*hourly|bd|tds|qid|nocte|as needed|when needed|prn)\b/) || []);
+        const dura = (tail.match(/\bfor (\d+|one|two|three|five|seven|ten|fourteen) (days?|weeks?|months?)\b/) || []); const route = /\b(inhal|puff)/.test(tail) ? 'Inhaled' : /\b(cream|ointment|apply)\b/.test(tail) ? 'Topical' : /\b(drops?)\b/.test(tail) ? 'Drops' : /\b(inject|injection)\b/.test(tail) ? 'Injection' : /\b(tablet|capsule|by mouth|syrup|orally)\b/.test(tail) ? 'Oral' : '';
+        const change = /\bstop\b/.test(pre + tail.slice(0, 20)) ? 'Stop' : /\bincrease\b/.test(pre) ? 'Increase' : /\b(decrease|reduce)\b/.test(pre) ? 'Reduce' : /\bcontinue\b/.test(pre) ? 'Continue' : 'Start';
+        const e = ev(s, tail.slice(0, 120)); const doseTxt = dose[0] ? `${dose[1]} ${dose[2].replace(/milligrams?/, 'mg').replace(/micrograms?/, 'mcg').replace(/millilit(?:re|er)s?/, 'ml')}` : '';
+        const prev = out.meds.find((x) => x.medicineId === md.id); if (prev) { if (doseTxt && prev.dose && prev.dose !== doseTxt) out.flags.push({ type: 'conflict', field: 'med', text: `${md.name}: dose ${prev.dose} earlier, ${doseTxt} later — confirm.`, ev: [prev.ev[0], e] }); if (doseTxt) prev.dose = doseTxt; if (freq[0]) prev.frequency = freq[0]; if (dura[0]) prev.duration = dura[0].replace(/^for /, ''); prev.ev.push(e); return; }
+        out.meds.push({ medicineId: md.id, name: md.name, change, dose: doseTxt, frequency: freq[0] || '', duration: dura[0] ? dura[0].replace(/^for /, '') : '', route, ev: [e] }); });
+      // --- investigations
+      INVESTIGATIONS.forEach(([name, re]) => { const m = t.match(re); if (!m) return; const req = /\b(i'?ll|i will|let'?s|we'?ll|we need|going to|request|order|send (?:you )?for|book (?:you )?for|do (?:an?|some)|check (?:your|a))\b/.test(t) && s.spk !== 'patient';
+        const res = /\b(came back|result|showed|shows|was|is (?:normal|high|low|raised))\b/.test(t); if (!req && !res) return; const e = ev(s, m[0]);
+        if (!out.inv.some((x) => x.name === name)) out.inv.push({ name, status: req ? 'Requested (draft)' : 'Existing result discussed', text: res && !req ? t.slice(Math.max(0, m.index - 20), m.index + 80) : '', ev: [e] }); });
+      // --- referral
+      const rf = t.match(/\b(?:refer(?:ring)? (?:you|him|her|them)? ?to|send (?:you|him|her) to|see an? |referral to)\s+(?:an? |the )?([a-z ]{3,40})/); if (rf && s.spk !== 'patient' && SPECIALISTS.test(rf[1])) { const sp = rf[1].match(SPECIALISTS)[0];
+        out.ref.push({ to: sp.charAt(0).toUpperCase() + sp.slice(1), urgency: /\burgent(?:ly)?|today|immediately|asap\b/.test(t) ? 'Urgent' : /\bsoon\b/.test(t) ? 'Soon' : 'Routine', reason: '', ev: [ev(s, rf[0])] }); }
+      // --- follow-up and safety-netting
+      const fu = t.match(/\b(?:review (?:you |him |her )?|see you (?:again )?|come back |follow.?up |check (?:you )?again |back )(?:in|next|within|after) (a |one |two |three |four |six |\d+ )?(days?|weeks?|months?|week|month)\b/) || t.match(/\b(?:review|see you|come back|follow.?up)[^.]{0,20}\bnext (week|month)\b/);
+      if (fu && s.spk !== 'patient') { let n = 1, u = 'week'; if (fu[2]) { n = num(fu[1] ? fu[1].trim() : 'one') || 1; u = fu[2].replace(/s$/, ''); } else u = fu[1]; const days = n * (u === 'day' ? 1 : u === 'week' ? 7 : 30);
+        const prev = out.followUp; if (prev && prev.days !== days) out.flags.push({ type: CORR.test(t) ? 'corrected' : 'conflict', field: 'followUp', text: `Follow-up: ${prev.value} earlier, ${n} ${u}${n > 1 ? 's' : ''} later.`, ev: [prev.ev[0], ev(s, fu[0])] });
+        out.followUp = { value: `${n} ${u}${n > 1 ? 's' : ''}`, days, ev: [ev(s, fu[0])] }; }
+      const sn = t.match(/\bif (?:it|you|the|there|your)[^.]{3,80}\b(?:come back|return|go to (?:the )?(?:hospital|emergency)|call|phone)[^.]{0,30}/); if (sn && s.spk !== 'patient') out.safetyNet.push({ text: sn[0].charAt(0).toUpperCase() + sn[0].slice(1), ev: [ev(s, sn[0])] });
+      const adv = t.match(/\b(drink (?:plenty of|lots of) (?:fluids|water)|rest(?: at home)?|avoid [a-z ]{3,30}|elevate [a-z ]{3,20}|ice (?:it|the [a-z]+)|keep (?:it|the [a-z]+) (?:clean|dry)|cut down on [a-z ]{3,20}|exercise [a-z ]{0,20})\b/); if (adv && s.spk !== 'patient') out.advice.push({ text: adv[0].charAt(0).toUpperCase() + adv[0].slice(1), ev: [ev(s, adv[0])] });
+      const mg = t.match(/\b(let'?s (?:monitor|watch|keep an eye on)[^.,]*|monitor (?:the |your )?[a-z ]{3,30}|watch and wait|conservative management|keep an eye on [a-z ]{3,30}|no (?:antibiotics|medication) (?:needed|for now))\b/); if (mg && s.spk !== 'patient') out.management.push({ text: mg[0].charAt(0).toUpperCase() + mg[0].slice(1), ev: [ev(s, mg[0])] });
+      const a1 = t.match(/\bhba1c\b[^0-9]{0,25}(\d{1,2}(?:\.\d)?)/); if (a1 && +a1[1] >= 3 && +a1[1] <= 20) out.extras.hba1c = { value: a1[1] + ' %', ev: [ev(s, a1[0])] };
+      const pf = t.match(/\bpeak flow\b[^0-9]{0,20}(\d{2,3})/); if (pf) out.extras.peakFlow = { value: pf[1] + ' L/min', ev: [ev(s, pf[0])] };
+      const ga = t.match(/\b(\d{1,2}) weeks (?:pregnant|gestation)\b/); if (ga) out.extras.gestation = { value: ga[1] + ' weeks', ev: [ev(s, ga[0])] };
+      const ec = t.match(/\b(?:ecog|performance status)\b[^0-9]{0,15}([0-4])\b/); if (ec) out.extras.ecog = { value: ec[1], ev: [ev(s, ec[0])] };
+      const mech = t.match(/\b(i fell[^,.]{0,40}|fell (?:off|from|down)[^,.]{0,30}|twisted my [a-z]+|hit (?:my|his|her) [a-z]+[^,.]{0,20}|was in a (?:car )?accident|cut (?:my|his|her) [a-z]+[^,.]{0,20})/); if (mech) out.extras.mechanism = { value: mech[0], ev: [ev(s, mech[0])] };
+      [['diabetes', /\b(diabet|sugars?\b|hba1c|metformin|insulin|glucose)/], ['hypertension', /\b(blood pressure|hypertension|high blood|bp\b|amlodipine|enalapril|hctz)/], ['respiratory', /\b(asthma|inhaler|wheez|peak flow|copd|asma)/], ['obstetric', /\b(pregnan|weeks pregnant|last period|lmp|swanger)/], ['mental', /\b(depress|anxi|panic|suicid|low mood|self.?harm|hopeless|hurt(?:ing)? myself|harm(?:ing)? myself)/], ['injury', /\b(fell|fall|injur|sprain|fracture|accident|cut (?:my|his|her)|twisted)/]].forEach(([k, re]) => { if (re.test(t)) out.triggers[k] = out.triggers[k] || [ev(s, (t.match(re) || [''])[0])]; });
+      if (/\b(suicid\w*|kill(?:ing)? myself|end(?:ing)? my life|self.?harm|hurt(?:ing)? myself|harm(?:ing)? myself)\b/.test(t) && s.spk !== 'clinician') out.flags.push({ type: 'safety', field: 'risk', text: 'Possible self-harm or suicide risk was mentioned — a risk assessment needs to be documented.', ev: [ev(s, t.slice(0, 60))] });
+      const sk = t.match(/\bsick note (?:for )?(\d+|one|two|three|four|five|seven) days?\b/); if (sk) out.docs.push({ kind: 'Sick note', days: num(sk[1]), ev: [ev(s, sk[0])] });
+      if (s.spk === 'unknown' && (found.length || /\d/.test(t))) out.flags.push({ type: 'speaker', field: 'transcript', text: `Speaker unclear for: "${t.slice(0, 70)}" — set who said it in the transcript.`, ev: [ev(s, t.slice(0, 60))] });
+    });
+    // ---------------------------------------------------------------- derived values and record cross-checks
+    if (out.vitals.weight && out.vitals.height) { const w = +out.vitals.weight.value, h = +out.vitals.height.value / 100; out.vitals.bmi = { value: (w / (h * h)).toFixed(1), unit: 'kg/m²', label: 'BMI', ev: out.vitals.weight.ev.concat(out.vitals.height.ev), src: 'derived' }; }
+    const rec = (ctx.allergies || []).map((a) => low(a.allergen));
+    out.allergies.forEach((a) => { if (a.none && rec.length) out.flags.push({ type: 'safety', field: 'allergies', text: `Patient said no allergies, but the record lists: ${(ctx.allergies || []).map((x) => x.allergen).join(', ')}. Confirm.`, ev: a.ev });
+      if (!a.none && !rec.some((r) => r.includes(low(a.allergen)) || low(a.allergen).includes(r))) out.flags.push({ type: 'safety', field: 'allergies', text: `New allergy mentioned: ${a.allergen}. Confirm and add it to the allergy list.`, ev: a.ev }); });
+    out.meds.forEach((m) => { const hit = rec.find((r) => low(m.name).includes(r) || (r.includes('penicillin') && /amoxi|ampi|penicil|augmentin|co-amox/.test(low(m.name))) || (r.includes('sulph') && /sulfa|sulpha|bactrim|cotrim/.test(low(m.name))));
+      if (hit && m.change !== 'Stop') out.flags.push({ type: 'safety', field: 'med', text: `${m.name} proposed — the record lists an allergy to ${hit}. Prescribing check required.`, ev: m.ev });
+      if (m.change === 'Start' && !m.dose) out.flags.push({ type: 'missing', field: 'med', text: `${m.name}: dose not stated.`, ev: m.ev }); if (m.change === 'Start' && !m.frequency) out.flags.push({ type: 'missing', field: 'med', text: `${m.name}: how often not stated.`, ev: m.ev }); });
+    const nsyms = new Set(out.negatives.map((n) => n.name)); out.complaints.filter((c) => nsyms.has(c.name)).forEach((c) => out.flags.push({ type: 'conflict', field: 'symptoms', text: `${c.name} was both reported and denied — confirm.`, ev: c.ev.concat(out.negatives.find((n) => n.name === c.name).ev) }));
+    out.complaints.forEach((c) => { if (!c.duration) out.flags.push({ type: 'missing', field: 'complaint', text: `${c.name}: duration not documented.`, ev: c.ev }); });
+    out.intendedExam.forEach((x) => { if (!out.exam.some((y) => y.sys === x.sys)) out.flags.push({ type: 'missing', field: 'exam', text: `${x.sys} examination was mentioned as planned, but no finding was stated — not documented as done.`, ev: x.ev }); });
+    // ---------------------------------------------------------------- ICD-10 suggestions (only from the practice table)
+    const icd = ctx.icd || []; const kws = ctx.icdKeywords || []; const byCode = (c) => icd.find((x) => x.code === c);
+    const lookup = (term) => { const tt = low(term); const k = kws.find((x) => x.words.some((w) => tt.includes(w) || (w.length > 4 && w.includes(tt)))); if (k && byCode(k.code)) return byCode(k.code);
+      const words = tt.split(/\s+/).filter((w) => w.length > 3 && !/^(acute|chronic|with|without|unspecified|other|probably|likely|viral|bacterial|mild|severe)$/.test(w));
+      const scored = icd.filter((c) => !c.header).map((c) => ({ c, n: words.filter((w) => low(c.desc).includes(w)).length })).filter((x) => x.n).sort((a, b) => b.n - a.n || a.c.code.length - b.c.code.length);
+      return scored.length && scored[0].n >= Math.min(2, words.length) ? scored[0].c : null; };
+    out.dx.filter((d) => !d.superseded).forEach((d) => { const c = lookup(d.term); if (c) { const kind = d.kind === 'confirmed' ? 'confirmed' : d.kind === 'differential' ? 'differential' : 'provisional'; const RANK = { confirmed: 3, provisional: 2, differential: 1 }; const ex = out.icd.find((x) => x.code === c.code);
+        if (!ex) out.icd.push({ code: c.code, desc: c.desc, kind, reason: `Clinician said "${d.ev[0].quote}"`, ev: d.ev }); else if (RANK[kind] > RANK[ex.kind]) Object.assign(ex, { kind, reason: `Clinician said "${d.ev[0].quote}"`, ev: ex.ev.concat(d.ev) }); }
+      else out.flags.push({ type: 'uncertain', field: 'icd', text: `No ICD-10 code in your practice table matches "${d.term}". Search the table or import the full SA ICD-10 Master Industry Table.`, ev: d.ev }); });
+    const hasDx = out.icd.some((x) => x.kind !== 'differential');
+    if (!hasDx) out.complaints.forEach((c) => { const code = SYMPTOM_CODE[c.name]; if (!code) return; const cc = byCode(code); if (cc) { if (!out.icd.some((x) => x.code === cc.code)) out.icd.push({ code: cc.code, desc: cc.desc, kind: 'symptom', reason: `Symptom reported (${c.name}); no diagnosis was stated`, ev: c.ev }); }
+      else out.flags.push({ type: 'uncertain', field: 'icd', text: `Symptom code ${code} (${c.name}) is not in your practice ICD-10 table.`, ev: c.ev }); });
+    if (!out.dx.length && list.length > 3) out.flags.push({ type: 'missing', field: 'assessment', text: 'No working diagnosis or impression was stated.', ev: [] });
+    if (!Object.keys(out.vitals).length && list.length > 3) out.flags.push({ type: 'missing', field: 'vitals', text: 'No vital signs were mentioned.', ev: [] });
+    if (!out.followUp && list.length > 3) out.flags.push({ type: 'missing', field: 'followUp', text: 'Follow-up not discussed.', ev: [] });
+    if (out.icd.some((x) => /^[ST]/.test(x.code)) && !out.icd.some((x) => /^[VWXY]/.test(x.code))) out.flags.push({ type: 'missing', field: 'icd', text: 'Injury code without an external-cause code (V01–Y98) — SA coding standards require one.', ev: [] });
+    // de-duplicate flags
+    const seen = new Set(); out.flags = out.flags.filter((f) => { const k = f.type + '|' + f.text; if (seen.has(k)) return false; seen.add(k); return true; });
+    out.segments = list.map((s) => ({ id: s.id, spk: s.spk, spkHow: s.spkHow }));
+    return out;
+  };
+
+  // ---------------------------------------------------------------- narrative text from structured data (no invention)
+  CX.hpi = (x) => { if (!x.complaints.length) return ''; const parts = x.complaints.map((c, i) => { let s = (i === 0 ? 'Presents with ' : '') + low(c.name); if (c.severity) s = (i === 0 ? 'Presents with ' : '') + low(c.severity.value) + ' ' + low(c.name); if (c.duration) s += /^Since/.test(c.duration.value) ? ' ' + low(c.duration.value) : ` for ${c.duration.value}`;
+      if (c.onset) s += `, ${low(c.onset.value)} onset`; if (c.aggravating) s += `, ${low(c.aggravating.value)}`; if (c.relieving) s += `, ${c.relieving.value}`; if (c.frequency) s += `, ${c.frequency.value}`; return s; });
+    let out = parts[0] + (parts.length > 1 ? '. Also reports ' + parts.slice(1).join('; ') : '') + '.';
+    const negs = x.negatives.filter((n) => !x.complaints.some((c) => c.name === n.name)); if (negs.length) out += ' Denies ' + negs.map((n) => low(n.name)).join(', ') + '.';
+    const tr = x.history.filter((h) => /Treatment tried/.test(h.kind)); if (tr.length) out += ' Has tried ' + tr.map((h) => h.text + (h.response ? ` (${low(h.response)})` : '')).join(', ') + '.';
+    return out.charAt(0).toUpperCase() + out.slice(1); };
+  CX.soap = (f) => { // f = resolved field values of the consultation record
+    const line = (l, v) => (v ? `${l}: ${v}` : ''); const join = (a) => a.filter(Boolean).join('\n');
+    return { subjective: join([line('Reason for visit', f.reason), line('Presenting complaint', f.complaint), f.hpi, line('Relevant negatives', f.negatives), line('History (this visit)', f.historyNow)]),
+      objective: join([line('Vitals', f.vitals), line('Examination', f.exam)]), assessment: join([f.summary, line('Working diagnosis', f.working), line('Confirmed diagnosis', f.confirmed), line('Differentials', f.differentials), line('Concerns', f.concerns)]),
+      plan: join([f.management, line('Medication (draft)', f.meds), line('Investigations', f.inv), line('Referral', f.ref), line('Advice', f.advice), line('Safety-netting', f.safety), line('Follow-up', f.followUp)]) }; };
+  if (typeof module !== 'undefined' && module.exports) module.exports = CX; else root.CX = CX;
+})(typeof window !== 'undefined' ? window : this);
+
+
+/* ===== ui-consult2.js ===== */
+/* Prac360 — Consultation workspace with AI Scribe (cx v1).
+ * Start consultation → (patient consent) → AI Scribe listens → fields fill as you talk → Finish → review →
+ * approve AI documentation → sign with the existing signing process. The doctor stays in control:
+ *  - nothing is recorded before consent; declining keeps a normal consultation;
+ *  - every AI value shows where it came from (the words in the transcript) and can be edited;
+ *  - the AI never overwrites what the doctor typed (it offers "AI heard …" instead);
+ *  - suggestions (ICD-10, medicines, investigations, referrals) stay drafts until accepted;
+ *  - signing is blocked in the engine until the doctor approves the AI documentation, and any change
+ *    after approval needs a new approval; after signing the record is locked (addenda only).
+ * Speech: the browser's speech recognition (or the hosting runtime's dictation). Clinical structuring: the local
+ * cx-engine (rules, traceable). Optional AI model step only through an approved provider configured by the practice. */
+(function () {
+  'use strict';
+  const A = window.APP, E = window.PE, P = A.P, H = A.H, esc = A.esc, fd = A.fd, CX = window.CX;
+  if (!CX || !P.consult) return;
+  const db = () => A.db; const encById = (id) => db().encounters.find((e) => e.id === id);
+  const CONSENT = 'AI consult listening (Prac360 Assist)';
+  const now = () => E.nowIso(db());
+  const cfg = () => { const s = db().settings; s.scribe2 = Object.assign({ retention: 'sign', provider: 'off', agreement: false, standing: true, lang: 'en-ZA' }, s.scribe2 || {}); return s.scribe2; };
+  const prefs = () => { const s = db().settings; s.cxPrefs = s.cxPrefs || {}; const u = (A.user && A.user.id) || 'x'; s.cxPrefs[u] = Object.assign({ template: '', side: true, collapsed: {} }, s.cxPrefs[u] || {}); return s.cxPrefs[u]; };
+  const audit = (e, action, detail) => E.audit(db(), A.user, action, 'encounter', e.id, e.patientId, detail);
+
+  // ================================================================ templates and sections
+  const BASE = ['complaint', 'hpi', 'history', 'ros', 'vitals', 'exam', 'assessment', 'icd', 'inv', 'plan', 'ref', 'fu', 'summary'];
+  const SEC = {
+    complaint: { t: 'Presenting complaint', f: [['complaint', 'Chief complaint'], ['duration', 'Duration'], ['onset', 'Onset'], ['progression', 'Progression'], ['severity', 'Severity'], ['frequency', 'Frequency / pattern'], ['aggravating', 'Aggravating factors'], ['relieving', 'Relieving factors'], ['associated', 'Associated symptoms', 'area'], ['negatives', 'Relevant negatives'], ['prevTreatment', 'Previous treatment'], ['response', 'Response to treatment'], ['otherComplaints', 'Additional complaints', 'area']] },
+    hpi: { t: 'History of presenting illness', f: [['hpi', 'Narrative', 'area']] },
+    history: { t: 'Medical history', f: [['historyNow', 'Mentioned in this consultation', 'area'], ['family', 'Family history'], ['social', 'Social history'], ['smoking', 'Smoking'], ['alcohol', 'Alcohol'], ['pregnancy', 'Pregnancy status'], ['exposures', 'Occupational / environmental exposures'], ['recentTx', 'Recent treatments']] },
+    ros: { t: 'Review of systems' }, vitals: { t: 'Vital signs' }, exam: { t: 'Physical examination' },
+    assessment: { t: 'Clinical assessment', f: [['summary', 'Clinical summary', 'area'], ['working', 'Working diagnosis'], ['confirmed', 'Confirmed diagnosis'], ['differentials', 'Differential diagnoses'], ['comorbid', 'Comorbid conditions'], ['concerns', 'Clinical concerns'], ['severityA', 'Severity'], ['risk', 'Relevant risk factors'], ['reasoning', 'Clinical reasoning (practitioner)', 'area']] },
+    icd: { t: 'ICD-10 diagnosis coding' }, inv: { t: 'Investigations' },
+    plan: { t: 'Treatment and management plan', f: [['management', 'Management decisions', 'area'], ['treatmentGiven', 'Treatment given in rooms'], ['nonPharm', 'Non-medicine treatment'], ['advice', 'Patient advice and lifestyle', 'area'], ['education', 'Patient education'], ['safety', 'Safety-netting', 'area']] },
+    ref: { t: 'Referrals' },
+    fu: { t: 'Follow-up', f: [['fuInterval', 'Follow-up interval'], ['fuDate', 'Suggested date', 'date'], ['fuMonitoring', 'Monitoring'], ['fuOutstanding', 'Outstanding investigations / results to review'], ['fuWarning', 'Warning signs discussed', 'area'], ['fuInstructions', 'Patient instructions', 'area']] },
+    summary: { t: 'Consultation summary (SOAP)' } };
+  const PANELS = {
+    chronic: { t: 'Chronic disease review', f: [['ch.condition', 'Condition(s) reviewed'], ['ch.control', 'Control since last visit'], ['ch.adherence', 'Medicine adherence'], ['ch.side', 'Side effects'], ['ch.complications', 'Complications screening'], ['ch.targets', 'Targets agreed']] },
+    diabetes: { t: 'Diabetes', f: [['dm.glucose', 'Blood glucose today'], ['dm.hba1c', 'Latest HbA1c'], ['dm.treatment', 'Diabetes treatment'], ['dm.complications', 'Complications screening'], ['dm.feet', 'Foot examination'], ['dm.monitoring', 'Monitoring plan']] },
+    hypertension: { t: 'Blood pressure', f: [['ht.home', 'Home readings'], ['ht.treatment', 'Treatment'], ['ht.target', 'Target'], ['ht.lifestyle', 'Lifestyle factors']] },
+    respiratory: { t: 'Asthma / chest', f: [['rs.peak', 'Peak flow'], ['rs.inhaler', 'Inhaler technique'], ['rs.triggers', 'Triggers'], ['rs.control', 'Control (night waking, reliever use)']] },
+    obstetric: { t: 'Obstetrics and gynaecology', f: [['ob.lmp', 'Last menstrual period', 'date'], ['ob.ga', 'Gestational age'], ['ob.gp', 'Gravidity / parity'], ['ob.contra', 'Contraception'], ['ob.history', 'Obstetric history', 'area']] },
+    mental: { t: 'Mental health', f: [['ms.appearance', 'Appearance and behaviour'], ['ms.mood', 'Mood (patient words)'], ['ms.affect', 'Affect'], ['ms.thought', 'Thought form and content'], ['ms.perception', 'Perception'], ['ms.cognition', 'Cognition'], ['ms.insight', 'Insight and judgement'], ['ms.risk', 'Risk assessment (practitioner)', 'area']] },
+    injury: { t: 'Injury', f: [['in.mech', 'Mechanism of injury'], ['in.when', 'When and where'], ['in.location', 'Anatomical location'], ['in.function', 'Function / limitation']], note: 'Injury codes (S, T) need an external-cause code (V01–Y98) under SA coding standards.' },
+    paeds: { t: 'Child health', f: [['pd.caregiver', 'Caregiver present / history from'], ['pd.growth', 'Weight, height and centiles'], ['pd.immunisations', 'Immunisations (Road-to-Health)'], ['pd.development', 'Development'], ['pd.feeding', 'Feeding']] },
+    cardio: { t: 'Cardiology', f: [['cv.risk', 'Cardiovascular risk factors'], ['cv.ecg', 'ECG findings (practitioner)'], ['cv.investigations', 'Cardiac investigations'], ['cv.functional', 'Functional class']] },
+    onc: { t: 'Oncology follow-up', f: [['on.diagnosis', 'Cancer diagnosis'], ['on.histology', 'Histology'], ['on.stage', 'Stage (as recorded by the clinician)'], ['on.cycle', 'Regimen and cycle'], ['on.toxicity', 'Toxicity'], ['on.ecog', 'ECOG performance status'], ['on.response', 'Treatment response']], note: 'Toxicity grading and cycles are kept in the Oncology workspace.' },
+    ortho: { t: 'Orthopaedics', f: [['or.location', 'Location'], ['or.rom', 'Range of motion'], ['or.function', 'Functional limitation'], ['or.imaging', 'Imaging']] },
+    derm: { t: 'Dermatology', f: [['dr.lesion', 'Lesion description'], ['dr.location', 'Location and distribution'], ['dr.size', 'Size'], ['dr.duration', 'Duration and change']] },
+    prevent: { t: 'Preventive care', f: [['pv.screening', 'Screening due / done'], ['pv.vaccines', 'Vaccinations'], ['pv.lifestyle', 'Lifestyle'], ['pv.risk', 'Risk scores (practitioner)']] } };
+  const TPL = A.CX_TEMPLATES = {
+    'gp-acute': { n: 'General practice — acute illness', s: 'General practice', panels: [] }, 'gp-chronic': { n: 'General practice — chronic disease', s: 'General practice', panels: ['chronic'] },
+    'gp-followup': { n: 'General practice — routine follow-up', s: 'General practice', panels: [] }, 'gp-prevent': { n: 'General practice — preventive', s: 'General practice', panels: ['prevent'] },
+    paeds: { n: 'Paediatrics', s: 'Paediatrics', panels: ['paeds'] }, obgyn: { n: 'Obstetrics and gynaecology', s: 'Obstetrics and gynaecology', panels: ['obstetric'] }, cardio: { n: 'Cardiology', s: 'Cardiology', panels: ['cardio'] },
+    onc: { n: 'Oncology follow-up', s: 'Oncology', panels: ['onc'] }, psych: { n: 'Psychiatry', s: 'Psychiatry', panels: ['mental'] }, ortho: { n: 'Orthopaedics', s: 'Orthopaedics', panels: ['ortho', 'injury'] }, derm: { n: 'Dermatology', s: 'Dermatology', panels: ['derm'] } };
+  A.cxRegisterTemplate = (id, def) => { TPL[id] = def; }; A.cxRegisterPanel = (id, def) => { PANELS[id] = def; };
+  const MORE = new Set(['onset', 'progression', 'frequency', 'aggravating', 'relieving', 'prevTreatment', 'response', 'otherComplaints', 'family', 'social', 'pregnancy', 'exposures', 'recentTx', 'comorbid', 'concerns', 'severityA', 'risk', 'treatmentGiven', 'nonPharm', 'education', 'fuMonitoring', 'fuOutstanding', 'fuInstructions']);
+  const ROS = ['general', 'cardiovascular', 'respiratory', 'gastrointestinal', 'neurological', 'musculoskeletal', 'genitourinary', 'endocrine', 'dermatological', 'psychiatric', 'other'];
+  const EXAMS = ['General', 'Cardiovascular', 'Respiratory', 'Abdominal', 'Neurological', 'Musculoskeletal', 'ENT', 'Skin', 'Lymph nodes', 'Specialty'];
+  const cap = (s) => String(s || '').charAt(0).toUpperCase() + String(s || '').slice(1);
+  const LABEL = (k) => { for (const s of Object.values(SEC)) for (const f of s.f || []) if (f[0] === k) return f[1]; for (const p of Object.values(PANELS)) for (const f of p.f) if (f[0] === k) return f[1];
+    if (k.startsWith('ros.')) return 'Review of systems — ' + k.slice(4); if (k.startsWith('exam.')) return 'Examination — ' + k.slice(5); if (k.startsWith('v.')) { const v = CX.VITALS.find((x) => x.key === k.slice(2)); return v ? v.label : k === 'v.bmi' ? 'BMI' : k; } if (k.startsWith('soap.')) return 'SOAP — ' + k.slice(5); return k; };
+
+  // ================================================================ record
+  const newCx = (e, p) => { const age = A.age(p); const tpl = prefs().template || (age < 13 ? 'paeds' : 'gp-acute'); const prev = db().encounters.some((x) => x.patientId === e.patientId && x.id !== e.id && x.status === 'signed');
+    const ap = db().appointments.find((x) => x.id === e.appointmentId);
+    return { v: 1, template: tpl, info: { specialty: TPL[tpl].s, type: prev ? 'Follow-up' : 'New', mode: 'In person', reason: ap && ap.reason ? ap.reason : '', referralSource: '', apptType: ap ? (ap.type || '') : '', startedAt: e.startedAt || now() },
+      f: {}, lists: { icd: [], meds: [], inv: [], ref: [], docs: [] }, flags: [], dyn: [], added: [], hidden: [], scribe: { state: 'ready', segs: [], used: false }, review: {}, versions: [] }; };
+  const cxOf = (e) => { if (!e.cx) { const p = E.patient(db(), e.patientId); e.cx = newCx(e, p); } const c = e.cx; c.lists = Object.assign({ icd: [], meds: [], inv: [], ref: [], docs: [] }, c.lists || {}); c.f = c.f || {}; c.flags = c.flags || []; c.dyn = c.dyn || []; c.added = c.added || []; c.hidden = c.hidden || []; c.versions = c.versions || []; c.review = c.review || {}; c.scribe = c.scribe || { state: 'ready', segs: [], used: false }; return c; };
+  const val = (c, k) => (c.f[k] && c.f[k].v) || '';
+  const core = (c) => ({ t: c.template, i: c.info, f: Object.fromEntries(Object.entries(c.f).filter(([, x]) => x && x.v).map(([k, x]) => [k, x.v])),
+    l: Object.fromEntries(Object.entries(c.lists).map(([k, arr]) => [k, (arr || []).map((x) => Object.assign({}, x, { ev: undefined, alerts: undefined }))])) });
+  const approvalHash = (e) => E.hash(JSON.stringify([core(cxOf(e)), e.subjective, e.objective, e.assessment, e.plan, e.diagnoses]));
+  const approvalValid = (e) => !!(e.cx && e.cx.review && e.cx.review.approvedAt && e.cx.review.hash === approvalHash(e));
+  A.cxApprovalValid = approvalValid;
+  const editableOf = (e) => e.status === 'draft' && A.can('clinical.write');
+  const invalidate = (e, why) => { const c = cxOf(e); if (c.review && c.review.approvedAt) { c.review = { clearedAt: now(), clearedWhy: why }; audit(e, 'ai-scribe-approval-cleared', why); A.toast('The documentation changed after approval — please approve again before signing.'); } };
+  const version = (e, reason) => { const c = cxOf(e); c.versions.push({ n: c.versions.length + 1, at: now(), by: A.user.id, reason, hash: E.hash(JSON.stringify(core(c))) }); if (c.versions.length > 40) c.versions.splice(0, c.versions.length - 40); };
+
+  // ================================================================ engine guard: signing needs a valid approval when AI Scribe was used
+  const _content = E.encounterContent; E.encounterContent = (e) => _content(e) + (e && e.cx && e.cx.scribe && e.cx.scribe.used ? '#cx:' + E.hash(JSON.stringify(core(e.cx))) : '');
+  const _sign = E.signEncounter; E.signEncounter = (d, e, user) => {
+    if (e.cx && e.cx.scribe && e.cx.scribe.used && !approvalValid(e)) throw new Error('Review and approve the AI Scribe documentation before signing.');
+    if (e.cx && e.cx.scribe && e.cx.scribe.state === 'listening') throw new Error('Stop AI Scribe before signing.');
+    const r = _sign(d, e, user);
+    if (e.cx) { const c = e.cx; c.scribe.state = c.scribe.used ? 'signed' : c.scribe.state; c.versions.push({ n: c.versions.length + 1, at: E.nowIso(d), by: user.id, reason: 'Signed', hash: E.hash(JSON.stringify(core(c))) });
+      if (c.scribe.used && cfg().retention === 'sign' && c.scribe.segs.length) { const n = c.scribe.segs.length; c.scribe.segs = []; c.scribe.transcriptDeleted = { at: E.nowIso(d), lines: n, why: 'Practice policy: transcript deleted when the note is signed' }; E.audit(d, user, 'ai-scribe-transcript-deleted', 'encounter', e.id, e.patientId, `${n} transcript lines deleted after signing (policy)`); }
+      if (c.scribe.used && cfg().retention === '30d') c.scribe.deleteAfter = new Date(Date.now() + 30 * 864e5).toISOString(); }
+    return r; };
+  const sweepRetention = () => { try { const t = Date.now(); (db().encounters || []).forEach((e) => { const s = e.cx && e.cx.scribe; if (s && s.deleteAfter && Date.parse(s.deleteAfter) < t && s.segs.length) { const n = s.segs.length; s.segs = []; s.transcriptDeleted = { at: now(), lines: n, why: 'Practice policy: 30 days after signing' }; delete s.deleteAfter; E.audit(db(), A.user || { id: 'system', name: 'System' }, 'ai-scribe-transcript-deleted', 'encounter', e.id, e.patientId, `${n} lines deleted (30-day policy)`); } }); } catch (x) { /* ignore */ } };
+
+  // ================================================================ extraction → fields
+  const ctxFor = (e) => ({ icd: db().icd10, icdKeywords: db().icdKeywords || [], medicines: db().medicines, allergies: db().allergies.filter((a) => a.patientId === e.patientId), meds: db().meds.filter((m) => m.patientId === e.patientId && m.active).map((m) => ({ name: (E.medicine(db(), m.medicineId) || {}).name })) });
+  const SYS_RE = { general: /fever|fatigue|tired|weight|appetite/i, cardiovascular: /chest|palpitation|swelling/i, respiratory: /cough|breath|wheez|chest/i, gastrointestinal: /nausea|vomit|diarrh|abdominal|constipat|appetite/i, neurological: /headache|dizz|numb|vision/i,
+    musculoskeletal: /back|joint/i, genitourinary: /urinat|urine/i, endocrine: /thirst/i, dermatological: /rash|itch/i, psychiatric: /mood|anxiety|sleep/i };
+  const evs = (...a) => a.flat().filter(Boolean);
+  const aiValues = (x) => { const o = {}; const put = (k, v, ev, src, note) => { if (v != null && String(v).trim()) o[k] = { v: String(v).trim(), ev: ev || [], src: src || 'ai', note }; };
+    const c0 = x.complaints[0]; if (c0) { put('complaint', c0.name, c0.ev); ['duration', 'onset', 'severity', 'frequency', 'aggravating', 'relieving'].forEach((k) => c0[k] && put(k, c0[k].value, c0[k].ev)); }
+    if (x.complaints.length > 1) put('associated', x.complaints.slice(1).map((c) => (c.severity ? c.severity.value.toLowerCase() + ' ' : '') + c.name.toLowerCase() + (c.duration ? (/^Since/.test(c.duration.value) ? ' ' + c.duration.value.toLowerCase() : ' for ' + c.duration.value) : '')).join('; ').replace(/^./, (m) => m.toUpperCase()), evs(x.complaints.slice(1).map((c) => c.ev)));
+    if (x.negatives.length) put('negatives', 'No ' + x.negatives.map((n) => n.name.toLowerCase()).join(', no '), evs(x.negatives.map((n) => n.ev)));
+    const tr = x.history.find((h) => /Treatment tried/.test(h.kind)); if (tr) { put('prevTreatment', tr.text, tr.ev); if (tr.response) put('response', tr.response, tr.ev); }
+    put('hpi', CX.hpi(x), evs(x.complaints.map((c) => c.ev), x.negatives.map((n) => n.ev)));
+    const hn = x.history.filter((h) => /Condition mentioned|Medication mentioned/.test(h.kind)).map((h) => `${h.kind}: ${h.text}`).concat(x.allergies.map((a) => (a.none ? 'Allergies: none reported by patient' : 'Allergy mentioned: ' + a.allergen)));
+    if (hn.length) put('historyNow', hn.join('\n'), evs(x.history.filter((h) => /Condition|Medication/.test(h.kind)).map((h) => h.ev), x.allergies.map((a) => a.ev)));
+    [['Smoking', 'smoking'], ['Alcohol', 'alcohol'], ['Family history', 'family'], ['Pregnancy', 'pregnancy']].forEach(([kind, k]) => { const h = x.history.filter((y) => y.kind === kind); if (h.length) put(k, h.map((y) => cap(y.text)).join('; '), evs(h.map((y) => y.ev))); });
+    ROS.forEach((sys) => { const re = SYS_RE[sys]; if (!re) return; const pos = x.complaints.filter((c) => re.test(c.name)), neg = x.negatives.filter((n) => re.test(n.name)); if (!pos.length && !neg.length) return;
+      put('ros.' + sys, [pos.length ? 'Reports ' + pos.map((c) => c.name.toLowerCase()).join(', ') : '', neg.length ? 'denies ' + neg.map((n) => n.name.toLowerCase()).join(', ') : ''].filter(Boolean).join('; ').replace(/^./, (m) => m.toUpperCase()), evs(pos.map((c) => c.ev), neg.map((n) => n.ev))); });
+    Object.entries(x.vitals).forEach(([k, v]) => put('v.' + k, v.value, v.ev, v.src === 'derived' ? 'derived' : 'ai', v.src === 'patient-reported' ? 'Patient-reported' : ''));
+    const bySys = {}; x.exam.forEach((ex) => { (bySys[ex.sys] = bySys[ex.sys] || []).push(ex); }); Object.entries(bySys).forEach(([sys, arr]) => put('exam.' + sys, arr.map((y) => y.text).join('. '), evs(arr.map((y) => y.ev))));
+    const live = x.dx.filter((d) => !d.superseded); [['working', 'working'], ['confirmed', 'confirmed'], ['differentials', 'differential']].forEach(([k, kind]) => { const d = live.filter((y) => y.kind === kind); if (d.length) put(k, d.map((y) => cap(y.term)).join('; '), evs(d.map((y) => y.ev))); });
+    if (x.management.length) put('management', x.management.map((m) => m.text).join('\n'), evs(x.management.map((m) => m.ev)));
+    if (x.advice.length) put('advice', x.advice.map((a) => a.text).join('\n'), evs(x.advice.map((a) => a.ev)));
+    if (x.safetyNet.length) { put('safety', x.safetyNet.map((a) => a.text).join('\n'), evs(x.safetyNet.map((a) => a.ev))); put('fuWarning', x.safetyNet.map((a) => a.text).join('\n'), evs(x.safetyNet.map((a) => a.ev))); }
+    if (x.followUp) { put('fuInterval', x.followUp.value, x.followUp.ev); const d = new Date(E.today(db()) + 'T12:00:00'); d.setDate(d.getDate() + x.followUp.days); put('fuDate', d.toISOString().slice(0, 10), x.followUp.ev, 'derived', 'Calculated from the interval'); }
+    const ex = x.extras; if (ex.hba1c) put('dm.hba1c', ex.hba1c.value, ex.hba1c.ev); if (x.vitals.glucose) put('dm.glucose', x.vitals.glucose.value + ' mmol/L', x.vitals.glucose.ev, 'ai', x.vitals.glucose.src === 'patient-reported' ? 'Patient-reported' : '');
+    if (ex.peakFlow) put('rs.peak', ex.peakFlow.value, ex.peakFlow.ev); if (ex.gestation) put('ob.ga', ex.gestation.value, ex.gestation.ev); if (ex.ecog) put('on.ecog', ex.ecog.value, ex.ecog.ev); if (ex.mechanism) put('in.mech', cap(ex.mechanism.value), ex.mechanism.ev);
+    return o; };
+  const PANEL_FOR = { diabetes: 'diabetes', hypertension: 'hypertension', respiratory: 'respiratory', obstetric: 'obstetric', mental: 'mental', injury: 'injury' };
+  const apply = (e, x) => { const c = cxOf(e); const vals = aiValues(x); const changed = []; const t = Date.now();
+    new Set(Object.keys(vals).concat(Object.keys(c.f).filter((k) => c.f[k] && ['ai', 'derived'].includes(c.f[k].src)))).forEach((k) => { const cur = c.f[k], nv = vals[k];
+      if (cur && cur.edited) { if (nv && nv.v !== cur.v && nv.v !== cur.altNo) cur.aiAlt = { v: nv.v, ev: nv.ev }; else if (!nv || nv.v === cur.v) delete cur.aiAlt; return; }
+      if (!nv) { if (cur && ['ai', 'derived'].includes(cur.src)) { delete c.f[k]; changed.push(k); } return; }
+      if (!cur || cur.v !== nv.v) { c.f[k] = { v: nv.v, src: nv.src, ev: nv.ev, at: now(), upd: t, note: nv.note }; changed.push(k); } else { cur.ev = nv.ev; cur.note = nv.note; } });
+    const mergeList = (name, items, key) => { const cur = c.lists[name]; const keys = new Set(items.map(key)); const out = cur.filter((it) => it.src !== 'ai' || it.status !== 'suggested' || keys.has(key(it)) || it.edited);
+      items.forEach((n) => { const ex = out.find((it) => key(it) === key(n)); if (!ex) { out.push(Object.assign({ src: 'ai', status: 'suggested', upd: t }, n)); changed.push(name); } else if (!ex.edited && ex.src === 'ai') { const before = JSON.stringify([ex.kind, ex.dose, ex.frequency, ex.duration, ex.urgency, ex.status]); Object.assign(ex, n, { status: ex.status, primary: ex.primary }); if (before !== JSON.stringify([ex.kind, ex.dose, ex.frequency, ex.duration, ex.urgency, ex.status])) { ex.upd = t; changed.push(name); } } });
+      c.lists[name] = out; };
+    mergeList('icd', x.icd.map((i) => ({ code: i.code, desc: i.desc, kind: i.kind, reason: i.reason, ev: i.ev })), (i) => i.code);
+    mergeList('meds', x.meds.map((m) => ({ medicineId: m.medicineId, name: m.name, change: m.change, dose: m.dose, frequency: m.frequency, duration: m.duration, route: m.route, ev: m.ev })), (m) => m.medicineId);
+    mergeList('inv', x.inv.map((i) => ({ name: i.name, kind: i.status, text: i.text, ev: i.ev })), (i) => i.name);
+    mergeList('ref', x.ref.map((r) => ({ to: r.to, urgency: r.urgency, reason: r.reason || val(c, 'working') || val(c, 'complaint'), ev: r.ev })), (r) => r.to);
+    mergeList('docs', x.docs.map((d) => ({ kind: d.kind, days: d.days, ev: d.ev })), (d) => d.kind);
+    const fk = (f) => f.type + '|' + f.text; const prevFlags = new Map(c.flags.map((f) => [fk(f), f]));
+    const fresh = x.flags.map((f) => { const p = prevFlags.get(fk(f)); return Object.assign({ id: p ? p.id : E.id('fl'), status: 'open' }, f, p ? { status: p.status, note: p.note, by: p.by, at: p.at } : {}); });
+    c.flags = fresh.concat(c.flags.filter((f) => f.status !== 'open' && !fresh.some((n) => fk(n) === fk(f))).map((f) => Object.assign(f, { gone: true })));
+    Object.keys(x.triggers || {}).forEach((k) => { const pnl = PANEL_FOR[k]; if (pnl && !c.dyn.includes(pnl)) { c.dyn.push(pnl); changed.push('panel:' + pnl); } });
+    if (changed.length && c.review && c.review.approvedAt) invalidate(e, 'AI documentation updated');
+    return changed; };
+  const runExtract = (e) => { const c = cxOf(e); const x = CX.extract(c.scribe.segs, ctxFor(e)); c.scribe.lastRunAt = now(); c.scribe.segInfo = x.segments; const ch = apply(e, x); return ch; };
+
+  // ================================================================ optional AI model step (approved provider only)
+  const deid = (text, p) => { let t = String(text || ''); [p.firstName, p.lastName, p.preferredName].filter((w) => w && w.length > 1).forEach((w) => { t = t.replace(new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '') + '\\b', 'gi'), '[PATIENT]'); }); return t.replace(/\b\d{6,}\b/g, '[NUMBER]').replace(/\b[\w.+-]+@[\w-]+\.[\w.]+\b/g, '[EMAIL]'); };
+  const provider = () => { const s = cfg(); if (s.provider === 'off' || !s.agreement) return null; if (s.provider === 'server' && window.P360NET && window.P360NET.secure) return 'server'; if (s.provider === 'claude' && A.caps.sample) return 'claude'; return null; };
+  A.cxProviderStatus = () => { const s = cfg(); if (s.provider === 'off') return { on: false, text: 'Not switched on — the practice has not approved an AI provider. Clinical structuring runs locally with rules.' };
+    if (!s.agreement) return { on: false, text: 'Provider chosen, but no POPIA operator agreement recorded — not used.' }; const p = provider(); if (!p) return { on: false, text: s.provider === 'server' ? 'Needs the Prac360 server with an AI key configured — not available on this link.' : 'Not available in this browser.' };
+    return { on: true, text: p === 'server' ? 'AI model via the Prac360 server (approved provider).' : 'Claude via claude.ai — demo only, not approved for real patient data.' }; };
+  const aiRefine = async (e) => { const p0 = provider(); if (!p0) return { used: false }; const c = cxOf(e); const p = E.patient(db(), e.patientId);
+    const segs = c.scribe.segs.map((s) => ({ id: s.id, spk: (c.scribe.segInfo || []).find((x) => x.id === s.id)?.spk || 'unknown', text: deid(s.text, p) }));
+    const keys = Object.keys(SEC).flatMap((k) => (SEC[k].f || []).map((f) => f[0])).concat(CX.VITALS.map((v) => 'v.' + v.key), EXAMS.map((x) => 'exam.' + x), ROS.map((r) => 'ros.' + r));
+    const prompt = `You are a clinical documentation assistant for a South African doctor. From the transcript segments below, extract ONLY facts that were actually said. Never invent findings, doses, diagnoses or examinations; silence is not a negative; planned examinations are not findings.
+Patient: ${p.sex}, ${A.age(p)} years. Allowed field keys: ${keys.join(', ')}.
+Return JSON only: {"fields":[{"key":"<allowed key>","value":"<concise clinical wording>","segments":["<segment id>"],"quote":"<exact words copied from one cited segment>"}]}
+Every item MUST cite the segment ids it came from and include an exact quote from one of them. Leave out anything uncertain.
+SEGMENTS:
+${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
+    let text = null; try { if (p0 === 'server') { const r = await fetch('api/ai/scribe', { method: 'POST', headers: window.P360NET.hdr({ 'Content-Type': 'application/json' }), body: JSON.stringify({ prompt }) }); if (r.ok) text = (await r.json()).text; else return { used: false, error: r.status === 501 ? 'not-configured' : 'error ' + r.status }; }
+      else text = await A.aiText('cx-ai-scribe', prompt); } catch (x) { return { used: false, error: 'unreachable' }; }
+    if (!text) return { used: false, error: 'no answer' }; let j; try { j = JSON.parse(text.match(/\{[\s\S]*\}/)[0]); } catch (x) { return { used: true, accepted: 0, rejected: 0, error: 'unreadable answer' }; }
+    let ok = 0, bad = 0; const norm = (s) => String(s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    (j.fields || []).forEach((it) => { const segsOk = (it.segments || []).map((id) => segs.find((s) => s.id === id)).filter(Boolean); const verified = it.key && keys.includes(it.key) && it.value && segsOk.length && segsOk.some((s) => norm(s.text).includes(norm(it.quote)) && norm(it.quote).length >= 3);
+      if (!verified) { bad++; return; } const cur = c.f[it.key]; const evx = segsOk.map((s) => ({ seg: s.id, quote: it.quote, at: null }));
+      if (!cur || !cur.v) { c.f[it.key] = { v: String(it.value).slice(0, 600), src: 'ai', model: true, ev: evx, at: now(), upd: Date.now() }; ok++; }
+      else if (!cur.edited && norm(cur.v) !== norm(it.value)) { c.flags.push({ id: E.id('fl'), type: 'uncertain', field: it.key, text: `${LABEL(it.key)}: the rules found "${cur.v}", the AI model suggests "${String(it.value).slice(0, 120)}" — check.`, ev: evx, status: 'open' }); ok++; } });
+    c.scribe.aiRuns = (c.scribe.aiRuns || []).concat([{ at: now(), provider: p0, accepted: ok, rejected: bad }]); audit(e, 'ai-scribe-model-run', `${p0}: ${ok} verified items used, ${bad} unverified items discarded (de-identified transcript)`);
+    return { used: true, accepted: ok, rejected: bad }; };
+
+  // ================================================================ audio capture session (speech recognition)
+  const L = A.cxLive = { encId: null, partial: '', startedMs: 0, restarts: 0, tick: null, extractT: null, lastErr: '' };
+  const segId = (c) => 's' + (c.scribe.segs.length + 1) + '_' + Date.now().toString(36).slice(-4);
+  const stopOthers = () => { try { if (A.voiceMode && A.voiceMode.on && H['vm-end']) H['vm-end'](); } catch (x) { /* ignore */ } try { const s = A.assistState; if (s && s.listening && A.assistCore) A.assistCore.stopMic(); if (s && s.scribe && s.scribe.on) s.scribe.on = false; } catch (x) { /* ignore */ } try { if (A.robotHide) A.robotHide(); } catch (x) { /* ignore */ } };
+  const setState = (e, st, why) => { const c = cxOf(e); c.scribe.state = st; if (why) c.scribe.why = why; else delete c.scribe.why; A.cxListening = st === 'listening'; A.save(); paintLive(e, true); };
+  const onFinal = (text, conf) => { const e = encById(L.encId); if (!e || !e.cx || e.cx.scribe.state !== 'listening') return; const t = String(text || '').trim(); if (!t) return; const c = e.cx;
+    c.scribe.segs.push({ id: segId(c), text: t, at: now(), ms: Date.now() - L.startedMs, conf: conf > 0 && conf <= 1 ? Math.round(conf * 100) / 100 : null, by: 'speech' }); L.partial = ''; c.scribe.lastHeardAt = now();
+    clearTimeout(L.extractT); L.extractT = setTimeout(() => { const ch = runExtract(e); A.save(); paintLive(e, false, ch); }, 350); paintSide(e); };
+  const onEngine = (st, reason) => { const e = encById(L.encId); if (!e || !e.cx) return; const s = e.cx.scribe.state;
+    if (st === 'error') { L.lastErr = reason || ''; if (reason === 'not-allowed' || reason === 'not_granted' || reason === 'service-not-allowed') { setState(e, 'mic-denied', 'The browser blocked the microphone. Allow it for this site, or type what was said.'); audit(e, 'ai-scribe-mic-denied', reason); return; }
+      if (reason === 'network') { setState(e, 'interrupted', 'The speech service could not be reached (network). Everything heard so far is saved. Check the connection, then Resume.'); e.cx.scribe.interruptions = (e.cx.scribe.interruptions || []).concat([{ at: now(), why: 'network' }]); audit(e, 'ai-scribe-interrupted', 'network'); return; } return; }
+    if (st === 'idle' && s === 'listening') { if (L.restarts > 200) { setState(e, 'interrupted', 'Listening stopped and could not restart. Everything heard so far is saved — press Resume.'); return; } L.restarts++; setTimeout(() => { const e2 = encById(L.encId); if (e2 && e2.cx && e2.cx.scribe.state === 'listening') A.dictation.startSink(sink()); }, 250); } };
+  const sink = () => ({ final: onFinal, partial: (t) => { L.partial = t || ''; const el = document.getElementById('cx-partial'); if (el) el.textContent = L.partial ? '… ' + L.partial : ''; }, state: onEngine });
+  const startListening = (e) => { const c = cxOf(e); stopOthers(); if (!A.dictation || !A.dictation.available()) { setState(e, 'nomic', 'Speech recognition is not available in this browser (use Chrome or Edge on a computer with a microphone). You can type what was said into the transcript instead.'); return; }
+    L.encId = e.id; L.startedMs = Date.now() - (c.scribe.elapsed || 0); L.restarts = 0; c.scribe.used = true; c.scribe.engine = A.caps.dictation ? 'Hosting runtime dictation' : 'Browser speech recognition'; c.scribe.lang = cfg().lang;
+    try { if (A.voicePrefs && A.setVoicePrefs && A.voicePrefs().lang !== cfg().lang) { c.scribe.prevLang = A.voicePrefs().lang; A.setVoicePrefs({ lang: cfg().lang }); } } catch (x) { /* ignore */ }
+    A.dictation.startSink(sink()).then((ok) => { if (!ok) { const e2 = encById(L.encId); if (e2 && e2.cx.scribe.state === 'listening') setState(e2, 'interrupted', 'The microphone could not start. Check that it is connected and allowed, then Resume.'); } });
+    setState(e, 'listening'); clearInterval(L.tick); L.tick = setInterval(() => { const e2 = encById(L.encId); if (!e2 || !e2.cx || e2.cx.scribe.state !== 'listening') return; e2.cx.scribe.elapsed = Date.now() - L.startedMs; const tEl = document.getElementById('cx-timer'); if (tEl) tEl.textContent = clock(e2.cx.scribe.elapsed); }, 1000); };
+  const stopListening = (e) => { try { A.dictation && A.dictation.stopSink(); } catch (x) { /* ignore */ } clearInterval(L.tick); A.cxListening = false; const c = e && e.cx; if (c) { c.scribe.elapsed = Date.now() - L.startedMs; try { if (c.scribe.prevLang && A.setVoicePrefs) { A.setVoicePrefs({ lang: c.scribe.prevLang }); delete c.scribe.prevLang; } } catch (x) { /* ignore */ } } };
+  const clock = (ms) => { const s = Math.floor((ms || 0) / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
+  window.addEventListener('hashchange', () => { if (!L.encId) return; const e = encById(L.encId); if (!e || !e.cx) return; if (!/^#\/consult\//.test(location.hash) || !location.hash.includes(e.id)) { if (e.cx.scribe.state === 'listening') { stopListening(e); e.cx.scribe.state = 'paused'; e.cx.scribe.why = 'Paused because you left the consultation screen.'; audit(e, 'ai-scribe-paused', 'left the screen'); A.save(); A.toast('AI Scribe paused — you left the consultation.'); } } });
+
+  // ================================================================ rendering
+  const STATES = { ready: ['AI Scribe', 'ready'], consent: ['AI Scribe', 'ready'], listening: ['Listening', 'live'], paused: ['Paused', 'paused'], processing: ['Processing…', 'busy'], review: ['Review required', 'review'], approved: ['Approved', 'ok'], signed: ['Signed', 'ok'],
+    declined: ['AI Scribe declined', 'off'], nomic: ['AI Scribe — no microphone', 'off'], 'mic-denied': ['Microphone blocked', 'warn'], interrupted: ['Interrupted', 'warn'] };
+  const MIC = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
+  const scribeBtn = (e) => { const c = cxOf(e); let st = c.scribe.state; if (st === 'review' && approvalValid(e)) st = 'approved'; const [label, cls] = STATES[st] || STATES.ready; const ed = editableOf(e);
+    return `<button id="cx-scribe-btn" class="cx-scribe ${cls}" data-act="cx-scribe" ${!ed && !['review', 'approved', 'signed'].includes(st) ? 'disabled' : ''} aria-live="polite" title="${st === 'listening' ? 'AI Scribe is listening — click to pause' : 'AI Scribe'}">${st === 'listening' ? '<span class="cx-rec" aria-hidden="true"></span>' : MIC}<span>${esc(label)}</span>${st === 'listening' ? `<span class="cx-time" id="cx-timer">${clock(c.scribe.elapsed)}</span>` : ''}</button>`; };
+  const srcChip = (f, k) => { if (!f || !f.v) return '<span class="cx-chip none"></span>'; const m = { ai: ['✦ AI', 'ai', 'From the conversation — click to see the words'], derived: ['Calculated', 'calc', f.note || 'Calculated from other values'], record: ['Record', 'rec', 'From the patient record'], device: ['Device', 'dev', 'From a connected device'], manual: ['You', 'me', 'Entered or edited by you'] }[f.edited ? 'manual' : f.src] || ['You', 'me', ''];
+    return `<button class="cx-chip ${m[1]}${f.model ? ' model' : ''}" data-act="cx-src" data-k="${esc(k)}" title="${esc(m[2])}">${m[0]}${f.note ? ' · ' + esc(f.note) : ''}</button>`; };
+  const fieldRow = (c, k, label, kind, ed) => { const f = c.f[k] || {}; const id = 'cxf-' + k.replace(/\W/g, '_'); const recent = f.upd && Date.now() - f.upd < 5000;
+    const input = kind === 'area' ? `<textarea id="${id}" rows="${Math.min(6, Math.max(2, String(f.v || '').split('\n').length))}" data-input="cx-f" data-k="${esc(k)}" ${ed ? '' : 'readonly'} placeholder="Not documented">${esc(f.v || '')}</textarea>`
+      : `<input id="${id}" ${kind === 'date' ? 'type="date"' : ''} data-input="cx-f" data-k="${esc(k)}" value="${esc(f.v || '')}" ${ed ? '' : 'readonly'} placeholder="Not documented">`;
+    const alt = f.aiAlt && ed ? `<div class="cx-alt">✦ AI heard: “${esc(f.aiAlt.v)}” <button class="btn sm" data-act="cx-alt" data-k="${esc(k)}" data-v="use">Use</button> <button class="btn sm ghost" data-act="cx-alt" data-k="${esc(k)}" data-v="no">Keep mine</button></div>` : '';
+    return `<div class="cx-row ${f.v && f.src === 'ai' && !f.edited ? 'is-ai' : ''} ${f.edited ? 'is-me' : ''} ${recent ? 'cx-upd' : ''}" data-row="${esc(k)}"><label for="${id}">${esc(label)}</label><div class="cx-in">${input}${alt}</div>${srcChip(f, k)}</div>`; };
+  const shownKeys = (c, keys) => keys.filter((k) => c.f[k] && c.f[k].v);
+  const panelList = (c, e) => { const base = (TPL[c.template] || TPL['gp-acute']).panels || []; const p = E.patient(db(), e.patientId); const auto = A.age(p) < 13 && !base.includes('paeds') ? ['paeds'] : [];
+    return [...new Set(base.concat(auto, c.dyn, c.added))].filter((x) => PANELS[x] && !c.hidden.includes(x)); };
+  const secWrap = (c, id, title, body, opts) => { const pr = prefs(); const closed = pr.collapsed[id]; opts = opts || {}; const n = opts.count;
+    return `<section class="cx-sec ${closed ? 'closed' : ''}" id="cx-sec-${id}" data-sec="${id}"><header><button class="cx-sec-h" data-act="cx-sec-toggle" data-id="${id}" aria-expanded="${!closed}"><span class="cx-chev" aria-hidden="true">▸</span><span>${esc(title)}</span>${n ? `<span class="cx-count">${n}</span>` : ''}${opts.badge || ''}</button>${opts.tools || ''}</header><div class="cx-sec-b">${body}</div></section>`; };
+  const sectionHtml = (e, c, id, ed) => { const s = SEC[id];
+    if (s.f) { const all = !!(prefs().more || {})[id]; const vis = s.f.filter(([k]) => !MORE.has(k) || all || (c.f[k] && (c.f[k].v || c.f[k].edited))); const hiddenN = s.f.length - vis.length;
+      const more = s.f.some(([k]) => MORE.has(k)) ? `<button class="cx-more" data-act="cx-more" data-id="${id}">${all ? 'Fewer fields' : `More fields (${hiddenN})`}</button>` : '';
+      const rows = vis.map(([k, l, kind]) => fieldRow(c, k, l, kind, ed)).join('') + (hiddenN || all ? more : '') + (id === 'history' ? recordBlock(e) : ''); return secWrap(c, id, s.t, rows, { count: shownKeys(c, s.f.map((f) => f[0])).length || '' }); }
+    if (id === 'ros') { const keys = ROS.map((r) => 'ros.' + r); const show = keys.filter((k) => (c.f[k] && (c.f[k].v || c.f[k].edited)) || (c.rosAdded || []).includes(k));
+      const add = ed ? `<div class="cx-add"><select id="cx-ros-sel" aria-label="Add a body system">${keys.filter((k) => !show.includes(k)).map((k) => `<option value="${k}">${cap(k.slice(4))}</option>`).join('')}</select><button class="btn sm" data-act="cx-add-row" data-list="rosAdded" data-sel="cx-ros-sel">+ Add system</button></div>` : '';
+      return secWrap(c, id, s.t, (show.length ? show.map((k) => fieldRow(c, k, cap(k.slice(4)), 'text', ed)).join('') : '<p class="cx-empty">Only systems that were actually discussed are shown. Nothing is assumed from silence.</p>') + add, { count: show.length || '' }); }
+    if (id === 'exam') { const keys = EXAMS.map((x) => 'exam.' + x); const show = keys.filter((k) => (c.f[k] && (c.f[k].v || c.f[k].edited)) || (c.examAdded || []).includes(k));
+      const add = ed ? `<div class="cx-add"><select id="cx-exam-sel" aria-label="Add an examination">${keys.filter((k) => !show.includes(k)).map((k) => `<option value="${k}">${k.slice(5)}</option>`).join('')}</select><button class="btn sm" data-act="cx-add-row" data-list="examAdded" data-sel="cx-exam-sel">+ Add examination</button></div>` : '';
+      return secWrap(c, id, s.t, (show.length ? show.map((k) => fieldRow(c, k, k.slice(5), 'area', ed)).join('') : '<p class="cx-empty">No examination findings yet. Planned examinations are not recorded as done.</p>') + add, { count: show.length || '' }); }
+    if (id === 'vitals') { const vs = CX.VITALS.concat([{ key: 'bmi', label: 'BMI', unit: 'kg/m²' }]); const today = db().vitals.filter((v) => v.patientId === e.patientId && v.date === e.date);
+      return secWrap(c, id, s.t, `<div class="cx-vitals">${vs.map((v) => { const k = 'v.' + v.key; const f = c.f[k] || {}; const recent = f.upd && Date.now() - f.upd < 5000;
+        return `<div class="cx-vital ${f.v && !f.edited && f.src === 'ai' ? 'is-ai' : ''} ${f.edited ? 'is-me' : ''} ${recent ? 'cx-upd' : ''}" data-row="${k}"><label for="cxf-v_${v.key}">${esc(v.label)}</label><div class="cx-vin"><input id="cxf-v_${v.key}" data-input="cx-f" data-k="${k}" value="${esc(f.v || '')}" ${ed && v.key !== 'bmi' ? '' : 'readonly'} placeholder="—" inputmode="decimal"><span>${esc(v.unit)}</span></div>${srcChip(f, k)}</div>`; }).join('')}</div>
+        ${today.length ? `<p class="tiny muted">Already captured today: ${today.map((v) => esc(`${v.type} ${v.value} ${v.unit}`)).join(' · ')}</p>` : ''}`, { count: vs.filter((v) => c.f['v.' + v.key] && c.f['v.' + v.key].v).length || '' }); }
+    if (id === 'icd') return secWrap(c, id, s.t, icdHtml(e, c, ed), { count: c.lists.icd.filter((i) => i.status !== 'rejected').length || '' });
+    if (id === 'inv') return secWrap(c, id, s.t, listHtml(e, c, 'inv', ed) + fieldRow(c, 'invNotes', 'Results interpretation (practitioner)', 'area', ed), { count: c.lists.inv.filter((i) => i.status !== 'rejected').length || '' });
+    if (id === 'plan') return secWrap(c, id, s.t, moreRows(c, 'plan', ed) + `<h4 class="cx-sub">Medicines (drafts — prescribing is checked and authorised separately)</h4>` + listHtml(e, c, 'meds', ed) + docsHtml(e, c, ed), { count: shownKeys(c, SEC.plan.f.map((f) => f[0])).length + c.lists.meds.filter((m) => m.status !== 'rejected').length || '' });
+    if (id === 'ref') return secWrap(c, id, s.t, listHtml(e, c, 'ref', ed), { count: c.lists.ref.filter((i) => i.status !== 'rejected').length || '' });
+    if (id === 'fu') return secWrap(c, id, s.t, moreRows(c, 'fu', ed) + (ed ? `<label class="check cx-task"><input type="checkbox" data-change="cx-fu-task" ${c.fuTask !== false ? 'checked' : ''}> Create a follow-up reminder when the documentation is approved</label>` : ''), { count: shownKeys(c, SEC.fu.f.map((f) => f[0])).length || '' });
+    if (id === 'summary') { const has = ['soap.s', 'soap.o', 'soap.a', 'soap.p'].some((k) => c.f[k] && c.f[k].v);
+      return secWrap(c, id, s.t, `${!has ? '<p class="cx-empty">The summary is written from the fields above when you finish (or press Rebuild). You can edit it.</p>' : ''}${[['soap.s', 'Subjective'], ['soap.o', 'Objective'], ['soap.a', 'Assessment'], ['soap.p', 'Plan']].map(([k, l]) => fieldRow(c, k, l, 'area', ed)).join('')}`, { tools: ed ? '<button class="btn sm" data-act="cx-rebuild">↻ Rebuild from fields</button>' : '' }); }
+    return ''; };
+  const moreRows = (c, id, ed) => { const s = SEC[id]; const all = !!(prefs().more || {})[id]; const vis = s.f.filter(([k]) => !MORE.has(k) || all || (c.f[k] && (c.f[k].v || c.f[k].edited))); const n = s.f.length - vis.length;
+    return vis.map(([k, l, kind]) => fieldRow(c, k, l, kind, ed)).join('') + (n || all ? `<button class="cx-more" data-act="cx-more" data-id="${id}">${all ? 'Fewer fields' : `More fields (${n})`}</button>` : ''); };
+  const recordBlock = (e) => { const d = db(); const alg = d.allergies.filter((a) => a.patientId === e.patientId); const meds = d.meds.filter((m) => m.patientId === e.patientId && m.active); const probs = d.problems.filter((x) => x.patientId === e.patientId && x.active);
+    return `<div class="cx-record"><div class="cx-record-h">From the patient record <span class="tiny muted">(not from this conversation)</span></div><dl><dt>Allergies</dt><dd>${alg.map((a) => `<strong class="crit-t">${esc(a.allergen)}</strong> — ${esc(a.reaction || '')}`).join('; ') || 'No known allergies recorded'}</dd><dt>Current medication</dt><dd>${meds.map((m) => esc(((E.medicine(d, m.medicineId) || {}).name || '') + (m.dose ? ' — ' + m.dose : ''))).join('; ') || 'None recorded'}</dd><dt>Conditions</dt><dd>${probs.map((x) => esc(A.icdLabel(x.code))).join('; ') || 'None recorded'}</dd></dl></div>`; };
+  const KIND = { confirmed: ['Confirmed', 'good'], provisional: ['Provisional', 'warn'], working: ['Working', 'warn'], differential: ['Differential', ''], symptom: ['Symptom code', 'info'], manual: ['Added by you', 'accent'] };
+  const decision = (name, i, it, ed) => (ed ? `<div class="cx-dec">${it.status === 'accepted' ? '<span class="badge good">✓ Accepted</span>' : it.status === 'rejected' ? '<span class="badge">✕ Rejected</span>' : '<span class="badge ai">Suggested</span>'}${it.status !== 'accepted' ? `<button class="btn sm" data-act="cx-li" data-list="${name}" data-i="${i}" data-v="accepted">Accept</button>` : ''}${it.status !== 'rejected' ? `<button class="btn sm ghost" data-act="cx-li" data-list="${name}" data-i="${i}" data-v="rejected">Reject</button>` : ''}</div>`
+    : `<div class="cx-dec">${it.status === 'accepted' ? '<span class="badge good">Accepted</span>' : it.status === 'rejected' ? '<span class="badge">Rejected</span>' : '<span class="badge">Not decided</span>'}</div>`);
+  const evBtn = (name, i, it) => (it.ev && it.ev.length ? `<button class="cx-chip ai" data-act="cx-src-li" data-list="${name}" data-i="${i}" title="Show the words this came from">✦ source</button>` : '');
+  const icdHtml = (e, c, ed) => { const L2 = c.lists.icd; const d = db();
+    return `<p class="tiny muted">Codes come only from your practice's ICD-10 table (SA Master Industry Table). Suggestions need your decision; nothing is coded or billed until you approve.</p>
+      ${L2.length ? `<div class="cx-list">${L2.map((it, i) => { const k = KIND[it.kind] || KIND.manual; const row = E.icd(d, it.code);
+        return `<div class="cx-li ${it.status} ${it.upd && Date.now() - it.upd < 5000 ? 'cx-upd' : ''}"><div class="cx-li-main"><span class="mono cx-code">${esc(it.code)}</span> <strong>${esc(it.desc || (row || {}).desc || '')}</strong> <span class="badge ${k[1]}">${k[0]}</span>${row && row.header ? ' <span class="badge warn" title="Category heading — claims need a more specific code">Not billable as is</span>' : ''}
+          <div class="tiny muted">${esc(it.reason || '')}</div></div>${evBtn('icd', i, it)}<label class="cx-prim ${it.status === 'accepted' && it.kind !== 'differential' ? '' : 'off'}"><input type="radio" name="cx-primary" data-change="cx-primary" value="${i}" ${it.primary ? 'checked' : ''} ${ed && it.status === 'accepted' && it.kind !== 'differential' ? '' : 'disabled'}> Primary</label>${decision('icd', i, it, ed)}</div>`; }).join('')}</div>` : '<p class="cx-empty">No codes yet. A code is suggested when a diagnosis is stated, or a symptom code when no diagnosis was made.</p>'}
+      ${ed ? `<div class="cx-add"><input list="cx-icd-list" id="cx-icd-q" placeholder="Search your ICD-10 table (code or words)" aria-label="Search ICD-10"><datalist id="cx-icd-list">${d.icd10.filter((x) => !x.header).slice(0, 4000).map((x) => `<option value="${esc(x.code)} — ${esc(x.desc)}">`).join('')}</datalist><select id="cx-icd-kind" aria-label="Type of diagnosis"><option value="confirmed">Confirmed</option><option value="provisional" selected>Provisional</option><option value="differential">Differential</option><option value="symptom">Symptom</option></select><button class="btn sm" data-act="cx-icd-add">Add code</button></div>` : ''}`; };
+  const listHtml = (e, c, name, ed) => { const L2 = c.lists[name]; if (!L2.length) return `<p class="cx-empty">${{ meds: 'No medicines discussed yet. Medicines are drafts until you accept them; they then go through the prescription safety check.', inv: 'No investigations discussed yet.', ref: 'No referral discussed yet.' }[name]}</p>`;
+    return `<div class="cx-list">${L2.map((it, i) => { let main = '';
+      if (name === 'meds') { const al = E.checkPrescription(db(), e.patientId, [it.medicineId], {}); main = `<strong>${esc(it.change || 'Start')}: ${esc(it.name)}</strong><div class="cx-med">${['dose', 'frequency', 'duration', 'route'].map((p) => `<label><span>${cap(p)}</span><input data-input="cx-li" data-list="meds" data-i="${i}" data-p="${p}" value="${esc(it[p] || '')}" placeholder="Not stated" ${ed && it.status !== 'rejected' ? '' : 'readonly'}></label>`).join('')}</div>${al.map((a) => `<div class="tiny ${a.level === 'critical' ? 'crit-t' : 'warn-t'}">⚠ ${esc(a.type)}: ${esc(a.text)}</div>`).join('')}`; }
+      else if (name === 'inv') main = `<strong>${esc(it.name)}</strong> <span class="badge ${/Existing/.test(it.kind || '') ? 'info' : ''}">${esc(it.kind || 'Requested (draft)')}</span>${it.text ? `<div class="tiny muted">${esc(it.text)}</div>` : ''}${it.status === 'accepted' ? `<div class="tiny">Authorised by ${esc(A.uname(it.by))}</div>` : ''}`;
+      else if (name === 'ref') main = `<strong>Referral to ${esc(it.to)}</strong><div class="cx-med"><label><span>Urgency</span><select data-change="cx-li" data-list="ref" data-i="${i}" data-p="urgency" ${ed ? '' : 'disabled'}>${['Routine', 'Soon', 'Urgent'].map((u) => `<option ${u === it.urgency ? 'selected' : ''}>${u}</option>`).join('')}</select></label><label class="wide"><span>Reason</span><input data-input="cx-li" data-list="ref" data-i="${i}" data-p="reason" value="${esc(it.reason || '')}" ${ed ? '' : 'readonly'}></label></div>`;
+      return `<div class="cx-li ${it.status} ${it.upd && Date.now() - it.upd < 5000 ? 'cx-upd' : ''}"><div class="cx-li-main">${main}</div>${evBtn(name, i, it)}${decision(name, i, it, ed)}</div>`; }).join('')}</div>`; };
+  const docsHtml = (e, c, ed) => { const D = c.lists.docs; return `<h4 class="cx-sub">Documents</h4><div class="cx-docs">${D.map((d) => `<span class="badge ai">✦ ${esc(d.kind)}${d.days ? ' — ' + d.days + ' day' + (d.days > 1 ? 's' : '') : ''} discussed</span>`).join('')}
+      <button class="btn sm" data-act="sicknote" data-id="${e.id}">Sick note</button><button class="btn sm" data-act="referral" data-id="${e.id}">Referral letter</button><button class="btn sm" data-act="cx-visit-summary" data-id="${e.id}">Patient visit summary</button></div><p class="tiny muted">Letters use the practice templates and are prepared from the approved consultation.</p>`; };
+
+  const leftPanel = (e, p) => { const d = db(); const alg = d.allergies.filter((a) => a.patientId === p.id); const meds = d.meds.filter((m) => m.patientId === p.id && m.active); const probs = d.problems.filter((x) => x.patientId === p.id && x.active);
+    const prev = d.encounters.filter((x) => x.patientId === p.id && x.id !== e.id && x.status === 'signed').sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 3); const docs = d.documents.filter((x) => x.patientId === p.id).sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 4);
+    const latest = (type) => d.vitals.filter((v) => v.patientId === p.id && v.type === type).sort((a, b) => (a.date < b.date ? 1 : -1))[0];
+    return `<aside class="cx-left" aria-label="Patient context">
+      <div class="cx-box ${alg.length ? 'alert-box' : ''}"><h4>Allergies</h4>${alg.length ? alg.map((a) => `<div class="cx-allergy">⚠ <strong>${esc(a.allergen)}</strong>${a.reaction ? ' — ' + esc(a.reaction) : ''}</div>`).join('') : '<div class="nka">No known allergies</div>'}</div>
+      <div class="cx-box"><h4>Current medication</h4>${meds.length ? `<ul>${meds.map((m) => `<li>${esc((E.medicine(d, m.medicineId) || {}).name || '')}${m.dose ? ' — ' + esc(m.dose) : ''}</li>`).join('')}</ul>` : '<p class="muted tiny">None recorded</p>'}</div>
+      <div class="cx-box"><h4>Conditions</h4>${probs.length ? `<ul>${probs.map((x) => `<li>${esc(A.icdLabel(x.code))}</li>`).join('')}</ul>` : '<p class="muted tiny">None recorded</p>'}</div>
+      <div class="cx-box"><h4>Recent results</h4>${docs.length ? `<ul>${docs.map((x) => `<li>${esc(x.title)} <span class="tiny muted">${fd(x.date)}</span>${x.acknowledged ? '' : ' <span class="badge warn">Not reviewed</span>'}</li>`).join('')}</ul>` : '<p class="muted tiny">None</p>'}${['BP', 'HbA1c', 'Weight'].map(latest).filter(Boolean).map((v) => `<div class="tiny">${esc(v.type)} ${esc(v.value)} ${esc(v.unit)} <span class="muted">${fd(v.date)}</span></div>`).join('')}</div>
+      <div class="cx-box"><h4>Recent consultations</h4>${prev.length ? prev.map((x) => `<div class="cx-prev"><a href="#/consult/${x.id}">${fd(x.date)}</a> <span class="tiny">${esc((x.assessment || '').slice(0, 90))}</span></div>`).join('') : '<p class="muted tiny">First visit</p>'}</div>
+      <a class="btn sm block" href="#/patient/${p.id}">Open full patient file</a></aside>`; };
+
+  const sideInner = (e) => { const c = cxOf(e); const s = c.scribe; const ed = editableOf(e); const st = s.state; const open = c.flags.filter((f) => f.status === 'open');
+    const segInfo = new Map((s.segInfo || []).map((x) => [x.id, x])); const prov = A.cxProviderStatus();
+    const ctrl = !ed ? '' : st === 'listening' ? `<button class="btn" data-act="cx-pause">⏸ Pause</button><button class="btn primary" data-act="cx-finish">■ Finish consultation</button>`
+      : st === 'paused' || st === 'interrupted' ? `<button class="btn" data-act="cx-resume">▶ Resume</button><button class="btn primary" data-act="cx-finish">■ Finish consultation</button>`
+      : st === 'review' ? `<button class="btn primary" data-act="cx-review">Review AI documentation →</button><button class="btn" data-act="cx-resume">Continue listening</button>`
+      : ['ready', 'consent'].includes(st) ? `<button class="btn ai" data-act="cx-scribe">${MIC} Start AI Scribe</button>` : st === 'declined' ? `<button class="btn" data-act="cx-scribe">Ask again</button>` : st === 'mic-denied' || st === 'nomic' ? `<button class="btn" data-act="cx-resume">Try the microphone again</button><button class="btn" data-act="cx-finish">Finish and review</button>` : '';
+    const stText = { ready: 'Not recording. Start when the patient has agreed.', listening: 'Listening — the microphone is on. Speak normally.', paused: 'Paused — nothing is being recorded.', processing: 'Putting the documentation together…', review: 'Draft ready. Review and approve it before signing.', declined: `The patient declined AI Scribe${c.scribe.declinedAt ? ' at ' + A.ft(c.scribe.declinedAt) : ''}. Document as usual.`, signed: 'Consultation signed.' }[st] || s.why || '';
+    return `<div class="cx-side-h"><strong>AI Scribe</strong><button class="cx-x" data-act="cx-side-toggle" aria-label="Hide the AI Scribe panel" title="Hide panel">⟩</button></div>
+      <div class="cx-status ${(STATES[st] || STATES.ready)[1]}"><span class="cx-dot" aria-hidden="true"></span><div><strong>${esc((STATES[st] || STATES.ready)[0])}</strong>${st === 'listening' ? ` <span class="cx-time">${clock(s.elapsed)}</span>` : ''}<div class="tiny">${esc(s.why || stText)}</div></div></div>
+      <div class="cx-ctrl">${ctrl}</div>
+      <details class="cx-d" ${['listening', 'paused', 'interrupted', 'nomic', 'mic-denied'].includes(st) ? 'open' : ''}><summary>Transcript <span class="cx-count">${s.segs.length}</span></summary>
+        <div class="cx-tr" id="cx-tr">${s.transcriptDeleted ? `<p class="tiny muted">${esc(s.transcriptDeleted.lines)} lines deleted ${fd(s.transcriptDeleted.at.slice(0, 10))} — ${esc(s.transcriptDeleted.why)}. Quotes kept with each field.</p>` : ''}${s.segs.slice(-60).map((g) => { const info = segInfo.get(g.id) || {}; const spk = g.spkHow === 'manual' ? g.spk : info.spk || 'unknown';
+          return `<div class="cx-seg" id="seg-${g.id}"><button class="cx-spk ${spk} ${g.spkHow === 'manual' ? 'set' : ''}" data-act="cx-spk" data-id="${g.id}" ${ed ? '' : 'disabled'} title="Who said this? Click to change (${g.spkHow === 'manual' ? 'set by you' : 'guessed'})">${{ clinician: 'Doctor', patient: 'Patient', other: 'Other', unknown: '?' }[spk]}</button><span class="cx-seg-t">${esc(g.text)}${g.conf != null && g.conf < 0.6 ? ' <span class="badge warn" title="Low speech-recognition confidence">check</span>' : ''}</span><span class="tiny muted">${A.ft(g.at)}</span></div>`; }).join('') || '<p class="tiny muted">Nothing heard yet.</p>'}<div class="cx-partial" id="cx-partial" aria-live="polite">${esc(L.partial && L.encId === e.id ? '… ' + L.partial : '')}</div></div>
+        ${ed && !['declined', 'signed'].includes(st) ? `<form class="cx-type" data-submit="cx-line-add"><select name="spk" aria-label="Who said it"><option value="clinician">Doctor</option><option value="patient">Patient</option><option value="other">Other</option></select><input name="t" placeholder="Type what was said (or correct a line)" aria-label="Type what was said" data-nodictate><button class="btn sm" type="submit">Add</button></form>` : ''}</details>
+      <div class="cx-block"><h4>Needs your review <span class="cx-count ${open.length ? 'warn' : ''}">${open.length}</span></h4>${open.slice(0, 6).map((f) => `<button class="cx-flag ${f.type}" data-act="cx-goto" data-k="${esc(f.field || '')}"><span class="cx-ft">${{ safety: 'Safety', conflict: 'Conflict', corrected: 'Corrected', uncertain: 'Check', missing: 'Missing', speaker: 'Speaker' }[f.type] || 'Check'}</span>${esc(f.text)}</button>`).join('') || '<p class="tiny muted">Nothing flagged.</p>'}${open.length > 6 ? `<p class="tiny">+ ${open.length - 6} more on the review screen</p>` : ''}</div>
+      <div class="cx-block"><h4>Detected so far</h4><div class="cx-det">${Object.entries(c.f).filter(([, f]) => f && f.v && f.src === 'ai' && !f.edited).sort((a, b) => (b[1].upd || 0) - (a[1].upd || 0)).slice(0, 8).map(([k, f]) => `<button class="cx-detrow" data-act="cx-goto" data-k="${esc(k)}"><span>${esc(LABEL(k))}</span><strong>${esc(String(f.v).slice(0, 60))}</strong></button>`).join('') || '<p class="tiny muted">Fields fill in as the conversation goes.</p>'}</div>
+        ${c.lists.icd.length ? `<p class="tiny">ICD-10 suggestions: ${c.lists.icd.filter((i) => i.status === 'suggested').map((i) => `<span class="mono">${esc(i.code)}</span>`).join(', ') || 'all decided'}</p>` : ''}</div>
+      <details class="cx-d"><summary>How this works and privacy</summary><div class="tiny cx-priv"><p><strong>Speech:</strong> ${esc(s.engine || (A.caps.dictation ? 'Hosting runtime dictation' : 'Browser speech recognition'))}. In Chrome and Edge the browser's own speech service turns audio into text. <strong>No audio is stored by Prac360.</strong></p>
+        <p><strong>Clinical structuring:</strong> local Prac360 rules (runs in this browser, nothing sent). <strong>AI model:</strong> ${esc(prov.text)}</p><p><strong>Transcript kept:</strong> ${cfg().retention === 'sign' ? 'until the note is signed, then deleted' : 'for 30 days after signing'}. Quotes that support each field stay with the record.</p>
+        <p><strong>Language:</strong> ${cfg().lang === 'af-ZA' ? 'Afrikaans (South Africa)' : 'English (South Africa)'} — one language per session.</p>${A.can('settings') || A.can('setup') ? '<button class="btn sm" data-act="cx-settings">AI Scribe settings</button>' : ''}</div></details>`; };
+
+  const workspace = (e, p) => { const c = cxOf(e); const ed = editableOf(e); const pr = prefs(); const tpl = TPL[c.template] || TPL['gp-acute']; const panels = panelList(c, e); const st = c.scribe.state;
+    const banner = st === 'declined' ? `<div class="alert info"><span class="ico">i</span><div class="body">${esc(p.firstName)} declined AI Scribe${c.scribe.declinedAt ? ' at ' + A.ft(c.scribe.declinedAt) : ''}. This is an ordinary consultation — type your notes as usual.</div></div>`
+      : st === 'interrupted' || st === 'mic-denied' || st === 'nomic' ? `<div class="alert warn"><span class="ico">!</span><div class="body"><strong>${esc((STATES[st] || [])[0])}.</strong> ${esc(c.scribe.why || '')} ${c.scribe.segs.length ? `${c.scribe.segs.length} lines were heard and saved.` : ''}</div></div>`
+      : approvalValid(e) && e.status === 'draft' ? `<div class="alert good"><span class="ico">✓</span><div class="body"><strong>AI documentation approved</strong> by ${esc(A.uname(c.review.by))} at ${A.ft(c.review.approvedAt)}. You can sign now. Any change will need a new approval.</div></div>`
+      : e.status === 'signed' ? `<div class="alert good"><span class="ico">✓</span><div class="body"><strong>Signed</strong> ${esc(A.ft(e.signedAt))} by ${esc(A.uname(e.signedBy))}. The record is locked — add an addendum for any correction. Signature check: ${E.verifySignature(e) ? '✓ unchanged since signing' : '⚠ mismatch'}.</div></div>` : '';
+    const info = c.info; const infoRow = `<div class="cx-info"><label><span>Date</span><input value="${fd(e.date)} ${A.ft(info.startedAt)}" readonly></label><label><span>Practitioner</span><input value="${esc(A.uname(e.providerId))}" readonly></label>
+      ${[['specialty', 'Specialty', [...new Set(Object.values(TPL).map((t) => t.s))]], ['type', 'Consultation', ['New', 'Follow-up']], ['mode', 'Setting', ['In person', 'Telehealth']]].map(([k, l, opts]) => `<label><span>${l}</span><select data-change="cx-info" data-k="${k}" ${ed ? '' : 'disabled'}>${opts.map((o) => `<option ${o === info[k] ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select></label>`).join('')}
+      <label class="wide"><span>Reason for visit</span><input data-input="cx-info" data-k="reason" value="${esc(info.reason || '')}" ${ed ? '' : 'readonly'} placeholder="Not documented"></label><label><span>Referred by</span><input data-input="cx-info" data-k="referralSource" value="${esc(info.referralSource || '')}" ${ed ? '' : 'readonly'} placeholder="—"></label></div>`;
+    const panelHtml = panels.map((id) => { const pd = PANELS[id]; const why = c.dyn.includes(id) && !((tpl.panels || []).includes(id)) ? ' <span class="badge ai" title="Shown because it came up in the conversation — this does not mean a diagnosis">✦ came up in conversation</span>' : '';
+      return secWrap(c, 'p-' + id, pd.t, (pd.note ? `<p class="tiny muted">${esc(pd.note)}</p>` : '') + pd.f.map(([k, l, kind]) => fieldRow(c, k, l, kind, ed)).join(''), { badge: why, tools: ed ? `<button class="btn sm ghost" data-act="cx-panel-hide" data-id="${id}" title="Hide this section">Hide</button>` : '', count: shownKeys(c, pd.f.map((f) => f[0])).length || '' }); }).join('');
+    const addable = Object.keys(PANELS).filter((id) => !panels.includes(id));
+    const main = `<div class="cx-main" id="cx-main">${banner}${infoRow}${BASE.slice(0, 7).map((id) => sectionHtml(e, c, id, ed)).join('')}${panelHtml}${BASE.slice(7).map((id) => sectionHtml(e, c, id, ed)).join('')}
+      ${ed && addable.length ? `<div class="cx-add cx-add-panel"><select id="cx-panel-sel" aria-label="Add a section">${addable.map((id) => `<option value="${id}">${esc(PANELS[id].t)}</option>`).join('')}</select><button class="btn sm" data-act="cx-panel-add">+ Add section</button></div>` : ''}</div>`;
+    return `<div class="page-head cx-head"><div><div class="crumbs no-crumb"><a href="#/patient/${p.id}">${esc(p.firstName + ' ' + p.lastName)}</a> › Consultation ${fd(e.date)}</div><h1>Consultation</h1></div>
+        <div class="actions"><label class="cx-tpl"><span class="tiny">Form</span><select data-change="cx-tpl" ${ed ? '' : 'disabled'} aria-label="Consultation form">${Object.entries(TPL).map(([id, t]) => `<option value="${id}" ${id === c.template ? 'selected' : ''}>${esc(t.n)}</option>`).join('')}</select></label>
+        ${e.status === 'signed' ? '' : '<span class="badge warn" id="cx-save">Draft — saves as you go</span>'}${scribeBtn(e)}</div></div>
+      ${A.patientBar(p)}
+      <div class="cx-ws ${pr.side ? '' : 'no-side'}">${leftPanel(e, p)}${main}<aside class="cx-side" id="cx-side" aria-label="AI Scribe">${sideInner(e)}</aside>${pr.side ? '' : '<button class="cx-side-open" data-act="cx-side-toggle" aria-label="Show the AI Scribe panel">⟨ AI Scribe</button>'}</div>
+      <div class="actionbar cx-bar" role="region" aria-label="Finish consultation"><div class="cx-bar-l"><a class="btn ghost sm" href="#/consult/${e.id}/classic">Classic view</a>${c.versions.length ? `<span class="tiny muted">Version ${c.versions.length}</span>` : ''}</div>
+        <div class="cx-bar-r">${ed ? `<button class="btn" data-act="cx-save">Save draft</button>` : ''}${ed && c.scribe.used ? `<button class="btn ${approvalValid(e) ? '' : 'primary'}" data-act="cx-review">Review AI documentation</button>` : ''}${ed && A.can('clinical.sign') ? `<button class="btn ${!c.scribe.used || approvalValid(e) ? 'primary' : ''}" data-act="cx-sign" ${c.scribe.used && !approvalValid(e) ? 'aria-disabled="true" title="Approve the AI documentation first"' : ''}>Sign and finalise</button>` : ''}${e.status === 'signed' && A.can('clinical.write') ? `<button class="btn" data-act="addendum" data-id="${e.id}">Add addendum</button>` : ''}${e.status === 'signed' && A.can('billing.review') ? `<a class="btn primary" href="#/billing/${e.id}">Billing review →</a>` : ''}</div></div>`; };
+
+  // ---------------------------------------------------------------- review screen
+  const PRI = { safety: 0, conflict: 1, corrected: 2, uncertain: 3, speaker: 4, missing: 5 }; const MUST = ['safety', 'conflict', 'corrected', 'uncertain', 'speaker'];
+  const reviewView = (e, p) => { const c = cxOf(e); const ed = editableOf(e); const flags = c.flags.filter((f) => !f.gone).sort((a, b) => (PRI[a.type] - PRI[b.type])); const open = flags.filter((f) => f.status === 'open'); const mustOpen = open.filter((f) => MUST.includes(f.type));
+    const undecided = ['icd', 'meds', 'inv', 'ref'].reduce((n, k) => n + c.lists[k].filter((i) => i.status === 'suggested').length, 0); const hasDx = c.lists.icd.some((i) => i.status === 'accepted' && i.kind !== 'differential');
+    const docRows = Object.entries(c.f).filter(([k, f]) => f && f.v && !k.startsWith('soap.')).map(([k, f]) => `<div class="cx-rv ${f.edited ? 'is-me' : f.src === 'ai' ? 'is-ai' : ''}"><span class="cx-rv-l">${esc(LABEL(k))}</span><span class="cx-rv-v">${esc(f.v)}</span>${srcChip(f, k)}${ed ? `<button class="btn sm ghost" data-act="cx-goto" data-k="${esc(k)}">Edit</button>` : ''}</div>`).join('');
+    const ok = approvalValid(e);
+    return `<div class="page-head cx-head"><div><div class="crumbs no-crumb"><a href="#/patient/${p.id}">${esc(p.firstName + ' ' + p.lastName)}</a> › <a href="#/consult/${e.id}">Consultation ${fd(e.date)}</a> › Review</div><h1>Review AI documentation</h1></div><div class="actions">${scribeBtn(e)}</div></div>
+      ${A.patientBar(p)}
+      <div class="cx-review">
+        <div class="cx-steps" aria-label="Steps"><span class="done">1 Consultation</span><span class="${ok ? 'done' : 'on'}">2 Review and approve</span><span class="${e.status === 'signed' ? 'done' : ok ? 'on' : ''}">3 Sign</span></div>
+        ${ok ? `<div class="alert good"><span class="ico">✓</span><div class="body"><strong>Approved</strong> by ${esc(A.uname(c.review.by))} at ${A.ft(c.review.approvedAt)}. Next: sign and finalise.</div></div>` : c.review.clearedAt ? `<div class="alert warn"><span class="ico">!</span><div class="body">An earlier approval was cleared because the documentation changed (${esc(c.review.clearedWhy || '')}). Please approve again.</div></div>` : ''}
+        <section class="card"><h2>Items requiring attention <span class="cx-count ${mustOpen.length ? 'warn' : ''}">${open.length}</span></h2><p class="tiny muted">Safety, conflicts, corrections, uncertain values and unclear speakers must be checked before approval. Missing items are reminders — dismiss them if not relevant.</p>
+          ${flags.length ? flags.map((f) => `<div class="cx-rflag ${f.type} ${f.status}"><span class="cx-ft">${{ safety: 'Safety', conflict: 'Conflict', corrected: 'Corrected', uncertain: 'Check', missing: 'Missing', speaker: 'Speaker' }[f.type] || 'Check'}</span><div class="cx-rflag-t">${esc(f.text)}${(f.ev || []).length ? `<div class="tiny muted">“${esc(f.ev.map((x) => x.quote).filter(Boolean).join('” · “').slice(0, 220))}”</div>` : ''}${f.status !== 'open' ? `<div class="tiny">${f.status === 'resolved' ? '✓ Checked' : 'Dismissed'} by ${esc(A.uname(f.by))}${f.note ? ' — ' + esc(f.note) : ''}</div>` : ''}</div>
+            ${ed && f.status === 'open' ? `<div class="cx-dec">${f.field ? `<button class="btn sm ghost" data-act="cx-goto" data-k="${esc(f.field)}">Go to field</button>` : ''}<button class="btn sm" data-act="cx-flag" data-id="${f.id}" data-v="resolved">Checked</button>${f.type === 'missing' ? `<button class="btn sm ghost" data-act="cx-flag" data-id="${f.id}" data-v="dismissed">Not relevant</button>` : ''}</div>` : ed && f.status !== 'open' ? `<button class="btn sm ghost" data-act="cx-flag" data-id="${f.id}" data-v="open">Reopen</button>` : ''}</div>`).join('') : '<p class="cx-empty">Nothing flagged.</p>'}</section>
+        <section class="card"><h2>AI suggestions</h2>${icdHtml(e, c, ed)}<h3 class="cx-sub">Medicines (drafts)</h3>${listHtml(e, c, 'meds', ed)}<h3 class="cx-sub">Investigations</h3>${listHtml(e, c, 'inv', ed)}<h3 class="cx-sub">Referrals</h3>${listHtml(e, c, 'ref', ed)}</section>
+        <section class="card"><h2>Clinical documentation</h2><p class="tiny muted"><span class="cx-key ai"></span> From the conversation &nbsp; <span class="cx-key me"></span> Entered or changed by you</p><div class="cx-rvlist">${docRows || '<p class="cx-empty">No fields filled yet.</p>'}</div></section>
+        <section class="card"><h2>Treatment and follow-up</h2><div class="cx-rvlist">${['management', 'advice', 'safety', 'fuInterval', 'fuDate', 'fuWarning'].filter((k) => val(c, k)).map((k) => `<div class="cx-rv"><span class="cx-rv-l">${esc(LABEL(k))}</span><span class="cx-rv-v">${esc(val(c, k))}</span></div>`).join('') || '<p class="cx-empty">No plan or follow-up documented.</p>'}</div>
+          ${ed ? `<label class="check cx-task"><input type="checkbox" data-change="cx-fu-task" ${c.fuTask !== false ? 'checked' : ''}> Create a follow-up reminder on approval${val(c, 'fuDate') ? ' (due ' + fd(val(c, 'fuDate')) + ')' : ''}</label>` : ''}</section>
+        <section class="card"><div class="row between"><h2>Final clinical summary</h2>${ed ? '<button class="btn sm" data-act="cx-rebuild">↻ Rebuild from fields</button>' : ''}</div><p class="tiny muted">This becomes the official consultation note. Edit freely.</p>${[['soap.s', 'Subjective'], ['soap.o', 'Objective'], ['soap.a', 'Assessment'], ['soap.p', 'Plan']].map(([k, l]) => fieldRow(c, k, l, 'area', ed)).join('')}</section>
+        ${c.versions.length ? `<details class="card"><summary><strong>Version history</strong> <span class="tiny muted">(${c.versions.length})</span></summary><table class="t small"><tbody>${c.versions.slice().reverse().map((v) => `<tr><td>${v.n}</td><td>${esc(v.at.replace('T', ' ').slice(0, 16))}</td><td>${esc(A.uname(v.by))}</td><td>${esc(v.reason)}</td><td class="mono tiny">${esc(v.hash)}</td></tr>`).join('')}</tbody></table></details>` : ''}
+      </div>
+      <div class="actionbar cx-bar"><div class="cx-bar-l"><a class="btn" href="#/consult/${e.id}">← Back to consultation</a></div><div class="cx-bar-r">${ed ? `<button class="btn" data-act="cx-save">Save draft</button>
+        <button class="btn ${ok ? '' : 'primary'}" data-act="cx-approve" ${ok ? 'disabled' : ''} title="${mustOpen.length ? mustOpen.length + ' item(s) still need checking' : undecided ? undecided + ' suggestion(s) still undecided' : !hasDx ? 'Accept at least one diagnosis code' : ''}">${ok ? '✓ Approved' : 'Approve AI documentation'}</button>
+        ${A.can('clinical.sign') ? `<button class="btn ${ok ? 'primary' : ''}" data-act="cx-sign" ${ok ? '' : 'aria-disabled="true"'}>Sign and finalise</button>` : ''}` : e.status === 'signed' && A.can('billing.review') ? `<a class="btn primary" href="#/billing/${e.id}">Billing review →</a>` : ''}</div></div>`; };
+
+  // ---------------------------------------------------------------- page
+  const prevConsult = P.consult;
+  P.consult = function (params) { const e = encById(params[0]); if (!e) return prevConsult.apply(this, arguments);
+    if (params[1] === 'classic' || (A.isDental && A.isDental())) { const html = prevConsult.call(this, [params[0]]); return (params[1] === 'classic' ? `<div class="alert info"><span class="ico">i</span><div class="body">Classic view. <a href="#/consult/${e.id}">Back to the consultation workspace with AI Scribe</a>.</div></div>` : '') + html; }
+    if (!A.can('clinical.read')) return '<div class="card">Clinical notes are not available for your role.</div>';
+    sweepRetention(); const p = E.patient(db(), e.patientId); const c = cxOf(e);
+    if (L.encId === e.id && c.scribe.state === 'listening' && !(A.dictation && A.dictation.engineName && A.dictation.engineName())) { /* engine lost after reload */ }
+    if (c.scribe.state === 'listening' && L.encId !== e.id) { c.scribe.state = 'paused'; c.scribe.why = 'Paused — the page was reloaded. Press Resume to carry on.'; }
+    return params[1] === 'review' ? reviewView(e, p) : workspace(e, p); };
+
+  // ---------------------------------------------------------------- live painting without disturbing typing
+  const paintSide = (e) => { const el = document.getElementById('cx-side'); if (!el) return; const tr = document.getElementById('cx-tr'); const atBottom = !tr || tr.scrollTop + tr.clientHeight >= tr.scrollHeight - 30; const typing = el.contains(document.activeElement) && /INPUT|SELECT/.test(document.activeElement.tagName);
+    if (typing) return; el.innerHTML = sideInner(e); const t2 = document.getElementById('cx-tr'); if (t2 && atBottom) t2.scrollTop = t2.scrollHeight; };
+  const paintLive = (e, full, changed) => { if (!/^#\/consult\//.test(location.hash) || A.params[0] !== e.id) return; const b = document.getElementById('cx-scribe-btn'); if (b) b.outerHTML = scribeBtn(e); paintSide(e);
+    if (A.params[1] === 'review') { if (full) A.render(); return; } const main = document.getElementById('cx-main'); if (!main) return;
+    const focused = main.contains(document.activeElement) && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+    if (!focused && (full || (changed && changed.length))) { const y = (document.getElementById('main') || {}).scrollTop; const tmp = document.createElement('div'); const p = E.patient(db(), e.patientId); tmp.innerHTML = workspace(e, p); const nm = tmp.querySelector('#cx-main'); if (nm) main.replaceWith(nm); const bar = tmp.querySelector('.cx-bar'), ob = document.querySelector('.cx-bar'); if (bar && ob) ob.replaceWith(bar); const m = document.getElementById('main'); if (m && y != null) m.scrollTop = y; return; }
+    // someone is typing: update other fields in place
+    (changed || []).forEach((k) => { const f = e.cx.f[k]; const el = main.querySelector(`[data-k="${CSS.escape(k)}"]`); if (!el || el === document.activeElement) return; el.value = (f && f.v) || ''; const row = el.closest('[data-row]'); if (row) { row.classList.remove('cx-upd'); void row.offsetWidth; row.classList.add('cx-upd'); } }); };
+
+  // ================================================================ handlers
+  const cur = () => encById(A.params[0]);
+  const needEdit = (e) => { if (!e || !editableOf(e)) { A.toast('This consultation can no longer be changed.', 'error'); return false; } return true; };
+  const consentOf = (pid) => db().consents.filter((x) => x.patientId === pid && x.type === CONSENT).sort((a, b) => (a.at < b.at ? 1 : -1))[0];
+  const consentModal = (e) => { const p = E.patient(db(), e.patientId); const prev = consentOf(p.id); const standing = prev && prev.granted && prev.standing && cfg().standing && !prev.withdrawnAt; const child = A.age(p) < 18;
+    A.modal('AI Scribe — patient consent', `<div class="cx-consent"><p>Before listening, ask ${esc(p.firstName)}${child ? ' and the parent or guardian' : ''}. You could say:</p>
+      <blockquote>“I use an AI assistant that listens to our conversation and drafts my notes, so I can focus on you. The speech is turned into text; the recording itself is not kept. I check and sign everything. Is that OK with you? You can say no — it won't change your care.”</blockquote>
+      ${standing ? `<div class="alert info"><span class="ico">i</span><div class="body">Standing consent on file from ${fd(String(prev.at).slice(0, 10))} (${esc(prev.method || 'verbal')}). Confirm the patient is still happy today.</div></div>` : ''}
+      <form id="cx-consent-f" class="grid g2"><label class="f"><span>Consent given by</span><select name="by"><option value="patient" ${child ? '' : 'selected'}>Patient</option><option value="guardian" ${child ? 'selected' : ''}>Parent or guardian</option><option value="representative">Authorised representative</option></select></label>
+        <label class="f"><span>Name (if not the patient)</span><input name="name" data-nodictate></label><label class="f"><span>How</span><select name="method"><option>Verbal</option><option>Written</option><option>Electronic</option></select></label>
+        <label class="f"><span>Applies to</span><select name="scope"><option value="visit">This consultation only</option>${cfg().standing ? '<option value="standing">This and future consultations (until withdrawn)</option>' : ''}</select></label></form>
+      <p class="tiny muted">Recorded with the date, time and your name in the patient file. ${esc(p.firstName)} can withdraw at any time.</p></div>`,
+      `<button class="btn" data-act="cx-consent" data-v="no">Patient declines</button>${standing ? `<button class="btn" data-act="cx-consent" data-v="standing">Still agrees — start</button>` : ''}<button class="btn ai" data-act="cx-consent" data-v="yes">${MIC} Patient agrees — start</button>`); };
+  H['cx-consent'] = (el) => { const e = cur(); if (!needEdit(e)) return; const p = E.patient(db(), e.patientId); const f = document.getElementById('cx-consent-f'); const v = el.dataset.v; const c = cxOf(e);
+    const by = f ? f.by.value : 'patient', name = f ? f.name.value.trim() : '', method = f ? f.method.value : 'Verbal', scope = f ? f.scope.value : 'visit';
+    if (v !== 'standing') { const rec = { id: E.id('cs'), patientId: p.id, type: CONSENT, granted: v === 'yes', standing: v === 'yes' && scope === 'standing', at: now(), by: A.user.id, method, givenBy: by, givenByName: name || null, encounterId: e.id,
+        scope: 'AI Scribe: conversation turned into text by speech recognition and structured into draft notes for the clinician to review; no audio stored', evidence: `${method}, recorded by ${A.user.name}${by !== 'patient' ? ` — given by ${by}${name ? ' ' + name : ''}` : ''}` };
+      db().consents.push(rec); c.scribe.consentId = rec.id; audit(e, v === 'yes' ? 'ai-scribe-consent-granted' : 'ai-scribe-consent-declined', `${method}${rec.standing ? ', standing' : ''}${by !== 'patient' ? ', by ' + by : ''}`); }
+    else { const prev = consentOf(p.id); c.scribe.consentId = prev.id; audit(e, 'ai-scribe-consent-confirmed', 'Standing consent confirmed today'); }
+    A.closeModal(); if (v === 'no') { c.scribe.state = 'declined'; c.scribe.declinedAt = now(); A.save(); A.render(); A.toast('Recorded. This stays an ordinary consultation.'); return; }
+    c.scribe.startedAt = c.scribe.startedAt || now(); audit(e, 'ai-scribe-start', 'Listening started'); startListening(e); A.render(); };
+  H['cx-scribe'] = () => { const e = cur(); if (!e) return; const c = cxOf(e); const st = c.scribe.state;
+    if (st === 'listening') return H['cx-pause'](); if (st === 'paused' || st === 'interrupted') return H['cx-resume'](); if (st === 'review' || st === 'signed') return A.go('#/consult/' + e.id + '/review');
+    if (!needEdit(e)) return; if (!A.can('clinical.write')) return A.toast('Only clinicians can use AI Scribe.', 'error'); if (A.featureOn && !A.featureOn('assist')) return A.toast('AI Scribe is part of the Prac360 Assist add-on.', 'error'); consentModal(e); };
+  H['cx-pause'] = () => { const e = cur(); if (!e) return; stopListening(e); audit(e, 'ai-scribe-paused', ''); setState(e, 'paused'); A.render(); };
+  H['cx-resume'] = () => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); if (!c.scribe.consentId) return consentModal(e); audit(e, 'ai-scribe-resumed', ''); startListening(e); A.render(); };
+  H['cx-finish'] = async () => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); stopListening(e); setState(e, 'processing'); audit(e, 'ai-scribe-stop', `${c.scribe.segs.length} lines, ${clock(c.scribe.elapsed)}`);
+    runExtract(e); const r = await aiRefine(e); rebuild(e, true); version(e, 'AI draft ready' + (r.used ? ` (AI model: ${r.accepted} verified, ${r.rejected} discarded)` : ' (rules)'));
+    c.scribe.state = 'review'; A.cxListening = false; A.save(); A.go('#/consult/' + e.id + '/review'); A.toast(c.scribe.segs.length ? 'Draft ready — please review it.' : 'Nothing was heard. Review the form and document manually.'); };
+  H['cx-review'] = () => { const e = cur(); if (!e) return; const c = cxOf(e); if (c.scribe.state === 'listening') { stopListening(e); c.scribe.state = 'review'; } runExtract(e); rebuild(e, false); A.save(); A.go('#/consult/' + e.id + '/review'); };
+  H['cx-save'] = () => { const e = cur(); if (!needEdit(e)) return; version(e, 'Draft saved'); audit(e, 'consult-draft-saved', ''); A.save(); A.toast('Draft saved.'); A.render(); };
+  H['cx-spk'] = (el) => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); const g = c.scribe.segs.find((x) => x.id === el.dataset.id); if (!g) return; const info = (c.scribe.segInfo || []).find((x) => x.id === g.id) || {}; const order = ['clinician', 'patient', 'other', 'unknown'];
+    const curS = g.spkHow === 'manual' ? g.spk : info.spk || 'unknown'; g.spk = order[(order.indexOf(curS) + 1) % order.length]; if (g.spk === 'unknown') g.spk = 'clinician'; g.spkHow = 'manual'; const ch = runExtract(e); A.save(); paintLive(e, true, ch); };
+  H['submit:cx-line-add'] = (f) => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); const t = f.t.value.trim(); if (!t) return; c.scribe.segs.push({ id: segId(c), text: t, at: now(), ms: c.scribe.elapsed || 0, spk: f.spk.value, spkHow: 'manual', by: 'typed' }); c.scribe.used = true; if (!c.scribe.consentId && c.scribe.state === 'ready') c.scribe.state = 'paused';
+    f.t.value = ''; const ch = runExtract(e); A.save(); paintLive(e, true, ch); setTimeout(() => { const i = document.querySelector('.cx-type input[name=t]'); if (i) i.focus(); }, 30); };
+  H['input:cx-f'] = (el) => { const e = cur(); if (!e || !editableOf(e)) return; const c = cxOf(e); const k = el.dataset.k; const v = el.value; const f = c.f[k] || (c.f[k] = {}); if ((f.v || '') === v) return;
+    if (!f.edited && f.src && f.src !== 'manual') f.was = { v: f.v, src: f.src, ev: f.ev }; Object.assign(f, { v, src: 'manual', edited: true, by: A.user.id, at: now() }); delete f.aiAlt; delete f.upd; invalidate(e, LABEL(k) + ' edited');
+    clearTimeout(H._cxs); H._cxs = setTimeout(() => { A.save(); const s = document.getElementById('cx-save'); if (s) s.textContent = 'Saved ' + new Date().toTimeString().slice(0, 5); const row = el.closest('[data-row]'); if (row) { row.classList.remove('is-ai'); row.classList.add('is-me'); const ch = row.querySelector('.cx-chip'); if (ch) ch.outerHTML = srcChip(f, k); } }, 400); };
+  H['input:cx-info'] = (el) => { const e = cur(); if (!e || !editableOf(e)) return; cxOf(e).info[el.dataset.k] = el.value; invalidate(e, 'consultation details edited'); clearTimeout(H._cxs); H._cxs = setTimeout(() => A.save(), 400); };
+  H['change:cx-info'] = (el) => H['input:cx-info'](el);
+  H['change:cx-tpl'] = (el) => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); c.template = el.value; c.info.specialty = TPL[el.value].s; prefs().template = el.value; audit(e, 'consult-form-changed', TPL[el.value].n); invalidate(e, 'form changed'); A.save(); A.render(); };
+  H['cx-alt'] = (el) => { const e = cur(); if (!needEdit(e)) return; const f = cxOf(e).f[el.dataset.k]; if (!f || !f.aiAlt) return; if (el.dataset.v === 'use') { Object.assign(f, { v: f.aiAlt.v, src: 'ai', ev: f.aiAlt.ev, edited: false, upd: Date.now() }); invalidate(e, LABEL(el.dataset.k) + ' changed'); } else f.altNo = f.aiAlt.v; delete f.aiAlt; A.save(); A.render(); };
+  const showSource = (title, evx, e) => { const c = cxOf(e); const seg = (id) => c.scribe.segs.find((s) => s.id === id); const info = new Map((c.scribe.segInfo || []).map((x) => [x.id, x]));
+    A.modal('Where this came from', `<p class="small"><strong>${esc(title)}</strong></p>${(evx || []).length ? `<ul class="cx-srcl">${evx.map((x) => { const g = seg(x.seg); const sp = g ? (g.spkHow === 'manual' ? g.spk : (info.get(g.id) || {}).spk) : ''; return `<li><span class="badge">${esc({ clinician: 'Doctor', patient: 'Patient', other: 'Other' }[sp] || 'Speaker unclear')}</span> ${g ? A.ft(g.at) : ''}<blockquote>“${esc(x.quote || (g ? g.text : ''))}”</blockquote>${g && g.text !== x.quote ? `<div class="tiny muted">Full line: ${esc(g.text)}</div>` : !g && c.scribe.transcriptDeleted ? '<div class="tiny muted">Full transcript deleted under the practice retention policy; the supporting words are kept.</div>' : ''}</li>`; }).join('')}</ul>` : '<p class="small muted">Entered by hand — no transcript source.</p>'}<p class="tiny muted">Source types: ✦ AI = this consultation's transcript · Record = earlier patient record · Calculated = derived · You = typed or edited by the practitioner.</p>`, '<button class="btn primary" data-act="modal-close">Close</button>'); };
+  H['cx-src'] = (el) => { const e = cur(); if (!e) return; const f = cxOf(e).f[el.dataset.k]; if (!f) return; showSource(`${LABEL(el.dataset.k)}: ${f.v}${f.edited && f.was ? ` (AI had: “${f.was.v}”)` : ''}`, f.edited && f.was ? f.was.ev : f.ev, e); };
+  H['cx-src-li'] = (el) => { const e = cur(); if (!e) return; const it = cxOf(e).lists[el.dataset.list][+el.dataset.i]; if (!it) return; showSource(it.code ? `${it.code} ${it.desc}` : it.name || it.to || it.kind, it.ev, e); };
+  H['cx-li'] = (el) => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); const it = c.lists[el.dataset.list][+el.dataset.i]; if (!it) return; it.status = el.dataset.v; it.by = A.user.id; it.decidedAt = now();
+    if (el.dataset.list === 'icd') { if (it.status !== 'accepted') it.primary = false; if (it.status === 'accepted' && it.kind !== 'differential' && !c.lists.icd.some((x) => x.primary)) it.primary = true; }
+    audit(e, 'ai-suggestion-' + it.status, `${el.dataset.list}: ${it.code || it.name || it.to || it.kind}`); invalidate(e, 'suggestion decided'); A.save(); A.render(); };
+  H['input:cx-li'] = (el) => { const e = cur(); if (!e || !editableOf(e)) return; const it = cxOf(e).lists[el.dataset.list][+el.dataset.i]; if (!it) return; it[el.dataset.p] = el.value; it.edited = true; invalidate(e, 'suggestion edited'); clearTimeout(H._cxs); H._cxs = setTimeout(() => A.save(), 400); };
+  H['change:cx-li'] = (el) => H['input:cx-li'](el);
+  H['change:cx-primary'] = (el) => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); c.lists.icd.forEach((x, i) => { x.primary = i === +el.value; }); invalidate(e, 'primary diagnosis changed'); A.save(); A.render(); };
+  H['cx-icd-add'] = () => { const e = cur(); if (!needEdit(e)) return; const q = (document.getElementById('cx-icd-q') || {}).value || ''; const code = q.split(' ')[0].trim().toUpperCase(); const row = E.icd(db(), code);
+    if (!row) return A.toast('Pick a code from your ICD-10 table (start typing the code or words).', 'error'); const c = cxOf(e); if (c.lists.icd.some((x) => x.code === row.code)) return A.toast('That code is already listed.');
+    const kind = (document.getElementById('cx-icd-kind') || {}).value || 'provisional'; c.lists.icd.push({ code: row.code, desc: row.desc, kind, src: 'manual', status: 'accepted', by: A.user.id, decidedAt: now(), reason: 'Added by ' + A.user.name, primary: !c.lists.icd.some((x) => x.primary) && kind !== 'differential' });
+    if (row.header) A.toast(`${row.code} is a category heading — claims need a more specific code.`); audit(e, 'icd-added', row.code); invalidate(e, 'code added'); A.save(); A.render(); };
+  H['cx-add-row'] = (el) => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); const v = (document.getElementById(el.dataset.sel) || {}).value; if (!v) return; c[el.dataset.list] = (c[el.dataset.list] || []).concat([v]); A.save(); A.render(); setTimeout(() => { const i = document.querySelector(`[data-k="${CSS.escape(v)}"]`); if (i) i.focus(); }, 60); };
+  H['cx-panel-add'] = () => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); const v = (document.getElementById('cx-panel-sel') || {}).value; if (!v) return; c.added.push(v); c.hidden = c.hidden.filter((x) => x !== v); A.save(); A.render(); };
+  H['cx-panel-hide'] = (el) => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); c.hidden.push(el.dataset.id); c.added = c.added.filter((x) => x !== el.dataset.id); A.save(); A.render(); };
+  H['cx-sec-toggle'] = (el) => { const pr = prefs(); pr.collapsed[el.dataset.id] = !pr.collapsed[el.dataset.id]; A.save(); const s = el.closest('.cx-sec'); if (s) { s.classList.toggle('closed', !!pr.collapsed[el.dataset.id]); el.setAttribute('aria-expanded', String(!pr.collapsed[el.dataset.id])); } };
+  H['cx-more'] = (el) => { const pr = prefs(); pr.more = pr.more || {}; pr.more[el.dataset.id] = !pr.more[el.dataset.id]; A.save(); A.render(); setTimeout(() => { const s = document.getElementById('cx-sec-' + el.dataset.id); if (s) s.scrollIntoView({ block: 'nearest' }); }, 30); };
+  H['cx-side-toggle'] = () => { const pr = prefs(); pr.side = !pr.side; A.save(); A.render(); };
+  H['cx-goto'] = (el) => { const e = cur(); if (!e) return; const k = el.dataset.k || ''; const go = () => { const c = cxOf(e); const pr = prefs(); const sec = k.startsWith('v.') || k.startsWith('vital') ? 'vitals' : k.startsWith('exam') ? 'exam' : k.startsWith('ros') ? 'ros' : ['icd', 'dx'].includes(k) ? 'icd' : k === 'med' ? 'plan' : k === 'followUp' ? 'fu' : k === 'allergies' ? 'history' : k === 'assessment' ? 'assessment' : k === 'complaint' || k === 'symptoms' ? 'complaint' : '';
+      if (sec && pr.collapsed[sec]) { pr.collapsed[sec] = false; A.render(); } const target = document.querySelector(`[data-k="${CSS.escape(k.replace(/^vital\./, 'v.'))}"]`) || (sec && document.getElementById('cx-sec-' + sec)); if (target) { target.scrollIntoView({ block: 'center', behavior: 'smooth' }); const row = target.closest('[data-row], .cx-sec') || target; row.classList.add('cx-flash'); setTimeout(() => row.classList.remove('cx-flash'), 1600); if (target.focus && /INPUT|TEXTAREA/.test(target.tagName)) target.focus({ preventScroll: true }); } void c; };
+    if (A.params[1] === 'review') { A.go('#/consult/' + e.id); setTimeout(go, 250); } else go(); };
+  H['cx-flag'] = (el) => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); const f = c.flags.find((x) => x.id === el.dataset.id); if (!f) return; f.status = el.dataset.v; f.by = A.user.id; f.at = now(); audit(e, 'ai-flag-' + f.status, f.text.slice(0, 80)); A.save(); A.render(); };
+  H['change:cx-fu-task'] = (el) => { const e = cur(); if (!e) return; cxOf(e).fuTask = el.checked; A.save(); };
+  // summary from fields (does not overwrite what the doctor typed in the summary unless asked)
+  const rebuild = (e, keepEdited) => { const c = cxOf(e); const j = (keys) => keys.map((k) => val(c, k) && `${LABEL(k)} ${val(c, k)}`).filter(Boolean).join('; ');
+    const vit = CX.VITALS.concat([{ key: 'bmi', label: 'BMI', unit: 'kg/m²' }]).filter((v) => val(c, 'v.' + v.key)).map((v) => `${v.label} ${val(c, 'v.' + v.key)} ${v.unit}${c.f['v.' + v.key].note ? ' (' + c.f['v.' + v.key].note.toLowerCase() + ')' : ''}`).join(', ');
+    const exam = EXAMS.filter((x) => val(c, 'exam.' + x)).map((x) => `${x}: ${val(c, 'exam.' + x)}`).join('. '); const meds = c.lists.meds.filter((m) => m.status !== 'rejected').map((m) => `${m.change || 'Start'} ${m.name}${[m.dose, m.frequency, m.duration].filter(Boolean).length ? ' — ' + [m.dose, m.frequency, m.duration].filter(Boolean).join(', ') : ''}${m.status === 'suggested' ? ' (not yet accepted)' : ''}`).join('; ');
+    const panels = panelList(c, e).map((id) => PANELS[id].f.filter(([k]) => val(c, k)).map(([k, l]) => `${l}: ${val(c, k)}`).join('; ')).filter(Boolean).join('. ');
+    const s = CX.soap({ reason: c.info.reason, complaint: [val(c, 'complaint'), val(c, 'duration') && 'for ' + val(c, 'duration')].filter(Boolean).join(' '), hpi: val(c, 'hpi'), negatives: val(c, 'negatives'), historyNow: [val(c, 'historyNow'), j(['family', 'social', 'smoking', 'alcohol', 'pregnancy'])].filter(Boolean).join('; '),
+      vitals: vit, exam: [exam, panels].filter(Boolean).join('. '), summary: val(c, 'summary'), working: val(c, 'working'), confirmed: val(c, 'confirmed'), differentials: val(c, 'differentials'), concerns: val(c, 'concerns'),
+      management: [val(c, 'management'), val(c, 'treatmentGiven')].filter(Boolean).join('\n'), meds, inv: c.lists.inv.filter((i) => i.status !== 'rejected').map((i) => i.name + (/Existing/.test(i.kind || '') ? ' (result discussed)' : '')).join(', '), ref: c.lists.ref.filter((r) => r.status !== 'rejected').map((r) => `${r.to} (${r.urgency})`).join(', '),
+      advice: val(c, 'advice'), safety: val(c, 'safety'), followUp: [val(c, 'fuInterval'), val(c, 'fuDate') && '(' + fd(val(c, 'fuDate')) + ')'].filter(Boolean).join(' ') });
+    [['soap.s', s.subjective], ['soap.o', s.objective], ['soap.a', s.assessment], ['soap.p', s.plan]].forEach(([k, v]) => { const f = c.f[k]; if (keepEdited && f && f.edited) return; c.f[k] = { v, src: 'derived', note: 'From the fields', ev: [], at: now() }; }); };
+  H['cx-rebuild'] = () => { const e = cur(); if (!needEdit(e)) return; rebuild(e, false); invalidate(e, 'summary rebuilt'); A.save(); A.render(); A.toast('Summary rebuilt from the fields.'); };
+
+  // ---------------------------------------------------------------- approval and signing
+  H['cx-approve'] = () => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); const mustOpen = c.flags.filter((f) => f.status === 'open' && !f.gone && MUST.includes(f.type));
+    const undecided = ['icd', 'meds', 'inv', 'ref'].flatMap((k) => c.lists[k].filter((i) => i.status === 'suggested').map((i) => i.code || i.name || i.to)); const dx = c.lists.icd.filter((i) => i.status === 'accepted' && i.kind !== 'differential');
+    if (mustOpen.length) return A.toast(`${mustOpen.length} item(s) under "Items requiring attention" still need checking.`, 'error'); if (undecided.length) return A.toast(`Accept or reject every suggestion first (${undecided.slice(0, 4).join(', ')}${undecided.length > 4 ? '…' : ''}).`, 'error');
+    if (!dx.length) return A.toast('Accept at least one diagnosis or symptom code.', 'error'); if (!['soap.s', 'soap.a', 'soap.p'].every((k) => val(c, k))) rebuild(e, true);
+    A.modal('Approve AI documentation', `<p>You are confirming that you have reviewed the AI-assisted documentation for <strong>${esc(A.pname(e.patientId))}</strong> and that it is an accurate record of this consultation.</p><ul class="small"><li>${dx.length} diagnosis code(s): ${dx.map((d) => esc(d.code) + (d.primary ? ' (primary)' : '')).join(', ')}</li><li>${c.lists.meds.filter((m) => m.status === 'accepted').length} medicine(s) go to the prescription safety check</li><li>${c.lists.inv.filter((i) => i.status === 'accepted').length} investigation request(s), ${c.lists.ref.filter((r) => r.status === 'accepted').length} referral(s)</li><li>${c.fuTask !== false && val(c, 'fuDate') ? 'Follow-up reminder for ' + fd(val(c, 'fuDate')) : 'No follow-up reminder'}</li></ul>
+      <label class="check"><input type="checkbox" id="cx-ack"> I have reviewed it and take responsibility for this record.</label><p class="tiny muted">Approving does not sign the note. Signing is the next step.</p>`, `<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="cx-approve-ok">Approve</button>`); };
+  H['cx-approve-ok'] = () => { const e = cur(); if (!needEdit(e)) return; if (!(document.getElementById('cx-ack') || {}).checked) return A.toast('Tick the box to confirm your review.', 'error'); const c = cxOf(e); const d = db(); A.closeModal(); const notes = [];
+    // write the approved record into the consultation (note text, codes, vitals, prescription drafts, follow-up)
+    e.subjective = val(c, 'soap.s'); e.objective = val(c, 'soap.o'); e.assessment = val(c, 'soap.a'); e.plan = val(c, 'soap.p');
+    const dx = c.lists.icd.filter((i) => i.status === 'accepted' && i.kind !== 'differential').sort((a, b) => (b.primary ? 1 : 0) - (a.primary ? 1 : 0)); e.diagnoses = dx.map((i) => i.code);
+    if (c.info.startedAt && !e.durationMin && c.scribe.elapsed) e.durationMin = Math.max(1, Math.round(c.scribe.elapsed / 60000));
+    const VT = { bp: ['BP', 'mmHg'], hr: ['Pulse', 'bpm'], rr: ['Resp rate', '/min'], temp: ['Temp', '°C'], spo2: ['SpO2', '%'], weight: ['Weight', 'kg'], height: ['Height', 'cm'], glucose: ['Glucose', 'mmol/L'], pain: ['Pain', '/10'] };
+    Object.entries(VT).forEach(([k, [type, unit]]) => { const f = c.f['v.' + k]; if (!f || !f.v || (f.note === 'Patient-reported')) return; const exists = d.vitals.some((v) => v.patientId === e.patientId && v.date === e.date && v.type === type && String(v.value) === String(f.v)); if (!exists) d.vitals.push({ id: E.id('v'), patientId: e.patientId, date: e.date, type, value: f.v, unit, source: f.edited ? 'Consultation (entered)' : 'Consultation (AI Scribe, approved)', by: A.user.id, encounterId: e.id }); });
+    const meds = c.lists.meds.filter((m) => m.status === 'accepted' && m.change !== 'Stop' && !m.sent); if (meds.length) { let s = d.scripts.find((x) => x.encounterId === e.id); if (!s) { s = { id: E.id('rx'), encounterId: e.id, patientId: e.patientId, prescriberId: A.user.id, date: e.date, items: [], draft: true }; d.scripts.push(s); }
+      meds.forEach((m) => { const al = E.checkPrescription(d, e.patientId, [m.medicineId], {}); if (al.some((x) => x.level === 'critical')) { notes.push(`${m.name} not added — ${al.filter((x) => x.level === 'critical').map((x) => x.type).join(', ')}. Prescribe in the classic view with a recorded reason if you still want it.`); return; }
+        s.items.push({ medicineId: m.medicineId, directions: [m.dose, m.frequency, m.duration].filter(Boolean).join(', ') || 'As directed', qty: 1, repeats: 0, dispensed: false, overrides: al.map((x) => ({ alert: x.type + ': ' + x.text, reason: 'Reviewed by prescriber during AI Scribe approval' })), fromScribe: true }); m.sent = true; }); }
+    c.lists.inv.filter((i) => i.status === 'accepted').forEach((i) => { i.authorisedBy = A.user.id; i.authorisedAt = i.authorisedAt || now(); });
+    if (c.fuTask !== false && val(c, 'fuDate') && A.addFollowup && !c.fuTaskId) { const t = A.addFollowup({ title: `Follow up ${A.pname(e.patientId)}${val(c, 'working') ? ' — ' + val(c, 'working') : ''}`, due: val(c, 'fuDate'), patientId: e.patientId, cat: 'clinical', note: [val(c, 'fuInterval') && 'Agreed: ' + val(c, 'fuInterval'), val(c, 'fuWarning')].filter(Boolean).join('\n') }); c.fuTaskId = t.id; }
+    c.review = { approvedAt: now(), by: A.user.id }; c.review.hash = approvalHash(e); c.scribe.state = 'review'; version(e, 'AI documentation approved'); audit(e, 'ai-documentation-approved', `${e.diagnoses.join(', ')}; ${c.flags.filter((f) => f.status !== 'open').length} flags checked`);
+    A.save(); A.render(); if (notes.length) A.modal('Approved — one thing to note', `<ul>${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>`, '<button class="btn primary" data-act="modal-close">OK</button>'); else A.toast('Approved. You can sign the consultation now.'); };
+  H['cx-sign'] = () => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); if (c.scribe.used && !approvalValid(e)) { A.toast('Approve the AI documentation first.', 'error'); if (A.params[1] !== 'review') A.go('#/consult/' + e.id + '/review'); return; }
+    if (!c.scribe.used) { // manual consultation in the new workspace: write the note from the fields first
+      if (!['soap.s', 'soap.a'].some((k) => val(c, k))) rebuild(e, true); e.subjective = e.subjective || val(c, 'soap.s'); e.objective = e.objective || val(c, 'soap.o'); e.assessment = e.assessment || val(c, 'soap.a'); e.plan = e.plan || val(c, 'soap.p');
+      const dx = c.lists.icd.filter((i) => i.status === 'accepted' && i.kind !== 'differential').sort((a, b) => (b.primary ? 1 : 0) - (a.primary ? 1 : 0)).map((i) => i.code); if (dx.length) e.diagnoses = [...new Set(dx.concat(e.diagnoses || []))]; A.save(); }
+    H.sign({ dataset: { id: e.id } }); };
+  H['cx-visit-summary'] = (el) => { const e = encById(el.dataset.id); if (!e) return; const c = cxOf(e); if (c.scribe.used && !approvalValid(e) && e.status !== 'signed') return A.toast('Approve the documentation first — the visit summary is made from the approved record.', 'error'); const p = E.patient(db(), e.patientId);
+    const body = [`Visit summary — ${p.firstName} ${p.lastName}, ${fd(e.date)}`, val(c, 'working') && 'What we found: ' + val(c, 'working'), c.lists.meds.filter((m) => m.status === 'accepted').length && 'Medicines: ' + c.lists.meds.filter((m) => m.status === 'accepted').map((m) => `${m.name} ${[m.dose, m.frequency, m.duration].filter(Boolean).join(', ')}`).join('; '), val(c, 'advice') && 'Advice: ' + val(c, 'advice'), val(c, 'safety') && 'Come back sooner if: ' + val(c, 'safety'), val(c, 'fuInterval') && `Follow-up: ${val(c, 'fuInterval')}${val(c, 'fuDate') ? ' (' + fd(val(c, 'fuDate')) + ')' : ''}`].filter(Boolean).join('\n\n');
+    A.modal('Patient visit summary', `<textarea id="cx-vs" rows="12" style="width:100%">${esc(body)}</textarea><p class="tiny muted">Plain-language summary for the patient. Check it before you give it out.</p>`, `<button class="btn" data-act="modal-close">Close</button><button class="btn primary" data-act="cx-vs-copy">Copy</button>`); };
+  H['cx-vs-copy'] = () => { const t = document.getElementById('cx-vs'); if (t) { t.select(); try { navigator.clipboard.writeText(t.value); } catch (x) { document.execCommand('copy'); } A.toast('Copied.'); } };
+
+  // ---------------------------------------------------------------- settings (practice)
+  H['cx-settings'] = () => { const s = cfg(); A.modal('AI Scribe settings', `<form id="cx-set" class="grid"><label class="f"><span>Keep the transcript</span><select name="retention"><option value="sign" ${s.retention === 'sign' ? 'selected' : ''}>Until the note is signed, then delete (recommended)</option><option value="30d" ${s.retention === '30d' ? 'selected' : ''}>30 days after signing, then delete</option></select></label>
+      <label class="f"><span>Consent</span><select name="standing"><option value="1" ${s.standing ? 'selected' : ''}>Ask each time; patients may agree for future visits too</option><option value="0" ${!s.standing ? 'selected' : ''}>Ask at every consultation</option></select></label>
+      <label class="f"><span>Speech language</span><select name="lang"><option value="en-ZA" ${s.lang === 'en-ZA' ? 'selected' : ''}>English (South Africa)</option><option value="af-ZA" ${s.lang === 'af-ZA' ? 'selected' : ''}>Afrikaans</option></select></label>
+      <label class="f"><span>AI model for clinical structuring (optional)</span><select name="provider"><option value="off" ${s.provider === 'off' ? 'selected' : ''}>Off — local rules only (nothing leaves the browser except speech)</option><option value="server" ${s.provider === 'server' ? 'selected' : ''}>Approved provider through the Prac360 server</option><option value="claude" ${s.provider === 'claude' ? 'selected' : ''}>Claude in claude.ai (demo, synthetic data only)</option></select></label>
+      <label class="check"><input type="checkbox" name="agreement" ${s.agreement ? 'checked' : ''}> We have a signed POPIA operator agreement (s21) with this provider, cross-border safeguards (s72) where data leaves South Africa, and a security assessment on file.</label>
+      <p class="tiny muted">Only de-identified transcript text is sent to a model (names, long numbers and emails removed). Every model answer must quote the transcript; anything that does not match is thrown away.</p></form>`, `<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="cx-settings-save">Save</button>`); };
+  H['cx-settings-save'] = () => { const f = document.getElementById('cx-set'); if (!f) return; const s = cfg(); Object.assign(s, { retention: f.retention.value, standing: f.standing.value === '1', lang: f.lang.value, provider: f.provider.value, agreement: f.agreement.checked }); E.audit(db(), A.user, 'ai-scribe-settings', 'settings', 'scribe2', null, JSON.stringify(s)); A.save(); A.closeModal(); A.render(); A.toast('AI Scribe settings saved.'); };
+
+  // keep the old "Sign note" route safe too: the guard is in E.signEncounter
+  window.addEventListener('beforeunload', (ev) => { const e = L.encId && encById(L.encId); if (e && e.cx && e.cx.scribe.state === 'listening') { ev.preventDefault(); ev.returnValue = ''; } });
+  // Prac360 Assist: "listen to the consult" opens AI Scribe in the consultation workspace
+  const hookAssist = () => { const core = A.assistCore; if (!core || !core.T || !core.T.listen_consult || core.T.listen_consult._cx) return; const orig = core.T.listen_consult.run;
+    core.T.listen_consult.run = function () { const e = A.route === 'consult' && cur(); if (e && document.getElementById('cx-scribe-btn') && editableOf(e)) { try { core.S.min = true; core.persist(); core.render(); } catch (x) { /* ignore */ } setTimeout(() => H['cx-scribe'](), 50); return { say: 'Opening AI Scribe — ask the patient for consent first.' }; } return orig.apply(this, arguments); };
+    core.T.listen_consult._cx = true; };
+  hookAssist(); setTimeout(hookAssist, 0);
+  A.cxEngine = { extract: CX.extract, apply, runExtract, rebuild, approvalValid, core, TPL, PANELS };
+})();
+/* help article, guided walkthrough and What's new for the consultation workspace and AI Scribe */
+(function () { const A = window.APP;
+  if (A.KB && !A.KB.some((k) => k.id === 'aiscribe')) A.KB.push({ id: 'aiscribe', title: 'Consultation with AI Scribe: listen, fill the form, review, approve, sign', keys: ['ai scribe', 'scribe', 'listen to the consult', 'consultation', 'dictate notes', 'ambient', 'record consult', 'consent', 'soap', 'approve documentation'], screens: ['consult', 'patient'], link: '#/patients',
+    steps: ['Open the patient and press Start consultation. The workspace shows the patient summary on the left, the consultation form in the middle and AI Scribe on the right.', 'Press the pink-purple AI Scribe button (top right). Ask the patient for consent and record who agreed and how. If they decline, carry on as a normal consultation.', 'Talk normally. Fields fill in as you go and show ✦ AI. Click ✦ AI on any field to see the exact words it came from. Anything you type is never overwritten — if the AI hears something different it offers "AI heard …".', 'Set who said a line by clicking Doctor / Patient in the transcript. Pause when needed; if the connection drops, AI Scribe says so and keeps what it heard.', 'Press Finish consultation. On the review screen check every flagged item, accept or reject each ICD-10 code, medicine, investigation and referral, and edit the summary.', 'Press Approve AI documentation, then Sign and finalise (your PIN or fingerprint if the practice uses it). After signing the record is locked — use an addendum for corrections.'] });
+  if (A.GUIDES && !A.GUIDES.aiscribe) A.GUIDES.aiscribe = { title: 'Consultation with AI Scribe', steps: [{ sel: '#cx-scribe-btn', text: 'AI Scribe starts only after you record the patient\'s consent.', expect: 'next' }, { sel: '.cx-left', text: 'Patient context: allergies, medicines, conditions, results and recent visits.', expect: 'next' }, { sel: '#cx-main', text: 'The form adapts to the consultation. Fields filled from the conversation show ✦ AI and can be edited.', expect: 'next' }, { sel: '.cx-side', text: 'Live status, transcript, what was detected and what needs your review.', expect: 'next' }, { sel: '.cx-bar', text: 'Review AI documentation → Approve → Sign and finalise. Signing is blocked until you approve.', expect: 'next' }] };
+  if (A.RELEASES) { const r = A.RELEASES.find((x) => x.v === '0.33'); if (r && !r.items.some((i) => i.title === 'New consultation workspace with AI Scribe')) r.items.unshift({ type: 'new', area: 'clinical', title: 'New consultation workspace with AI Scribe', text: 'Start a consultation and press AI Scribe (after patient consent). Prac360 listens, fills the consultation form as you talk — complaint, history, vitals, examination, assessment, ICD-10 suggestions, medicines, investigations, referrals and follow-up — and shows where every value came from. You review, approve and sign; nothing is approved or signed for you. Forms for GP, paediatrics, O&G, cardiology, oncology, psychiatry, orthopaedics and dermatology. Classic view still available.', link: '#/patients', guide: 'aiscribe' }); }
+})();
 
 
 /* ===== netauth.js ===== */

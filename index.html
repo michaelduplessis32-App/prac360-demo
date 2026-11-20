@@ -2498,6 +2498,20 @@ div.appt[role="button"]:focus-visible{outline:2px solid var(--accent,#2563eb);ou
 #dsf .ds-h:not(:first-child){margin-top:16px}
 [data-theme="dark"] .appt.st-arrived,[data-theme="dark"] .appt.st-in-consult,[data-theme="dark"] .appt.st-done,[data-theme="dark"] .appt.st-no-show{background:var(--surface-2)}
 .appt.dead{text-decoration:none}.appt.dead .appt-top{text-decoration:line-through}
+/* ---- live support: visible refreshing */
+.ls-status{display:flex;align-items:center;gap:8px;margin:10px 0 0;font-size:13px;color:var(--muted,#6b7280)}
+.ls-status strong{color:var(--text,inherit)}
+.ls-pulse{width:9px;height:9px;border-radius:50%;background:#16a34a;flex:none;box-shadow:0 0 0 0 rgba(22,163,74,.5);animation:lsPulse 2s infinite}
+.ls-pulse.busy{background:#2563eb;box-shadow:0 0 0 0 rgba(37,99,235,.5)}
+@keyframes lsPulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.45)}70%{box-shadow:0 0 0 8px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
+.ls-refresh .ls-spin{display:inline-block}
+.ls-refresh.busy .ls-spin{animation:lsSpin .7s linear infinite}
+.ls-refresh.busy{opacity:1;cursor:progress}
+@keyframes lsSpin{to{transform:rotate(360deg)}}
+.ls-dim{opacity:.45;transition:opacity .2s;pointer-events:none}
+tr.ls-new{animation:lsNew 3s ease-out 1}
+@keyframes lsNew{0%{background:#bbf7d0}100%{background:transparent}}
+@media (prefers-reduced-motion:reduce){.ls-pulse,.ls-refresh.busy .ls-spin,tr.ls-new{animation:none}}
 </style>
 </head>
 <body>
@@ -13637,20 +13651,27 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
         return `<tr class="${r.here ? 'is-live' : ''} ${inactive ? 'is-inactive' : ''}"><td><strong>${esc(a.name)}</strong><div class="tiny muted">${esc(a.email || '')}</div></td><td class="small">${esc(r.role)}</td><td>${st}</td><td class="mono tiny">${r.here ? esc((r.here.route || '').replace(/^#\/?/, '') || 'home') : '—'}</td>
           <td class="ls-act">${r.here ? `<button class="btn sm primary" data-act="live-join" data-tab="${esc(r.here.tab)}" ${r.here.busy ? 'disabled title="Already in a support session"' : ''}>🖥 Connect to screen</button>` : r.elsewhere ? `<button class="btn sm" data-act="live-join" data-tab="${esc(r.elsewhere.tab)}">Connect</button>` : '<span class="tiny muted">Not online — ask them to open Prac360</span>'}</td></tr>`; }).join('') || '<tr><td colspan="5" class="muted">No users have access to this practice.</td></tr>'}</tbody></table></div>
       <p class="tiny muted">Connecting asks the user first. You then see their Prac360 screen on their own computer, with both cursors, and can click and type if they allow it. Every session is logged in the practice's audit trail.</p></div>`; };
-  if (A.CONSOLE) A.CONSOLE.live = () => { const on = A.liveOnline(); const by = {}; on.forEach((x) => { (by[x.ds] = by[x.ds] || []).push(x); }); const w = A.ui.liveWait;
-    return `<div class="card"><div class="row between" style="flex-wrap:wrap;gap:8px"><div><h2 style="margin:0">Live support</h2><div class="small muted">Find a practice, see who is online, and connect to a user's screen to help them. They must allow it.</div></div><button class="btn sm" data-act="live-refresh">↻ Refresh</button></div>
+  const hhmmss = (t) => { const d = new Date(t); return [d.getHours(), d.getMinutes(), d.getSeconds()].map((n) => String(n).padStart(2, '0')).join(':'); };
+  // remember who was online at the last check, so people who just came online can be highlighted
+  const snap = () => { const on = A.liveOnline(); const prev = A.ui.liveSnap || null; const now = new Set(on.map((x) => x.tab)); const fresh = prev ? on.filter((x) => !prev.includes(x.tab)).map((x) => x.tab) : []; const gone = prev ? prev.filter((t) => !now.has(t)).length : 0; return { on, fresh, gone }; };
+  if (A.CONSOLE) A.CONSOLE.live = () => { const S = snap(); const on = S.on; const by = {}; const busyR = !!A.ui.liveRefreshing; if (!busyR) { A.ui.liveSnap = on.map((x) => x.tab); A.ui.liveChecked = Date.now(); A.ui.liveFresh = S.fresh.length ? S.fresh : (A.ui.liveFresh && Date.now() - (A.ui.liveFreshAt || 0) < 4000 ? A.ui.liveFresh : []); if (S.fresh.length) A.ui.liveFreshAt = Date.now(); }
+    const nPrac = new Set(on.map((x) => x.ds)).size; const fresh = new Set(A.ui.liveFresh || []); on.forEach((x) => { (by[x.ds] = by[x.ds] || []).push(x); }); const w = A.ui.liveWait;
+    return `<div class="card"><div class="row between" style="flex-wrap:wrap;gap:8px"><div><h2 style="margin:0">Live support</h2><div class="small muted">Find a practice, see who is online, and connect to a user's screen to help them. They must allow it.</div></div><button class="btn sm ls-refresh ${busyR ? 'busy' : ''}" data-act="live-refresh" ${busyR ? 'disabled aria-busy="true"' : ''}><span class="ls-spin" aria-hidden="true">↻</span> ${busyR ? 'Refreshing…' : 'Refresh'}</button></div>
+      <div class="ls-status" aria-live="polite">${busyR ? '<span class="ls-pulse busy"></span> Checking which practices and users are online…' : `<span class="ls-pulse"></span> <strong>${on.length} ${on.length === 1 ? 'person' : 'people'} live</strong> in ${nPrac} practice${nPrac === 1 ? '' : 's'} · last checked ${hhmmss(A.ui.liveChecked || Date.now())} · checks again every 5 seconds by itself`}</div>
       ${w ? `<div class="alert info" style="margin-top:10px">Waiting for <strong>${esc(w.name)}</strong> to allow you to join… <button class="btn sm" data-act="live-cancel">Cancel</button></div>` : ''}
-      <div class="ls-search"><label class="ls-q"><span aria-hidden="true">🔎</span><input id="ls-q" type="search" data-input="ls-q" value="${esc(A.ui.liveQ || '')}" placeholder="Search for a practice — name, practice number or code" autocomplete="off" aria-label="Search for a practice" data-nodictate></label><div id="ls-results">${resultsHtml()}</div></div>
-      ${practiceHtml()}
-      <details class="ls-all" ${A.ui.liveDs ? '' : 'open'}><summary><strong>Everyone online now</strong> <span class="tiny muted">(${on.length})</span></summary>
-      ${Object.keys(by).length ? Object.entries(by).map(([ds, us]) => `<h3 style="margin:14px 0 6px">${esc(us[0].dsName)}</h3><table class="t small"><thead><tr><th>User</th><th>Role</th><th>Screen they are on</th><th>Last seen</th><th></th></tr></thead><tbody>${us.map((u) => `<tr><td><strong>${esc(u.name)}</strong></td><td>${esc(u.role || '')}</td><td class="mono tiny">${esc((u.route || '').replace(/^#\/?/, '') || 'home')}</td><td class="tiny">${Math.round((Date.now() - u.at) / 1000)}s ago</td><td>${u.busy ? '<span class="badge">In a session</span>' : `<button class="btn sm primary" data-act="live-join" data-tab="${u.tab}">Join screen</button>`}</td></tr>`).join('')}</tbody></table>`).join('')
+      <div class="ls-search ${busyR ? 'ls-dim' : ''}"><label class="ls-q"><span aria-hidden="true">🔎</span><input id="ls-q" type="search" data-input="ls-q" value="${esc(A.ui.liveQ || '')}" placeholder="Search for a practice — name, practice number or code" autocomplete="off" aria-label="Search for a practice" data-nodictate></label><div id="ls-results">${resultsHtml()}</div></div>
+      <div class="${busyR ? 'ls-dim' : ''}">${practiceHtml()}</div>
+      <details class="ls-all ${busyR ? 'ls-dim' : ''}" ${A.ui.liveDs ? '' : 'open'}><summary><strong>Everyone online now</strong> <span class="tiny muted">(${on.length})</span></summary>
+      ${Object.keys(by).length ? Object.entries(by).map(([ds, us]) => `<h3 style="margin:14px 0 6px">${esc(us[0].dsName)}</h3><table class="t small"><thead><tr><th>User</th><th>Role</th><th>Screen they are on</th><th>Last seen</th><th></th></tr></thead><tbody>${us.map((u) => `<tr class="${fresh.has(u.tab) ? 'ls-new' : ''}"><td><strong>${esc(u.name)}</strong>${fresh.has(u.tab) ? ' <span class="badge good">just came online</span>' : ''}</td><td>${esc(u.role || '')}</td><td class="mono tiny">${esc((u.route || '').replace(/^#\/?/, '') || 'home')}</td><td class="tiny">${Math.round((Date.now() - u.at) / 1000)}s ago</td><td>${u.busy ? '<span class="badge">In a session</span>' : `<button class="btn sm primary" data-act="live-join" data-tab="${u.tab}">Join screen</button>`}</td></tr>`).join('')}</tbody></table>`).join('')
         : '<p class="muted" style="margin-top:12px">No practice users are online right now.</p>'}</details>
       <p class="tiny muted" style="margin-top:12px">Demo: open Prac360 in a second tab of this browser and sign in as a practice user (e.g. dr.naidoo@jacaranda.example) — they appear here. On the shared Prac360 server this works between any two computers; in production through Prac360's encrypted relay in South Africa. Nothing is installed.</p></div>`; };
   H['input:ls-q'] = (el) => { A.ui.liveQ = el.value; const r = document.getElementById('ls-results'); if (r) r.innerHTML = resultsHtml(); };
   H['ls-pick'] = (el) => { A.ui.liveDs = el.dataset.id; A.render(); setTimeout(() => { const t = document.querySelector('.ls-prac'); if (t) t.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 50); };
   H['ls-close'] = () => { A.ui.liveDs = null; A.render(); };
-  let refreshT = null; const _rc = A.renderConsole; if (_rc) A.renderConsole = function () { const r = _rc.apply(this, arguments); clearTimeout(refreshT); if (A.route === 'console' && A.ui.consoleTab === 'live') refreshT = setTimeout(() => { if (A.route === 'console' && A.ui.consoleTab === 'live' && !document.querySelector('.modal-bg') && !(document.activeElement && document.activeElement.id === 'ls-q')) A.render(); }, 5000); return r; };
-  H['live-refresh'] = () => A.render();
+  let refreshT = null; const _rc = A.renderConsole; if (_rc) A.renderConsole = function () { const r = _rc.apply(this, arguments); clearTimeout(refreshT); if (A.route === 'console' && A.ui.consoleTab === 'live') refreshT = setTimeout(() => { if (A.route === 'console' && A.ui.consoleTab === 'live' && !A.ui.liveRefreshing && !document.querySelector('.modal-bg') && !(document.activeElement && document.activeElement.id === 'ls-q')) A.render(); }, 5000); return r; };
+  H['live-refresh'] = () => { if (A.ui.liveRefreshing) return; const before = (A.ui.liveSnap || []).length; A.ui.liveRefreshing = true; A.render();
+    setTimeout(() => { A.ui.liveRefreshing = false; A.render(); const on = A.liveOnline(); const n = new Set(on.map((x) => x.ds)).size; const f = (A.ui.liveFresh || []).length;
+      A.toast(`Updated — ${on.length} ${on.length === 1 ? 'person' : 'people'} live in ${n} practice${n === 1 ? '' : 's'}${f ? ` · ${f} just came online` : ''}.`); }, 800); };
   H['live-join'] = (el) => { const u = A.liveOnline().find((x) => x.tab === el.dataset.tab); if (!u) return A.toast('That user is no longer online.', 'error');
     A.modal(`Join ${u.name}'s screen`, `<p class="small">${esc(u.name)} at ${esc(u.dsName)} sees your name and reason and must allow it. Everything you do is in the practice's audit log.</p><label class="f"><span>Reason</span><input id="lv-why" placeholder="e.g. Ticket 5210 — help with a rejected claim" data-noclean></label><label class="check"><input type="checkbox" id="lv-ctl" checked> Ask to be allowed to click and type</label>`,
       `<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="live-ask" data-tab="${u.tab}">Ask to join</button>`); setTimeout(() => { const i = document.getElementById('lv-why'); if (i) i.focus(); }, 30); };
@@ -17076,6 +17097,17 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   // re-price draft bills once so they follow the new rule
   const once = () => { const d = A.db; if (!d || !A.TS || d.settings.baseRateV040) return; d.settings.baseRateV040 = true; (d.invoices || []).filter((i) => i.status === 'draft').forEach((i) => { try { A.TS.reprice(d, i); } catch (e) { /* ignore */ } }); try { A.save(); } catch (e) { /* ignore */ } };
   setTimeout(once, 600); setInterval(once, 5000);
+})();
+
+
+/* ===== ui-v041.js ===== */
+/* Prac360 v0.41 — Live support: refreshing is visible. */
+(function () {
+  'use strict';
+  const A = window.APP; const kb = (A.KB || []).find((k) => k.id === 'livesupport');
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.41')) A.RELEASES.unshift({ v: '0.41', date: '2026-11-20', title: 'Live support: see it refresh', items: [
+    { type: 'fixed', area: 'support', title: 'Live support shows when it is refreshing', text: 'Support console → Live support now shows a status line with a pulsing dot — how many people are live in how many practices, and the time it last checked (it checks again every 5 seconds by itself). Pressing Refresh spins the button, shows “Checking which practices and users are online…” and fades the list while it checks, then confirms “Updated — 2 people live in 1 practice”. Someone who has just come online is highlighted with “just came online”.', link: '#console', guide: 'livesupport' }] });
+  if (kb && !(kb.steps || []).some((x) => /last checked/.test(x))) kb.steps = kb.steps.concat(['The line under the heading shows how many people are live and when it last checked; it checks again every 5 seconds. Press Refresh to check now — the button spins and you get “Updated — …” when it is done. People who just came online are highlighted.']);
 })();
 
 

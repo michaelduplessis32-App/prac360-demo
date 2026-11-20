@@ -2480,6 +2480,24 @@ label.vf-filled input{animation:vff 2.2s ease-out;border-color:#c026d3}
 .diary-chairs{border-top:4px solid #db2777}
 .chair-appt{display:block;text-decoration:none;color:inherit;margin-bottom:6px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);border-left:4px solid #db2777}
 [data-theme="dark"] .appt.onc{background:rgba(219,39,119,.12)}
+/* ---- diary: status on the booking, billed marker, waiting time, settings */
+div.appt[role="button"]{cursor:pointer;width:100%;box-sizing:border-box}
+div.appt[role="button"]:focus-visible{outline:2px solid var(--accent,#2563eb);outline-offset:1px}
+.appt-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:3px}
+.appt-st{font:600 12px/1.2 var(--font);padding:2px 22px 2px 8px;border-radius:999px;border:1px solid var(--line);background-color:var(--surface);width:auto;min-height:0;height:auto;cursor:pointer}
+.appt-st.st-arrived{background-color:#fef3c7;border-color:#fcd34d;color:#92400e}.appt-st.st-in-consult{background-color:#e0f2fe;border-color:#7dd3fc;color:#075985}.appt-st.st-done{background-color:#dcfce7;border-color:#86efac;color:#166534}.appt-st.st-no-show{background-color:#fee2e2;border-color:#fca5a5;color:#991b1b}
+.appt.st-arrived{background:#fffbeb}.appt.st-in-consult{background:#f0f9ff}.appt.st-done{background:#f0fdf4}.appt.st-no-show{background:#fef2f2}
+.appt.dead .appt-ctl{text-decoration:none}
+.appt-bill{font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:999px;text-decoration:none;white-space:nowrap}
+.appt-bill.billed{background:#dcfce7;color:#166534}.appt-bill.none,.appt-bill.unsigned{background:#fee2e2;color:#991b1b}.appt-bill.draft{background:#fef3c7;color:#92400e}
+.appt-wait{font-size:11.5px;font-weight:600;color:#92400e}.appt-wait.late{color:#b91c1c;animation:fldPulse 1.2s ease-out 1}
+.ds-h{margin:4px 0 8px;font-size:15px}.ds-h+.ds-row{border-top:1px solid var(--line)}
+.ds-row{display:flex;align-items:flex-start;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.ds-row>span{display:flex;flex-direction:column;gap:2px}
+.ds-row input[type=checkbox]{margin-top:3px;width:18px;height:18px;flex:none}
+#dsf .ds-h:not(:first-child){margin-top:16px}
+[data-theme="dark"] .appt.st-arrived,[data-theme="dark"] .appt.st-in-consult,[data-theme="dark"] .appt.st-done,[data-theme="dark"] .appt.st-no-show{background:var(--surface-2)}
+.appt.dead{text-decoration:none}.appt.dead .appt-top{text-decoration:line-through}
 </style>
 </head>
 <body>
@@ -4457,7 +4475,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
   A.billingQueue = () => A.db.encounters.filter((e) => e.status === 'signed' && !e.historical && (!e.invoiceId || (A.db.invoices.find((i) => i.id === e.invoiceId) || {}).status === 'draft'));
   const navHtml = () => {
     const items = NAV.filter(([, , perms, , show]) => (!perms || A.canAny(...perms)) && (!show || show()));
-    return items.map(([r, k, , cnt]) => { const n = cnt ? cnt() : 0; return `<a href="#/${r}" class="${A.route === r || (r === 'patients' && ['patient', 'consult'].includes(A.route)) ? 'on' : ''}" ${A.route === r ? 'aria-current="page"' : ''} data-tour="nav-${r}">${ICONS[r]}<span>${esc(t(k))}</span>${r === 'today' && A.user ? `<span class="nav-cust" role="button" tabindex="0" data-act="home-customise" title="Customise your Home Dashboard" aria-label="Customise your Home Dashboard">⚙</span>` : ''}${n ? `<span class="count${r === 'clinical' || r === 'whatsnew' ? ' info' : ''}" aria-label="${n} need attention">${n}</span>` : ''}</a>`; }).join('')
+    return items.map(([r, k, , cnt]) => { const n = cnt ? cnt() : 0; return `<a href="#/${r}" class="${A.route === r || (r === 'patients' && ['patient', 'consult'].includes(A.route)) ? 'on' : ''}" ${A.route === r ? 'aria-current="page"' : ''} data-tour="nav-${r}">${ICONS[r]}<span>${esc(t(k))}</span>${r === 'diary' && A.user ? '<span class="nav-cust" role="button" tabindex="0" data-act="diary-settings-nav" title="Diary settings" aria-label="Diary settings">⚙</span>' : ''}${r === 'today' && A.user ? `<span class="nav-cust" role="button" tabindex="0" data-act="home-customise" title="Customise your Home Dashboard" aria-label="Customise your Home Dashboard">⚙</span>` : ''}${n ? `<span class="count${r === 'clinical' || r === 'whatsnew' ? ' info' : ''}" aria-label="${n} need attention">${n}</span>` : ''}</a>`; }).join('')
       + `<div class="foot"><div class="foot-ver"><strong>Prac360</strong> v${A.appVersion ? A.appVersion() : '0.34'} · demo</div><div class="foot-chip" id="foot-chip"><span class="foot-note">Synthetic data only</span></div><div class="foot-save"><i class="foot-dot" aria-hidden="true"></i><span id="savestate">${savedText()}</span></div></div>`;
   };
 
@@ -5023,28 +5041,78 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
   const live = (a) => !['cancelled', 'no-show'].includes(a.status);
   const movable = (a) => ['booked', 'arrived'].includes(a.status);
   A.apptClash = (docId, startIso, dur, ignoreId) => { const s0 = Date.parse(startIso), e0 = s0 + dur * 60000; return db().appointments.find((a) => a.id !== ignoreId && a.providerId === docId && live(a) && a.start.slice(0, 10) === startIso.slice(0, 10) && Date.parse(a.start) < e0 && s0 < Date.parse(a.start) + a.duration * 60000); };
+  // ---------- diary settings: personal display choices + practice-wide automation ----------
+  const DV_DEF = { status: true, billed: true, reason: true, colour: true, showDead: true, hoursOnly: false, compact: false, waitWarn: 20 };
+  const dview = A.diaryView = () => { const pr = diaryPrefs(); pr.diaryView = Object.assign({}, DV_DEF, pr.diaryView || {}); return pr.diaryView; };
+  const dprac = A.diaryPractice = () => { const st = db().settings; st.diary = Object.assign({ autoNoShow: true, noShowAfter: 30 }, st.diary || {}); return st.diary; };
+  // a booking whose time has passed with no check-in becomes No-show (or Done, if the patient was in fact seen that day)
+  const autoNoShow = A.diaryAutoNoShow = () => { const d = db(); if (!d || !A.user) return 0; const cfg = dprac(); if (!cfg.autoNoShow) return 0; const now = E.nowIso(d).slice(0, 16); let n = 0, seen = 0;
+    d.appointments.forEach((a) => { if (a.status !== 'booked') return; const end = new Date(new Date(a.start).getTime() + ((a.duration || 15) + (+cfg.noShowAfter || 0)) * 60000); const endIso = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')}T${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}`;
+      if (endIso > now) return; const met = d.encounters.some((e) => e.patientId === a.patientId && e.date === a.start.slice(0, 10) && !e.imported);
+      a.status = met ? 'done' : 'no-show'; a.autoStatus = true; a.autoStatusAt = E.nowIso(d); met ? seen++ : n++; E.audit(d, { id: 'system', name: 'Prac360 (automatic)', role: 'system' }, 'appointment-' + a.status, 'appointment', a.id, a.patientId, met ? 'Marked Done automatically — the patient was seen that day without being checked in' : `Marked No-show automatically — ${cfg.noShowAfter} min after the booking ended, no check-in`); });
+    if (n || seen) { A.save(); A.ui.autoNs = { n, seen, at: Date.now() }; } return n + seen; };
+  setInterval(() => { try { if (autoNoShow() && /^#\/(diary|today)/.test(location.hash) && !document.getElementById('modal')) A.render(); } catch (e) { /* ignore */ } }, 60000);
+  const encOf = (a) => db().encounters.filter((e) => e.patientId === a.patientId && e.date === a.start.slice(0, 10) && !e.imported).sort((x, y) => (x.appointmentId === a.id ? -1 : y.appointmentId === a.id ? 1 : 0))[0];
+  // billed for the day of the appointment? null = not relevant yet (not seen)
+  const billState = A.apptBillState = (a) => { if (['cancelled', 'no-show'].includes(a.status)) return null; const d = db(); const e = encOf(a); const day = a.start.slice(0, 10);
+    const invs = d.invoices.filter((i) => i.status !== 'void' && ((e && i.encounterId === e.id) || (i.patientId === a.patientId && i.date === day)));
+    if (!e && !['done', 'in-consult'].includes(a.status) && !invs.length) return null;
+    if (invs.some((i) => i.status !== 'draft')) return { k: 'billed', label: 'Billed', href: e ? '#/billing/' + e.id : null };
+    if (invs.length) return { k: 'draft', label: 'Billing not finished', href: e ? '#/billing/' + e.id : null };
+    if (e && e.status !== 'signed') return { k: 'unsigned', label: 'Note not signed — not billed', href: '#/consult/' + e.id };
+    return { k: 'none', label: 'Not billed', href: e ? '#/billing/' + e.id : `#/statement/${E.accountHolderId(d, a.patientId)}/transactions` }; };
+  H['diary-settings'] = () => { const v = dview(); const pc = dprac(); const canP = A.can('setup') || A.can('settings');
+    const tg = (k, l, hint) => `<label class="ds-row"><input type="checkbox" name="${k}" ${v[k] ? 'checked' : ''}><span><strong>${l}</strong>${hint ? `<span class="tiny muted">${hint}</span>` : ''}</span></label>`;
+    A.modal('⚙ Diary settings', `<form id="dsf"><h3 class="ds-h">What you see <span class="tiny muted">— just for you</span></h3>
+      ${tg('status', 'Status on each booking', 'Booked, Waiting, In consultation, Done, No-show — change it right on the booking')}
+      ${tg('billed', 'Billed / not billed', 'Shows whether a patient who was seen has been billed for that day')}
+      ${tg('colour', 'Colour bookings by status', 'Waiting in amber, in consultation in blue, done in green, no-show in red')}
+      ${tg('reason', 'Visit type and reason on bookings')}
+      ${tg('showDead', 'Show cancelled and no-show bookings', 'Switch off to free up the slots on screen')}
+      ${tg('hoursOnly', 'Only practice hours', 'Hide the early-morning and evening rows')}
+      ${tg('compact', 'Compact rows', 'Fit more of the day on the screen')}
+      <label class="ds-row"><span style="flex:1"><strong>Warn when a patient waits longer than</strong><span class="tiny muted">The booking shows how long the patient has been waiting</span></span><select name="waitWarn" style="width:auto">${[0, 10, 15, 20, 30, 45, 60].map((m) => `<option value="${m}" ${+v.waitWarn === m ? 'selected' : ''}>${m ? m + ' min' : 'Never'}</option>`).join('')}</select></label>
+      <h3 class="ds-h">For the whole practice ${canP ? '' : '<span class="tiny muted">— only the practice manager can change these</span>'}</h3>
+      <label class="ds-row"><input type="checkbox" name="autoNoShow" ${pc.autoNoShow ? 'checked' : ''} ${canP ? '' : 'disabled'}><span style="flex:1"><strong>Mark no-shows automatically</strong><span class="tiny muted">A booking that is still “Booked” after its time becomes No-show. If the patient was in fact seen that day it becomes Done. Recorded in the audit log.</span></span><select name="noShowAfter" style="width:auto" ${canP ? '' : 'disabled'}>${[0, 15, 30, 60, 120].map((m) => `<option value="${m}" ${+pc.noShowAfter === m ? 'selected' : ''}>${m ? m + ' min after' : 'when it ends'}</option>`).join('')}</select></label></form>`,
+      '<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="diary-settings-save">Save</button>', { wide: true }); };
+  H['diary-settings-nav'] = () => { if (!/^#\/diary/.test(location.hash)) { A.go('#/diary'); setTimeout(() => H['diary-settings'](), 150); } else H['diary-settings'](); };
+  H['diary-settings-save'] = () => { const f = document.getElementById('dsf'); if (!f) return; const v = dview(); ['status', 'billed', 'colour', 'reason', 'showDead', 'hoursOnly', 'compact'].forEach((k) => { v[k] = !!f[k].checked; }); v.waitWarn = +f.waitWarn.value;
+    if (A.can('setup') || A.can('settings')) { const pc = dprac(); const was = pc.autoNoShow + ':' + pc.noShowAfter; pc.autoNoShow = !!f.autoNoShow.checked; pc.noShowAfter = +f.noShowAfter.value; if (was !== pc.autoNoShow + ':' + pc.noShowAfter) E.audit(db(), A.user, 'settings', 'settings', 'diary', null, `Automatic no-show ${pc.autoNoShow ? 'on, ' + pc.noShowAfter + ' min after' : 'off'}`); }
+    A.closeModal(); A.save(); A.render(); A.toast('Diary settings saved.'); };
+  H['change:appt-st'] = (el) => { const a = db().appointments.find((x) => x.id === el.dataset.id); if (!a || a.status === el.value) return; delete a.autoStatus; H['appt-status']({ dataset: { id: a.id, s: el.value } }); };
+  // the status menu sits inside a clickable booking: keep its clicks to itself
+  window.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('.appt-st')) e.stopPropagation(); }, true);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.matches && e.target.matches('div.appt[role="button"]')) e.target.click(); });
   P.diary = (params) => {
     const day = params[0] || E.today(db()); const docs = doctors(); const hidden = diaryPrefs().diaryHidden; const shown = docs.filter((d) => !hidden.includes(d.id));
+    autoNoShow(); const dv = dview(); const nowIso = E.nowIso(db()); const today = E.today(db());
     const oncOn = !!(A.oncOn && A.oncOn()); const mode = oncOn ? (diaryPrefs().diaryMode || 'both') : 'practice';
     const isOnc = A.isOncAppt = (a) => /^(oncology|radiotherapy)/i.test(a.type || '') || /^oncology/i.test(a.reason || '') || !!a.onc;
     const allDay = db().appointments.filter((a) => a.start.slice(0, 10) === day);
-    const appts = allDay.filter((a) => (!oncOn || mode === 'both' ? true : mode === 'onc' ? isOnc(a) : !isOnc(a))).sort((a, b) => (a.start < b.start ? -1 : 1));
+    const appts = allDay.filter((a) => (dv.showDead || live(a)) && (!oncOn || mode === 'both' ? true : mode === 'onc' ? isOnc(a) : !isOnc(a))).sort((a, b) => (a.start < b.start ? -1 : 1));
     const nOnc = allDay.filter((a) => isOnc(a) && live(a)).length, nPrac = allDay.filter((a) => !isOnc(a) && live(a)).length;
-    const open = toMin(db().practice.hours.start), close = toMin(db().practice.hours.end); const dayStart = Math.min(7 * 60, open), dayEnd = Math.max(18 * 60 + 30, close);
+    const open = toMin(db().practice.hours.start), close = toMin(db().practice.hours.end); const dayStart = dv.hoursOnly ? open : Math.min(7 * 60, open), dayEnd = dv.hoursOnly ? close : Math.max(18 * 60 + 30, close);
+    const waitMin = (a) => (a.status === 'arrived' && a.arrivedAt ? Math.max(0, Math.round((Date.parse(nowIso) - Date.parse(a.arrivedAt)) / 60000)) : null);
+    const card = (a, d) => { const b = dv.billed ? billState(a) : null; const w = waitMin(a); const late = dv.waitWarn && w != null && w >= dv.waitWarn;
+      return `<div role="button" tabindex="0" class="appt ${movable(a) ? 'movable' : ''} ${live(a) ? '' : 'dead'} ${isOnc(a) ? 'onc' : ''} ${dv.colour ? 'st-' + a.status : ''}" data-act="appt-open" data-id="${a.id}" ${movable(a) && A.can('diary') ? 'draggable="true"' : ''} style="border-left-color:${d.colour}" title="${movable(a) && A.can('diary') ? 'Click to edit · drag to move' : 'Click to view'}">
+        <div class="appt-top"><strong class="small">${isOnc(a) ? '<span class="appt-onc" title="Oncology">🎗</span> ' : ''}${A.ft(a.start)} ${esc(A.pname(a.patientId))}</strong>${dv.reason ? ` <span class="tiny">${a.duration} min · ${esc(a.type)}</span>` : ''}</div>
+        <div class="appt-ctl">${dv.status && A.can('diary') ? `<select class="appt-st st-${a.status}" data-change="appt-st" data-id="${a.id}" aria-label="Status of ${esc(A.pname(a.patientId))}">${Object.entries(STATUS).map(([k, [l]]) => `<option value="${k}" ${k === a.status ? 'selected' : ''}>${l}</option>`).join('')}</select>` : statusBadge(a.status)}${a.autoStatus ? '<span class="tiny muted" title="Set automatically — the time passed without a check-in">auto</span>' : ''}
+          ${w != null ? `<span class="appt-wait ${late ? 'late' : ''}" title="Waiting since ${A.ft(a.arrivedAt)}">⏱ ${w} min</span>` : ''}
+          ${b ? (b.href ? `<a class="appt-bill ${b.k}" href="${b.href}" title="${b.k === 'billed' ? 'Billed for this visit' : 'Open the billing for this visit'}">${b.k === 'billed' ? '✓ ' : '⚠ '}${esc(b.label)}</a>` : `<span class="appt-bill ${b.k}">${esc(b.label)}</span>`) : ''}</div></div>`; };
     const column = (d) => {
       const slot = A.slotMin(d.id); const mine = appts.filter((a) => a.providerId === d.id); const rows = [];
       for (let t = dayStart; t < dayEnd; t += slot) {
         const here = mine.filter((a) => { const m = toMin(A.ft(a.start)); return m >= t && m < t + slot; });
         const covering = !here.length && mine.find((a) => live(a) && toMin(A.ft(a.start)) < t && toMin(A.ft(a.start)) + a.duration > t);
         const off = t < open || t >= close;
-        rows.push(`<div class="slot ${off ? 'off' : ''}" data-doc="${d.id}" data-time="${hm(t)}" data-day="${day}" style="min-height:${Math.max(30, Math.round(slot * 2.2))}px"><span class="slot-t mono">${hm(t)}</span>
-          ${here.map((a) => `<button type="button" class="appt ${movable(a) ? 'movable' : ''} ${live(a) ? '' : 'dead'} ${isOnc(a) ? 'onc' : ''}" data-act="appt-open" data-id="${a.id}" ${movable(a) && A.can('diary') ? 'draggable="true"' : ''} style="border-left-color:${d.colour}" title="${movable(a) && A.can('diary') ? 'Click to edit · drag to move' : 'Click to view'}"><strong class="small">${isOnc(a) ? '<span class="appt-onc" title="Oncology">🎗</span> ' : ''}${A.ft(a.start)} ${esc(A.pname(a.patientId))}</strong> <span class="tiny">${a.duration} min · ${esc(a.type)}</span> ${statusBadge(a.status)}</button>`).join('')}
+        rows.push(`<div class="slot ${off ? 'off' : ''}" data-doc="${d.id}" data-time="${hm(t)}" data-day="${day}" style="min-height:${Math.max(dv.compact ? 24 : 30, Math.round(slot * (dv.compact ? 1.5 : 2.2)))}px"><span class="slot-t mono">${hm(t)}</span>
+          ${here.map((a) => card(a, d)).join('')}
           ${covering ? `<span class="appt cont" style="border-left-color:${d.colour}"><span class="tiny">continues: ${esc(A.pname(covering.patientId))}</span></span>` : ''}
           ${!here.length && !covering ? (A.can('diary') ? `<button class="slot-add" data-act="book" data-doc="${d.id}" data-time="${hm(t)}" data-day="${day}" ${mode === 'onc' ? 'data-onc="1"' : ''} aria-label="Book ${esc(d.name)} at ${hm(t)}">+ ${off ? 'after hours' : 'Book'}</button>` : off ? '<span class="tiny">after hours</span>' : '') : ''}</div>`);
       }
       return `<div class="card diary-col"><div class="diary-head"><h2 style="margin:0"><span class="dot" style="background:${d.colour}"></span> ${esc(d.name)}</h2>
         <label class="row small" title="${canSetSlots(d.id) ? 'Change the length of this doctor\'s appointment slots' : 'Only the doctor or the practice manager can change this'}">Slots <select data-change="slot-len" data-doc="${d.id}" ${canSetSlots(d.id) ? '' : 'disabled'} style="width:auto">${SLOT_CHOICES.map((m) => `<option value="${m}" ${m === slot ? 'selected' : ''}>${m} min</option>`).join('')}</select></label></div>
-        <div class="tiny" style="margin:4px 0 8px">${mine.filter(live).length} booked · ${mine.filter(live).reduce((t, a) => t + a.duration, 0)} min of ${close - open} min open</div>${rows.join('')}</div>`;
+        <div class="tiny" style="margin:4px 0 8px">${mine.filter(live).length} booked · ${mine.filter(live).reduce((t, a) => t + a.duration, 0)} min of ${close - open} min open${dv.billed ? (() => { const nb = mine.filter((a) => { const b = billState(a); return b && b.k !== 'billed'; }).length; return nb ? ` · <strong class="crit-t">${nb} not billed</strong>` : ''; })() : ''}</div>${rows.join('')}</div>`;
     };
     const chairs = () => { if (!oncOn || mode === 'practice' || !A.oncStore) return ''; const cy = (A.oncStore().cases || []).flatMap((c) => (c.cycles || []).filter((x) => x.date === day && x.status !== 'cancelled').map((x) => ({ c, x }))).sort((a, b) => String(a.x.time || '').localeCompare(String(b.x.time || '')));
       const ST = { planned: 'Planned', ready: 'Ready', hold: 'On hold', given: 'Given', inprogress: 'In the chair', delayed: 'Delayed' };
@@ -5052,7 +5120,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
         ${cy.length ? cy.map(({ c, x }) => `<a class="appt onc chair-appt" href="#/onc/${c.id}/cycles"><strong class="small">${esc(x.time || '—')} ${esc(A.pname(c.patientId))}</strong> <span class="tiny">Cycle ${x.no} · chair ${esc(String(x.chair || '—'))}</span> <span class="badge ${x.status === 'hold' ? 'crit' : x.status === 'given' ? 'good' : ''}">${esc(ST[x.status] || x.status)}</span></a>`).join('') : '<div class="empty">No treatments in the chairs this day.</div>'}</div>`; };
     const ch = chairs(); const cols = shown.length + (ch ? 1 : 0);
     const modeBar = oncOn ? `<div class="diary-mode" role="group" aria-label="Which diary"><span class="small"><strong>Diary:</strong></span>${[['practice', 'Practice', nPrac], ['onc', '🎗 Oncology', nOnc], ['both', 'Both', nPrac + nOnc]].map(([k, l, n]) => `<button class="${mode === k ? 'on' : ''}" data-act="diary-mode" data-m="${k}" aria-pressed="${mode === k}">${l} <span class="dm-n">${n}</span></button>`).join('')}</div>` : '';
-    return `<div class="page-head"><div><h1>Diary${mode === 'onc' ? ' — Oncology' : mode === 'practice' && oncOn ? ' — Practice' : ''}</h1><div class="muted">${fd(day)}</div></div><div class="actions"><a class="btn" href="#/diary/${E.addDays(day, -1)}" aria-label="Previous day">‹</a><input type="date" value="${day}" data-change="diary-day" style="width:auto"><a class="btn" href="#/diary/${E.addDays(day, 1)}" aria-label="Next day">›</a><a class="btn" href="#/diary">Today</a><button class="btn primary" data-act="book" data-day="${day}" ${mode === 'onc' ? 'data-onc="1"' : ''}>${mode === 'onc' ? 'Book oncology appointment' : 'Book appointment'}</button></div></div>${modeBar}
+    return `<div class="page-head"><div><h1>Diary${mode === 'onc' ? ' — Oncology' : mode === 'practice' && oncOn ? ' — Practice' : ''}</h1><div class="muted">${fd(day)}</div></div><div class="actions"><a class="btn" href="#/diary/${E.addDays(day, -1)}" aria-label="Previous day">‹</a><input type="date" value="${day}" data-change="diary-day" style="width:auto"><a class="btn" href="#/diary/${E.addDays(day, 1)}" aria-label="Next day">›</a><a class="btn" href="#/diary">Today</a><button class="btn" data-act="diary-settings" data-tour="diary-settings" title="Diary settings">⚙ Settings</button><button class="btn primary" data-act="book" data-day="${day}" ${mode === 'onc' ? 'data-onc="1"' : ''}>${mode === 'onc' ? 'Book oncology appointment' : 'Book appointment'}</button></div></div>${modeBar}
       <div class="card diary-filter" data-tour="diary-docs"><span class="small"><strong>Show diaries:</strong></span>${docs.map((d) => `<label class="chip ${hidden.includes(d.id) ? '' : 'on'}"><input type="checkbox" data-change="diary-doc" value="${d.id}" ${hidden.includes(d.id) ? '' : 'checked'}><span class="dot" style="background:${d.colour}"></span>${esc(d.name)} <span class="tiny">· ${A.slotMin(d.id)} min</span></label>`).join('')}
         ${hidden.length ? '<button class="btn sm ghost" data-act="diary-all">Show all</button>' : ''}<span class="tiny" style="margin-left:auto">Your choice is remembered for ${esc(A.user.name)} only.</span></div>
       ${shown.length || ch ? `<div class="diary-grid" style="grid-template-columns:repeat(${cols},minmax(280px,1fr))">${ch}${shown.map(column).join('')}</div>` : '<div class="card"><div class="empty">All diaries are switched off. Tick a doctor above to show their diary.</div></div>'}
@@ -12249,7 +12317,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   const done = () => { A.save(); A.render(); };
   H['home-edit'] = () => { A.ui.homeEdit = true; A.render(); };
   H['home-customise'] = () => { A.ui.homeEdit = true; if (A.route !== 'today') location.hash = '#/today'; else A.render(); setTimeout(() => { const e = document.querySelector('.home-edit'); if (e) e.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 60); };
-  document.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('nav-cust')) { e.preventDefault(); H['home-customise'](); } });
+  document.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('nav-cust')) { e.preventDefault(); (H[e.target.dataset.act] || H['home-customise'])(e.target); } });
   H['home-done'] = () => { A.ui.homeEdit = false; A.render(); A.toast('Dashboard saved.'); };
   H['home-reset'] = () => A.confirm('Reset your dashboard?', 'Go back to the standard layout for your role.', () => { A.user.prefs.home = { order: null, hidden: [], size: {}, note: prefs().note }; done(); }, 'Reset');
   H['home-hide'] = (el) => { const p = cur(); if (!p.hidden.includes(el.dataset.id)) p.hidden.push(el.dataset.id); done(); };
@@ -16952,6 +17020,35 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   const C = A.COURSES || []; const les = (cid, t) => { const c = C.find((x) => x.id === cid); return c && c.lessons.find((l) => l.t === t); };
   const bo = les('oncology', 'Booking oncology visits'); if (bo) { bo.body = 'Book appointment on the Oncology page or the patient’s page, or switch the Diary to 🎗 Oncology and click a free slot. Choose the visit type — first consultation, follow-up, treatment day, toxicity review — and the oncologist. To find bookings, open Diary → 🎗 Oncology (or 🗓 Oncology diary on the Oncology page): oncology visits carry a 🎗 ribbon and the treatment chairs are shown alongside.'; bo.guide = 'oncdiary'; }
   const bk = les('front', 'Book and manage appointments'); if (bk && !/Oncology/.test(bk.body || '')) bk.body = (bk.body || '') + ' Practices with Oncology choose Practice, 🎗 Oncology or Both at the top of the Diary.';
+})();
+
+
+/* ===== ui-v039.js ===== */
+/* Prac360 v0.39 — Diary: status on every booking, automatic no-show, billed / not billed, waiting time, Diary settings. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.39')) A.RELEASES.unshift({ v: '0.39', date: '2026-11-20', title: 'Diary: status, no-shows and billing at a glance', items: [
+    { type: 'new', area: 'front', title: 'Set the status right on the booking', text: 'Every booking in the Diary now has a status menu: Booked, Waiting (arrived), In consultation, Done, No-show or Cancelled. Choose it as the patient arrives and moves through the visit — no need to open the booking. Bookings are coloured by status, and a waiting patient shows how long they have waited (red after 20 minutes, which you can change).', link: '#/diary', guide: 'diarystatus' },
+    { type: 'new', area: 'front', title: 'No-shows are marked automatically', text: 'A booking that is still “Booked” 30 minutes after its time becomes No-show by itself (marked “auto”). If the patient was in fact seen that day it becomes Done instead. Every automatic change is in the audit log. The practice manager can change the 30 minutes or switch it off in Diary settings.', link: '#/diary', guide: 'diarysettings' },
+    { type: 'new', area: 'billing', title: 'Billed or not billed, on the Diary', text: 'Patients who were seen show whether they have been billed for that day: ✓ Billed, ⚠ Billing not finished, ⚠ Not billed or ⚠ Note not signed. Click the marker to go straight to the billing. Each doctor’s column shows how many are not billed.', link: '#/diary', guide: 'diarystatus' },
+    { type: 'new', area: 'front', title: 'Diary settings', text: 'Click ⚙ Settings on the Diary (or the ⚙ next to Diary in the menu, like the Home Dashboard). Switch on or off: status on each booking, billed / not billed, colours by status, visit type and reason, cancelled and no-show bookings, only practice hours, compact rows and the waiting-time warning. The practice manager also sets the automatic no-show.', link: '#/diary', guide: 'diarysettings' }] });
+  KB.push({ id: 'diarystatus', title: 'Diary: set the status and see who is not billed', keys: ['appointment status', 'arrived', 'waiting', 'in consultation', 'no show', 'no-show', 'check in', 'not billed', 'billed', 'waiting time'], screens: ['diary'], link: '#/diary',
+    steps: ['Open Diary. Each booking has a status menu — click it and choose Booked, Waiting, In consultation, Done, No-show or Cancelled. Click anywhere else on the booking to open, move or cancel it.', 'Waiting patients show ⏱ how long they have waited; it turns red after the time set in Diary settings (20 minutes to start with).', 'Bookings still “Booked” after their time become No-show automatically (marked “auto”), or Done if the patient was seen that day.', 'Patients who were seen show ✓ Billed, ⚠ Billing not finished, ⚠ Not billed or ⚠ Note not signed. Click it to open the billing. The column heading shows how many are not billed.'] });
+  KB.push({ id: 'diarysettings', title: 'Diary settings', keys: ['diary settings', 'diary options', 'hide cancelled', 'practice hours only', 'compact diary', 'automatic no-show', 'switch off billed'], screens: ['diary'], link: '#/diary',
+    steps: ['Click ⚙ Settings at the top of the Diary, or the ⚙ next to Diary in the menu.', 'What you see (just for you): status on each booking, billed / not billed, colours by status, visit type and reason, cancelled and no-show bookings, only practice hours, compact rows, and when to warn about waiting time.', 'For the whole practice (practice manager): mark no-shows automatically, and how long after the booking ends.', 'Press Save.'] });
+  const add = (id, step) => { const k = kb(id); if (k && !(k.steps || []).includes(step)) k.steps = (k.steps || []).concat([step]); };
+  add('arrive', 'In the Diary you can also set Waiting straight from the status menu on the booking.');
+  add('diaryview', 'Choose what the Diary shows with ⚙ Settings (status, billed / not billed, practice hours only, compact rows…).');
+  if (A.GUIDES) {
+    A.GUIDES.diarystatus = { title: 'Status and billing on the Diary', steps: [{ sel: '[data-tour="nav-diary"]', text: 'Click Diary in the menu on the left.', expect: 'click', skip: '^#/diary' }, { sel: '.appt-st', text: 'Choose the status here as the patient arrives and moves through the visit.', expect: 'next', missing: 'There are no bookings on this day — go to a day with bookings.' }, { sel: '.appt-bill', text: 'Seen patients show whether they are billed. Click to open the billing.', expect: 'next', missing: 'Nobody on this day has been seen yet, so there is nothing to bill.' }] };
+    A.GUIDES.diarysettings = { title: 'Diary settings', steps: [{ sel: '[data-tour="nav-diary"]', text: 'Click Diary in the menu on the left.', expect: 'click', skip: '^#/diary' }, { sel: '[data-tour="diary-settings"]', text: 'Click ⚙ Settings to choose what the Diary shows and how no-shows are handled.', expect: 'next' }] };
+  }
+  if (A.FUNCTIONS) { const f = A.FUNCTIONS.find((x) => /^Front desk/.test(x[0])); if (f) [['Diary: status, no-shows and billed', 'diarystatus'], ['Diary settings', 'diarysettings']].forEach((e) => { if (!f[1].some((x) => x[1] === e[1])) f[1].push(e); }); }
+  const C = A.COURSES || []; const fr = C.find((c) => c.id === 'front');
+  if (fr && !fr.lessons.some((l) => l.t === 'Status, no-shows and billing on the Diary')) fr.lessons.push({ t: 'Status, no-shows and billing on the Diary', body: 'Each booking has a status menu — set Waiting when the patient arrives, In consultation, Done. Waiting time shows on the booking. Bookings still “Booked” after their time become No-show automatically. Seen patients show ✓ Billed or ⚠ Not billed — click to bill. ⚙ Settings chooses what you see.', guide: 'diarystatus' });
+  if (fr && !fr.quiz.some((q) => /still “Booked”/.test(q.q))) fr.quiz.push({ q: 'A booking is still “Booked” 30 minutes after its time and the patient never came. What happens?', o: ['Nothing — it stays Booked', 'It becomes No-show automatically (marked “auto”)', 'It is deleted'], a: 1 });
+  const ar = fr && fr.lessons.find((l) => l.t === 'Check patients in'); if (ar && !/status menu/.test(ar.body || '')) ar.body = (ar.body || '') + ' In the Diary, use the status menu on the booking: choose Waiting when the patient arrives.';
 })();
 
 

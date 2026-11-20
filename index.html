@@ -2170,6 +2170,16 @@ details[open]>summary .tcx-chev{transform:rotate(90deg)}
 #p360-robot .rb-bubble{max-width:320px;right:90px;bottom:62px}
 .as-ib.as-robot.on{color:#fff}
 #p360-robot{width:460px}
+
+/* robot switch: clear green "on" light */
+.as-ib.as-robot.on::after{width:9px;height:9px;top:3px;right:3px;background:#22c55e!important;box-shadow:0 0 0 2px #0b3a9e,0 0 6px #4ade80}
+/* robot speech bubble: small and quiet */
+#p360-robot .rb-bubble{max-width:210px;right:84px;bottom:58px;padding:2px 2px 2px 0;border-width:1.5px;border-radius:12px 12px 3px 12px;box-shadow:0 4px 12px rgba(30,20,90,.14)}
+#p360-robot .rb-say{padding:6px 4px 6px 10px;font-size:.8rem;font-weight:600}
+#p360-robot .rb-say span{display:none}
+#p360-robot .rb-x{width:20px;height:20px;font-size:13px}
+#p360-robot .rb-bot,#p360-robot .rb-bot svg{width:80px}
+#p360-robot .rb-bubble::after{border-width:6px;bottom:5px;right:-7px}
 </style>
 </head>
 <body>
@@ -10169,7 +10179,7 @@ Answer with JSON only:
       <form class="as-ft" data-submit="as-send"><button type="button" class="as-talk" data-act="as-mic" aria-label="Talk to Assist" title="Have a spoken conversation (Ctrl+Space)">${MIC}<span>Talk</span></button>
         <input id="as-in" autocomplete="off" placeholder="${A.featureOn && !A.featureOn('assist') ? 'Ask a help question, e.g. how do I submit a claim…' : S.listening ? 'Listening — or type…' : 'Say or type what you need…'}" aria-label="Tell Assist what to do" title="Type, or click the microphone in the box (Alt+D) to dictate" data-noclean>
         <button class="btn primary sm" type="submit">Go</button></form>
-      <div class="as-foot tiny">${A.route === 'consult' && !(S.scribe && S.scribe.on) && settings().scribe && A.can('clinical.write') ? '<button class="as-link" data-act="as-cmd" data-cmd="listen to the consult">◉ Listen to consult</button>' : ''}<span class="as-sp"></span><span class="as-ctl">Ctrl+Space = Talk · Alt+D = dictate</span></div></section>`;
+      <div class="as-foot tiny"><span class="as-sp"></span><span class="as-ctl">Ctrl+Space = Talk · Alt+D = dictate</span></div></section>`;
     const m = document.getElementById('as-msgs'); if (m) m.scrollTop = atBottom ? m.scrollHeight : scroll || 0;
     if (focus) { const i = document.getElementById('as-in'); i.value = val; i.focus(); } };
   H['submit:as-send'] = () => { const i = document.getElementById('as-in'); const v = i.value.trim(); if (!v) return; i.value = ''; handle(v); setTimeout(() => { const x = document.getElementById('as-in'); if (x) x.focus(); }, 30); };
@@ -10208,7 +10218,7 @@ Answer with JSON only:
   [{ id: 'assist', title: 'Prac360 Assist: talk and it does the work', keys: ['assist', 'assistant', 'voice', 'talk', 'speak', 'hands free', 'hands-free', 'ai assistant', 'do it for me', 'voice command', 'ctrl space'], screens: ['today', 'diary', 'patients', 'patient', 'consult', 'settings', 'learn'], link: '#/today',
     steps: ['To type: click "Assist" (bottom right) and type what you need. To talk: click 🎙 Talk inside Assist, or press Ctrl+Space, and just speak — a small box in the corner shows Assist is listening until you press Cancel. For example: "Book Ayesha Patel with Dr Naidoo tomorrow at 10", "BP 135 over 85", "Who\'s waiting?".', 'Assist does it and shows what it did, with Undo. Payments, prescriptions, cancelling and support requests wait for your tap; emails open for you to send.', 'In a Talk conversation Assist keeps listening by itself until you press End. Minimise the panel — it stays alive on every screen.', 'Assist can only do what your role allows, and never signs notes or submits claims.'] },
    { id: 'scribe', title: 'Let Assist listen to a consult and draft the note', keys: ['scribe', 'listen to consult', 'ambient', 'draft note', 'consult listening', 'transcribe', 'ai notes', 'write my notes'], screens: ['consult'], link: '#/clinical',
-    steps: ['Open the consult, then say "listen to the consult" (or click "Listen to consult" in the Assist panel).', 'Ask the patient once — for example: "I use an assistant that listens and writes my notes so I can focus on you. No audio is kept. Is that OK?" Tap "Patient agreed" (this visit) or "Agreed — also future visits". If they decline, Assist does not listen.', 'Consult as usual. Say "Assist, …" for a command, such as "Assist, BP 130 over 80".', 'Say "draft the note". Assist drafts history, examination, assessment, plan, vitals, ICD-10 codes, script, sick note, referral and follow-up.', 'Untick anything wrong, edit the text, click Apply, then read and sign the note with your PIN. The transcript is discarded unless the practice keeps transcripts.'] },
+    steps: ['Open the consult, then say "listen to the consult" (or tap the "Listen to the consult" suggestion in the Assist panel).', 'Ask the patient once — for example: "I use an assistant that listens and writes my notes so I can focus on you. No audio is kept. Is that OK?" Tap "Patient agreed" (this visit) or "Agreed — also future visits". If they decline, Assist does not listen.', 'Consult as usual. Say "Assist, …" for a command, such as "Assist, BP 130 over 80".', 'Say "draft the note". Assist drafts history, examination, assessment, plan, vitals, ICD-10 codes, script, sick note, referral and follow-up.', 'Untick anything wrong, edit the text, click Apply, then read and sign the note with your PIN. The transcript is discarded unless the practice keeps transcripts.'] },
    { id: 'assistsupport', title: 'Get help from Assist when something is not working', keys: ['not working', 'error', 'problem', 'broken', 'support', 'stuck', 'slow', 'why can t i', 'cannot see', 'help me'], screens: ['today', 'settings', 'learn'], link: '#/today',
     steps: ['Open Assist and say what is wrong — "the diary is slow", "why can\'t I see payments?", "I get an error".', 'Assist checks the connection, microphone, storage, recent error messages, stuck windows, failed emails, rejected claims and your role\'s permissions.', 'It fixes what it can (close a stuck window, reload the screen) and offers a guided tour.', 'Say "contact support" to send a report. You see exactly what is sent — no patient details.'] },
    { id: 'assistvoice', title: "Change Assist's voice and how it listens", keys: ['voice', 'robot', 'robotic', 'speak slower', 'speak faster', 'talks slow', 'speed', 'different voice', 'male voice', 'female voice', 'mute', 'wake word', 'listening', 'accent', 'sounds'], screens: ['today', 'diary', 'patients', 'patient', 'consult', 'settings', 'learn'], link: '#/today',
@@ -10226,7 +10236,7 @@ Answer with JSON only:
       { sel: '[data-act="as-min"]', text: 'Minimise the panel any time — Assist stays alive on every screen.', expect: 'next' }] };
     A.GUIDES.scribe = { steps: [nav('clinical', 'Clinical dashboard'),
       { sel: '[data-act="start-consult"]', text: 'Start a consult (or open one).', expect: 'click', skip: '^#/consult/', missing: 'Only clinicians can start consults.' },
-      { sel: '[data-tour="assist"], .as-panel', text: 'Open Assist and say "listen to the consult" — or click "Listen to consult" at the bottom of the panel.', expect: 'next' }] };
+      { sel: '[data-tour="assist"], .as-panel', text: 'Open Assist and say "listen to the consult" — or tap the "Listen to the consult" suggestion above the message box.', expect: 'next' }] };
     A.GUIDES.assistvoice = { steps: [{ sel: '[data-tour="assist"], .as-panel', text: 'Open Assist.', expect: 'next' }, { sel: '[data-act="as-voice"]', text: 'Click 🎚 to choose the voice, speed and how Assist listens.', expect: 'click', missing: 'Open the Assist panel first (green Assist button).' }] };
     A.GUIDES.assistsupport = { steps: [{ sel: '[data-tour="assist"], .as-panel', text: 'Open Assist and tell it what is not working, in your own words.', expect: 'next' }] };
   }
@@ -14787,8 +14797,8 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
  * when the browser tab is hidden, or for practices without the Assist add-on (Talk is part of Assist). */
 (function () {
   const A = window.APP, H = A.H;
-  const EVERY = 120000, FIRST = 30000, STAY = 9000;
-  const LINES = ['Need help? I’m here, talk to me!', 'Stuck on something? Talk to me.', 'Hi! Need a hand? Just talk to me.', 'I can book, bill and find things for you. Talk to me!'];
+  const EVERY = 120000, FIRST = 30000, STAY = 6000;
+  const LINES = ['Need help? Talk to me.', 'Stuck? Talk to me.', 'Need a hand? Talk to me.'];
   let n = 0, hideT = null, last = Date.now() - (EVERY - FIRST);
 
   const on = () => { try { return A.voicePrefs().robot !== false; } catch (e) { return true; } };
@@ -14823,7 +14833,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
       || document.getElementById('guide-tip') || document.getElementById('tour-tip') || document.getElementById('learn-back') || document.hidden || (A.featureOn && !A.featureOn('assist')); };
 
   const place = () => { const r = pill(), box = document.getElementById('p360-robot'); if (!r || !box) return false;
-    box.style.left = Math.round(r.left + r.width / 2 + 48 - 460) + 'px'; box.style.bottom = Math.round(innerHeight - r.top - 26) + 'px'; return true; };
+    box.style.left = Math.round(r.left + r.width / 2 + 40 - 460) + 'px'; box.style.bottom = Math.round(innerHeight - r.top - 26) + 'px'; return true; };
 
   const show = () => { if (!on() || busy() || !pill()) return; const box = el(); if (!place()) return;
     box.querySelector('.rb-say strong').textContent = LINES[n++ % LINES.length];

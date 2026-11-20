@@ -2163,7 +2163,7 @@ details[open]>summary .tcx-chev{transform:rotate(90deg)}
 .as-hd strong{white-space:nowrap}
 .as-hd .as-ib{width:30px;height:30px;margin-left:0}
 .as-ib.as-robot{position:relative;color:#fff}
-.as-ib.as-robot.on::after{content:"";position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#f472b6;box-shadow:0 0 0 2px #0b3a9e}
+.as-ib.as-robot.on::after{content:"";position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 2px #0b3a9e}
 .as-ib.as-robot:not(.on){opacity:.6}
 /* robot: slightly larger, one-line bubble */
 #p360-robot .rb-bot,#p360-robot .rb-bot svg{width:96px;height:auto}
@@ -13559,8 +13559,9 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   const addSwitch = () => { const acc = PL.current && PL.current(); if (!isDemo(acc)) return; const side = document.querySelector('.adm-nav'); if (side && !side.querySelector('.sw-tool')) { const a = document.createElement('a'); a.href = '#choose'; a.className = 'sw-tool'; a.dataset.act = 'switch-tool'; a.textContent = '⇄ Switch: practice · Support console · Admin tool'; const me = side.querySelector('.adm-me'); side.insertBefore(a, me); }
     const am = document.querySelector('#acct-menu .am-links'); if (am && !am.querySelector('.sw-tool')) am.insertAdjacentHTML('afterbegin', '<button class="sw-tool" data-act="switch-tool">⇄ Switch to Support console or Admin tool</button>'); };
   // a clear marker while testing with the shared login
-  const mark = () => { const acc = PL.current && PL.current(); let b = document.getElementById('demo-all-chip'); if (!isDemo(acc)) { if (b) b.remove(); return; } const slot = document.getElementById('foot-chip'); if (slot && slot.offsetParent !== null) { if (b) b.remove(); if (!slot.querySelector('.demo-chip-in')) slot.innerHTML = '<span class="demo-chip-in">Shared demo login · synthetic data</span>'; return; } if (!b) { b = document.createElement('div'); b.id = 'demo-all-chip'; b.className = 'demo-all-chip'; b.textContent = 'Shared demo login · synthetic data only'; document.body.appendChild(b); } };
+  const mark = () => { const acc = PL.current && PL.current(); let b = document.getElementById('demo-all-chip'); if (!isDemo(acc) || /^#(console|admin)\b/.test(location.hash) || ['console', 'admin'].includes(A.route)) { if (b) b.remove(); return; } const slot = document.getElementById('foot-chip'); if (slot && slot.offsetParent !== null) { if (b) b.remove(); if (!slot.querySelector('.demo-chip-in')) slot.innerHTML = '<span class="demo-chip-in">Shared demo login · synthetic data</span>'; return; } if (!b) { b = document.createElement('div'); b.id = 'demo-all-chip'; b.className = 'demo-all-chip'; b.textContent = 'Shared demo login · synthetic data only'; document.body.appendChild(b); } };
   const _r = A.render; A.render = function () { const r = _r.apply(this, arguments); try { mark(); addSwitch(); } catch (e) { /* ignore */ } return r; };
+  window.addEventListener('hashchange', () => setTimeout(() => { try { mark(); } catch (e) { /* ignore */ } }, 50));
 })();
 
 

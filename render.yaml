@@ -1,0 +1,22 @@
+# Render Blueprint: New → Blueprint → choose this repository → Apply.
+# Starter plan + a 1 GB disk keep the data between restarts (free plans cannot keep data).
+services:
+  - type: web
+    name: prac360
+    runtime: node
+    plan: starter
+    region: frankfurt
+    buildCommand: "echo nothing to build"
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATA_DIR
+        value: /var/data
+      - key: FORCE_HTTPS
+        value: "1"
+      - key: NODE_VERSION
+        value: "20"
+    disk:
+      name: prac360-data
+      mountPath: /var/data
+      sizeGB: 1

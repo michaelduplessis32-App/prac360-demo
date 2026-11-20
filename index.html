@@ -2222,18 +2222,32 @@ details[open]>summary .tcx-chev{transform:rotate(90deg)}
   // ---------------------------------------------------------------- shared data with the Prac360 server
   const SHARE = /^(clinprac360-platform|practiceos-|p360-live-)/; const LOCAL_ONLY = /-user$/;
   const shared = (k) => SHARE.test(k) && !LOCAL_ONLY.test(k);
-  const NET = window.P360NET = { on: false, client: 'c' + Math.random().toString(36).slice(2, 10), status: 'off' };
+  let cid = ''; try { cid = sessionStorage.getItem('p360-client') || ''; if (!cid) { cid = 'c' + Math.random().toString(36).slice(2, 12); sessionStorage.setItem('p360-client', cid); } } catch (e) { cid = 'c' + Math.random().toString(36).slice(2, 12); }
+  const NET = window.P360NET = { on: false, secure: false, client: cid, status: 'off', level: 'none' };
   const set0 = Storage.prototype.setItem, rem0 = Storage.prototype.removeItem;
-  try { if (/^https?:$/.test(location.protocol)) { const x = new XMLHttpRequest(); x.open('GET', 'api/kv', false); x.send();
+  // sign-in token for the secure server (per browser tab, like the Prac360 session)
+  NET.token = () => { try { return sessionStorage.getItem('p360-token') || ''; } catch (e) { return ''; } };
+  NET.setToken = (t) => { try { if (t) sessionStorage.setItem('p360-token', t); else sessionStorage.removeItem('p360-token'); } catch (e) { /* ignore */ } };
+  const hdr = (extra) => { const h = Object.assign({ 'X-Client': NET.client }, extra || {}); const t = NET.token(); if (t) h.Authorization = 'Bearer ' + t; return h; };
+  NET.hdr = hdr;
+  // replace this browser's copy with exactly what the server lets this person see (and drop practice data they may not see)
+  const applyAll = (all) => { Object.keys(localStorage).filter(shared).forEach((k) => { if (!(k in all)) rem0.call(localStorage, k); }); Object.entries(all).forEach(([k, v]) => set0.call(localStorage, k, v)); };
+  NET.purge = () => { Object.keys(localStorage).filter((k) => shared(k) && k !== 'clinprac360-platform-v1').forEach((k) => rem0.call(localStorage, k)); };
+  try { if (/^https?:$/.test(location.protocol)) { const x = new XMLHttpRequest(); x.open('GET', 'api/kv', false); Object.entries(hdr()).forEach(([k, v]) => x.setRequestHeader(k, v)); x.send();
     if (x.status === 200 && /json/.test(x.getResponseHeader('content-type') || '')) { const all = JSON.parse(x.responseText); NET.on = true; NET.status = 'connected';
-      Object.keys(localStorage).filter(shared).forEach((k) => { if (!(k in all)) rem0.call(localStorage, k); }); Object.entries(all).forEach(([k, v]) => set0.call(localStorage, k, v)); } } } catch (e) { NET.on = false; }
+      const lvl = x.getResponseHeader('X-Auth'); NET.secure = lvl != null; NET.level = lvl || 'none';
+      if (NET.secure && NET.token() && NET.level !== 'full') { NET.setToken(''); try { sessionStorage.removeItem('clinprac360-session'); } catch (e) { /* ignore */ } } // signed out on the server: sign out here too
+      if (NET.secure && NET.level !== 'full') NET.purge();
+      applyAll(all); } } } catch (e) { NET.on = false; }
   if (!NET.on) return;
+  NET.reload = async () => { const r = await fetch('api/kv', { headers: hdr() }); if (!r.ok) return false; NET.level = r.headers.get('X-Auth') || 'none'; applyAll(await r.json()); return true; };
+  NET.flush = () => Promise.all(Object.keys(latest).map((k) => { clearTimeout(timers[k]); return put(k); }));
   const timers = {}; const latest = {};
-  const put = (k) => { const v = latest[k]; delete latest[k]; fetch('api/kv/' + encodeURIComponent(k), { method: v == null ? 'DELETE' : 'PUT', headers: { 'Content-Type': 'text/plain', 'X-Client': NET.client }, body: v == null ? undefined : v }).then((r) => { if (!r.ok) throw new Error(r.status); NET.status = 'connected'; }).catch(() => { NET.status = 'offline'; latest[k] = latest[k] !== undefined ? latest[k] : v; clearTimeout(timers[k]); timers[k] = setTimeout(() => put(k), 3000); }); };
+  const put = (k) => { const v = latest[k]; delete latest[k]; return fetch('api/kv/' + encodeURIComponent(k), { method: v == null ? 'DELETE' : 'PUT', headers: hdr({ 'Content-Type': 'text/plain' }), body: v == null ? undefined : v }).then((r) => { if (r.status === 401 || r.status === 403) { NET.status = 'connected'; return; } if (!r.ok) throw new Error(r.status); NET.status = 'connected'; if (r.status === 207 && k === 'clinprac360-platform-v1') refetch(k); }).catch(() => { NET.status = 'offline'; latest[k] = latest[k] !== undefined ? latest[k] : v; clearTimeout(timers[k]); timers[k] = setTimeout(() => put(k), 3000); }); };
   const queue = (k, v) => { latest[k] = v; if (/^p360-live-msg/.test(k)) return put(k); clearTimeout(timers[k]); timers[k] = setTimeout(() => put(k), 120); };
   Storage.prototype.setItem = function (k, v) { set0.call(this, k, v); if (this === localStorage && shared(k)) queue(k, String(v)); };
   Storage.prototype.removeItem = function (k) { rem0.call(this, k); if (this === localStorage && shared(k)) queue(k, null); };
-  window.addEventListener('beforeunload', () => { Object.keys(latest).forEach((k) => { try { navigator.sendBeacon && latest[k] != null && navigator.sendBeacon('api/kv/' + encodeURIComponent(k) + '?c=' + NET.client, latest[k]); } catch (e) { /* ignore */ } }); });
+  window.addEventListener('beforeunload', () => { Object.keys(latest).forEach((k) => { try { navigator.sendBeacon && latest[k] != null && navigator.sendBeacon('api/kv/' + encodeURIComponent(k) + '?c=' + NET.client + (NET.token() ? '&t=' + NET.token() : ''), latest[k]); } catch (e) { /* ignore */ } }); });
   // changes from other browsers: write locally and tell the app (same event the browser sends between tabs)
   let pendingDb = false;
   const apply = (k, v) => { const old = localStorage.getItem(k); if (old === v) return; if (v == null) rem0.call(localStorage, k); else set0.call(localStorage, k, v);
@@ -2242,7 +2256,9 @@ details[open]>summary .tcx-chev{transform:rotate(90deg)}
   const safe = () => !document.querySelector('.modal-bg') && !(document.activeElement && /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) && (!window.APP || window.APP.ui.saved !== false);
   const reloadDb = () => { const A = window.APP; if (!pendingDb || !A || !A.dsEntry) return; if (!safe()) return; pendingDb = false; const db = A.readDb && A.readDb(); if (!db) return; const uid = A.user && A.user.id; const ext = A.user && A.user.external ? A.user : null; A.db = db; A.user = ext || (window.PE && window.PE.user(db, uid)) || A.user; const m = document.getElementById('main'); const top = m ? m.scrollTop : 0; A.render(); const m2 = document.getElementById('main'); if (m2) m2.scrollTop = top; };
   setInterval(reloadDb, 1500);
-  const connect = () => { const es = new EventSource('api/events?c=' + NET.client); es.onmessage = (e) => { let m; try { m = JSON.parse(e.data); } catch (x) { return; } if (m.c === NET.client) return; apply(m.k, m.v); }; es.onopen = () => { NET.status = 'connected'; badge(); }; es.onerror = () => { NET.status = 'offline'; badge(); }; };
+  // the secure server only says which part changed; fetch it with this person's own access
+  const refetch = (k) => fetch('api/kv/' + encodeURIComponent(k), { headers: hdr() }).then((r) => (r.status === 404 ? null : r.ok ? r.text() : undefined)).then((v) => { if (v !== undefined) apply(k, v); }).catch(() => {});
+  const connect = () => { const es = new EventSource('api/events?c=' + NET.client); es.onmessage = (e) => { let m; try { m = JSON.parse(e.data); } catch (x) { return; } if (m.c === NET.client) return; if ('v' in m) apply(m.k, m.v); else refetch(m.k); }; es.onopen = () => { NET.status = 'connected'; badge(); }; es.onerror = () => { NET.status = 'offline'; badge(); }; };
   connect();
   // small status chip so people can see they are on the shared server
   const badge = () => { let b = document.getElementById('net-chip'); if (!b) { b = document.createElement('div'); b.id = 'net-chip'; document.body && document.body.appendChild(b); } if (!b) return; b.className = 'net-chip ' + NET.status; b.textContent = NET.status === 'connected' ? '● Prac360 server' : '● Server offline — retrying'; b.title = NET.status === 'connected' ? 'Connected to the Prac360 server on your network. Everyone sees the same data.' + (window.P360_JS_CRYPTO ? ' (Plain http: HTTPS is recommended.)' : '') : 'Changes are kept and sent when the server is back.'; };
@@ -6491,6 +6507,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
 
   // ---------- forgot password ----------
   const forgotView = () => { const st = A.ui.auth.reset || {};
+    if (A.secureServer) { page(`<h1>Reset your password</h1><div class="alert info"><span class="ico">i</span><div class="body"><strong>Ask your practice administrator to reset it.</strong> They can do it in <em>Admin tool → Users → Reset password</em> and give you a temporary password. Practice owners can also ask Prac360 support.</div></div><p class="small muted">For safety, this online Prac360 does not show reset codes on screen.</p><a class="small" href="#signin">Back to sign in</a>`); return; }
     if (!st.email) { page(`<h1>Reset your password</h1><form id="fp" class="auth-form"><div id="auth-err" class="alert crit" hidden></div><label class="f"><span>Your email</span><input name="email" type="email" required data-noclean data-nodictate></label><button class="btn primary block" type="submit">Send reset code</button><a class="small" href="#signin">Back to sign in</a></form>`);
       document.getElementById('fp').addEventListener('submit', (e) => { e.preventDefault(); const email = e.target.email.value.trim().toLowerCase(); const acc = PL.byEmail(email); if (acc) { PL.sendCode(acc, 'reset'); PL.log('reset-requested', acc, ''); } else PL.log('reset-requested', null, { email, text: 'unknown email' });
         A.ui.auth.reset = { email }; forgotView(); }); return; }
@@ -6546,7 +6563,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
         if (v.dealer) { const d = PL.s.orgs.find((o) => o.type === 'dealer' && o.code === v.dealer.toUpperCase() && o.status === 'active'); if (!d) return err('That dealer code was not found. Check it, or leave it empty.'); }
         Object.assign(st, { org: v.org.trim(), pno: v.pno, disc: v.disc, reg: v.reg, phone: v.phone, prov: v.prov, dealer: (v.dealer || '').toUpperCase() }); st.step = 3; return registerView(); }
       if (st.step === 3) {
-        if (PL.byEmail(v.email)) return err('An account with this email already exists. Sign in, or reset your password.');
+        if (PL.byEmail(v.email) || (A.emailTaken && await A.emailTaken(v.email))) return err('An account with this email already exists. Sign in, or reset your password.');
         const c = PL.pwCheck(v.pw, { email: v.email, name: v.name }); if (!c.ok) return err('Password needs ' + c.issues.join('; ') + '.'); if (v.pw !== v.pw2) return err('The passwords do not match.');
         Object.assign(st, { name: v.name.trim(), hpcsa: (v.hpcsa || '').trim(), email: v.email.trim().toLowerCase(), pw: v.pw }); st.step = 4; return registerView(); }
       if (st.step === 4) { st.svcs = Object.keys(v).filter((k) => k.startsWith('svc_')).map((k) => k.slice(4)); busy(f, true, 'Creating…'); try { await A.createRegistration(st); } catch (x) { busy(f, false, 'Create my account'); return err(x.message); } }
@@ -6597,7 +6614,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
       <label class="f"><span>Repeat password</span><input name="pw2" type="password" autocomplete="new-password" required data-noclean data-nodictate></label><label class="check small"><input type="checkbox" name="popia" required> I will keep patient information confidential (POPIA) and not share my login</label>
       <button class="btn primary block" type="submit">Join</button><a class="small" href="#signin">Back to sign in</a></form>`);
     const f = document.getElementById('ai'); wirePw(f, 'pw', () => ({ name: f.name.value, email: (PL.s.invites.find((i) => i.code === f.code.value.toUpperCase()) || {}).email }));
-    f.addEventListener('submit', async (e) => { e.preventDefault(); const inv = PL.s.invites.find((i) => i.code === f.code.value.trim().toUpperCase() && !i.used && i.expires > Date.now()); if (!inv) return err('That invitation code is not valid or has expired. Ask your practice administrator for a new one.');
+    f.addEventListener('submit', async (e) => { e.preventDefault(); if (A.inviteLookup) await A.inviteLookup(f.code.value); const inv = PL.s.invites.find((i) => i.code === f.code.value.trim().toUpperCase() && !i.used && i.expires > Date.now()); if (!inv) return err('That invitation code is not valid or has expired. Ask your practice administrator for a new one.');
       const c = PL.pwCheck(f.pw.value, { email: inv.email, name: f.name.value }); if (!c.ok) return err('Password needs ' + c.issues.join('; ') + '.'); if (f.pw.value !== f.pw2.value) return err('The passwords do not match.');
       let acc = PL.byEmail(inv.email); if (acc) return err('This email already has an account. Sign in — your new access is added automatically.');
       acc = await PL.createAccount({ email: inv.email, name: f.name.value.trim(), password: f.pw.value, status: 'active' }); inv.used = new Date().toISOString(); inv.accountId = acc.id;
@@ -14832,6 +14849,63 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     A.toast(o ? 'Helper robot on. It will pop up from behind the Assist button every 2 minutes.' : 'Helper robot off. Switch it back on with the robot button at the top of Assist.'); };
 })();
 (function () { const A = window.APP; if (!A.RELEASES) return; const r = A.RELEASES.find((x) => x.v === '0.33'); if (r && !r.items.some((i) => i.title === 'Helper robot and a new default voice')) r.items.unshift({ type: 'new', area: 'assist', title: 'Helper robot and a new default voice', text: 'Every 2 minutes a small robot peeks out from behind the Assist button to offer help. Click it to start talking. Switch it on or off with the robot button at the top of Assist, next to the speaker. Spoken replies now use Microsoft Andrew (Natural) at 1.20× when this computer has it; otherwise your browser’s own voice.', link: '#/whatsnew' }); })();
+
+
+/* ===== netauth.js ===== */
+/* Prac360 — sign-in through the secure Prac360 server.
+ * Only active when the app is opened from a Prac360 server v2 (it answers with an X-Auth header). Then:
+ *  - the password and two-step code are checked on the server, which gives this browser tab a sign-in token;
+ *  - after sign-in the browser loads only the data this person may see; signing out removes practice data
+ *    from this browser again;
+ *  - "email already registered" and invitation codes are checked with the server;
+ *  - "Forgot password" asks the person to contact their practice administrator (a public demo cannot send
+ *    real email, and showing reset codes on screen would let anyone take over an account).
+ * Opened any other way (the claude.ai link, GitHub Pages, a file), nothing changes. */
+(function () {
+  'use strict';
+  const NET = window.P360NET; const PL = window.PL; const A = window.APP;
+  if (!NET || !NET.on || !NET.secure || !PL || !A) return;
+  const post = (url, body) => fetch(url, { method: 'POST', headers: NET.hdr({ 'Content-Type': 'application/json' }), body: JSON.stringify(body || {}) })
+    .then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) })).catch(() => ({ status: 0, body: {} }));
+  const refresh = async () => { await NET.reload(); PL.s = PL.load() || PL.s; };
+
+  const _signIn = PL.signIn;
+  PL.signIn = async (email, pw) => {
+    const r = await post('api/login', { email, password: pw });
+    if (r.status === 0) return { ok: false, msg: 'Cannot reach the Prac360 server. Check your internet connection and try again.' };
+    if (r.status !== 200 || !r.body.ok) {
+      if (r.body.reason === 'verify') { const acc = PL.byEmail(email); if (acc) return { ok: false, needVerify: true, acc, msg: r.body.msg }; }
+      return { ok: false, msg: r.body.msg || 'Email or password is not correct.' }; }
+    NET.setToken(r.body.token); await refresh();
+    const acc = PL.byEmail(email); if (!acc) return { ok: false, msg: 'Email or password is not correct.' };
+    if (r.body.mfa) return { ok: true, acc, step: 'mfa' };
+    if (PL.mfaRequired(acc) && !(acc.mfa && acc.mfa.enabled)) return { ok: true, acc, step: 'mfa-setup' };
+    return { ok: true, acc, step: 'done' };
+  };
+  PL._localSignIn = _signIn;
+
+  PL.verifyMfa = async (acc, code) => {
+    const r = await post('api/mfa', { code });
+    if (r.status === 200 && r.body.ok) { await refresh(); const fresh = PL.acct(acc.id); if (fresh) Object.assign(acc, fresh); return true; }
+    return false;
+  };
+  const _enable = PL.enableMfa;
+  PL.enableMfa = async (acc, secret, recovery) => { await _enable(acc, secret, recovery); await NET.flush(); await refresh(); };
+
+  const _end = PL.endSession;
+  PL.endSession = function () { const out = _end.apply(this, arguments); const had = NET.token();
+    NET.setToken(''); NET.purge(); // practice data leaves this browser straight away
+    if (had) fetch('api/logout', { method: 'POST', headers: { Authorization: 'Bearer ' + had, 'X-Client': NET.client } }).catch(() => {});
+    refresh().then(() => { if (A.renderAuth && !PL.current()) try { A.renderAuth(); } catch (e) { /* ignore */ } });
+    return out; };
+
+  A.emailTaken = async (email) => { try { const r = await fetch('api/lookup?email=' + encodeURIComponent(email), { headers: NET.hdr() }); return r.ok ? !!(await r.json()).taken : false; } catch (e) { return false; } };
+  A.inviteLookup = async (code) => { try { const r = await fetch('api/lookup?invite=' + encodeURIComponent(String(code || '').trim().toUpperCase()), { headers: NET.hdr() }); if (!r.ok) return null; const b = await r.json();
+    const s = PL.s; s.invites = s.invites || []; if (!s.invites.some((i) => i.id === b.invite.id)) s.invites.push(b.invite);
+    if (b.org && !s.orgs.some((o) => o.id === b.org.id && o.name)) { s.orgs = s.orgs.filter((o) => o.id !== b.org.id); s.orgs.push(b.org); }
+    if (b.dataset && !s.datasets.some((d) => d.id === b.dataset.id)) s.datasets.push(b.dataset); return b.invite; } catch (e) { return null; } };
+  A.secureServer = true;
+})();
 
 ;(function(){ try { if (window.APP) { window.APP.boot().then(() => { if (window.APP.db && window.APP.db.settings.largeText) document.body.classList.add('large'); }).catch((e) => { document.getElementById('root').innerHTML = '<p style="padding:24px">Could not start: ' + e.message + '</p>'; console.error(e); }); } } catch (e) { document.getElementById('root').innerHTML = '<p style="padding:24px">Could not start: ' + e.message + '</p>'; console.error(e); } })();
 </script>

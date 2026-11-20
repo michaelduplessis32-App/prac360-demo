@@ -1,0 +1,9 @@
+{
+  "name": "prac360-server",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Prac360 server: the app plus one shared, protected copy of its data (demo / synthetic data).",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

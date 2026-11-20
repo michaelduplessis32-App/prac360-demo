@@ -2279,6 +2279,48 @@ details[open]>summary .tcx-chev{transform:rotate(90deg)}
 @media (max-width:900px){.cx-ws,.cx-ws.no-side{grid-template-columns:minmax(0,1fr)}.cx-side{position:static;max-height:none;order:-1}.cx-row{grid-template-columns:minmax(0,1fr) auto}.cx-row>label{grid-column:1/-1;padding:0}.cx-li{grid-template-columns:minmax(0,1fr)}.cx-dec{justify-content:flex-start}.cx-rv{grid-template-columns:minmax(0,1fr) auto}.cx-info .wide{grid-column:auto}}
 @media print{.cx-side,.cx-left,.cx-scribe,.cx-bar{display:none}}
 .cx-more{margin:6px 0 2px 8px;border:0;background:none;color:var(--brand,#015BF0);font:600 .82rem var(--font);cursor:pointer;padding:4px 6px;border-radius:6px}.cx-more:hover{background:var(--surface-2,#eef2f7)}
+
+/* helper robot — calm: no waving or blinking, a smooth glide */
+#p360-robot .rb-bot{transition:transform .5s cubic-bezier(.22,.8,.3,1),opacity .4s ease;opacity:0;filter:drop-shadow(0 8px 14px rgba(6,32,88,.18))}
+#p360-robot.up .rb-bot{opacity:1}
+#p360-robot .rb-arm,#p360-robot .rb-bulb,#p360-robot .rb-eyes{animation:none!important}
+#p360-robot.up .rb-arm,#p360-robot.up .rb-bulb{animation:none!important}
+#p360-robot .rb-bubble{transition:opacity .3s ease .4s,transform .3s ease .4s}
+/* Macro Billing */
+.mb-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
+.mb-btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;border:1.5px solid #7c3aed;color:#5b21b6;background:#f5f3ff}.mb-btn:hover{background:#ede9fe}
+.mb-ico{font-size:1.05rem}
+.mb-top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.mb-top input{flex:1;min-width:220px}
+.mb-list{display:flex;flex-direction:column;gap:10px;max-height:56vh;overflow:auto}
+.mb-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.mb-card:hover{border-color:#c4b5fd}
+.mb-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.mb-chip{font:600 .74rem var(--font);padding:2px 8px;border-radius:999px;background:#e8f0fe;color:#0b3fa8}.mb-chip.it{background:#ecfdf5;color:#047857}.mb-chip.mod{background:#fef3c7;color:#92400e}.mb-chip.bad{background:#fee2e2;color:#991b1b;text-decoration:line-through}
+.mb-card-r{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px}.mb-est{font-weight:800;font-size:1.05rem}.mb-acts{display:flex;gap:6px}
+.mb-prev .mb-skip{opacity:.5}
+.mb-icd{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--surface-2,#f3f6fb)}.mb-dx{display:flex;flex-direction:column;gap:4px;margin:6px 0}
+.mb-erows{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.mb-erow{display:grid;grid-template-columns:200px minmax(0,1fr) 70px auto;gap:8px;align-items:center}
+@media (max-width:700px){.mb-erow{grid-template-columns:1fr 70px auto}.mb-erow select{grid-column:1/-1}.mb-card{grid-template-columns:1fr}.mb-card-r{align-items:flex-start;text-align:left}}
+/* Live support: practice search */
+.ls-search{margin-top:14px}
+.ls-q{display:flex;align-items:center;gap:8px;padding:0 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface)}.ls-q:focus-within{border-color:var(--brand,#015BF0);box-shadow:0 0 0 3px rgba(1,91,240,.12)}
+.ls-q input{flex:1;border:0;outline:0;background:transparent;height:44px;font-size:.95rem}
+.ls-hint{margin:8px 2px}
+.ls-res{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-top:8px}
+.ls-hit{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;gap:2px 10px;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer;font:inherit;color:var(--ink)}
+.ls-hit:hover{border-color:#93c5fd}.ls-hit.on{border-color:var(--brand,#015BF0);box-shadow:0 0 0 2px rgba(1,91,240,.15)}
+.ls-hit-n{display:flex;flex-direction:column;grid-row:1/3;min-width:0}.ls-hit-n strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ls-live{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:700;color:var(--ink-2);justify-self:end}.ls-live.on{color:#15803d}
+.ls-dot{width:8px;height:8px;border-radius:50%;background:#94a3b8;display:inline-block}.ls-live.on .ls-dot,.ls-st.live .ls-dot{background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.2)}.ls-st.else .ls-dot{background:#f59e0b}
+.ls-prac{margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2,#f8fafc)}
+.ls-prac-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}.ls-prac-h h3{margin:0}
+.ls-users tr.is-live{background:#f0fdf4}.ls-users tr.is-inactive{opacity:.55}
+.ls-st{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:.86rem}.ls-st.live{color:#15803d}.ls-st.else{color:#b45309}.ls-st.off{color:var(--ink-2)}
+.ls-act{text-align:right;white-space:nowrap}
+.ls-all{margin-top:16px}.ls-all summary{cursor:pointer}
+#p360-robot .rb-bot{border:0!important;outline:0;background:transparent!important;box-shadow:none!important;border-radius:16px}
+#p360-robot .rb-bot:focus-visible{outline:2px solid #7c3aed;outline-offset:2px}
 </style>
 </head>
 <body>
@@ -13316,13 +13358,39 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   A.liveOnline = (dsId) => { const p = readP(); const now = Date.now(); return Object.values(p).filter((x) => now - x.at < 12000 && (!dsId || x.ds === dsId)); };
 
   // ---------------------------------------------------------------- support side: console tab
+  // practices and their users, for the search
+  const practices = () => { const s = PL().s || {}; return (s.datasets || []).map((d) => { const o = (s.orgs || []).find((x) => x.id === d.orgId) || {}; return { ds: d, org: o }; }); };
+  const usersOf = (ds) => { const s = PL().s || {}; const g = (s.grants || []).filter((x) => (x.scope === 'org' && x.orgId === ds.orgId) || (x.scope === 'dataset' && x.datasetId === ds.id));
+    const ids = [...new Set(g.map((x) => x.accountId))]; return ids.map((id) => { const a = (s.accounts || []).find((x) => x.id === id); if (!a || a.demoAll) return null; const gr = g.find((x) => x.accountId === id) || {}; return { acc: a, role: gr.datasetRole || gr.role || '' }; }).filter(Boolean); };
+  const ago = (t) => { if (!t) return 'never'; const ms = Date.now() - (typeof t === 'number' ? t : Date.parse(t)); if (!(ms >= 0)) return '—'; const m = Math.round(ms / 60000); if (m < 1) return 'just now'; if (m < 60) return m + ' min ago'; const h = Math.round(m / 60); if (h < 24) return h + ' h ago'; const d = Math.round(h / 24); return d + ' day' + (d === 1 ? '' : 's') + ' ago'; };
+  const matches = (q) => { const ql = q.trim().toLowerCase(); const on = A.liveOnline(); return practices().map((x) => Object.assign(x, { live: on.filter((u) => u.ds === x.ds.id).length, users: usersOf(x.ds).length }))
+    .filter((x) => !ql || [x.ds.name, x.org.name, x.ds.practiceNo, x.org.practiceNo, x.org.code, x.org.bhf].filter(Boolean).join(' ').toLowerCase().includes(ql))
+    .sort((a, b) => b.live - a.live || String(a.ds.name).localeCompare(String(b.ds.name))).slice(0, ql ? 12 : 8); };
+  const resultsHtml = () => { const q = A.ui.liveQ || ''; const r = matches(q);
+    return `${!q ? '<div class="tiny muted ls-hint">Practices with someone online are shown first. Type to search all practices.</div>' : ''}${r.length ? `<div class="ls-res">${r.map((x) => `<button class="ls-hit ${A.ui.liveDs === x.ds.id ? 'on' : ''}" data-act="ls-pick" data-id="${esc(x.ds.id)}"><span class="ls-hit-n"><strong>${esc(x.ds.name)}</strong><span class="tiny muted">${esc([x.org.type, x.ds.practiceNo || x.org.practiceNo ? 'Practice no. ' + (x.ds.practiceNo || x.org.practiceNo) : ''].filter(Boolean).join(' · '))}</span></span><span class="ls-live ${x.live ? 'on' : ''}"><span class="ls-dot"></span>${x.live} live</span><span class="tiny muted">${x.users} user${x.users === 1 ? '' : 's'}</span></button>`).join('')}</div>` : '<p class="muted small">No practice matches that search.</p>'}`; };
+  const practiceHtml = () => { const id = A.ui.liveDs; if (!id) return ''; const x = practices().find((y) => y.ds.id === id); if (!x) return ''; const on = A.liveOnline(); const allOn = on;
+    const rows = usersOf(x.ds).map((u) => { const here = on.filter((p) => p.accId === u.acc.id && p.ds === id).sort((a, b) => b.at - a.at)[0]; const elsewhere = !here && allOn.filter((p) => p.accId === u.acc.id).sort((a, b) => b.at - a.at)[0]; return Object.assign(u, { here, elsewhere }); })
+      .sort((a, b) => (b.here ? 2 : b.elsewhere ? 1 : 0) - (a.here ? 2 : a.elsewhere ? 1 : 0) || String(a.acc.name).localeCompare(String(b.acc.name)));
+    const live = rows.filter((r) => r.here).length;
+    return `<div class="ls-prac"><div class="ls-prac-h"><div><h3>${esc(x.ds.name)}</h3><div class="tiny muted">${esc(x.org.name && x.org.name !== x.ds.name ? x.org.name + ' · ' : '')}${rows.length} user${rows.length === 1 ? '' : 's'} · <strong>${live} live now</strong></div></div><button class="btn sm ghost" data-act="ls-close">Close</button></div>
+      <div class="tbl-wrap"><table class="t ls-users"><thead><tr><th>User</th><th>Role</th><th>Status</th><th>Screen</th><th></th></tr></thead><tbody>${rows.map((r) => { const a = r.acc; const inactive = a.status !== 'active';
+        const st = r.here ? `<span class="ls-st live"><span class="ls-dot"></span>Live now</span>` : r.elsewhere ? `<span class="ls-st else"><span class="ls-dot"></span>Online in ${esc(r.elsewhere.dsName || 'another practice')}</span>` : `<span class="ls-st off"><span class="ls-dot"></span>${inactive ? 'Account ' + esc(a.status) : 'Offline'}</span><div class="tiny muted">Last active ${esc(ago(a.lastLogin))}</div>`;
+        return `<tr class="${r.here ? 'is-live' : ''} ${inactive ? 'is-inactive' : ''}"><td><strong>${esc(a.name)}</strong><div class="tiny muted">${esc(a.email || '')}</div></td><td class="small">${esc(r.role)}</td><td>${st}</td><td class="mono tiny">${r.here ? esc((r.here.route || '').replace(/^#\/?/, '') || 'home') : '—'}</td>
+          <td class="ls-act">${r.here ? `<button class="btn sm primary" data-act="live-join" data-tab="${esc(r.here.tab)}" ${r.here.busy ? 'disabled title="Already in a support session"' : ''}>🖥 Connect to screen</button>` : r.elsewhere ? `<button class="btn sm" data-act="live-join" data-tab="${esc(r.elsewhere.tab)}">Connect</button>` : '<span class="tiny muted">Not online — ask them to open Prac360</span>'}</td></tr>`; }).join('') || '<tr><td colspan="5" class="muted">No users have access to this practice.</td></tr>'}</tbody></table></div>
+      <p class="tiny muted">Connecting asks the user first. You then see their Prac360 screen on their own computer, with both cursors, and can click and type if they allow it. Every session is logged in the practice's audit trail.</p></div>`; };
   if (A.CONSOLE) A.CONSOLE.live = () => { const on = A.liveOnline(); const by = {}; on.forEach((x) => { (by[x.ds] = by[x.ds] || []).push(x); }); const w = A.ui.liveWait;
-    return `<div class="card"><div class="row between" style="flex-wrap:wrap;gap:8px"><div><h2 style="margin:0">Live support</h2><div class="small muted">Join a practice user's screen to help them. They must allow it. You both see the same screen and each other's cursor, and you can both work.</div></div><button class="btn sm" data-act="live-refresh">↻ Refresh</button></div>
+    return `<div class="card"><div class="row between" style="flex-wrap:wrap;gap:8px"><div><h2 style="margin:0">Live support</h2><div class="small muted">Find a practice, see who is online, and connect to a user's screen to help them. They must allow it.</div></div><button class="btn sm" data-act="live-refresh">↻ Refresh</button></div>
       ${w ? `<div class="alert info" style="margin-top:10px">Waiting for <strong>${esc(w.name)}</strong> to allow you to join… <button class="btn sm" data-act="live-cancel">Cancel</button></div>` : ''}
-      ${Object.keys(by).length ? Object.entries(by).map(([ds, us]) => `<h3 style="margin:14px 0 6px">${esc(us[0].dsName)}</h3><table class="t small"><thead><tr><th>User</th><th>Role</th><th>Screen they are on</th><th>Last seen</th><th></th></tr></thead><tbody>${us.map((u) => `<tr><td><strong>${esc(u.name)}</strong></td><td>${esc(u.role || '')}</td><td class="mono tiny">${esc((u.route || '').replace(/^#\/?/, '') || 'home')}</td><td class="tiny">${Math.round((Date.now() - u.at) / 1000)}s ago</td><td>${u.busy ? '<span class="badge warn">in a session</span>' : `<button class="btn sm primary" data-act="live-join" data-tab="${u.tab}">Join screen</button>`}</td></tr>`).join('')}</tbody></table>`).join('')
-        : '<p class="muted" style="margin-top:12px">No practice users are online right now.</p>'}
-      <p class="tiny muted" style="margin-top:12px">Demo: open Prac360 in a second tab of this browser and sign in as a practice user (e.g. dr.naidoo@jacaranda.example) — they appear here. In the live system this works between any two computers through Prac360's encrypted relay in South Africa; nothing is installed.</p></div>`; };
-  let refreshT = null; const _rc = A.renderConsole; if (_rc) A.renderConsole = function () { const r = _rc.apply(this, arguments); clearTimeout(refreshT); if (A.route === 'console' && A.ui.consoleTab === 'live') refreshT = setTimeout(() => { if (A.route === 'console' && A.ui.consoleTab === 'live' && !document.querySelector('.modal-bg')) A.render(); }, 5000); return r; };
+      <div class="ls-search"><label class="ls-q"><span aria-hidden="true">🔎</span><input id="ls-q" type="search" data-input="ls-q" value="${esc(A.ui.liveQ || '')}" placeholder="Search for a practice — name, practice number or code" autocomplete="off" aria-label="Search for a practice" data-nodictate></label><div id="ls-results">${resultsHtml()}</div></div>
+      ${practiceHtml()}
+      <details class="ls-all" ${A.ui.liveDs ? '' : 'open'}><summary><strong>Everyone online now</strong> <span class="tiny muted">(${on.length})</span></summary>
+      ${Object.keys(by).length ? Object.entries(by).map(([ds, us]) => `<h3 style="margin:14px 0 6px">${esc(us[0].dsName)}</h3><table class="t small"><thead><tr><th>User</th><th>Role</th><th>Screen they are on</th><th>Last seen</th><th></th></tr></thead><tbody>${us.map((u) => `<tr><td><strong>${esc(u.name)}</strong></td><td>${esc(u.role || '')}</td><td class="mono tiny">${esc((u.route || '').replace(/^#\/?/, '') || 'home')}</td><td class="tiny">${Math.round((Date.now() - u.at) / 1000)}s ago</td><td>${u.busy ? '<span class="badge">In a session</span>' : `<button class="btn sm primary" data-act="live-join" data-tab="${u.tab}">Join screen</button>`}</td></tr>`).join('')}</tbody></table>`).join('')
+        : '<p class="muted" style="margin-top:12px">No practice users are online right now.</p>'}</details>
+      <p class="tiny muted" style="margin-top:12px">Demo: open Prac360 in a second tab of this browser and sign in as a practice user (e.g. dr.naidoo@jacaranda.example) — they appear here. On the shared Prac360 server this works between any two computers; in production through Prac360's encrypted relay in South Africa. Nothing is installed.</p></div>`; };
+  H['input:ls-q'] = (el) => { A.ui.liveQ = el.value; const r = document.getElementById('ls-results'); if (r) r.innerHTML = resultsHtml(); };
+  H['ls-pick'] = (el) => { A.ui.liveDs = el.dataset.id; A.render(); setTimeout(() => { const t = document.querySelector('.ls-prac'); if (t) t.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 50); };
+  H['ls-close'] = () => { A.ui.liveDs = null; A.render(); };
+  let refreshT = null; const _rc = A.renderConsole; if (_rc) A.renderConsole = function () { const r = _rc.apply(this, arguments); clearTimeout(refreshT); if (A.route === 'console' && A.ui.consoleTab === 'live') refreshT = setTimeout(() => { if (A.route === 'console' && A.ui.consoleTab === 'live' && !document.querySelector('.modal-bg') && !(document.activeElement && document.activeElement.id === 'ls-q')) A.render(); }, 5000); return r; };
   H['live-refresh'] = () => A.render();
   H['live-join'] = (el) => { const u = A.liveOnline().find((x) => x.tab === el.dataset.tab); if (!u) return A.toast('That user is no longer online.', 'error');
     A.modal(`Join ${u.name}'s screen`, `<p class="small">${esc(u.name)} at ${esc(u.dsName)} sees your name and reason and must allow it. Everything you do is in the practice's audit log.</p><label class="f"><span>Reason</span><input id="lv-why" placeholder="e.g. Ticket 5210 — help with a rejected claim" data-noclean></label><label class="check"><input type="checkbox" id="lv-ctl" checked> Ask to be allowed to click and type</label>`,
@@ -14904,20 +14972,27 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   A.robotOn = on;
 
   // original drawing: rounded head with a screen face, antenna, waving arm
-  const SVG = `<svg viewBox="0 0 120 130" width="84" height="91" aria-hidden="true" focusable="false">
-    <defs><linearGradient id="rb-body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dfe8ff"/></linearGradient>
-      <linearGradient id="rb-face" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b2a6b"/><stop offset="1" stop-color="#3b1f7a"/></linearGradient></defs>
-    <line x1="60" y1="20" x2="60" y2="8" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/><circle class="rb-bulb" cx="60" cy="7" r="5" fill="#ec4899"/>
-    <rect x="22" y="20" width="76" height="56" rx="20" fill="url(#rb-body)" stroke="#015BF0" stroke-width="3"/>
-    <rect x="10" y="40" width="10" height="18" rx="5" fill="#7c3aed"/><rect x="100" y="40" width="10" height="18" rx="5" fill="#7c3aed"/>
-    <rect x="32" y="30" width="56" height="36" rx="13" fill="url(#rb-face)"/>
-    <g class="rb-eyes"><ellipse cx="48" cy="45" rx="6" ry="7" fill="#7dd3fc"/><ellipse cx="72" cy="45" rx="6" ry="7" fill="#7dd3fc"/><circle cx="50" cy="43" r="2" fill="#fff"/><circle cx="74" cy="43" r="2" fill="#fff"/></g>
-    <path d="M50 56 Q60 63 70 56" fill="none" stroke="#7dd3fc" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="40" cy="58" r="3" fill="#f472b6" opacity=".7"/><circle cx="80" cy="58" r="3" fill="#f472b6" opacity=".7"/>
-    <rect x="34" y="80" width="52" height="46" rx="14" fill="url(#rb-body)" stroke="#015BF0" stroke-width="3"/>
-    <circle cx="60" cy="100" r="8" fill="#015BF0"/><path d="M56 100 l3 3 l6-6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <g class="rb-arm"><path d="M86 92 Q104 84 106 66" fill="none" stroke="#015BF0" stroke-width="7" stroke-linecap="round"/><circle cx="106" cy="62" r="7" fill="#7c3aed"/></g>
-    <path d="M34 96 Q20 104 22 120" fill="none" stroke="#015BF0" stroke-width="7" stroke-linecap="round"/>
+  const SVG = `<svg viewBox="0 0 120 132" width="84" height="92" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="rb-shell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="0.55" stop-color="#eef2fa"/><stop offset="1" stop-color="#d9e1f0"/></linearGradient>
+      <linearGradient id="rb-visor" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#101a3f"/><stop offset="1" stop-color="#25184f"/></linearGradient>
+      <linearGradient id="rb-accent" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#015BF0"/><stop offset="0.6" stop-color="#7c3aed"/><stop offset="1" stop-color="#db2777"/></linearGradient>
+      <radialGradient id="rb-eye" cx="0.5" cy="0.45" r="0.6"><stop offset="0" stop-color="#e0fbff"/><stop offset="0.55" stop-color="#67e8f9"/><stop offset="1" stop-color="#22a6d8"/></radialGradient>
+      <filter id="rb-soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.6"/></filter>
+    </defs>
+    <ellipse cx="60" cy="128" rx="30" ry="3.5" fill="#0b1736" opacity=".12"/>
+    <line x1="60" y1="16" x2="60" y2="7" stroke="#a7b3cc" stroke-width="2.5" stroke-linecap="round"/><circle cx="60" cy="6" r="4.2" fill="url(#rb-accent)"/>
+    <path d="M30 88 Q30 80 38 78 L82 78 Q90 80 90 88 L94 122 Q94 128 88 128 L32 128 Q26 128 26 122 Z" fill="url(#rb-shell)" stroke="#c9d3e6" stroke-width="1.4"/>
+    <path d="M44 78 L76 78 L72 72 L48 72 Z" fill="#cfd8ea"/>
+    <circle cx="60" cy="103" r="7.5" fill="url(#rb-accent)" opacity=".92"/><circle cx="57.5" cy="100.5" r="2.2" fill="#fff" opacity=".55"/>
+    <rect x="20" y="16" width="80" height="58" rx="24" fill="url(#rb-shell)" stroke="#c9d3e6" stroke-width="1.4"/>
+    <path d="M30 24 Q60 12 90 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+    <rect x="13" y="36" width="9" height="18" rx="4.5" fill="url(#rb-accent)"/><rect x="98" y="36" width="9" height="18" rx="4.5" fill="url(#rb-accent)"/>
+    <rect x="29" y="28" width="62" height="36" rx="16" fill="url(#rb-visor)"/>
+    <rect x="31" y="30" width="58" height="10" rx="5" fill="#ffffff" opacity=".06"/>
+    <g filter="url(#rb-soft)" opacity=".7"><rect x="40" y="40" width="13" height="10" rx="5" fill="#67e8f9"/><rect x="67" y="40" width="13" height="10" rx="5" fill="#67e8f9"/></g>
+    <rect x="41" y="41" width="11" height="8" rx="4" fill="url(#rb-eye)"/><rect x="68" y="41" width="11" height="8" rx="4" fill="url(#rb-eye)"/>
+    <path d="M52 56 Q60 60 68 56" fill="none" stroke="#67e8f9" stroke-width="2" stroke-linecap="round" opacity=".8"/>
   </svg>`;
 
   const el = () => { let r = document.getElementById('p360-robot'); if (r) return r;
@@ -14959,6 +15034,112 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     A.toast(o ? 'Helper robot on. It will pop up from behind the Assist button every 2 minutes.' : 'Helper robot off. Switch it back on with the robot button at the top of Assist.'); };
 })();
 (function () { const A = window.APP; if (!A.RELEASES) return; const r = A.RELEASES.find((x) => x.v === '0.33'); if (r && !r.items.some((i) => i.title === 'Helper robot and a new default voice')) r.items.unshift({ type: 'new', area: 'assist', title: 'Helper robot and a new default voice', text: 'Every 2 minutes a small robot peeks out from behind the Assist button to offer help. Click it to start talking. Switch it on or off with the robot button at the top of Assist, next to the speaker. Spoken replies now use Microsoft Andrew (Natural) at 1.20× when this computer has it; otherwise your browser’s own voice.', link: '#/whatsnew' }); })();
+
+
+/* ===== ui-macro.js ===== */
+/* Prac360 — Macro Billing.
+ * A macro is a saved basket of treatment codes, modifiers and items (medicines, consumables) that are often billed
+ * together — e.g. "Dental cleanup Basic": D8101 + D8159 + D8155 + D8161 + examination gloves.
+ * On the billing (transaction) screen, "Macro Billing" adds the whole basket in one go: you see every line with its
+ * estimated price first, can untick lines or change quantities, choose the ICD-10 codes, and then add.
+ * Each line is still an ordinary transaction (own ICD-10, priced from the payment arrangement), so the claim checks and the
+ * SAMA Billing Coach treat it exactly like lines added one at a time. Addition modifiers in a macro are linked to the
+ * procedure lines of that macro. Macros belong to the practice; anyone who may review billing can use and edit them. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, E = window.PE, TS = A.TS, esc = A.esc; if (!P.billing) return;
+  const db = () => A.db; const M = (n) => E.money(n);
+  const encById = (id) => db().encounters.find((e) => e.id === id);
+  const curInv = () => { const enc = encById(A.params[0]); return enc && db().invoices.find((i) => i.id === enc.invoiceId); };
+  const list = () => (db().macros = db().macros || []);
+  const tdef = (code) => E.tariff(db(), code); const item = (id) => E.item(db(), id);
+  const isMod = (code) => !!(TS && TS.mod && TS.mod(code));
+  const lineLabel = (x) => (x.type === 'item' ? (item(x.itemId) || {}).name || x.itemId : (tdef(x.code) || {}).desc || (isMod(x.code) ? (TS.mod(x.code).desc || 'Modifier') : x.code));
+  const valid = (x) => (x.type === 'item' ? !!item(x.itemId) : !!tdef(x.code) || isMod(x.code));
+  // estimated price of one macro line (the invoice reprices from the payment arrangement once added)
+  const est = (x, inv) => { try { const l = x.type === 'item' ? { kind: 'item', itemId: x.itemId, code: (item(x.itemId) || {}).nappi || x.itemId, qty: x.qty || 1 } : { kind: 'tariff', code: x.code, qty: x.qty || 1, icd: [] };
+      if (x.type !== 'item' && isMod(x.code)) return null; E.priceLine(db(), l); const pr = inv && inv.pricing; if (pr && pr.pa && pr.chargeAt === 'rate' && x.type !== 'item') { const r = TS.rate(pr.pa, pr.disc, x.code, inv.date); if (r != null) return Math.round(r * (x.qty || 1) * 100) / 100; } return l.amount != null ? l.amount : null; } catch (e) { return null; } };
+  const total = (m, inv) => m.items.reduce((t, x) => t + (est(x, inv) || 0), 0);
+
+  // ---------------------------------------------------------------- demo baskets (once per practice)
+  const seed = () => { const d = db(); d.settings.macrosSeeded = d.settings.macrosSeeded || false; if (d.settings.macrosSeeded) return; d.settings.macrosSeeded = true; const has = (c) => !!tdef(c); const hasI = (i) => !!item(i); const mk = (name, desc, items) => { const it = items.filter((x) => (x.type === 'item' ? hasI(x.itemId) : has(x.code))); if (it.length >= 2) list().push({ id: E.id('mc'), name, desc, items: it, by: 'system', at: E.nowIso(d), uses: 0, demo: true }); };
+    mk('Dental cleanup Basic', 'Check-up, scale, polish and fluoride (DEMO codes)', [{ type: 'tariff', code: 'D8101', qty: 1 }, { type: 'tariff', code: 'D8159', qty: 1 }, { type: 'tariff', code: 'D8155', qty: 1 }, { type: 'tariff', code: 'D8161', qty: 1 }, { type: 'item', itemId: 's_glove', qty: 1 }]);
+    mk('Bitewing check-up', 'Examination with bitewing radiographs (DEMO codes)', [{ type: 'tariff', code: 'D8101', qty: 1 }, { type: 'tariff', code: 'D8112', qty: 1 }, { type: 'item', itemId: 's_glove', qty: 1 }]);
+    mk('Wound suturing — small', 'Consultation, suturing up to 5 cm, dressing, local anaesthetic and suture (DEMO codes)', [{ type: 'tariff', code: '0191', qty: 1 }, { type: 'tariff', code: 'DP01', qty: 1 }, { type: 'tariff', code: 'DP06', qty: 1 }, { type: 'item', itemId: 's_lido', qty: 1 }, { type: 'item', itemId: 's_suture', qty: 1 }, { type: 'item', itemId: 's_dress', qty: 1 }]);
+    mk('Asthma attack — nebulisation', 'Consultation, nebulisation, salbutamol and ipratropium nebules (DEMO codes)', [{ type: 'tariff', code: '0191', qty: 1 }, { type: 'tariff', code: 'DP03', qty: 1 }, { type: 'item', itemId: 's_salbneb', qty: 1 }, { type: 'item', itemId: 's_ipra', qty: 1 }]);
+    mk('Flu vaccination visit', 'Short consultation, vaccine administration and the vaccine (DEMO codes)', [{ type: 'tariff', code: '0190', qty: 1 }, { type: 'tariff', code: 'DP11', qty: 1 }, { type: 'item', itemId: 's_flu', qty: 1 }]); };
+
+  // ---------------------------------------------------------------- the Macro Billing button on the transaction screen
+  const _bill = P.billing; P.billing = function (params) { let h = _bill.apply(this, arguments); if (!params[0]) return h; const inv = curInv(); if (!inv || inv.status !== 'draft' || !A.can('billing.review')) return h;
+    try { seed(); } catch (e) { /* ignore */ }
+    const bar = `<div class="mb-bar"><button class="btn mb-btn" data-act="mb-open" type="button"><span class="mb-ico" aria-hidden="true">▦</span> Macro Billing</button><span class="tiny muted">Add a saved basket of codes and items in one go${list().length ? ` · ${list().length} macro${list().length === 1 ? '' : 's'}` : ''}</span></div>`;
+    const at = h.indexOf('<form class="tx-add"'); return at >= 0 ? h.slice(0, at) + bar + h.slice(at) : h; };
+
+  // ---------------------------------------------------------------- picker
+  const pickerHtml = (inv) => { const q = (A.ui.mbQ || '').toLowerCase(); const L = list().filter((m) => !q || (m.name + ' ' + (m.desc || '') + ' ' + m.items.map((x) => x.code || x.itemId).join(' ')).toLowerCase().includes(q)).sort((a, b) => (b.uses || 0) - (a.uses || 0) || a.name.localeCompare(b.name));
+    return `<div class="mb-pick"><div class="mb-top"><input id="mb-q" type="search" placeholder="Search macros, codes or items" value="${esc(A.ui.mbQ || '')}" data-input="mb-q" aria-label="Search macros" data-nodictate><button class="btn" data-act="mb-edit" data-id="">+ New macro</button>${inv.lines.length ? '<button class="btn ghost" data-act="mb-from-inv" title="Save the lines already on this invoice as a macro">Save these lines as a macro</button>' : ''}</div>
+      <div class="mb-list" id="mb-list">${L.length ? L.map((m) => { const bad = m.items.filter((x) => !valid(x)).length; return `<div class="mb-card"><div class="mb-card-m"><strong>${esc(m.name)}</strong>${m.demo ? ' <span class="badge">DEMO</span>' : ''}<div class="tiny muted">${esc(m.desc || '')}</div>
+          <div class="mb-chips">${m.items.map((x) => `<span class="mb-chip ${x.type === 'item' ? 'it' : isMod(x.code) ? 'mod' : ''} ${valid(x) ? '' : 'bad'}" title="${esc(lineLabel(x))}">${esc(x.type === 'item' ? lineLabel(x) : x.code)}${(x.qty || 1) > 1 ? ' ×' + x.qty : ''}</span>`).join('')}</div>
+          ${bad ? `<div class="tiny warn-t">${bad} line(s) no longer in your price list or stock — they will be skipped.</div>` : ''}</div>
+          <div class="mb-card-r"><div class="mb-est">${M(total(m, inv))}</div><div class="tiny muted">estimate · used ${m.uses || 0}×</div><div class="mb-acts"><button class="btn sm ghost" data-act="mb-edit" data-id="${m.id}">Edit</button><button class="btn sm primary" data-act="mb-use" data-id="${m.id}">Use</button></div></div></div>`; }).join('')
+        : `<p class="muted">${q ? 'No macro matches.' : 'No macros yet. Create one for treatments you bill together often.'}</p>`}</div></div>`; };
+  H['mb-open'] = () => { const inv = curInv(); if (!inv || inv.status !== 'draft') return A.toast('Macros can only be added to a draft invoice.', 'error'); seed(); A.ui.mbQ = ''; A.modal('Macro Billing', pickerHtml(inv), '<button class="btn" data-act="modal-close">Close</button>', { wide: true }); setTimeout(() => { const i = document.getElementById('mb-q'); if (i) i.focus(); }, 40); };
+  H['input:mb-q'] = (el) => { A.ui.mbQ = el.value; const inv = curInv(); const box = document.getElementById('mb-list'); if (!box || !inv) return; const tmp = document.createElement('div'); tmp.innerHTML = pickerHtml(inv); box.replaceWith(tmp.querySelector('#mb-list')); };
+
+  // ---------------------------------------------------------------- use: preview, adjust, add
+  H['mb-use'] = (el) => { const inv = curInv(); const enc = encById(A.params[0]); const m = list().find((x) => x.id === el.dataset.id); if (!inv || !m) return; const dx = enc.diagnoses || [];
+    const rows = m.items.map((x, i) => { const ok = valid(x); const e = est(x, inv); return `<tr class="${ok ? '' : 'mb-skip'}"><td><input type="checkbox" class="mb-inc" data-i="${i}" ${ok ? 'checked' : 'disabled'} aria-label="Include"></td><td class="mono"><strong>${esc(x.type === 'item' ? (item(x.itemId) || {}).nappi || x.itemId : x.code)}</strong></td><td>${esc(lineLabel(x))}${x.type === 'item' ? ' <span class="badge info">Item</span>' : isMod(x.code) ? ' <span class="badge">Modifier → this macro\'s procedures</span>' : ''}${ok ? '' : ' <span class="badge warn">Not in your price list — skipped</span>'}</td>
+      <td><input type="number" min="1" max="99" class="mb-qty" data-i="${i}" value="${x.qty || 1}" ${ok && !isMod(x.code) ? '' : 'disabled'} aria-label="Quantity" style="width:64px"></td><td class="num">${e == null ? '<span class="muted">—</span>' : M(e)}</td></tr>`; }).join('');
+    A.modal(`Macro Billing — ${m.name}`, `<p class="small muted">Check the lines, then add them. Each line becomes its own transaction; prices follow the patient's payment arrangement once added.</p>
+      <div class="tbl-wrap"><table class="t small mb-prev"><thead><tr><th></th><th>Code</th><th>Description</th><th>Qty</th><th class="num">Estimate</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td colspan="4"><strong>Estimated total</strong></td><td class="num"><strong>${M(total(m, inv))}</strong></td></tr></tfoot></table></div>
+      <div class="mb-icd"><strong class="small">ICD-10 for these lines</strong>${dx.length ? `<div class="mb-dx">${dx.map((c, i) => `<label class="check"><input type="checkbox" class="mb-dxc" value="${esc(c)}" ${i < 4 ? 'checked' : ''}> <span class="mono">${esc(c)}</span> ${esc((E.icd(db(), c) || {}).desc || '')}${i === 0 ? ' <span class="badge">primary</span>' : ''}</label>`).join('')}</div>` : '<p class="tiny warn-t">This visit has no diagnosis yet — add ICD-10 codes below, or each line will need one before submitting.</p>'}
+        <label class="f"><span>More ICD-10 codes (optional, separate with commas)</span><input id="mb-dx-more" list="icd-codes" placeholder="e.g. Z01.2" data-nodictate></label></div>`,
+      `<button class="btn" data-act="mb-open">← All macros</button><button class="btn primary" data-act="mb-add" data-id="${m.id}">Add selected lines</button>`, { wide: true }); };
+  H['mb-add'] = (el) => { const inv = curInv(); const enc = encById(A.params[0]); const m = list().find((x) => x.id === el.dataset.id); if (!inv || !m) return; if (inv.status !== 'draft') return A.toast('This invoice is no longer a draft.', 'error');
+    const inc = new Set([...document.querySelectorAll('.mb-inc:checked')].map((x) => +x.dataset.i)); const qty = {}; document.querySelectorAll('.mb-qty').forEach((x) => { qty[+x.dataset.i] = Math.max(1, Math.min(99, +x.value || 1)); });
+    let dx = [...document.querySelectorAll('.mb-dxc:checked')].map((x) => x.value); const more = (document.getElementById('mb-dx-more') || {}).value || ''; const extra = more.split(/[,\s]+/).map((x) => x.trim().toUpperCase()).filter(Boolean); const unknown = extra.filter((c) => !E.icd(db(), c));
+    if (unknown.length) return A.toast(`Not in your ICD-10 table: ${unknown.join(', ')}`, 'error'); dx = [...new Set(dx.concat(extra))]; if (!inc.size) return A.toast('Tick at least one line.', 'error');
+    let added = 0, skipped = 0; A.closeModal();
+    A.act(() => { const procIds = []; const mods = [];
+      m.items.forEach((x, i) => { if (!inc.has(i)) return; if (!valid(x)) { skipped++; return; } const q = qty[i] || x.qty || 1;
+        if (x.type === 'item') { const it = item(x.itemId); E.addLine(db(), inv, { kind: 'item', itemId: x.itemId, code: it.nappi || x.itemId, qty: q, icd: dx.slice(), macro: m.id }, A.user, 'macro'); added++; return; }
+        if (isMod(x.code)) { mods.push(x); return; }
+        const l = E.addLine(db(), inv, { kind: 'tariff', code: x.code, qty: q, icd: dx.length ? dx.slice() : (enc.diagnoses || []).slice(), macro: m.id }, A.user, 'macro'); added++; if ((tdef(x.code) || {}).kind === 'procedure' || (tdef(x.code) || {}).kind === 'dental') procIds.push(l.id); });
+      mods.forEach((x) => { const t = TS.mod(x.code); if (t.type === 'RM') { inv.lines.filter((l) => procIds.includes(l.id)).forEach((l) => { l.mods = [...new Set((l.mods || []).concat(x.code))]; }); } else { E.addLine(db(), inv, { kind: 'tariff', code: x.code, qty: 1, icd: dx.slice(), refs: procIds.length ? procIds : inv.lines.filter((l) => l.kind === 'tariff' && !isMod(l.code)).map((l) => l.id), macro: m.id }, A.user, 'modifier'); } added++; });
+      if (TS && TS.reprice) TS.reprice(db(), inv); m.uses = (m.uses || 0) + 1; m.lastUsed = E.nowIso(db());
+      E.audit(db(), A.user, 'macro-billing-used', 'invoice', inv.id, inv.patientId, `${m.name}: ${added} line(s)${skipped ? `, ${skipped} skipped` : ''}`); }); A.toast(`${m.name}: ${added} line${added === 1 ? '' : 's'} added${skipped ? ` (${skipped} skipped)` : ''}.`); };
+
+  // ---------------------------------------------------------------- create / edit
+  const editorRow = (x, i) => `<div class="mb-erow" data-i="${i}"><select class="mb-etype" data-change="mb-etype" data-i="${i}" aria-label="Line type"><option value="tariff" ${x.type !== 'item' ? 'selected' : ''}>Treatment code / modifier</option><option value="item" ${x.type === 'item' ? 'selected' : ''}>Item (medicine or consumable)</option></select>
+    ${x.type === 'item' ? `<input class="mb-ecode" list="mb-items" value="${esc(x.itemId ? `${x.itemId} — ${(item(x.itemId) || {}).name || ''}` : '')}" placeholder="Search stock items" aria-label="Item" data-nodictate>` : `<input class="mb-ecode" list="mb-codes" value="${esc(x.code ? `${x.code} — ${lineLabel(x)}` : '')}" placeholder="Search codes" aria-label="Code" data-nodictate>`}
+    <input type="number" class="mb-eqty" min="1" max="99" value="${x.qty || 1}" aria-label="Quantity"><button class="btn sm ghost" data-act="mb-erow-del" data-i="${i}" aria-label="Remove line">✕</button></div>`;
+  const draft = () => A.ui.mbDraft; const readRows = () => { const d = draft(); if (!d) return; document.querySelectorAll('.mb-erow').forEach((r) => { const i = +r.dataset.i; const x = d.items[i]; if (!x) return; const v = (r.querySelector('.mb-ecode') || {}).value || ''; const key = v.split(' — ')[0].trim(); if (x.type === 'item') x.itemId = key; else x.code = key.toUpperCase(); x.qty = Math.max(1, +(r.querySelector('.mb-eqty') || {}).value || 1); });
+    const n = document.getElementById('mb-ename'), ds = document.getElementById('mb-edesc'); if (n) d.name = n.value; if (ds) d.desc = ds.value; };
+  const editor = () => { const d = draft(); const codes = db().tariffs.filter((t) => t.kind !== 'balance'); const items = db().stockItems || [];
+    A.modal(d.id ? 'Edit macro' : 'New macro', `<div class="mb-ed"><label class="f"><span>Macro name</span><input id="mb-ename" value="${esc(d.name || '')}" placeholder="e.g. Dental cleanup Basic" data-nodictate></label><label class="f"><span>Description (optional)</span><input id="mb-edesc" value="${esc(d.desc || '')}" placeholder="What it is for" data-nodictate></label>
+      <div class="mb-erows">${d.items.map(editorRow).join('')}</div><div class="row" style="gap:8px;margin-top:8px"><button class="btn sm" data-act="mb-erow-add" data-t="tariff">+ Code</button><button class="btn sm" data-act="mb-erow-add" data-t="item">+ Item</button></div>
+      <datalist id="mb-codes">${codes.map((t) => `<option value="${esc(t.code)} — ${esc(t.desc)}">`).join('')}</datalist><datalist id="mb-items">${items.map((t) => `<option value="${esc(t.id)} — ${esc(t.name)}">`).join('')}</datalist>
+      <p class="tiny muted">Codes come from your practice price list; items from your stock list. Addition modifiers are linked to this macro's procedures when it is used.</p></div>`,
+      `${d.id ? '<button class="btn danger ghost" data-act="mb-del">Delete</button>' : ''}<button class="btn" data-act="mb-open">Cancel</button><button class="btn primary" data-act="mb-save">Save macro</button>`, { wide: true }); setTimeout(() => { const i = document.getElementById('mb-ename'); if (i && !i.value) i.focus(); }, 40); };
+  H['mb-edit'] = (el) => { const m = list().find((x) => x.id === el.dataset.id); A.ui.mbDraft = m ? JSON.parse(JSON.stringify(m)) : { name: '', desc: '', items: [{ type: 'tariff', code: '', qty: 1 }] }; editor(); };
+  H['mb-from-inv'] = () => { const inv = curInv(); if (!inv) return; const items = inv.lines.filter((l) => !l.excluded).map((l) => (l.kind === 'item' ? { type: 'item', itemId: l.itemId, qty: l.qty || 1 } : { type: 'tariff', code: l.code, qty: l.qty || 1 }));
+    A.ui.mbDraft = { name: '', desc: '', items }; editor(); };
+  H['mb-erow-add'] = (el) => { readRows(); draft().items.push({ type: el.dataset.t, code: '', itemId: '', qty: 1 }); editor(); setTimeout(() => { const r = document.querySelectorAll('.mb-ecode'); if (r.length) r[r.length - 1].focus(); }, 40); };
+  H['mb-erow-del'] = (el) => { readRows(); draft().items.splice(+el.dataset.i, 1); editor(); };
+  H['change:mb-etype'] = (el) => { readRows(); const x = draft().items[+el.dataset.i]; x.type = el.value; x.code = ''; x.itemId = ''; editor(); };
+  H['mb-save'] = () => { readRows(); const d = draft(); d.name = (d.name || '').trim(); d.items = d.items.filter((x) => (x.type === 'item' ? x.itemId : x.code));
+    if (!d.name) return A.toast('Give the macro a name.', 'error'); if (list().some((m) => m.id !== d.id && m.name.toLowerCase() === d.name.toLowerCase())) return A.toast('A macro with this name already exists.', 'error');
+    if (!d.items.length) return A.toast('Add at least one code or item.', 'error'); const bad = d.items.filter((x) => !valid(x)); if (bad.length) return A.toast(`Not found: ${bad.map((x) => x.code || x.itemId).join(', ')} — pick from the list.`, 'error');
+    A.act(() => { const ex = list().find((m) => m.id === d.id); if (ex) { Object.assign(ex, { name: d.name, desc: d.desc, items: d.items, updatedAt: E.nowIso(db()), updatedBy: A.user.id, demo: false }); E.audit(db(), A.user, 'macro-edited', 'macro', ex.id, null, `${d.name}: ${d.items.length} lines`); }
+      else { const m = { id: E.id('mc'), name: d.name, desc: d.desc || '', items: d.items, by: A.user.id, at: E.nowIso(db()), uses: 0 }; list().push(m); E.audit(db(), A.user, 'macro-created', 'macro', m.id, null, `${d.name}: ${d.items.length} lines`); } });
+    A.ui.mbDraft = null; H['mb-open'](); A.toast('Macro saved.'); };
+  H['mb-del'] = () => { const d = draft(); if (!d || !d.id) return; A.confirm('Delete macro', `Delete the macro "${d.name}"? Invoices already billed are not affected.`, () => { A.act(() => { db().macros = list().filter((m) => m.id !== d.id); E.audit(db(), A.user, 'macro-deleted', 'macro', d.id, null, d.name); }); A.ui.mbDraft = null; H['mb-open'](); }, 'Delete'); };
+
+  // help and What's new
+  if (A.KB && !A.KB.some((k) => k.id === 'macrobilling')) A.KB.push({ id: 'macrobilling', title: 'Macro Billing: add a basket of codes and items in one go', keys: ['macro', 'macro billing', 'basket', 'bulk billing', 'billing template', 'bundle', 'package'], screens: ['billing'], link: '#/billing',
+    steps: ['Open the billing (transaction) screen of a visit that is still a draft.', 'Press Macro Billing above "Add a transaction".', 'Search for a macro and press Use. Check the lines, untick anything not done, change quantities and choose the ICD-10 codes.', 'Press Add selected lines. Each line becomes its own transaction, priced from the patient\'s payment arrangement.', 'To make your own: Macro Billing → New macro, give it a name and add codes and items. "Save these lines as a macro" turns the current invoice into a macro.'] });
+  if (A.RELEASES) { const r = A.RELEASES.find((x) => x.v === '0.33'); if (r && !r.items.some((i) => i.title === 'Macro Billing')) r.items.unshift({ type: 'new', area: 'billing', title: 'Macro Billing', text: 'Save baskets of codes, modifiers and items that are billed together (e.g. "Dental cleanup Basic") and add them to a visit in one go from the transaction screen. You see every line and its estimate first, and choose the ICD-10 codes.', link: '#/billing' }); }
+})();
 
 
 /* ===== cx-engine.js ===== */

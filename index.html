@@ -2321,6 +2321,47 @@ details[open]>summary .tcx-chev{transform:rotate(90deg)}
 .ls-all{margin-top:16px}.ls-all summary{cursor:pointer}
 #p360-robot .rb-bot{border:0!important;outline:0;background:transparent!important;box-shadow:none!important;border-radius:16px}
 #p360-robot .rb-bot:focus-visible{outline:2px solid #7c3aed;outline-offset:2px}
+/* ---- AI Scribe simple layout + conversation guide */
+.cx-ws.simple{grid-template-columns:minmax(0,1fr) 340px}
+.cx-simple .cx-sec{margin-bottom:12px}
+.cx-glance{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px}
+.cx-gl{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;cursor:default;list-style:none}
+.cx-gl::-webkit-details-marker{display:none}
+.cx-gl.alg{background:#fee2e2;border-color:#fca5a5;color:#991b1b;font-weight:600}
+.cx-gl.ok{color:#166534;background:#ecfdf5;border-color:#bbf7d0}
+.cx-gl.link{color:var(--accent,#2563eb);text-decoration:none}
+.cx-gl-d{position:relative}.cx-gl-d summary{cursor:pointer}
+.cx-gl-pop{position:absolute;z-index:20;top:110%;left:0;min-width:240px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;box-shadow:0 8px 24px rgba(0,0,0,.12);font-size:13px}
+.cx-allfields{text-align:center;margin:6px 0 20px}
+.cx-switch{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:2px;background:var(--surface);gap:2px}
+.cx-switch a{padding:5px 14px;border-radius:999px;text-decoration:none;color:inherit;font-size:13px;font-weight:600}
+.cx-switch a.on{background:#c026d3;color:#fff}
+.cx-classic-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 10px;padding:6px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.cx-guide{border:1px solid #f0abfc;background:#fdf4ff;border-radius:12px;padding:10px 12px}
+.cx-guide-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.cx-gsteps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.cx-gsteps li{display:flex;gap:8px;align-items:flex-start;color:var(--muted,#6b7280)}
+.cx-gsteps li.on{color:inherit}
+.cx-gsteps li.done .cx-gt{text-decoration:line-through;opacity:.7}
+.cx-gn{flex:0 0 22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:#e5e7eb;color:#374151}
+.cx-gsteps li.on .cx-gn{background:#c026d3;color:#fff}
+.cx-gsteps li.done .cx-gn{background:#dcfce7;color:#166534}
+.cx-gb{flex:1;min-width:0}.cx-gt{font-weight:600;line-height:22px}
+.cx-gq{display:flex;gap:6px;align-items:flex-start;justify-content:space-between;background:#fff;border:1px solid #f5d0fe;border-radius:8px;padding:6px 8px;margin-top:4px;font-size:13.5px;line-height:1.35}
+.cx-gskip{border:0;background:none;color:#86198f;font-size:12px;cursor:pointer;padding:0 2px;white-space:nowrap}
+.cx-gnote{margin:8px 0 0}
+[data-theme="dark"] .cx-guide{background:rgba(192,38,211,.08)}[data-theme="dark"] .cx-gq{background:var(--surface)}
+@media (max-width:900px){.cx-ws.simple{grid-template-columns:minmax(0,1fr)}}
+/* vitals listen-and-fill */
+.vf-ai{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border:1px dashed #d8b4fe;border-radius:12px;background:#faf5ff;margin-bottom:10px}
+.vf-ai.live{border-style:solid;border-color:#c026d3;background:#fdf4ff}
+.vf-ai.ask{border-style:solid;border-color:#f59e0b;background:#fffbeb;flex-wrap:wrap}
+.vf-ai-t{display:flex;gap:10px;align-items:center;flex:1;min-width:0}.vf-ai-b{display:flex;gap:6px}
+.vf-ai-ico{font-size:20px}
+.vf-rec{width:12px;height:12px;border-radius:50%;background:#dc2626;flex:0 0 12px;animation:vfp 1.2s infinite}
+@keyframes vfp{50%{opacity:.35}}
+label.vf-filled input{animation:vff 2.2s ease-out;border-color:#c026d3}
+@keyframes vff{0%{background:#f5d0fe}100%{background:transparent}}
 </style>
 </head>
 <body>
@@ -12756,10 +12797,9 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
       <form id="bn" class="grid g2"><label class="f"><span>Patient</span><select name="pid">${fam.map((p) => `<option value="${p.id}" ${p.id === pre ? 'selected' : ''}>${esc(p.firstName + ' ' + p.lastName)}${p.id === acc ? ' (account holder)' : ''}</option>`).join('')}</select></label>
       <label class="f"><span>Treating doctor</span><select name="doc">${docs.map((u) => `<option value="${u.id}" ${u.id === A.user.id ? 'selected' : ''}>${esc(u.name)}</option>`).join('')}</select></label>
       <label class="f"><span>Date of service</span><input type="date" name="date" value="${E.today(d)}" max="${E.today(d)}"></label><label class="f"><span>Time <small>(decides after-hours codes)</small></span><input type="time" name="time" value="${hm}"></label>
-      <label class="f" style="grid-column:1/-1"><span>Diagnoses for this visit <small>(ICD-10, primary first — each transaction can still have its own)</small></span><input name="dx" list="icd-codes" placeholder="e.g. J06.9, I10" data-noclean>${icdDl()}</label>
-      <label class="f" style="grid-column:1/-1"><span>Reason <small>(why there is no consultation note — kept in the audit log)</small></span><input name="why" placeholder="e.g. procedure done in theatre; telephone consult; billing from a paper note" data-noclean></label></form>`,
+      <label class="f" style="grid-column:1/-1"><span>Diagnoses for this visit <small>(ICD-10, primary first — each transaction can still have its own)</small></span><input name="dx" list="icd-codes" placeholder="e.g. J06.9, I10" data-noclean>${icdDl()}</label></form>`,
       '<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="bill-new-go">Start billing</button>', { wide: true }); };
-  H['bill-new-go'] = () => { const v = A.fv('bn'); const d = db(); const dx = (v.dx || '').split(/[,\s]+/).map((x) => x.trim().toUpperCase()).filter(Boolean); const bad = dx.filter((c) => !E.icd(d, c)); if (bad.length) return A.toast(`${bad.join(', ')} is not in your ICD-10 table.`, 'error'); if (!v.why) return A.toast('Give the reason there is no consultation note.', 'error'); if (v.date > E.today(d)) return A.toast('The date is in the future.', 'error');
+  H['bill-new-go'] = () => { const v = A.fv('bn'); const d = db(); const dx = (v.dx || '').split(/[,\s]+/).map((x) => x.trim().toUpperCase()).filter(Boolean); const bad = dx.filter((c) => !E.icd(d, c)); if (bad.length) return A.toast(`${bad.join(', ')} is not in your ICD-10 table.`, 'error'); v.why = v.why || 'Billing entry without a consultation note'; if (v.date > E.today(d)) return A.toast('The date is in the future.', 'error');
     A.closeModal(); let encId; A.act(() => { const enc = { id: E.id('enc'), patientId: v.pid, providerId: v.doc, appointmentId: null, date: v.date, time: v.time, status: 'signed', billingOnly: true, capturedBy: A.user.id, reason: v.why, durationMin: 0, problemsAddressed: 1, subjective: '', objective: '', assessment: '', plan: '', diagnoses: dx, procedures: [], addenda: [], startedAt: E.nowIso(d), signedAt: E.nowIso(d) };
       d.encounters.push(enc); const inv = E.createInvoiceDraft(d, enc, A.user); TS.reprice(d, inv); encId = enc.id; E.audit(d, A.user, 'billing-entry', 'encounter', enc.id, v.pid, `Billing without consultation note: ${v.why}`); }); if (encId) A.go('#/billing/' + encId); };
   // billing-only entries have no note to compare procedures against
@@ -14469,7 +14509,9 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   // ===================================================================== keep each practice's switches in line with its services
   const sync = () => { const d = A.db; if (!d || !A.dsEntry || !d.settings) return; let ch = false;
     const on = A.featureOn('stock'); if (!on && d.settings.stockEnabled) { d.settings.stockEnabled = false; d.settings.stockWanted = true; ch = true; } if (on && d.settings.stockWanted) { d.settings.stockEnabled = true; delete d.settings.stockWanted; ch = true; }
-    if (d.hosp) { const h = A.featureOn('hospital'); if (!h && d.hosp.enabled) { d.hosp.enabled = false; d.hosp.wanted = true; ch = true; } if (h && d.hosp.wanted) { d.hosp.enabled = true; delete d.hosp.wanted; ch = true; } }
+    { const h = A.featureOn('hospital'); if (d.hosp) { if (!h && d.hosp.enabled) { d.hosp.enabled = false; d.hosp.wanted = true; ch = true; } if (h && d.hosp.wanted) { d.hosp.enabled = true; delete d.hosp.wanted; ch = true; } }
+      // subscribed to Hospital → the module is on (unless the practice switched it off itself in Practice setup)
+      if (h && A.hospEnable && !(d.hosp && (d.hosp.enabled || d.hosp.userOff)) && !(A.isDental && A.isDental())) { const fresh = !d.hosp || !(d.hosp.wards || []).length; A.hospEnable(true, fresh); d.hosp.autoOn = new Date().toISOString(); ch = true; } }
     if (ch && A.save) A.save();
     document.body.classList.toggle('no-ai', !A.featureOn('assist')); };
   A.syncFeatures = sync;
@@ -14500,7 +14542,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   if (A.SS) { const _h = A.SS.hospital; if (_h) A.SS.hospital = () => (A.featureOn('hospital') ? _h() : A.lockedCard('hospital')); }
   // Practice setup → "Use stock management" needs the Stock service
   const _ps = H['submit:ps']; if (_ps) H['submit:ps'] = function () { const want = (A.fv('ps') || {}).stock; const r = _ps.apply(this, arguments); if (want && !A.featureOn('stock') && A.db) { A.db.settings.stockEnabled = false; A.db.settings.stockWanted = true; A.save(); A.toast('Stock management needs the "Stock and dispensing" service. It will switch on when the service is added.', 'error'); } return r; };
-  const _hon = H['change:h-on']; if (_hon) H['change:h-on'] = function (el) { if (el.checked && !A.featureOn('hospital')) { el.checked = false; return upsell('hospital'); } return _hon.apply(this, arguments); };
+  const _hon = H['change:h-on']; if (_hon) H['change:h-on'] = function (el) { if (el.checked && !A.featureOn('hospital')) { el.checked = false; return upsell('hospital'); } const d = A.db; if (d && d.hosp) { if (el.checked) delete d.hosp.userOff; else d.hosp.userOff = true; } return _hon.apply(this, arguments); };
   const _oon = H['change:onc-on']; if (_oon) H['change:onc-on'] = function (el) { if (el.checked && !A.featureOn('oncology')) { el.checked = false; return upsell('oncology'); } return _oon.apply(this, arguments); };
   // stock search results in the global search only when the service is on (they read settings.stockEnabled, kept in sync)
 
@@ -15245,6 +15287,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     list.forEach((s, i) => { const t = s.t; const isQ = Q_START.test(t) && s.spk !== 'patient';
       // --- symptoms
       const found = []; SYMPTOMS.forEach(([name, re]) => { const m = t.match(re); if (m) found.push({ name, m }); });
+      if (!found.length && s.spk !== 'clinician' && out.complaints.length) { const sv0 = t.match(/\b(\d{1,2}) (?:out of|over|uit) 10\b/); if (sv0 && +sv0[1] <= 10) { const c0 = out.complaints.find((x) => !x.severity) || out.complaints[0]; if (!c0.severity) c0.severity = { value: sv0[1] + '/10', ev: [ev(s, sv0[0])] }; } }
       if (isQ) { lastQ = { seg: s, asked: found.map((f) => f.name) }; }
       else {
         found.forEach(({ name, m }) => { const neg = negatedNear(t, m.index, m[0].length) || (/\bnot really\b|\bno\b/.test(t.slice(0, 12)) && lastQ && lastQ.asked.includes(name) && !/\byes\b/.test(t.slice(0, 8)));
@@ -15252,7 +15295,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
           if (neg) { if (!out.negatives.some((x) => x.name === name)) out.negatives.push({ name, ev: [e] }); return; }
           let c = out.complaints.find((x) => x.name === name); if (!c) { c = { name, ev: [e] }; out.complaints.push(c); } else c.ev.push(e);
           const cl = clauseAt(t, m.index); let d = dur(cl) || (found.length === 1 ? dur(t) : null);
-          if (d) { const dAt = t.indexOf(d.quote), me = m.index; const between = found.some((o) => o.m.index !== me && ((o.m.index > me && o.m.index < dAt) || (o.m.index < me && o.m.index > dAt))); const closer = found.some((o) => o.m.index !== me && Math.abs(o.m.index - dAt) < Math.abs(me - dAt) && (o.m.index < dAt) === (me < dAt)); const ownedBefore = me > dAt && !/^since/.test(d.quote) && found.some((o) => o.m.index !== me && o.m.index < dAt); if (between || closer || ownedBefore) d = null; }
+          if (d) { const dAt = t.indexOf(d.quote), me = m.index; const between = found.some((o) => o.m.index !== me && ((o.m.index > me && o.m.index < dAt) || (o.m.index < me && o.m.index > dAt))); const closer = found.some((o) => o.m.index !== me && Math.abs(o.m.index - dAt) < Math.abs(me - dAt) && (o.m.index < dAt) === (me < dAt)); const ownedBefore = me > dAt && !/^since/.test(d.quote) && found.some((o) => o.m.index !== me && o.m.index < dAt); let gap = me < dAt ? t.slice(me + m[0].length, dAt) : ''; found.forEach((o) => { gap = gap.split(o.m[0]).join(' '); }); const shared = me < dAt && /^[\s,]*(?:(?:and|en|,|a|an|'n)[\s,]+)*$/.test(gap + ' '); if ((between || closer || ownedBefore) && !shared) d = null; }
           if (d && !c.duration) c.duration = { value: d.value, ev: [ev(s, d.quote)] }; const sv = sev(t.slice(Math.max(0, m.index - 20), m.index + m[0].length + 30)); if (sv && !c.severity) c.severity = { value: sv.value, ev: [ev(s, sv.quote)] };
           const pat = t.match(/\b(?:it'?s |it gets |gets )?worse (?:in the |at )(morning|afternoon|evening|night)s?\b|\bworse (?:when|with|after) ([a-z ]{3,30})/); if (pat && !c.aggravating) c.aggravating = { value: pat[1] ? `Worse in the ${pat[1]}` : `Worse ${pat[0].replace(/^.*worse /, '')}`, ev: [ev(s, pat[0])] };
           const rel = t.match(/\b(?:better|easier|helps?|relieved) (?:when|with|after|by) ([a-z ]{3,30})/); if (rel && !c.relieving) c.relieving = { value: rel[0], ev: [ev(s, rel[0])] };
@@ -15400,7 +15443,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   'use strict';
   const A = window.APP, E = window.PE, P = A.P, H = A.H, esc = A.esc, fd = A.fd, CX = window.CX;
   if (!CX || !P.consult) return;
-  const db = () => A.db; const encById = (id) => db().encounters.find((e) => e.id === id);
+  const db = () => A.db; const encById = (id) => (db() && db().encounters ? db().encounters.find((e) => e.id === id) : null);
   const CONSENT = 'AI consult listening (Prac360 Assist)';
   const now = () => E.nowIso(db());
   const cfg = () => { const s = db().settings; s.scribe2 = Object.assign({ retention: 'sign', provider: 'off', agreement: false, standing: true, lang: 'en-ZA' }, s.scribe2 || {}); return s.scribe2; };
@@ -15652,6 +15695,14 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
       : st === 'review' ? `<button class="btn primary" data-act="cx-review">Review AI documentation →</button><button class="btn" data-act="cx-resume">Continue listening</button>`
       : ['ready', 'consent'].includes(st) ? `<button class="btn ai" data-act="cx-scribe">${MIC} Start AI Scribe</button>` : st === 'declined' ? `<button class="btn" data-act="cx-scribe">Ask again</button>` : st === 'mic-denied' || st === 'nomic' ? `<button class="btn" data-act="cx-resume">Try the microphone again</button><button class="btn" data-act="cx-finish">Finish and review</button>` : '';
     const stText = { ready: 'Not recording. Start when the patient has agreed.', listening: 'Listening — the microphone is on. Speak normally.', paused: 'Paused — nothing is being recorded.', processing: 'Putting the documentation together…', review: 'Draft ready. Review and approve it before signing.', declined: `The patient declined AI Scribe${c.scribe.declinedAt ? ' at ' + A.ft(c.scribe.declinedAt) : ''}. Document as usual.`, signed: 'Consultation signed.' }[st] || s.why || '';
+    if (simpleMode()) return `<div class="cx-status ${(STATES[st] || STATES.ready)[1]}"><span class="cx-dot" aria-hidden="true"></span><div><strong>${esc((STATES[st] || STATES.ready)[0])}</strong>${st === 'listening' ? ` <span class="cx-time">${clock(s.elapsed)}</span>` : ''}<div class="tiny">${esc(s.why || stText)}</div></div></div>
+      <div class="cx-ctrl">${ctrl}</div>${guideHtml(e, c)}
+      ${open.length ? `<div class="cx-block"><h4>Check these <span class="cx-count warn">${open.length}</span></h4>${open.slice(0, 3).map((f) => `<button class="cx-flag ${f.type}" data-act="cx-goto" data-k="${esc(f.field || '')}"><span class="cx-ft">${{ safety: 'Safety', conflict: 'Conflict', corrected: 'Corrected', uncertain: 'Check', missing: 'Missing', speaker: 'Speaker' }[f.type] || 'Check'}</span>${esc(f.text)}</button>`).join('')}${open.length > 3 ? `<p class="tiny">+ ${open.length - 3} more on the review screen</p>` : ''}</div>` : ''}
+      <details class="cx-d" ${prefs().trOpen ? 'open' : ''} data-tr-toggle><summary>What was heard <span class="cx-count">${s.segs.length}</span></summary>
+        <div class="cx-tr" id="cx-tr">${s.segs.slice(-40).map((g) => { const info = segInfo.get(g.id) || {}; const spk = g.spkHow === 'manual' ? g.spk : info.spk || 'unknown';
+          return `<div class="cx-seg" id="seg-${g.id}"><button class="cx-spk ${spk} ${g.spkHow === 'manual' ? 'set' : ''}" data-act="cx-spk" data-id="${g.id}" ${ed ? '' : 'disabled'} title="Who said this? Click to change">${{ clinician: 'Doctor', patient: 'Patient', other: 'Other', unknown: '?' }[spk]}</button><span class="cx-seg-t">${esc(g.text)}</span></div>`; }).join('') || '<p class="tiny muted">Nothing heard yet.</p>'}<div class="cx-partial" id="cx-partial" aria-live="polite">${esc(L.partial && L.encId === e.id ? '… ' + L.partial : '')}</div></div>
+        ${ed && !['declined', 'signed'].includes(st) ? `<form class="cx-type" data-submit="cx-line-add"><select name="spk" aria-label="Who said it"><option value="clinician">Doctor</option><option value="patient">Patient</option><option value="other">Other</option></select><input name="t" placeholder="Type what was said" aria-label="Type what was said" data-nodictate><button class="btn sm" type="submit">Add</button></form>` : ''}</details>
+      <details class="cx-d"><summary>Privacy</summary><div class="tiny cx-priv"><p>No audio is stored. The words are turned into the note in this browser. Transcript kept ${cfg().retention === 'sign' ? 'until the note is signed' : 'for 30 days after signing'}. AI model: ${esc(prov.text)}</p>${A.can('settings') || A.can('setup') ? '<button class="btn sm" data-act="cx-settings">AI Scribe settings</button>' : ''}</div></details>`;
     return `<div class="cx-side-h"><strong>AI Scribe</strong><button class="cx-x" data-act="cx-side-toggle" aria-label="Hide the AI Scribe panel" title="Hide panel">⟩</button></div>
       <div class="cx-status ${(STATES[st] || STATES.ready)[1]}"><span class="cx-dot" aria-hidden="true"></span><div><strong>${esc((STATES[st] || STATES.ready)[0])}</strong>${st === 'listening' ? ` <span class="cx-time">${clock(s.elapsed)}</span>` : ''}<div class="tiny">${esc(s.why || stText)}</div></div></div>
       <div class="cx-ctrl">${ctrl}</div>
@@ -15666,7 +15717,65 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
         <p><strong>Clinical structuring:</strong> local Prac360 rules (runs in this browser, nothing sent). <strong>AI model:</strong> ${esc(prov.text)}</p><p><strong>Transcript kept:</strong> ${cfg().retention === 'sign' ? 'until the note is signed, then deleted' : 'for 30 days after signing'}. Quotes that support each field stay with the record.</p>
         <p><strong>Language:</strong> ${cfg().lang === 'af-ZA' ? 'Afrikaans (South Africa)' : 'English (South Africa)'} — one language per session.</p>${A.can('settings') || A.can('setup') ? '<button class="btn sm" data-act="cx-settings">AI Scribe settings</button>' : ''}</div></details>`; };
 
-  const workspace = (e, p) => { const c = cxOf(e); const ed = editableOf(e); const pr = prefs(); const tpl = TPL[c.template] || TPL['gp-acute']; const panels = panelList(c, e); const st = c.scribe.state;
+  // ================================================================ simple layout (default) with a conversation guide
+  const simpleMode = () => prefs().layout !== 'full';
+  const has = (c, k) => !!(c.f[k] && String(c.f[k].v || '').trim());
+  const hasAny = (c, pre) => Object.keys(c.f).some((k) => k.startsWith(pre) && has(c, k));
+  const PANEL_Q = { chronic: ['ch.control', 'Ask how the condition has been since the last visit, and if the medicines are taken every day.'], diabetes: ['dm.glucose', 'Ask about home sugar readings; say the latest HbA1c and check the feet.'], hypertension: ['ht.home', 'Ask about home blood pressure readings and salt, exercise, smoking.'],
+    respiratory: ['rs.control', 'Ask about waking at night and how often the reliever pump is used; check inhaler technique.'], obstetric: ['ob.lmp', 'Ask the date of the last period and about contraception or pregnancy.'], mental: ['ms.mood', 'Ask how their mood has been — and ask directly about thoughts of self-harm.'],
+    injury: ['in.mech', 'Ask exactly how and where the injury happened.'], paeds: ['pd.immunisations', 'Ask the caregiver about immunisations (Road-to-Health booklet), feeding and development.'], cardio: ['cv.risk', 'Ask about chest pain on effort, breathlessness, smoking and family history.'],
+    onc: ['on.toxicity', 'Ask about side effects since the last cycle (nausea, fever, mouth ulcers, tiredness).'], ortho: ['or.function', 'Ask what they cannot do because of it (walking, work, sleep).'], derm: ['dr.duration', 'Ask how long the spot or rash has been there and whether it has changed.'], prevent: ['pv.screening', 'Check which screening tests and vaccines are due.'] };
+  const guideSteps = (e, c) => { const d = db(); const alg = d.allergies.filter((a) => a.patientId === e.patientId); const sk = c.guideSkip || {};
+    const listed = (n) => (c.lists[n] || []).some((i) => i.status !== 'rejected');
+    const steps = [
+      { id: 'talk', t: 'Hear the story', q: [['complaint', () => has(c, 'complaint'), '“What brings you in today?”'], ['duration', () => has(c, 'duration'), '“How long has it been going on?”'], ['severity', () => has(c, 'severity'), '“How bad is it, from 0 to 10? Getting better or worse?”'], ['associated', () => has(c, 'associated') || has(c, 'negatives'), '“Anything else with it — fever, cough, vomiting, pain somewhere else?”']] },
+      { id: 'hist', t: 'Check history and medicines', q: [['allergy', () => has(c, 'historyNow') || has(c, 'recentTx'), alg.length ? `Confirm the allergy on file: “You are allergic to ${alg.map((a) => a.allergen).join(', ')} — still right?” Then ask about medicines they take now.` : '“Any allergies? Which medicines do you take at the moment?”']]
+        .concat(panelList(c, e).filter((id) => PANEL_Q[id]).map((id) => ['p-' + id, () => has(c, PANEL_Q[id][0]), PANEL_Q[id][1]])) },
+      { id: 'exam', t: 'Measure and examine', q: [['vitals', () => hasAny(c, 'v.'), 'Take the vitals and say them out loud: “BP 128 over 82, pulse 76, temperature 37.2, sats 97.”'], ['exam', () => hasAny(c, 'exam.'), 'Examine and say what you find: “Chest is clear, throat is red, no glands.”']] },
+      { id: 'dx', t: 'Explain what it is', q: [['dx', () => has(c, 'working') || has(c, 'confirmed') || c.lists.icd.some((i) => i.status !== 'rejected' && i.kind !== 'symptom' && i.kind !== 'differential'), 'Tell the patient what you think it is — saying the diagnosis out loud lets AI Scribe suggest the ICD-10 code.']] },
+      { id: 'plan', t: 'Agree the plan', q: [['treat', () => has(c, 'management') || listed('meds') || listed('inv') || listed('ref'), 'Explain the treatment: each medicine with the dose and for how long, and any tests or referral.'], ['safety', () => has(c, 'safety') || has(c, 'fuWarning'), 'Safety-net: “Come back straight away if … (gets worse, high fever, can’t breathe).”'], ['fu', () => has(c, 'fuInterval') || has(c, 'fuDate'), '“Let’s see you again in … ” (or say no follow-up is needed).']] }];
+    steps.forEach((st) => { st.left = st.q.filter(([k, ok]) => !ok() && !sk[k]); st.done = !st.left.length; }); return steps; };
+  const guideHtml = (e, c) => { if (e.status === 'signed' || !editableOf(e)) return ''; const steps = guideSteps(e, c); const cur = steps.findIndex((x) => !x.done); const all = cur < 0;
+    return `<div class="cx-guide" aria-label="Conversation guide"><div class="cx-guide-h"><strong>Conversation guide</strong><span class="tiny muted">${all ? 'All covered' : `Step ${cur + 1} of ${steps.length}`}</span></div><ol class="cx-gsteps">${steps.map((st, i) => `<li class="${st.done ? 'done' : i === cur ? 'on' : ''}"><span class="cx-gn" aria-hidden="true">${st.done ? '✓' : i + 1}</span><div class="cx-gb"><div class="cx-gt">${esc(st.t)}</div>${i === cur ? st.left.slice(0, 3).map(([k, , q]) => `<div class="cx-gq"><span>${esc(q)}</span><button class="cx-gskip" data-act="cx-guide-skip" data-k="${esc(k)}" title="Not needed for this patient" aria-label="Skip this">Skip</button></div>`).join('') : ''}</div></li>`).join('')}
+      <li class="${all ? 'on' : ''}"><span class="cx-gn" aria-hidden="true">${steps.length + 1}</span><div class="cx-gb"><div class="cx-gt">Finish and review</div>${all ? '<div class="cx-gq"><span>Everything is covered. Press <strong>Finish consultation</strong>, then review and approve the note.</span></div>' : ''}</div></li></ol>
+      <p class="tiny muted cx-gnote">A guide only — follow the patient. It updates as you talk; nothing is asked or written for you.</p></div>`; };
+  const glance = (p) => { const d = db(); const alg = d.allergies.filter((a) => a.patientId === p.id); const meds = d.meds.filter((m) => m.patientId === p.id && m.active); const probs = d.problems.filter((x) => x.patientId === p.id && x.active);
+    const prev = d.encounters.filter((x) => x.patientId === p.id && x.status === 'signed').sort((a, b) => (a.date < b.date ? 1 : -1))[0];
+    return `<div class="cx-glance">${alg.length ? alg.map((a) => `<span class="cx-gl alg">⚠ ${esc(a.allergen)}</span>`).join('') : '<span class="cx-gl ok">No known allergies</span>'}
+      <details class="cx-gl-d"><summary class="cx-gl">${meds.length} medicine${meds.length === 1 ? '' : 's'}</summary><div class="cx-gl-pop">${meds.map((m) => esc(((E.medicine(d, m.medicineId) || {}).name || '') + (m.dose ? ' — ' + m.dose : ''))).join('<br>') || 'None recorded'}</div></details>
+      <details class="cx-gl-d"><summary class="cx-gl">${probs.length} condition${probs.length === 1 ? '' : 's'}</summary><div class="cx-gl-pop">${probs.map((x) => esc(A.icdLabel(x.code))).join('<br>') || 'None recorded'}</div></details>
+      ${prev ? `<span class="cx-gl">Last visit ${fd(prev.date)}</span>` : '<span class="cx-gl">First visit</span>'}<a class="cx-gl link" href="#/patient/${p.id}">Patient file →</a></div>`; };
+  const viewSwitch = (e, which) => `<div class="cx-switch" role="group" aria-label="Consultation view"><a href="#/consult/${e.id}/classic" class="${which === 'classic' ? 'on' : ''}" ${which === 'classic' ? 'aria-current="page"' : ''}>Classic</a><a href="#/consult/${e.id}" class="${which === 'ai' ? 'on' : ''}" ${which === 'ai' ? 'aria-current="page"' : ''}>✦ AI Scribe</a></div>`;
+  A.cxViewSwitch = viewSwitch;
+  const card = (c, id, title, body, opts) => secWrap(c, id, title, body, opts);
+  const rows = (c, list, ed) => list.map(([k, l, kind]) => fieldRow(c, k, l, kind, ed)).join('');
+  const workspaceSimple = (e, p) => { const c = cxOf(e); const ed = editableOf(e); const st = c.scribe.state; const panels = panelList(c, e); const pr = prefs();
+    if (pr.collapsed['s-sum'] === undefined) pr.collapsed['s-sum'] = true;
+    const banner = st === 'declined' ? `<div class="alert info"><span class="ico">i</span><div class="body">${esc(p.firstName)} declined AI Scribe. Type your notes as usual — or switch to <a href="#/consult/${e.id}/classic">Classic</a>.</div></div>`
+      : st === 'interrupted' || st === 'mic-denied' || st === 'nomic' ? `<div class="alert warn"><span class="ico">!</span><div class="body"><strong>${esc((STATES[st] || [])[0])}.</strong> ${esc(c.scribe.why || '')}</div></div>`
+      : approvalValid(e) && e.status === 'draft' ? `<div class="alert good"><span class="ico">✓</span><div class="body"><strong>Approved</strong> by ${esc(A.uname(c.review.by))} at ${A.ft(c.review.approvedAt)} — you can sign now.</div></div>`
+      : e.status === 'signed' ? `<div class="alert good"><span class="ico">✓</span><div class="body"><strong>Signed</strong> ${esc(A.ft(e.signedAt))} by ${esc(A.uname(e.signedBy))}. Locked — add an addendum for any correction.</div></div>` : '';
+    const vit = sectionHtml(e, c, 'vitals', ed).replace(/^<section[^>]*>[\s\S]*?<div class="cx-sec-b">/, '').replace(/<\/div><\/section>$/, '');
+    const ex = sectionHtml(e, c, 'exam', ed).replace(/^<section[^>]*>[\s\S]*?<div class="cx-sec-b">/, '').replace(/<\/div><\/section>$/, '');
+    const n = (keys) => keys.filter((k) => has(c, k)).length || '';
+    const panelHtml = panels.map((id) => { const pd = PANELS[id]; return card(c, 'p-' + id, pd.t, (pd.note ? `<p class="tiny muted">${esc(pd.note)}</p>` : '') + rows(c, pd.f, ed), { badge: c.dyn.includes(id) ? ' <span class="badge ai" title="Shown because it came up in the conversation">✦ came up</span>' : '', count: n(pd.f.map((f) => f[0])) }); }).join('');
+    const main = `<div class="cx-main cx-simple" id="cx-main">${banner}${glance(p)}
+      ${card(c, 's-talk', '1 · What the patient tells you', rows(c, [['complaint', 'Main problem'], ['duration', 'How long'], ['severity', 'How bad'], ['associated', 'Other symptoms', 'area'], ['negatives', 'Asked about, not present'], ['hpi', 'The story', 'area']], ed), { count: n(['complaint', 'duration', 'severity', 'associated', 'negatives', 'hpi']) })}
+      ${card(c, 's-hist', '2 · History and medicines', rows(c, [['historyNow', 'Mentioned today', 'area'], ['smoking', 'Smoking'], ['alcohol', 'Alcohol']], ed), { count: n(['historyNow', 'smoking', 'alcohol']) })}
+      ${panelHtml}
+      ${card(c, 's-exam', '3 · Vitals and examination', `<h4 class="cx-sub">Vitals</h4>${vit}<h4 class="cx-sub">Examination</h4>${ex}`, { count: (hasAny(c, 'v.') ? 1 : 0) + (hasAny(c, 'exam.') ? 1 : 0) || '' })}
+      ${card(c, 's-dx', '4 · Diagnosis', rows(c, [['working', 'What you think it is'], ['differentials', 'Other possibilities']], ed) + `<h4 class="cx-sub">ICD-10 codes</h4>${icdHtml(e, c, ed)}`, { count: c.lists.icd.filter((i) => i.status !== 'rejected').length || '' })}
+      ${card(c, 's-plan', '5 · Plan', rows(c, [['management', 'Treatment plan', 'area'], ['safety', 'When to come back sooner', 'area']], ed) + `<h4 class="cx-sub">Medicines <span class="tiny muted">(drafts — checked when you prescribe)</span></h4>${listHtml(e, c, 'meds', ed)}<h4 class="cx-sub">Tests</h4>${listHtml(e, c, 'inv', ed)}<h4 class="cx-sub">Referral</h4>${listHtml(e, c, 'ref', ed)}<h4 class="cx-sub">Follow-up</h4>${rows(c, [['fuInterval', 'See again in'], ['fuDate', 'Date', 'date']], ed)}${docsHtml(e, c, ed)}`, { count: n(['management', 'safety', 'fuInterval']) + c.lists.meds.filter((m) => m.status !== 'rejected').length || '' })}
+      ${card(c, 's-sum', 'Note summary (SOAP)', ['soap.s', 'soap.o', 'soap.a', 'soap.p'].some((k) => has(c, k)) ? [['soap.s', 'Subjective'], ['soap.o', 'Objective'], ['soap.a', 'Assessment'], ['soap.p', 'Plan']].map(([k, l]) => fieldRow(c, k, l, 'area', ed)).join('') : '<p class="cx-empty">Written for you from the sections above when you finish. You can edit it.</p>', { tools: ed ? '<button class="btn sm" data-act="cx-rebuild">↻ Rebuild</button>' : '' })}
+      <div class="cx-allfields"><button class="btn sm ghost" data-act="cx-layout" data-v="full">Show every field (detailed form)</button></div></div>`;
+    return `<div class="page-head cx-head"><div><div class="crumbs no-crumb"><a href="#/patient/${p.id}">${esc(p.firstName + ' ' + p.lastName)}</a> › Consultation ${fd(e.date)}</div><h1>Consultation</h1></div>
+        <div class="actions">${viewSwitch(e, 'ai')}${e.status === 'signed' ? '' : '<span class="badge warn" id="cx-save">Draft — saves as you go</span>'}${scribeBtn(e)}</div></div>
+      ${A.patientBar(p)}
+      <div class="cx-ws simple">${main}<aside class="cx-side" id="cx-side" aria-label="AI Scribe">${sideInner(e)}</aside></div>
+      <div class="actionbar cx-bar" role="region" aria-label="Finish consultation"><div class="cx-bar-l">${c.versions.length ? `<span class="tiny muted">Version ${c.versions.length}</span>` : ''}</div>
+        <div class="cx-bar-r">${ed ? `<button class="btn" data-act="cx-save">Save draft</button>` : ''}${ed && c.scribe.used ? `<button class="btn ${approvalValid(e) ? '' : 'primary'}" data-act="cx-review">Review AI documentation</button>` : ''}${ed && A.can('clinical.sign') ? `<button class="btn ${!c.scribe.used || approvalValid(e) ? 'primary' : ''}" data-act="cx-sign" ${c.scribe.used && !approvalValid(e) ? 'aria-disabled="true" title="Approve the AI documentation first"' : ''}>Sign and finalise</button>` : ''}${e.status === 'signed' && A.can('clinical.write') ? `<button class="btn" data-act="addendum" data-id="${e.id}">Add addendum</button>` : ''}${e.status === 'signed' && A.can('billing.review') ? `<a class="btn primary" href="#/billing/${e.id}">Billing review →</a>` : ''}</div></div>`; };
+  const workspace = (e, p) => (simpleMode() ? workspaceSimple(e, p) : workspaceFull(e, p));
+  const workspaceFull = (e, p) => { const c = cxOf(e); const ed = editableOf(e); const pr = prefs(); const tpl = TPL[c.template] || TPL['gp-acute']; const panels = panelList(c, e); const st = c.scribe.state;
     const banner = st === 'declined' ? `<div class="alert info"><span class="ico">i</span><div class="body">${esc(p.firstName)} declined AI Scribe${c.scribe.declinedAt ? ' at ' + A.ft(c.scribe.declinedAt) : ''}. This is an ordinary consultation — type your notes as usual.</div></div>`
       : st === 'interrupted' || st === 'mic-denied' || st === 'nomic' ? `<div class="alert warn"><span class="ico">!</span><div class="body"><strong>${esc((STATES[st] || [])[0])}.</strong> ${esc(c.scribe.why || '')} ${c.scribe.segs.length ? `${c.scribe.segs.length} lines were heard and saved.` : ''}</div></div>`
       : approvalValid(e) && e.status === 'draft' ? `<div class="alert good"><span class="ico">✓</span><div class="body"><strong>AI documentation approved</strong> by ${esc(A.uname(c.review.by))} at ${A.ft(c.review.approvedAt)}. You can sign now. Any change will need a new approval.</div></div>`
@@ -15681,10 +15790,10 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
       ${ed && addable.length ? `<div class="cx-add cx-add-panel"><select id="cx-panel-sel" aria-label="Add a section">${addable.map((id) => `<option value="${id}">${esc(PANELS[id].t)}</option>`).join('')}</select><button class="btn sm" data-act="cx-panel-add">+ Add section</button></div>` : ''}</div>`;
     return `<div class="page-head cx-head"><div><div class="crumbs no-crumb"><a href="#/patient/${p.id}">${esc(p.firstName + ' ' + p.lastName)}</a> › Consultation ${fd(e.date)}</div><h1>Consultation</h1></div>
         <div class="actions"><label class="cx-tpl"><span class="tiny">Form</span><select data-change="cx-tpl" ${ed ? '' : 'disabled'} aria-label="Consultation form">${Object.entries(TPL).map(([id, t]) => `<option value="${id}" ${id === c.template ? 'selected' : ''}>${esc(t.n)}</option>`).join('')}</select></label>
-        ${e.status === 'signed' ? '' : '<span class="badge warn" id="cx-save">Draft — saves as you go</span>'}${scribeBtn(e)}</div></div>
+        ${e.status === 'signed' ? '' : '<span class="badge warn" id="cx-save">Draft — saves as you go</span>'}${scribeBtn(e)}${viewSwitch(e, 'ai')}<button class="btn sm ghost" data-act="cx-layout" data-v="simple">Simple view</button></div></div>
       ${A.patientBar(p)}
       <div class="cx-ws ${pr.side ? '' : 'no-side'}">${leftPanel(e, p)}${main}<aside class="cx-side" id="cx-side" aria-label="AI Scribe">${sideInner(e)}</aside>${pr.side ? '' : '<button class="cx-side-open" data-act="cx-side-toggle" aria-label="Show the AI Scribe panel">⟨ AI Scribe</button>'}</div>
-      <div class="actionbar cx-bar" role="region" aria-label="Finish consultation"><div class="cx-bar-l"><a class="btn ghost sm" href="#/consult/${e.id}/classic">Classic view</a>${c.versions.length ? `<span class="tiny muted">Version ${c.versions.length}</span>` : ''}</div>
+      <div class="actionbar cx-bar" role="region" aria-label="Finish consultation"><div class="cx-bar-l">${c.versions.length ? `<span class="tiny muted">Version ${c.versions.length}</span>` : ''}</div>
         <div class="cx-bar-r">${ed ? `<button class="btn" data-act="cx-save">Save draft</button>` : ''}${ed && c.scribe.used ? `<button class="btn ${approvalValid(e) ? '' : 'primary'}" data-act="cx-review">Review AI documentation</button>` : ''}${ed && A.can('clinical.sign') ? `<button class="btn ${!c.scribe.used || approvalValid(e) ? 'primary' : ''}" data-act="cx-sign" ${c.scribe.used && !approvalValid(e) ? 'aria-disabled="true" title="Approve the AI documentation first"' : ''}>Sign and finalise</button>` : ''}${e.status === 'signed' && A.can('clinical.write') ? `<button class="btn" data-act="addendum" data-id="${e.id}">Add addendum</button>` : ''}${e.status === 'signed' && A.can('billing.review') ? `<a class="btn primary" href="#/billing/${e.id}">Billing review →</a>` : ''}</div></div>`; };
 
   // ---------------------------------------------------------------- review screen
@@ -15715,7 +15824,7 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   // ---------------------------------------------------------------- page
   const prevConsult = P.consult;
   P.consult = function (params) { const e = encById(params[0]); if (!e) return prevConsult.apply(this, arguments);
-    if (params[1] === 'classic' || (A.isDental && A.isDental())) { const html = prevConsult.call(this, [params[0]]); return (params[1] === 'classic' ? `<div class="alert info"><span class="ico">i</span><div class="body">Classic view. <a href="#/consult/${e.id}">Back to the consultation workspace with AI Scribe</a>.</div></div>` : '') + html; }
+    if (params[1] === 'classic' || (A.isDental && A.isDental())) { const html = prevConsult.call(this, [params[0]]); return params[1] === 'classic' && !(A.isDental && A.isDental()) ? `<div class="cx-classic-bar"><span class="tiny muted">Classic view — type the note yourself.</span>${viewSwitch(e, 'classic')}</div>` + html : html; }
     if (!A.can('clinical.read')) return '<div class="card">Clinical notes are not available for your role.</div>';
     sweepRetention(); const p = E.patient(db(), e.patientId); const c = cxOf(e);
     if (L.encId === e.id && c.scribe.state === 'listening' && !(A.dictation && A.dictation.engineName && A.dictation.engineName())) { /* engine lost after reload */ }
@@ -15793,8 +15902,13 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   H['cx-panel-hide'] = (el) => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); c.hidden.push(el.dataset.id); c.added = c.added.filter((x) => x !== el.dataset.id); A.save(); A.render(); };
   H['cx-sec-toggle'] = (el) => { const pr = prefs(); pr.collapsed[el.dataset.id] = !pr.collapsed[el.dataset.id]; A.save(); const s = el.closest('.cx-sec'); if (s) { s.classList.toggle('closed', !!pr.collapsed[el.dataset.id]); el.setAttribute('aria-expanded', String(!pr.collapsed[el.dataset.id])); } };
   H['cx-more'] = (el) => { const pr = prefs(); pr.more = pr.more || {}; pr.more[el.dataset.id] = !pr.more[el.dataset.id]; A.save(); A.render(); setTimeout(() => { const s = document.getElementById('cx-sec-' + el.dataset.id); if (s) s.scrollIntoView({ block: 'nearest' }); }, 30); };
+  H['cx-layout'] = (el) => { prefs().layout = el.dataset.v === 'full' ? 'full' : 'simple'; A.save(); A.render(); };
+  H['cx-guide-skip'] = (el) => { const e = cur(); if (!e) return; const c = cxOf(e); c.guideSkip = c.guideSkip || {}; c.guideSkip[el.dataset.k] = true; A.save(); paintSide(e); };
+  H['cx-view-ai'] = (el, ev) => { const e = cur() || encById((A.params || [])[0]); if (ev && ev.preventDefault) ev.preventDefault(); location.hash = '#/consult/' + ((e && e.id) || (A.params || [])[0]); };
+  document.addEventListener('toggle', (ev) => { const t = ev.target; if (t && t.matches && t.matches('details[data-tr-toggle]')) { const pr = prefs(); if (!!pr.trOpen !== t.open) { pr.trOpen = t.open; A.save(); } } }, true);
   H['cx-side-toggle'] = () => { const pr = prefs(); pr.side = !pr.side; A.save(); A.render(); };
-  H['cx-goto'] = (el) => { const e = cur(); if (!e) return; const k = el.dataset.k || ''; const go = () => { const c = cxOf(e); const pr = prefs(); const sec = k.startsWith('v.') || k.startsWith('vital') ? 'vitals' : k.startsWith('exam') ? 'exam' : k.startsWith('ros') ? 'ros' : ['icd', 'dx'].includes(k) ? 'icd' : k === 'med' ? 'plan' : k === 'followUp' ? 'fu' : k === 'allergies' ? 'history' : k === 'assessment' ? 'assessment' : k === 'complaint' || k === 'symptoms' ? 'complaint' : '';
+  const _gotoHold = (el) => { const k = el.dataset.k || ''; if (simpleMode() && k && !document.querySelector(`[data-row="${CSS.escape(k)}"]`) && (LABEL(k) !== k || /^ros\./.test(k))) { prefs().layout = 'full'; A.save(); A.render(); A.toast('Switched to the detailed form to show that field.'); } };
+  H['cx-goto'] = (el) => { _gotoHold(el); const e = cur(); if (!e) return; const k = el.dataset.k || ''; const go = () => { const c = cxOf(e); const pr = prefs(); const sec = k.startsWith('v.') || k.startsWith('vital') ? 'vitals' : k.startsWith('exam') ? 'exam' : k.startsWith('ros') ? 'ros' : ['icd', 'dx'].includes(k) ? 'icd' : k === 'med' ? 'plan' : k === 'followUp' ? 'fu' : k === 'allergies' ? 'history' : k === 'assessment' ? 'assessment' : k === 'complaint' || k === 'symptoms' ? 'complaint' : '';
       if (sec && pr.collapsed[sec]) { pr.collapsed[sec] = false; A.render(); } const target = document.querySelector(`[data-k="${CSS.escape(k.replace(/^vital\./, 'v.'))}"]`) || (sec && document.getElementById('cx-sec-' + sec)); if (target) { target.scrollIntoView({ block: 'center', behavior: 'smooth' }); const row = target.closest('[data-row], .cx-sec') || target; row.classList.add('cx-flash'); setTimeout(() => row.classList.remove('cx-flash'), 1600); if (target.focus && /INPUT|TEXTAREA/.test(target.tagName)) target.focus({ preventScroll: true }); } void c; };
     if (A.params[1] === 'review') { A.go('#/consult/' + e.id); setTimeout(go, 250); } else go(); };
   H['cx-flag'] = (el) => { const e = cur(); if (!needEdit(e)) return; const c = cxOf(e); const f = c.flags.find((x) => x.id === el.dataset.id); if (!f) return; f.status = el.dataset.v; f.by = A.user.id; f.at = now(); audit(e, 'ai-flag-' + f.status, f.text.slice(0, 80)); A.save(); A.render(); };
@@ -15866,6 +15980,60 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
     steps: ['Open the patient and press Start consultation. The workspace shows the patient summary on the left, the consultation form in the middle and AI Scribe on the right.', 'Press the pink-purple AI Scribe button (top right). Ask the patient for consent and record who agreed and how. If they decline, carry on as a normal consultation.', 'Talk normally. Fields fill in as you go and show ✦ AI. Click ✦ AI on any field to see the exact words it came from. Anything you type is never overwritten — if the AI hears something different it offers "AI heard …".', 'Set who said a line by clicking Doctor / Patient in the transcript. Pause when needed; if the connection drops, AI Scribe says so and keeps what it heard.', 'Press Finish consultation. On the review screen check every flagged item, accept or reject each ICD-10 code, medicine, investigation and referral, and edit the summary.', 'Press Approve AI documentation, then Sign and finalise (your PIN or fingerprint if the practice uses it). After signing the record is locked — use an addendum for corrections.'] });
   if (A.GUIDES && !A.GUIDES.aiscribe) A.GUIDES.aiscribe = { title: 'Consultation with AI Scribe', steps: [{ sel: '#cx-scribe-btn', text: 'AI Scribe starts only after you record the patient\'s consent.', expect: 'next' }, { sel: '.cx-left', text: 'Patient context: allergies, medicines, conditions, results and recent visits.', expect: 'next' }, { sel: '#cx-main', text: 'The form adapts to the consultation. Fields filled from the conversation show ✦ AI and can be edited.', expect: 'next' }, { sel: '.cx-side', text: 'Live status, transcript, what was detected and what needs your review.', expect: 'next' }, { sel: '.cx-bar', text: 'Review AI documentation → Approve → Sign and finalise. Signing is blocked until you approve.', expect: 'next' }] };
   if (A.RELEASES) { const r = A.RELEASES.find((x) => x.v === '0.33'); if (r && !r.items.some((i) => i.title === 'New consultation workspace with AI Scribe')) r.items.unshift({ type: 'new', area: 'clinical', title: 'New consultation workspace with AI Scribe', text: 'Start a consultation and press AI Scribe (after patient consent). Prac360 listens, fills the consultation form as you talk — complaint, history, vitals, examination, assessment, ICD-10 suggestions, medicines, investigations, referrals and follow-up — and shows where every value came from. You review, approve and sign; nothing is approved or signed for you. Forms for GP, paediatrics, O&G, cardiology, oncology, psychiatry, orthopaedics and dermatology. Classic view still available.', link: '#/patients', guide: 'aiscribe' }); }
+})();
+
+
+/* ===== ui-vitalsai.js ===== */
+/* Prac360 — "Listen and fill in" on Capture vitals / Add a reading.
+ * While the doctor examines the patient and says the measurements out loud ("BP 128 over 82", "temp 37.4",
+ * "sats 97", "weight 82 kilos"), Prac360 fills the matching fields. It only keeps the measurements:
+ * no transcript and no audio are stored, and other conversation is ignored. Values the patient reports
+ * ("my sugar at home was 11") are not filled in — only what the clinician measured and said.
+ * Needs the patient's agreement (recorded once, same consent as AI Scribe) and the Prac360 Assist add-on. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, E = window.PE, CX = window.CX, esc = A.esc; if (!H.vitals || !CX) return;
+  const db = () => A.db; const CONSENT = 'AI consult listening (Prac360 Assist)';
+  const MAP = { bp: 'BP', hr: 'Pulse', rr: 'Resp', temp: 'Temp', spo2: 'SpO2', weight: 'Weight', height: 'Height', pain: 'Pain', glucose: 'Glucose' };
+  const EXTRA = [['Waist', /\bwaist\b[^0-9]{0,15}(\d{2,3}(?:\.\d)?)/], ['HbA1c', /\bhba1c\b[^0-9]{0,15}(\d{1,2}(?:\.\d)?)/], ['Peak flow', /\bpeak flow\b[^0-9]{0,15}(\d{2,3})/], ['Head circ.', /\bhead circumference\b[^0-9]{0,15}(\d{2}(?:\.\d)?)/], ['MUAC', /\b(?:muac|mid.?upper arm)\b[^0-9]{0,15}(\d{1,2}(?:\.\d)?)/], ['Cholesterol', /\bcholesterol\b[^0-9]{0,15}(\d{1,2}(?:\.\d)?)/]];
+  const S = { on: false, pid: null, segs: [], filled: {}, heard: [], partial: '' };
+  const consented = (pid) => db().consents.some((c) => c.patientId === pid && c.type === CONSENT && c.granted && !c.withdrawnAt && (c.standing || String(c.at).slice(0, 10) === E.today(db())));
+  const available = () => (!A.featureOn || A.featureOn('assist')) && A.dictation && A.dictation.available();
+  const bar = () => { const f = document.getElementById('vf'); if (!f) return; let b = document.getElementById('vf-ai'); if (!b) { b = document.createElement('div'); b.id = 'vf-ai'; f.insertBefore(b, f.firstChild); }
+    const pid = f.dataset.pid; const n = Object.keys(S.filled).length;
+    if (S.ask) { b.className = 'vf-ai ask'; b.innerHTML = `<div class="vf-ai-t"><strong>Ask first:</strong> “Is it OK if Prac360 listens while I examine you, to fill in the measurements? Nothing else is kept.”</div><div class="vf-ai-b"><button class="btn sm ai" type="button" data-act="vfai-consent" data-v="yes">Patient agrees — listen</button><button class="btn sm" type="button" data-act="vfai-consent" data-v="no">Declines</button></div>`; return; }
+    if (!S.on) { b.className = 'vf-ai'; b.innerHTML = `<div class="vf-ai-t"><span class="vf-ai-ico" aria-hidden="true">🎙</span><div><strong>Listen and fill in</strong><div class="tiny muted">Say the measurements out loud as you take them — e.g. “BP 128 over 82, pulse 76, temp 37.2”. Only the numbers are kept.</div></div></div><button class="btn sm ai" type="button" data-act="vfai-start" ${available() ? '' : 'disabled title="Needs a microphone in Chrome or Edge, and the Prac360 Assist add-on"'}>Start listening</button>`; return; }
+    b.className = 'vf-ai live'; b.innerHTML = `<div class="vf-ai-t"><span class="vf-rec" aria-hidden="true"></span><div><strong>Listening for measurements</strong> <span class="tiny">${n ? `${n} filled in` : 'say them out loud'}</span><div class="tiny vf-heard" aria-live="polite">${S.heard.length ? 'Heard: ' + S.heard.slice(-3).map(esc).join(' · ') : S.partial ? '…' : 'Nothing yet'}</div></div></div><button class="btn sm" type="button" data-act="vfai-stop">Stop</button>`; };
+  const setVal = (name, value) => { const f = document.getElementById('vf'); if (!f) return false; const el = f['m_' + name]; if (!el) return false; if (el.dataset.typed === '1') return false; // what the doctor typed wins
+    if (el.value === String(value)) return false; el.value = value; el.dataset.ai = '1'; const lab = el.closest('label'); if (lab) { lab.classList.remove('vf-filled'); void lab.offsetWidth; lab.classList.add('vf-filled'); }
+    const det = el.closest('details'); if (det) det.open = true; el.dispatchEvent(new Event('input', { bubbles: true })); return true; };
+  const onFinal = (text) => { if (!S.on) return; const t = String(text || '').trim(); if (!t) return; S.segs.push({ id: 'v' + S.segs.length, text: t }); if (S.segs.length > 40) S.segs.shift();
+    let x; try { x = CX.extract(S.segs, {}); } catch (e) { return; }
+    Object.entries(x.vitals || {}).forEach(([k, v]) => { const name = MAP[k]; if (!name || v.src === 'patient-reported') return; if (setVal(name, v.value)) { S.filled[name] = v.value; S.heard.push(`${(A.VITALS[name] || {}).label || name} ${v.value}`); } });
+    const low = t.toLowerCase().replace(/(\d+)\s*(?:point|komma)\s*(\d)/g, '$1.$2'); const spk = CX.inferSpeaker(t).spk;
+    if (spk !== 'patient') EXTRA.forEach(([name, re]) => { const m = low.match(re); if (m && setVal(name, m[1])) { S.filled[name] = m[1]; S.heard.push(`${(A.VITALS[name] || {}).label || name} ${m[1]}`); } });
+    bar(); };
+  const sink = () => ({ final: onFinal, partial: (p) => { S.partial = p || ''; const h = document.querySelector('#vf-ai .vf-heard'); if (h && !S.heard.length) h.textContent = S.partial ? '… ' + S.partial.slice(-60) : 'Nothing yet'; }, state: (st, reason) => {
+    if (st === 'error' && reason !== 'no-speech') { S.on = false; A.cxListening = false; bar(); A.toast(reason === 'network' ? 'Listening stopped — the speech service could not be reached. The values filled in so far are kept.' : 'Listening stopped (' + reason + ').', 'error'); }
+    else if (st === 'idle' && S.on && document.getElementById('vf')) setTimeout(() => { if (S.on && document.getElementById('vf')) A.dictation.startSink(sink()); }, 250); } });
+  const start = () => { if (!available()) return A.toast('Listening needs a microphone in Chrome or Edge, and the Prac360 Assist add-on.', 'error');
+    try { if (A.voiceMode && A.voiceMode.on && H['vm-end']) H['vm-end'](); if (A.robotHide) A.robotHide(); } catch (e) { /* ignore */ }
+    S.on = true; S.segs = []; S.heard = []; S.partial = ''; A.cxListening = true; A.dictation.startSink(sink()).then((ok) => { if (!ok) { S.on = false; A.cxListening = false; bar(); A.toast('The microphone could not start.', 'error'); } });
+    E.audit(db(), A.user, 'vitals-listen-start', 'patient', S.pid, S.pid, 'Listening for measurements (no transcript kept)'); bar(); };
+  const stop = (why) => { if (!S.on) return; S.on = false; A.cxListening = false; try { A.dictation.stopSink(); } catch (e) { /* ignore */ } S.segs = []; // nothing of the conversation is kept
+    if (S.pid) E.audit(db(), A.user, 'vitals-listen-stop', 'patient', S.pid, S.pid, `${Object.keys(S.filled).length} value(s) filled in${why ? ' — ' + why : ''}`); bar(); };
+  const _v = H.vitals; H.vitals = function (el) { stop(); const r = _v.apply(this, arguments); const f = document.getElementById('vf'); if (!f) return r; S.pid = f.dataset.pid; S.filled = {}; S.ask = false; bar();
+    f.addEventListener('input', (e) => { if (e.isTrusted && e.target.name && /^m_/.test(e.target.name)) { e.target.dataset.typed = '1'; delete e.target.dataset.ai; } }); return r; };
+  H['vfai-start'] = () => { const pid = S.pid; if (!pid) return; if (!consented(pid)) { S.ask = true; bar(); return; } start(); };
+  H['vfai-consent'] = (el) => { const pid = S.pid; S.ask = false; const yes = el.dataset.v === 'yes';
+    db().consents.push({ id: E.id('cs'), patientId: pid, type: CONSENT, granted: yes, standing: false, at: E.nowIso(db()), by: A.user.id, method: 'Verbal', givenBy: 'patient', scope: 'Listening to fill in measurements only; no transcript or audio kept', evidence: `Verbal, recorded by ${A.user.name}` });
+    E.audit(db(), A.user, yes ? 'vitals-listen-consent' : 'vitals-listen-declined', 'patient', pid, pid, 'Verbal'); A.save(); if (yes) start(); else { bar(); A.toast('Recorded. Type the values as usual.'); } };
+  H['vfai-stop'] = () => stop('stopped by user');
+  const _save = H['vitals-save']; H['vitals-save'] = function () { stop('saved'); return _save.apply(this, arguments); };
+  // closing the form in any way stops listening
+  new MutationObserver(() => { if (S.on && !document.getElementById('vf')) stop('form closed'); }).observe(document.body, { childList: true, subtree: true });
+  if (A.KB && !A.KB.some((k) => k.id === 'vitalslisten')) A.KB.push({ id: 'vitalslisten', title: 'Capture vitals by voice: listen and fill in', keys: ['vitals by voice', 'listen vitals', 'dictate vitals', 'capture vitals ai', 'say the blood pressure'], screens: ['patient', 'today'], link: '#/patients',
+    steps: ['Open Capture vitals (Add a reading) for the patient.', 'Press Start listening. The first time, ask the patient if it is OK — record their answer.', 'Say each measurement out loud as you take it: “BP 128 over 82”, “pulse 76”, “temp 37.2”, “sats 97”, “weight 82 kilos”.', 'The fields fill in as you speak. Anything you type yourself is never overwritten.', 'Check the values and press Save reading. Only the numbers are kept — no recording or transcript.'] });
 })();
 
 

@@ -2140,10 +2140,6 @@ details[open]>summary .tcx-chev{transform:rotate(90deg)}
 #p360-robot .rb-bot{position:absolute;right:0;bottom:0;width:84px;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;transform:translateY(105%);transition:transform .55s cubic-bezier(.34,1.56,.64,1);filter:drop-shadow(0 6px 10px rgba(1,91,240,.25))}
 #p360-robot.up .rb-bot{transform:translateY(0)}
 #p360-robot:not(.up) .rb-bot{pointer-events:none}
-#p360-robot .rb-arm{transform-origin:86px 92px}
-#p360-robot.up .rb-arm{animation:rbWave 1.1s ease-in-out .5s 3}
-#p360-robot.up .rb-bulb{animation:rbBlink 1s steps(2) infinite}
-#p360-robot .rb-eyes{transform-origin:60px 45px;animation:rbEyes 4s infinite}
 @keyframes rbWave{0%,100%{transform:rotate(0)}50%{transform:rotate(-22deg)}}
 @keyframes rbBlink{50%{opacity:.35}}
 @keyframes rbEyes{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
@@ -2283,8 +2279,6 @@ details[open]>summary .tcx-chev{transform:rotate(90deg)}
 /* helper robot — calm: no waving or blinking, a smooth glide */
 #p360-robot .rb-bot{transition:transform .5s cubic-bezier(.22,.8,.3,1),opacity .4s ease;opacity:0;filter:drop-shadow(0 8px 14px rgba(6,32,88,.18))}
 #p360-robot.up .rb-bot{opacity:1}
-#p360-robot .rb-arm,#p360-robot .rb-bulb,#p360-robot .rb-eyes{animation:none!important}
-#p360-robot.up .rb-arm,#p360-robot.up .rb-bulb{animation:none!important}
 #p360-robot .rb-bubble{transition:opacity .3s ease .4s,transform .3s ease .4s}
 /* Macro Billing */
 .mb-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
@@ -2362,6 +2356,48 @@ details[open]>summary .tcx-chev{transform:rotate(90deg)}
 @keyframes vfp{50%{opacity:.35}}
 label.vf-filled input{animation:vff 2.2s ease-out;border-color:#c026d3}
 @keyframes vff{0%{background:#f5d0fe}100%{background:transparent}}
+
+/* ---- helper robot v2: alive (idle bob, blink, antenna sway, wave, walk, hop) */
+#p360-robot{width:460px;height:200px}
+#p360-robot .rb-mover{position:absolute;inset:0;transition:transform 2s cubic-bezier(.45,.05,.55,.95);pointer-events:none}
+#p360-robot .rb-bot,#p360-robot .rb-bot svg{width:106px;height:auto}
+#p360-robot .rb-bot{filter:drop-shadow(0 8px 12px rgba(10,30,60,.22))}
+#p360-robot .rb-bubble{right:104px;bottom:84px}
+#p360-robot svg *{transform-box:fill-box}
+#p360-robot .rb-body{transform-origin:50% 100%}
+#p360-robot.up .rb-body{animation:rb2Bob 2.4s ease-in-out infinite}
+#p360-robot .rb-head{transform-origin:50% 90%}
+#p360-robot.up .rb-head{animation:rb2Tilt 5s ease-in-out infinite}
+#p360-robot .rb-eyes{transform-origin:50% 60%}
+#p360-robot.up .rb-eyes{animation:rb2Blink 3.6s infinite}
+#p360-robot .rb-ant{transform-origin:100% 100%}#p360-robot .rb-ant2{transform-origin:0 100%}
+#p360-robot.up .rb-ant{animation:rb2Ant 1.8s ease-in-out infinite}#p360-robot.up .rb-ant2{animation:rb2Ant 1.8s ease-in-out .3s infinite reverse}
+#p360-robot.up .rb-chest,#p360-robot.up .rb-ear,#p360-robot.up .rb-glowp{animation:rb2Glow 1.6s ease-in-out infinite}
+#p360-robot .rb-arm{transform-box:view-box;transform-origin:39px 112px}#p360-robot .rb-fore{transform-box:view-box;transform-origin:15px 92px}
+#p360-robot.up .rb-arm{animation:rb2ArmIdle 3s ease-in-out infinite}
+#p360-robot.up.wave .rb-fore{animation:rb2Wave .42s ease-in-out infinite alternate}
+#p360-robot .rb-armL{transform-origin:30% 5%}
+#p360-robot.up.walk .rb-armL{animation:rb2Swing .45s ease-in-out infinite alternate}
+#p360-robot .rb-legL,#p360-robot .rb-legR{transform-origin:50% 0}
+#p360-robot.up.walk .rb-legL{animation:rb2Step .45s ease-in-out infinite alternate}
+#p360-robot.up.walk .rb-legR{animation:rb2Step .45s ease-in-out -.45s infinite alternate}
+#p360-robot.up.walk .rb-body{animation:rb2WalkBob .45s ease-in-out infinite alternate}
+#p360-robot.up.hop .rb-body{animation:rb2Hop .55s cubic-bezier(.3,.7,.4,1) 2}
+#p360-robot.up .rb-smile{transform-origin:50% 0}
+#p360-robot.up.wave .rb-smile{animation:rb2Smile .9s ease-in-out infinite alternate}
+@keyframes rb2Bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+@keyframes rb2Tilt{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-5deg)}85%{transform:rotate(4deg)}}
+@keyframes rb2Blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes rb2Ant{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes rb2Glow{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes rb2ArmIdle{0%,100%{transform:rotate(0)}50%{transform:rotate(-6deg)}}
+@keyframes rb2Wave{from{transform:rotate(-22deg)}to{transform:rotate(14deg)}}
+@keyframes rb2Swing{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}
+@keyframes rb2Step{from{transform:translateY(0) rotate(0)}to{transform:translateY(-6px) rotate(-6deg)}}
+@keyframes rb2WalkBob{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-4px) rotate(2deg)}}
+@keyframes rb2Hop{0%{transform:translateY(0) scaleY(1)}20%{transform:translateY(2px) scaleY(.94)}55%{transform:translateY(-22px) scaleY(1.03)}100%{transform:translateY(0) scaleY(1)}}
+@keyframes rb2Smile{from{transform:scaleY(1)}to{transform:scaleY(1.3)}}
+@media (prefers-reduced-motion:reduce){#p360-robot *{animation:none!important}#p360-robot .rb-mover{transition:none}}
 </style>
 </head>
 <body>
@@ -4340,7 +4376,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
   const navHtml = () => {
     const items = NAV.filter(([, , perms, , show]) => (!perms || A.canAny(...perms)) && (!show || show()));
     return items.map(([r, k, , cnt]) => { const n = cnt ? cnt() : 0; return `<a href="#/${r}" class="${A.route === r || (r === 'patients' && ['patient', 'consult'].includes(A.route)) ? 'on' : ''}" ${A.route === r ? 'aria-current="page"' : ''} data-tour="nav-${r}">${ICONS[r]}<span>${esc(t(k))}</span>${r === 'today' && A.user ? `<span class="nav-cust" role="button" tabindex="0" data-act="home-customise" title="Customise your Home Dashboard" aria-label="Customise your Home Dashboard">⚙</span>` : ''}${n ? `<span class="count${r === 'clinical' || r === 'whatsnew' ? ' info' : ''}" aria-label="${n} need attention">${n}</span>` : ''}</a>`; }).join('')
-      + `<div class="foot"><div class="foot-ver"><strong>Prac360</strong> v0.33 · demo</div><div class="foot-chip" id="foot-chip"><span class="foot-note">Synthetic data only</span></div><div class="foot-save"><i class="foot-dot" aria-hidden="true"></i><span id="savestate">${savedText()}</span></div></div>`;
+      + `<div class="foot"><div class="foot-ver"><strong>Prac360</strong> v${A.appVersion ? A.appVersion() : '0.34'} · demo</div><div class="foot-chip" id="foot-chip"><span class="foot-note">Synthetic data only</span></div><div class="foot-save"><i class="foot-dot" aria-hidden="true"></i><span id="savestate">${savedText()}</span></div></div>`;
   };
 
   // ---------- practice disciplines (names only — BHF discipline codes come with the practice's own registration) ----------
@@ -8995,7 +9031,8 @@ Notes
 (function () {
   'use strict';
   const A = window.APP, H = A.H, esc = A.esc, P = A.P;
-  const CUR = '0.31';
+  const CUR = () => { const vn = (v) => v.split('.').map(Number).reduce((a, n, i) => a + n * Math.pow(1000, 2 - i), 0); (A.RELEASES || []).sort((a, b) => vn(b.v) - vn(a.v)); return ((A.RELEASES || [])[0] || { v: '0.0' }).v; };
+  A.appVersion = CUR;
   const AREAS = { clinical: 'Clinical', front: 'Front desk and diary', billing: 'Billing and claims', accounts: 'Accounts and payments', setup: 'Practice setup and users', look: 'Look and feel', help: 'Help, Assist and training', dental: 'Dental', platform: 'Platform and security' };
   const TYPES = { new: 'New', improved: 'Improved', fixed: 'Fixed' };
   const I = (type, area, title, text, link, guide) => ({ type, area, title, text, link, guide });
@@ -9063,7 +9100,7 @@ Notes
     const match = (it) => (s.area === 'all' || it.area === s.area) && (s.type === 'all' || it.type === s.type) && (!q || (it.title + ' ' + it.text).toLowerCase().includes(q));
     const rel = R.filter((r) => !s.onlyNew || isNew(r)).map((r) => ({ r, items: r.items.filter(match) })).filter((x) => x.items.length);
     const counts = Object.keys(AREAS).map((a) => [a, R.reduce((n, r) => n + r.items.filter((i) => i.area === a).length, 0)]).filter(([, n]) => n);
-    const html = `<div class="page-head"><div><h1>What's new</h1><div class="muted">New and changed functions in Prac360 — you are on version ${CUR}.${newN ? ` <strong>${newN} change${newN === 1 ? '' : 's'} since your last visit.</strong>` : ''}</div></div><div class="actions"><button class="btn" data-act="wn-print">Save as PDF</button></div></div>
+    const html = `<div class="page-head"><div><h1>What's new</h1><div class="muted">New and changed functions in Prac360 — you are on version ${CUR()}.${newN ? ` <strong>${newN} change${newN === 1 ? '' : 's'} since your last visit.</strong>` : ''}</div></div><div class="actions"><button class="btn" data-act="wn-print">Save as PDF</button></div></div>
       <div class="card wn-tools"><input id="wn-q" type="search" placeholder="Search what's new…" value="${esc(s.q)}" data-noclean aria-label="Search what's new">
         <div class="wn-chips" role="group" aria-label="Area"><button class="chip ${s.area === 'all' ? 'on' : ''}" data-act="wn-area" data-v="all">All areas</button>${counts.map(([a, n]) => `<button class="chip ${s.area === a ? 'on' : ''}" data-act="wn-area" data-v="${a}">${esc(AREAS[a])} <span class="tiny">${n}</span></button>`).join('')}</div>
         <div class="row" style="gap:12px;flex-wrap:wrap"><div class="seg" role="group" aria-label="Type">${[['all', 'Everything'], ['new', 'New'], ['improved', 'Improved'], ['fixed', 'Fixed']].map(([k, t]) => `<button class="${s.type === k ? 'on' : ''}" data-act="wn-type" data-v="${k}">${t}</button>`).join('')}</div>
@@ -9072,7 +9109,7 @@ Notes
         : `<div class="card"><p class="muted" style="margin:0">${s.onlyNew ? 'You are up to date — nothing new since your last visit.' : 'Nothing matches. Try another search or area.'}</p></div>`}
       <p class="tiny muted">Prac360 updates itself; nothing needs to be installed. Questions? Click Assist (bottom right).</p>`;
     // remember that this person has seen the latest release (the menu badge clears on the next screen)
-    if (A.user && (!last || vnum(last) < vnum(CUR))) { A.user.prefs = A.user.prefs || {}; A.user.prefs.seenRelease = CUR; setTimeout(() => { try { A.save(); } catch (e) { /* ignore */ } }, 0); A.ui.wnPrevSeen = last; }
+    if (A.user && (!last || vnum(last) < vnum(CUR()))) { A.user.prefs = A.user.prefs || {}; A.user.prefs.seenRelease = CUR(); setTimeout(() => { try { A.save(); } catch (e) { /* ignore */ } }, 0); A.ui.wnPrevSeen = last; }
     return html; };
   // keep "New for you" visible on the visit that cleared it
   const _isNew = isNew; // eslint-disable-line no-unused-vars
@@ -9080,7 +9117,7 @@ Notes
   H['wn-type'] = (el) => { st().type = el.dataset.v; A.render(); };
   H['change:wn-new'] = (el) => { st().onlyNew = el.checked; A.render(); };
   document.addEventListener('input', (e) => { if (e.target && e.target.id === 'wn-q') { st().q = e.target.value; const pos = e.target.selectionStart; A.render(); const n = document.getElementById('wn-q'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) { /* ignore */ } } } });
-  H['wn-print'] = () => A.printDoc("What's new in Prac360", `<h1>What's new in Prac360</h1><p>Version ${CUR}</p>${R.map((r) => `<h2>v${r.v} · ${fdate(r.date)} — ${esc(r.title)}</h2><ul>${r.items.map((i) => `<li><strong>${TYPES[i.type]}: ${esc(i.title)}</strong> — ${esc(i.text)}</li>`).join('')}</ul>`).join('')}`);
+  H['wn-print'] = () => A.printDoc("What's new in Prac360", `<h1>What's new in Prac360</h1><p>Version ${CUR()}</p>${R.map((r) => `<h2>v${r.v} · ${fdate(r.date)} — ${esc(r.title)}</h2><ul>${r.items.map((i) => `<li><strong>${TYPES[i.type]}: ${esc(i.title)}</strong> — ${esc(i.text)}</li>`).join('')}</ul>`).join('')}`);
   // Today: a slim "what's new" strip until the person has looked
   const _today = P.today; P.today = (...a) => { const h = _today(...a); const n = A.whatsNewCount(); if (!n) return h; const r = R[0];
     const strip = `<a class="wn-strip" href="#/whatsnew"><span class="wn-star" aria-hidden="true">★</span><span><strong>New in Prac360 v${r.v}:</strong> ${esc(r.title)}</span><span class="wn-go">See what's new →</span></a>`;
@@ -10666,12 +10703,12 @@ Answer with JSON only:
   // ---------- A–Z function index ----------
   const AREAS = [
     ['Getting around', [['Sign in, passwords, two-step', 'login'], ['My account', 'myaccount'], ['Search', 'search'], ['Back button', 'back'], ['Assist: help, how-to and guided clicks', 'askhelp'], ['Night mode, language, larger text', 'display'], ['Full screen', 'fullscreen'], ['Save, print and email PDFs', 'pdfs'], ['Open a PDF in your reader', 'pdfopen'], ['Dictate into fields', 'dictate'], ['AI clean-up', 'cleanup'], ['Load shedding / offline', 'offline'], ['Practise safely (sandbox)', 'sandbox']]],
-    ['Prac360 Assist', [['Talk and it does the work', 'assist'], ['Consult listening (AI scribe)', 'scribe'], ['Voice and listening settings', 'assistvoice'], ['Help when something is wrong', 'assistsupport']]],
+    ['Prac360 Assist', [['Talk and it does the work', 'assist'], ['Talk to Assist (voice)', 'talk'], ['The helper robot', 'helperrobot'], ['Voice and listening settings', 'assistvoice'], ['Help when something is wrong', 'assistsupport']]],
     ['Front desk and diary', [['Register a patient', 'register'], ['Book an appointment', 'book'], ['Move, edit or cancel', 'apptedit'], ['Diary views and slot length', 'diaryview'], ['Check a patient in', 'arrive'], ['Check medical aid membership', 'eligibility'], ['Medical aid details', 'membership']]],
-    ['Patient file', [['Patient file tabs', 'patientfile'], ['Allergies and chronic conditions', 'allergy'], ['Chronic medicines', 'meds'], ['Vitals and graphs', 'vitalsrec'], ['Lab results', 'results'], ['Documents', 'documents'], ['Consent and POPIA', 'consent'], ['AI summary', 'aisummary']]],
-    ['Consultation', [['Write and sign a note', 'consult'], ['Change a signed note (addendum)', 'addendum'], ['Prescribe', 'script'], ['Print or send a script', 'printscript'], ['Sick notes and referrals', 'sicknote'], ['Sign with your PIN', 'esign'], ['QR codes', 'qr'], ['Motivation letters', 'motivation'], ['Stock used in a consult', 'stockuse']]],
+    ['Patient file', [['Patient file tabs', 'patientfile'], ['Allergies and chronic conditions', 'allergy'], ['Chronic medicines', 'meds'], ['Vitals and graphs', 'vitalsrec'], ['Capture vitals by voice', 'vitalslisten'], ['Lab results', 'results'], ['Documents', 'documents'], ['Consent and POPIA', 'consent'], ['AI summary', 'aisummary']]],
+    ['Consultation', [['AI Scribe consultation (guide, review, sign)', 'aiscribe'], ['Classic or AI Scribe view', 'cxviews'], ['Write and sign a note', 'consult'], ['Change a signed note (addendum)', 'addendum'], ['Prescribe', 'script'], ['Print or send a script', 'printscript'], ['Sick notes and referrals', 'sicknote'], ['Sign with your PIN', 'esign'], ['QR codes', 'qr'], ['Motivation letters', 'motivation'], ['Stock used in a consult', 'stockuse']]],
     ['Clinical follow-up', [['Clinical dashboard', 'clinicaldash'], ['Follow-up manager', 'followup'], ['Recalls and reminders', 'recall']]],
-    ['Billing and claims', [['Billing review', 'billingreview'], ['Suggested codes', 'suggestions'], ['ICD-10 rules', 'icd'], ['Possible PMB', 'pmb'], ['Authorisation numbers', 'authno'], ['Private (cash) billing', 'private'], ['Send claims, follow status', 'submitclaims'], ['How claims reach the medical aid', 'switchon'], ['Fix a rejected claim', 'rejected'], ['Resubmit', 'resubmit'], ['Remittances', 'remittance']]],
+    ['Billing and claims', [['Billing review', 'billingreview'], ['Add billing without a consultation note', 'billnew'], ['Macro Billing', 'macrobilling'], ['Transactions, ICD-10 per code and modifiers', 'billtx'], ['Suggested codes', 'suggestions'], ['ICD-10 rules', 'icd'], ['Possible PMB', 'pmb'], ['Authorisation numbers', 'authno'], ['Private (cash) billing', 'private'], ['Send claims, follow status', 'submitclaims'], ['How claims reach the medical aid', 'switchon'], ['Fix a rejected claim', 'rejected'], ['Resubmit', 'resubmit'], ['Remittances', 'remittance']]],
     ['Payments and accounts', [['Take a payment', 'payment'], ['Allocate payments', 'allocate'], ['Credit notes and voids', 'creditnote'], ['Medical aid vs patient liable', 'liability'], ['Move amounts between columns', 'liabmove'], ['Statements', 'statement'], ['Bulk statements', 'bulkstatements'], ['Age analysis', 'age']]],
     ['Stock', [['Catalogue and movements', 'stockcat'], ['Receive stock', 'receive'], ['Write off', 'writeoff'], ['Reorder', 'reorder'], ['Medprax price file', 'medprax']]],
     ['Reports', [['Run and export reports', 'reports'], ['VAT on reports', 'vatreports'], ['Audit log and AI interactions', 'auditlog']]],
@@ -14493,7 +14530,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   A.featureOn = (key) => { const o = org(); if (!o || !A.billHas) return true; try { return A.billHas(o.id, key); } catch (e) { return true; } };
 
   const FEATURES = A.FEATURES = {
-    assist: { name: 'Prac360 Assist (AI functions)', route: null, unlocks: ['Typed and spoken commands that do the work (book, check in, record vitals, draft notes…)', 'Live voice mode and hands-free listening', 'Consult listening (AI scribe) with the patient\'s consent', 'AI ranking of ICD-10 suggestions while you write a note'], basic: 'Without it, Assist still answers help questions and opens the step-by-step guides.' },
+    assist: { name: 'Prac360 Assist (AI functions)', route: null, unlocks: ['Typed and spoken commands that do the work (book, check in, record vitals, draft notes…)', 'Live voice mode and hands-free listening', 'AI Scribe in the consultation — listens (with the patient\'s consent), guides the conversation and fills the form', 'Capture vitals by voice', 'AI ranking of ICD-10 suggestions while you write a note'], basic: 'Without it, Assist still answers help questions and opens the step-by-step guides.' },
     dental: { name: 'Dental module', route: 'dentalops', unlocks: ['Odontogram and tooth-level charting', 'Dental treatment plans and quotes', 'Perio chart, X-rays and the sterilisation log', 'Dental operations screen'], basic: 'Without it, the practice works as a general practice: patients, diary, notes and billing with your own codes.' },
     hospital: { name: 'Hospital and wards module', route: 'hospital', unlocks: ['Ward board, admissions and transfers', 'Hospital authorisations and extensions', 'Ward and theatre stock, theatre times and TTO', 'Hospital account and claim'], basic: 'Without it, bill hospital visits as normal billing entries.' },
     oncology: { name: 'Oncology module', route: 'oncology', unlocks: ['Referral-to-follow-up pathway with next steps per role', 'Diagnosis, staging, MDT meetings and treatment plans', 'Treatment cycles with nursing and pharmacy checks, holds and CTCAE toxicity', 'Radiotherapy schedules, oncology authorisations, motivation letters and draft billing'], basic: 'Without it, cancer patients are managed like any other patient.' },
@@ -14999,48 +15036,65 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
 
 /* ===== ui-robot.js ===== */
 /* Prac360 — "Robbie" the helper robot.
- * Every 2 minutes a small robot peeks up from behind the Assist button with a speech bubble
+ * Every 2 minutes a small robot rises from behind the Assist button, waves, walks around a little and says
  * ("Need help? I'm here, talk to me"). Clicking the robot or the bubble opens Talk to Assist.
  * Each person can switch it on or off with the robot button in the Assist header (next to the speaker).
  * It never shows while Talk is running, while Assist is open, while a popup, tour or walkthrough is on screen,
  * when the browser tab is hidden, or for practices without the Assist add-on (Talk is part of Assist). */
 (function () {
   const A = window.APP, H = A.H;
-  const EVERY = 120000, FIRST = 30000, STAY = 6000;
+  const EVERY = 120000, FIRST = 30000, STAY = 10500;
   const LINES = ['Need help? Talk to me.', 'Stuck? Talk to me.', 'Need a hand? Talk to me.'];
   let n = 0, hideT = null, last = Date.now() - (EVERY - FIRST);
 
   const on = () => { try { return A.voicePrefs().robot !== false; } catch (e) { return true; } };
   A.robotOn = on;
 
-  // original drawing: rounded head with a screen face, antenna, waving arm
-  const SVG = `<svg viewBox="0 0 120 132" width="84" height="92" aria-hidden="true" focusable="false">
+  // original drawing: glossy white robot with a black visor face, glowing cyan eyes and smile, two antennas and a waving arm
+  const SVG = `<svg viewBox="-14 0 154 200" width="106" height="138" aria-hidden="true" focusable="false">
     <defs>
-      <linearGradient id="rb-shell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="0.55" stop-color="#eef2fa"/><stop offset="1" stop-color="#d9e1f0"/></linearGradient>
-      <linearGradient id="rb-visor" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#101a3f"/><stop offset="1" stop-color="#25184f"/></linearGradient>
-      <linearGradient id="rb-accent" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#015BF0"/><stop offset="0.6" stop-color="#7c3aed"/><stop offset="1" stop-color="#db2777"/></linearGradient>
-      <radialGradient id="rb-eye" cx="0.5" cy="0.45" r="0.6"><stop offset="0" stop-color="#e0fbff"/><stop offset="0.55" stop-color="#67e8f9"/><stop offset="1" stop-color="#22a6d8"/></radialGradient>
-      <filter id="rb-soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.6"/></filter>
+      <linearGradient id="rb-w" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#e8edf3"/><stop offset="1" stop-color="#b9c3cf"/></linearGradient>
+      <radialGradient id="rb-hd" cx=".38" cy=".3" r=".8"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#e6ebf1"/><stop offset="1" stop-color="#aeb9c6"/></radialGradient>
+      <linearGradient id="rb-vz" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c2230"/><stop offset="1" stop-color="#05070b"/></linearGradient>
+      <linearGradient id="rb-dk" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2b3340"/><stop offset=".5" stop-color="#4a5566"/><stop offset="1" stop-color="#252c38"/></linearGradient>
+      <filter id="rb-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     </defs>
-    <ellipse cx="60" cy="128" rx="30" ry="3.5" fill="#0b1736" opacity=".12"/>
-    <line x1="60" y1="16" x2="60" y2="7" stroke="#a7b3cc" stroke-width="2.5" stroke-linecap="round"/><circle cx="60" cy="6" r="4.2" fill="url(#rb-accent)"/>
-    <path d="M30 88 Q30 80 38 78 L82 78 Q90 80 90 88 L94 122 Q94 128 88 128 L32 128 Q26 128 26 122 Z" fill="url(#rb-shell)" stroke="#c9d3e6" stroke-width="1.4"/>
-    <path d="M44 78 L76 78 L72 72 L48 72 Z" fill="#cfd8ea"/>
-    <circle cx="60" cy="103" r="7.5" fill="url(#rb-accent)" opacity=".92"/><circle cx="57.5" cy="100.5" r="2.2" fill="#fff" opacity=".55"/>
-    <rect x="20" y="16" width="80" height="58" rx="24" fill="url(#rb-shell)" stroke="#c9d3e6" stroke-width="1.4"/>
-    <path d="M30 24 Q60 12 90 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".9"/>
-    <rect x="13" y="36" width="9" height="18" rx="4.5" fill="url(#rb-accent)"/><rect x="98" y="36" width="9" height="18" rx="4.5" fill="url(#rb-accent)"/>
-    <rect x="29" y="28" width="62" height="36" rx="16" fill="url(#rb-visor)"/>
-    <rect x="31" y="30" width="58" height="10" rx="5" fill="#ffffff" opacity=".06"/>
-    <g filter="url(#rb-soft)" opacity=".7"><rect x="40" y="40" width="13" height="10" rx="5" fill="#67e8f9"/><rect x="67" y="40" width="13" height="10" rx="5" fill="#67e8f9"/></g>
-    <rect x="41" y="41" width="11" height="8" rx="4" fill="url(#rb-eye)"/><rect x="68" y="41" width="11" height="8" rx="4" fill="url(#rb-eye)"/>
-    <path d="M52 56 Q60 60 68 56" fill="none" stroke="#67e8f9" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+    <ellipse class="rb-shadow" cx="70" cy="196" rx="34" ry="3.5" fill="#0b1736" opacity=".16"/>
+    <g class="rb-body">
+      <g class="rb-legL"><rect x="50" y="150" width="14" height="14" rx="5" fill="url(#rb-dk)"/><path d="M45 162 h24 l2 26 q0 6 -6 6 h-17 q-6 0 -6 -6 z" fill="url(#rb-w)" stroke="#aab4c2" stroke-width="1"/><rect x="47" y="174" width="20" height="3" rx="1.5" fill="#22d3ee" filter="url(#rb-glow)" class="rb-glowp"/></g>
+      <g class="rb-legR"><rect x="76" y="150" width="14" height="14" rx="5" fill="url(#rb-dk)"/><path d="M71 162 h24 l2 26 q0 6 -6 6 h-17 q-6 0 -6 -6 z" fill="url(#rb-w)" stroke="#aab4c2" stroke-width="1"/><rect x="73" y="174" width="20" height="3" rx="1.5" fill="#22d3ee" filter="url(#rb-glow)" class="rb-glowp"/></g>
+      <rect x="54" y="138" width="32" height="16" rx="6" fill="url(#rb-dk)"/>
+      <g class="rb-armL"><circle cx="101" cy="112" r="7" fill="url(#rb-dk)"/><circle cx="101" cy="112" r="3" fill="#22d3ee" filter="url(#rb-glow)" class="rb-glowp"/><path d="M98 116 q10 2 12 12 l3 18 q1 6 -5 7 l-6 1 q-6 0 -6 -6 l-2 -20 z" fill="url(#rb-w)" stroke="#aab4c2" stroke-width="1"/><path d="M103 152 q6 2 7 9 q-1 6 -7 6 q-6 -1 -6 -8 z" fill="#5b6575"/><path d="M99 160 q-2 4 1 7" stroke="#3a4250" stroke-width="2" fill="none" stroke-linecap="round"/></g>
+      <path d="M46 112 q0 -10 10 -12 h28 q10 2 10 12 l-3 26 q-1 6 -7 6 h-28 q-6 0 -7 -6 z" fill="url(#rb-w)" stroke="#aab4c2" stroke-width="1"/>
+      <path d="M58 104 h24 v6 h-24 z" fill="url(#rb-dk)"/><path d="M60 106.5 h20 M60 108.5 h20" stroke="#6b7686" stroke-width=".8"/>
+      <circle cx="70" cy="122" r="7.5" fill="#dfe6ee" stroke="#aab4c2"/><circle class="rb-chest" cx="70" cy="122" r="4.6" fill="#22d3ee" filter="url(#rb-glow)"/>
+      <g class="rb-head">
+        <g class="rb-ant"><line x1="45" y1="26" x2="39" y2="5" stroke="#3a4250" stroke-width="1.8" stroke-linecap="round"/><circle cx="39" cy="5" r="2.6" fill="#1f2630"/></g>
+        <g class="rb-ant2"><line x1="95" y1="26" x2="101" y2="5" stroke="#3a4250" stroke-width="1.8" stroke-linecap="round"/><circle cx="101" cy="5" r="2.6" fill="#1f2630"/></g>
+        <ellipse cx="24" cy="58" rx="6" ry="15" fill="#c5ced9"/><ellipse class="rb-ear" cx="23" cy="58" rx="3.2" ry="11" fill="#22d3ee" filter="url(#rb-glow)"/>
+        <ellipse cx="116" cy="58" rx="6" ry="15" fill="#c5ced9"/><ellipse class="rb-ear" cx="117" cy="58" rx="3.2" ry="11" fill="#22d3ee" filter="url(#rb-glow)"/>
+        <ellipse cx="70" cy="58" rx="47" ry="44" fill="url(#rb-hd)" stroke="#aab4c2" stroke-width="1.2"/>
+        <path d="M44 24 q26 -12 52 0" stroke="#c7d0db" stroke-width="1.4" fill="none"/><path d="M52 18 v12 M88 18 v12" stroke="#cdd5df" stroke-width="1.2"/>
+        <rect x="31" y="38" width="78" height="52" rx="22" fill="url(#rb-vz)" stroke="#8e99a8" stroke-width="2"/>
+        <path d="M40 46 q30 -8 60 0" stroke="#ffffff" stroke-width="2.5" fill="none" opacity=".12" stroke-linecap="round"/>
+        <g class="rb-face" filter="url(#rb-glow)"><g class="rb-eyes"><path d="M47 63 q8 -10 16 0" stroke="#3ee7f5" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M77 63 q8 -10 16 0" stroke="#3ee7f5" stroke-width="4" fill="none" stroke-linecap="round"/></g>
+          <path class="rb-smile" d="M55 74 q15 12 30 0" stroke="#3ee7f5" stroke-width="3.6" fill="none" stroke-linecap="round"/></g>
+      </g>
+      <g class="rb-arm"><circle cx="39" cy="112" r="7.5" fill="url(#rb-dk)"/>
+        <rect x="-5" y="-6.5" width="32" height="13" rx="6.5" fill="url(#rb-w)" stroke="#aab4c2" stroke-width="1" transform="translate(39 112) rotate(-140)"/>
+        <circle cx="39" cy="112" r="3" fill="#22d3ee" filter="url(#rb-glow)" class="rb-glowp"/>
+        <g class="rb-fore"><circle cx="15" cy="92" r="5.5" fill="url(#rb-dk)"/>
+          <rect x="-3" y="-8.5" width="26" height="17" rx="7" fill="url(#rb-w)" stroke="#aab4c2" stroke-width="1" transform="translate(15 92) rotate(-98)"/>
+          <rect x="1" y="74" width="16" height="4" rx="2" fill="#22d3ee" filter="url(#rb-glow)" class="rb-glowp" transform="rotate(-8 9 76)"/>
+          <rect x="1" y="54" width="17" height="14" rx="5" fill="#5b6575"/><circle cx="9.5" cy="61" r="3" fill="#2b3340"/>
+          <rect x="0" y="36" width="4.6" height="20" rx="2.3" fill="#d7dee7" stroke="#8b96a6" stroke-width=".7"/><rect x="5.6" y="32" width="4.6" height="23" rx="2.3" fill="#d7dee7" stroke="#8b96a6" stroke-width=".7"/><rect x="11.2" y="34" width="4.6" height="21" rx="2.3" fill="#d7dee7" stroke="#8b96a6" stroke-width=".7"/><rect x="16.4" y="40" width="4.4" height="16" rx="2.2" fill="#d7dee7" stroke="#8b96a6" stroke-width=".7"/><rect x="18" y="57" width="9" height="4.4" rx="2.2" fill="#d7dee7" stroke="#8b96a6" stroke-width=".7" transform="rotate(-35 18 59)"/></g></g>
+    </g>
   </svg>`;
 
   const el = () => { let r = document.getElementById('p360-robot'); if (r) return r;
     r = document.createElement('div'); r.id = 'p360-robot'; r.setAttribute('aria-hidden', 'true');
-    r.innerHTML = `<button class="rb-bot" data-act="robot-talk" aria-label="Talk to Assist" title="Talk to Assist">${SVG}</button>
-      <div class="rb-bubble" role="status"><button class="rb-say" data-act="robot-talk"><strong></strong><span>Click me to start talking</span></button><button class="rb-x" data-act="robot-hide" aria-label="Hide the helper robot for now" title="Not now">×</button></div>`;
+    r.innerHTML = `<div class="rb-mover"><button class="rb-bot" data-act="robot-talk" aria-label="Talk to Assist" title="Talk to Assist">${SVG}</button>
+      <div class="rb-bubble" role="status"><button class="rb-say" data-act="robot-talk"><strong></strong><span>Click me to start talking</span></button><button class="rb-x" data-act="robot-hide" aria-label="Hide the helper robot for now" title="Not now">×</button></div></div>`;
     document.body.appendChild(r); return r; };
 
   const pill = () => { const p = document.querySelector('#assist .as-pill'); if (!p) return null; const r = p.getBoundingClientRect(); return r.width ? r : null; };
@@ -15049,13 +15103,23 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
       || document.getElementById('guide-tip') || document.getElementById('tour-tip') || document.getElementById('learn-back') || document.hidden || (A.featureOn && !A.featureOn('assist')); };
 
   const place = () => { const r = pill(), box = document.getElementById('p360-robot'); if (!r || !box) return false;
-    box.style.left = Math.round(r.left + r.width / 2 + 40 - 460) + 'px'; box.style.bottom = Math.round(innerHeight - r.top - 26) + 'px'; return true; };
+    box.style.left = Math.round(r.left + r.width / 2 + 40 - 460) + 'px'; box.style.bottom = Math.round(innerHeight - r.bottom + 2) + 'px'; return true; };
 
+  // choreography: rise, wave, walk off to the left, hop and wave, walk back, wave goodbye
+  let tl = []; const still = () => matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clearTl = () => { tl.forEach(clearTimeout); tl = []; const box = document.getElementById('p360-robot'); if (!box) return; box.classList.remove('wave', 'walk', 'hop'); const m = box.querySelector('.rb-mover'); if (m) m.style.transform = ''; };
+  const at = (ms, fn) => tl.push(setTimeout(fn, ms));
+  const dance = (box) => { clearTl(); if (still()) return; const m = box.querySelector('.rb-mover'); const cls = (add, rem) => { (rem || []).forEach((c) => box.classList.remove(c)); (add || []).forEach((c) => box.classList.add(c)); };
+    at(650, () => cls(['wave']));
+    at(2600, () => { cls(['walk'], ['wave']); m.style.transform = 'translateX(-150px)'; });
+    at(4700, () => cls(['hop', 'wave'], ['walk']));
+    at(6400, () => { cls(['walk'], ['hop', 'wave']); m.style.transform = 'translateX(0)'; });
+    at(8500, () => cls(['wave'], ['walk'])); };
   const show = () => { if (!on() || busy() || !pill()) return; const box = el(); if (!place()) return;
     box.querySelector('.rb-say strong').textContent = LINES[n++ % LINES.length];
-    box.removeAttribute('aria-hidden'); box.classList.add('up'); last = Date.now();
+    box.removeAttribute('aria-hidden'); box.classList.add('up'); last = Date.now(); dance(box);
     clearTimeout(hideT); hideT = setTimeout(hide, STAY); };
-  const hide = () => { const box = document.getElementById('p360-robot'); if (!box) return; box.classList.remove('up'); box.setAttribute('aria-hidden', 'true'); clearTimeout(hideT); };
+  const hide = () => { const box = document.getElementById('p360-robot'); if (!box) return; clearTl(); box.classList.remove('up'); box.setAttribute('aria-hidden', 'true'); clearTimeout(hideT); };
   A.robotShow = show; A.robotHide = hide;
 
   setInterval(() => { const box = document.getElementById('p360-robot');
@@ -16034,6 +16098,109 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   new MutationObserver(() => { if (S.on && !document.getElementById('vf')) stop('form closed'); }).observe(document.body, { childList: true, subtree: true });
   if (A.KB && !A.KB.some((k) => k.id === 'vitalslisten')) A.KB.push({ id: 'vitalslisten', title: 'Capture vitals by voice: listen and fill in', keys: ['vitals by voice', 'listen vitals', 'dictate vitals', 'capture vitals ai', 'say the blood pressure'], screens: ['patient', 'today'], link: '#/patients',
     steps: ['Open Capture vitals (Add a reading) for the patient.', 'Press Start listening. The first time, ask the patient if it is OK — record their answer.', 'Say each measurement out loud as you take it: “BP 128 over 82”, “pulse 76”, “temp 37.2”, “sats 97”, “weight 82 kilos”.', 'The fields fill in as you speak. Anything you type yourself is never overwritten.', 'Check the values and press Save reading. Only the numbers are kept — no recording or transcript.'] });
+})();
+
+
+/* ===== ui-v034.js ===== */
+/* Prac360 v0.34 — keeps What's new, help topics, "Show me" walkthroughs and the Training Academy in line with
+ * the changes of 20 November 2026: simpler AI Scribe with a conversation guide, Classic / AI Scribe switch,
+ * vitals by voice, Add billing without a reason, hospital module follows the subscription, live support search,
+ * and the new helper robot. Rule kept from here on: every change adds a What's new item and updates the
+ * matching help topic and lesson. */
+(function () {
+  'use strict';
+  const A = window.APP;
+  const KB = A.KB || [];
+  const kb = (id) => KB.find((k) => k.id === id);
+  const putKB = (k) => { const i = KB.findIndex((x) => x.id === k.id); if (i >= 0) KB[i] = Object.assign({}, KB[i], k); else KB.push(k); };
+
+  // ================================================================ What's new
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.34')) A.RELEASES.unshift({ v: '0.34', date: '2026-11-20', title: 'A simpler AI Scribe, vitals by voice and a livelier helper', items: [
+    { type: 'improved', area: 'clinical', title: 'AI Scribe consultation made simpler', text: 'The consultation screen now has five clear cards — what the patient tells you, history, vitals and examination, diagnosis, and plan — with the patient’s allergies, medicines and conditions as one row of chips at the top. Every field is still there: press “Show every field” for the detailed form.', link: '#/patients', guide: 'aiscribe' },
+    { type: 'new', area: 'clinical', title: 'Conversation guide', text: 'While AI Scribe listens, a guide on the right walks you through the consultation: hear the story, check history and medicines, measure and examine, explain the diagnosis, agree the plan, finish. It suggests the next question (for example “How long has it been going on?”), ticks off what the conversation has covered and adds questions for the form, such as home sugar readings for diabetes. Skip any prompt. It only suggests — nothing is asked or written for you.', link: '#/patients', guide: 'aiscribe' },
+    { type: 'new', area: 'clinical', title: 'Switch between Classic and AI Scribe in one click', text: 'Every consultation has a Classic | ✦ AI Scribe switch at the top. Classic is the plain note you type yourself; AI Scribe is the guided, listening workspace. Switch at any time — nothing is lost.', link: '#/patients', guide: 'cxviews' },
+    { type: 'new', area: 'clinical', title: 'Capture vitals by voice', text: 'In Capture vitals (Add a reading) press Start listening and say the measurements as you take them — “BP 128 over 82, pulse 76, temp 37.4, sats 97”. The fields fill in as you speak. Only the numbers are kept: no recording, no transcript. Readings the patient mentions (“my sugar at home was 11”) are not filled in, and anything you type is never overwritten. The patient is asked first.', link: '#/patients', guide: 'vitalslisten' },
+    { type: 'improved', area: 'clinical', title: 'AI Scribe understands the story better', text: '“Sore throat and fever for three days” now gives both symptoms the three days, and a separate “about a 6 out of 10” is recorded as the severity.', link: '#/patients', guide: 'aiscribe' },
+    { type: 'improved', area: 'billing', title: 'Add billing starts straight away', text: 'Add billing (billing without a consultation note) no longer asks for a reason. Choose the patient, doctor, date and the ICD-10 codes, then press Start billing. The audit log still records that it was a billing-only entry.', link: '#/billing', guide: 'billnew' },
+    { type: 'fixed', area: 'clinical', title: 'Hospital and wards follows your subscription', text: 'Practices with the Hospital subscription now see Hospital and wards in the menu straight away (with sample wards to start). If you switch the module off yourself in Practice setup → Hospital, it stays off.', link: '#/hospital', guide: 'h-setup' },
+    { type: 'new', area: 'support', title: 'Live support: find a practice and connect', text: 'Support console → Live support has a search. Find a practice, see all its users — Live now, Online elsewhere or Offline with when they were last active — and press Connect to ask to join that person’s screen. The user always has to allow it.', link: '#console', guide: 'livesupport' },
+    { type: 'improved', area: 'help', title: 'A new helper robot that waves and walks', text: 'The helper robot now looks like a friendly white robot with a glowing face. Every 2 minutes it rises from behind the Assist button, waves, walks around a little and asks if you need help. Click it to talk to Assist. Switch it off with the robot button at the top of Assist.', link: '#/today', guide: 'helperrobot' },
+    { type: 'improved', area: 'help', title: 'Training Academy updated', text: 'New course “Consultations with AI Scribe”, new lessons on Macro Billing, billing without a note, vitals by voice and the helper robot, and updated help topics and Show me walkthroughs for everything in this release.', link: '#/learn' },
+    { type: 'fixed', area: 'help', title: 'What’s new shows the right version', text: 'What’s new and the menu footer now always show the latest version, and “new since your last visit” works again.', link: '#/whatsnew' }] });
+
+  // ================================================================ help topics
+  putKB({ id: 'aiscribe', title: 'Consultation with AI Scribe: guide, listen, review, approve, sign', keys: ['ai scribe', 'scribe', 'listen to the consult', 'consult listening', 'consultation', 'conversation guide', 'next question', 'ambient', 'record consult', 'consent', 'soap', 'approve documentation'], screens: ['consult', 'patient'], link: '#/patients',
+    steps: ['Open the patient and click Start consultation. The screen opens in AI Scribe view (use the Classic | ✦ AI Scribe switch at the top to change).',
+      'Press AI Scribe. Ask the patient if Prac360 may listen and record their answer — it only starts after they agree.',
+      'Talk normally. The five cards fill in as you speak (✦ AI shows a value came from the conversation; click it to see the words). Type over anything — your words win.',
+      'Follow the Conversation guide on the right: it shows the step you are on and suggests the next question. Skip a prompt if it is not needed.',
+      'Press Finish consultation, then Review AI documentation: check the flagged items, accept or reject each suggested ICD-10 code, medicine, test and referral, and approve.',
+      'Sign and finalise. Signing is blocked until you have approved, and nothing is ever approved or signed for you.',
+      'Need more fields? “Show every field” at the bottom opens the detailed form; “Simple view” brings you back.'] });
+  putKB({ id: 'scribe', title: 'Consult listening — now AI Scribe in the consultation', keys: ['listen to consult', 'draft note', 'transcribe', 'ai notes', 'write my notes', 'consult listening'], screens: ['consult'], link: '#/patients',
+    steps: ['Consult listening is now part of the consultation screen: open the patient → Start consultation → AI Scribe.', 'Ask the patient first and record their answer. No audio is stored.', 'Follow the Conversation guide, then Finish → Review → Approve → Sign. See “Consultation with AI Scribe” for the full steps.'], guide: 'aiscribe' });
+  putKB({ id: 'cxviews', title: 'Classic or AI Scribe view in a consultation', keys: ['classic view', 'ai scribe view', 'switch view', 'simple view', 'detailed form', 'show every field', 'too busy'], screens: ['consult'], link: '#/patients',
+    steps: ['At the top of every consultation there is a switch: Classic | ✦ AI Scribe.', 'Classic is the plain note you type yourself (subjective, objective, assessment, plan).', 'AI Scribe is the guided screen with five cards and the conversation guide. Switch at any time — nothing is lost.', 'In AI Scribe, “Show every field” opens the detailed form with every section; “Simple view” at the top brings back the five cards.'] });
+  putKB({ id: 'vitalslisten', steps: ['Open the patient and click Capture vitals (Add a reading).', 'Press Start listening. The first time for this patient, ask if it is OK and press “Patient agrees” (or Declines).', 'Say each measurement out loud as you take it: “BP 128 over 82”, “pulse 76”, “temp 37.2”, “sats 97”, “weight 82 kilos”, “waist 94”.', 'The fields fill in and flash as you speak. What the patient says about home readings is ignored, and anything you type yourself is never overwritten.', 'Check the values and press Save reading. Only the numbers are kept — no recording or transcript. Listening stops when you save or close the form.'] });
+  const vr = kb('vitalsrec'); if (vr && !(vr.steps || []).some((x) => /by voice/.test(x))) vr.steps = (vr.steps || []).concat(['Hands busy? In Capture vitals press Start listening and say the readings out loud — they fill in by voice (see “Capture vitals by voice”).']);
+  putKB({ id: 'billnew', title: 'Add billing without a consultation note', keys: ['add billing', 'billing only', 'no consultation note', 'bill without note', 'theatre billing', 'telephone consult billing', 'paper note'], screens: ['statement', 'billing'], link: '#/billing',
+    steps: ['Open the patient’s account (Payments & accounts → the account) and click Add billing.', 'If there are signed consultations not billed yet, they are listed first — bill those from their note instead.', 'Choose the patient, treating doctor, date and time (the time decides after-hours codes) and type the ICD-10 codes for the visit, primary first.', 'Press Start billing — no reason is needed. The transaction screen opens: add codes one at a time, or use Macro Billing for a basket.', 'The audit log records that this was a billing-only entry.'] });
+  const bt = kb('billtx'); if (bt && !(bt.steps || []).some((x) => /Macro Billing/.test(x))) bt.steps = (bt.steps || []).concat(['Billing the same set of codes often? Use Macro Billing (button above Add transaction) to add a saved basket in one go.']);
+  const hs = kb('h-setup'); if (hs) hs.steps = ['With the Hospital subscription, Hospital and wards appears in the menu by itself, with sample wards to start. (No subscription? Practice setup → Services lets the licence holder add it.)', 'Practice setup → Hospital: choose Facility or Doctors in hospital. You can switch the module off here — it then stays off.', 'Add wards with their level of care and number of beds.', 'Set the billing basis, authorisation rule and TTO limit, and enter your contracted hospital tariffs in the Tariff list.'];
+  const ls = kb('livesupport'); if (ls && !(ls.steps || []).some((x) => /search/i.test(x))) ls.steps = ['For practices: Prac360 support asks to join your screen; you see their name and reason. Click Allow (and choose whether they may click and type) or Decline.',
+    'For support staff: Support console → Live support. Search for the practice, open it and see every user: Live now, Online elsewhere, or Offline with when they were last active. Press Connect next to a user to ask to join their screen.',
+    'During the session each side sees the other’s cursor (with their name). Whoever opens a screen, the other follows. Typing and saved changes show on both screens.',
+    'The bar at the bottom shows the session. Make it view only or End session at any time. Every session is in the practice’s audit log.',
+    'On the public demo, live support works between tabs of the same browser; between different computers it needs the Prac360 server.'];
+  putKB({ id: 'helperrobot', title: 'The helper robot', keys: ['robot', 'helper robot', 'robbie', 'switch off robot', 'the robot keeps popping up', 'waving robot'], screens: ['today'], link: '#/today',
+    steps: ['Every 2 minutes a friendly robot rises from behind the Assist button, waves, walks around a little and asks if you need help.', 'Click the robot or its speech bubble to start talking to Assist. Click × to send it away for now.', 'It never appears while you are talking to Assist, during a walkthrough, while a popup is open or while AI Scribe is listening.', 'Switch it off (or on) with the robot button at the top of Assist, next to the speaker button. Your choice is saved for you only.'] });
+  putKB({ id: 'macrobilling', steps: ['Open the consultation in Billing review (or start Add billing). Above Add transaction, click Macro Billing.', 'Pick a macro — for example “Dental cleanup Basic” or “Flu vaccination visit”. You see every code, modifier and stock item with the estimate.', 'Choose which ICD-10 codes the lines get, then Add all lines. Change or remove any line afterwards as usual.', 'Make your own: New macro, or “Save this invoice as a macro” to copy the current lines. Edit or delete macros from the same window.'] });
+
+  // ================================================================ "Show me" walkthroughs
+  if (A.GUIDES) {
+    const onConsult = 'Open a patient and click Start consultation first, then press Show me again.';
+    A.GUIDES.aiscribe = { title: 'Consultation with AI Scribe', steps: [
+      { sel: '.cx-switch', text: 'Switch between Classic (type the note yourself) and ✦ AI Scribe at any time.', expect: 'next', missing: onConsult },
+      { sel: '#cx-scribe-btn', text: 'Press AI Scribe to start listening. It only starts after the patient agrees — you record their answer.', expect: 'next' },
+      { sel: '.cx-glance', text: 'The patient at a glance: allergies in red, medicines, conditions and the last visit.', expect: 'next' },
+      { sel: '.cx-guide', text: 'The Conversation guide shows the step you are on and suggests the next question. It ticks off as you talk. Skip anything not needed.', expect: 'next' },
+      { sel: '#cx-main', text: 'The five cards fill in from the conversation (✦ AI). Type over anything — your words win.', expect: 'next' },
+      { sel: '.cx-bar', text: 'Finish → Review AI documentation → Approve → Sign and finalise. Nothing is approved or signed for you.', expect: 'next' }] };
+    A.GUIDES.scribe = A.GUIDES.aiscribe;
+    A.GUIDES.cxviews = { title: 'Classic or AI Scribe view', steps: [{ sel: '.cx-switch', text: 'Click Classic for the plain note, or ✦ AI Scribe for the guided screen. Nothing is lost when you switch.', expect: 'next', missing: onConsult }] };
+    A.GUIDES.vitalslisten = { title: 'Capture vitals by voice', steps: [
+      { sel: '[data-act="vitals"]', text: 'Click Capture vitals.', expect: 'click', missing: 'Open a patient file first, then press Show me again.' },
+      { sel: '#vf-ai', text: 'Press Start listening (ask the patient the first time), then say the readings out loud. The fields fill in as you speak.', expect: 'next' },
+      { sel: '[data-act="vitals-save"]', text: 'Check the values and click Save reading. Only the numbers are kept.', expect: 'next' }] };
+    A.GUIDES.helperrobot = { title: 'The helper robot', steps: [{ sel: '#assist .as-pill', text: 'The robot lives behind the Assist button. Open Assist and use the robot button at the top (next to the speaker) to switch it on or off.', expect: 'next' }] };
+    A.GUIDES.billnew = { title: 'Add billing without a note', steps: [{ sel: '[data-act="bill-new"]', text: 'Click Add billing on the patient’s account. Choose patient, doctor, date and ICD-10 codes, then Start billing — no reason needed.', expect: 'next', missing: 'Open the patient’s account (Payments & accounts) first, then press Show me again.' }] };
+  }
+
+  // ================================================================ Training Academy
+  const C = A.COURSES; if (!C) return;
+  const L = (t, body, guide) => ({ t, body, guide });
+  const course = (id) => C.find((c) => c.id === id);
+  const addLesson = (cid, l) => { const c = course(cid); if (c && !c.lessons.some((x) => x.t === l.t)) c.lessons.push(l); };
+  const setLesson = (cid, oldT, l) => { const c = course(cid); if (!c) return; const i = c.lessons.findIndex((x) => x.t === oldT || x.t === l.t); if (i >= 0) c.lessons[i] = Object.assign({}, c.lessons[i], l); };
+  if (!course('aiscribe')) {
+    const after = C.findIndex((c) => c.id === 'clinical');
+    C.splice(after >= 0 ? after + 1 : C.length, 0, { id: 'aiscribe', title: 'Consultations with AI Scribe', icon: '🩺', who: 'Doctors and clinical staff', mins: 15, show: () => A.can('clinical.write'),
+      lessons: [L('Classic or AI Scribe', 'Every consultation has a Classic | ✦ AI Scribe switch at the top. Classic is the plain note you type. AI Scribe gives five simple cards — what the patient tells you, history, vitals and examination, diagnosis, plan — and a conversation guide. Switch any time; nothing is lost. “Show every field” opens the detailed form.', 'cxviews'),
+        L('Ask the patient first', 'Press AI Scribe. Ask: “Is it OK if Prac360 listens to help write my notes? No recording is kept.” Record the answer. If they decline, carry on and type as usual. You can pause at any time.', 'aiscribe'),
+        L('Let the guide lead the conversation', 'The Conversation guide on the right shows the step you are on — hear the story, history and medicines, measure and examine, explain what it is, agree the plan — and suggests the next question. It ticks off as the conversation covers each point. Skip anything that is not needed for this patient. It only suggests; you lead.', 'aiscribe'),
+        L('Vitals by voice', 'In Capture vitals press Start listening and say the readings as you take them: “BP 128 over 82, pulse 76, temp 37.2.” The fields fill in. Only measurements you say are filled — not home readings the patient mentions — and what you type is never overwritten. No recording or transcript is kept.', 'vitalslisten'),
+        L('Review, approve and sign', 'Finish consultation, then Review AI documentation. Check every flagged item (safety, conflicts, corrections), accept or reject each suggested ICD-10 code, medicine, test and referral, and approve. Then sign. Any later change needs a new approval.', 'aiscribe')],
+      quiz: [{ q: 'When may AI Scribe start listening?', o: ['As soon as the consultation opens', 'After the patient agrees and you record it', 'Only after you sign'], a: 1 },
+        { q: 'The conversation guide suggests “How long has it been going on?” but you already know. You…', o: ['Must ask anyway', 'Skip it — the guide only suggests', 'Switch to Classic'], a: 1 },
+        { q: 'During Capture vitals the patient says “my sugar at home was 11”. What happens?', o: ['Glucose is filled in as 11', 'Nothing — only measurements you say are filled in', 'The reading is saved straight away'], a: 1 },
+        { q: 'Who signs the AI Scribe note?', o: ['AI Scribe signs it when you finish', 'You, after reviewing and approving it', 'The practice manager'], a: 1 }] });
+  }
+  setLesson('assist', 'Consult listening (AI scribe)', L('AI Scribe in the consultation', 'Consult listening now lives in the consultation screen: Start consultation → AI Scribe. Ask the patient first and record their answer. A conversation guide suggests the next question, the form fills in as you talk, and you review, approve and sign. No audio is stored. The full course is “Consultations with AI Scribe”.', 'aiscribe'));
+  addLesson('assist', L('The helper robot', 'Every 2 minutes a friendly robot rises from behind the Assist button, waves, walks around and offers help. Click it to start talking to Assist. Switch it off or on with the robot button at the top of Assist, next to the speaker.', 'helperrobot'));
+  addLesson('billing', L('Billing without a consultation note', 'On the account click Add billing. Choose patient, doctor, date and ICD-10 codes and press Start billing — no reason needed. The audit log records it as a billing-only entry.', 'billnew'));
+  addLesson('billing', L('Macro Billing', 'Codes you always bill together (for example “Dental cleanup Basic”) can be saved as a macro. On the transaction screen click Macro Billing, pick one, check the lines and estimate, choose the ICD-10 codes and add everything in one go.', 'macrobilling'));
+  const rec = course('records'); if (rec) { const l = rec.lessons.find((x) => x.t === 'Vitals and graphs'); if (l && !/by voice/.test(l.body || '')) l.body = (l.body || '') + ' Hands busy? In Capture vitals press Start listening and say the readings out loud — they fill in by voice.'; }
+  setLesson('hospital', 'Switch on and set up wards', L('Switch on and set up wards', 'With the Hospital subscription, Hospital and wards appears in the menu by itself with sample wards. In Practice setup → Hospital choose Facility or Doctors in hospital, add your wards and beds, and set the billing basis and authorisation rule. Switching the module off there keeps it off.', 'h-setup'));
 })();
 
 

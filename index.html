@@ -2452,6 +2452,23 @@ label.vf-filled input{animation:vff 2.2s ease-out;border-color:#c026d3}
 .cx-gchip-x{border:0;background:none;color:#a21caf;cursor:pointer;font-size:13px;line-height:1;padding:0 3px}
 [data-theme="dark"] .cx-gchip{background:var(--surface)}
 .cx-cancel{color:#b91c1c}
+/* ---- Prac360 patient ID + shared record finder */
+.prid{border-top:4px solid #0d9488}
+.prid-type{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:6px}
+.prid-chk{align-self:end;padding-bottom:12px;font-size:13px;font-weight:600}
+.prid-chk.ok{color:#166534}.prid-chk.bad{color:#b91c1c}
+.prid-h{margin:14px 0 6px;font-size:15px}
+.prid-ok{background:#ecfdf5;border:1px solid #bbf7d0;border-radius:10px;padding:8px 10px;font-size:14px}
+.prid-no{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:14px}
+.prid-what{margin-top:10px}.prid-what summary{cursor:pointer;font-size:13px;color:var(--accent,#2563eb)}
+.prid-none{margin-top:12px;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
+.prid-found{margin-top:12px;border:1px solid #99f6e4;background:#f0fdfa;border-radius:12px;padding:12px}
+.prid-name{font-size:17px}
+.prid-counts{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:8px 0}
+.prid-counts>div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 10px;display:flex;flex-direction:column}
+.prid-counts b{font-size:18px}.prid-counts span{font-size:12px;color:var(--muted,#6b7280)}
+[data-theme="dark"] .prid-ok,[data-theme="dark"] .prid-found{background:rgba(13,148,136,.12)}[data-theme="dark"] .prid-no,[data-theme="dark"] .prid-none{background:var(--surface)}
+.prid-form [hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -5256,7 +5273,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
   H['add-allergy-save'] = (el) => { const a = document.getElementById('na-a').value.trim(); if (!a) { A.toast('Type the allergen.', 'error'); return; } const rec = { id: E.id('al'), patientId: el.dataset.pid, allergen: a, allergyClass: document.getElementById('na-c').value || null, reaction: document.getElementById('na-r').value, severity: document.getElementById('na-s').value }; A.closeModal(); A.act(() => { db().allergies.push(rec); E.audit(db(), A.user, 'add-allergy', 'patient', rec.patientId, rec.patientId, a); }, 'Allergy added.'); };
   H['stop-med'] = (el) => A.confirm('Stop medicine', 'Mark this medicine as stopped? It stays in the history.', (r) => A.act(() => { const m = db().meds.find((x) => x.id === el.dataset.id); m.active = false; m.stoppedReason = r; m.stoppedAt = E.today(db()); E.audit(db(), A.user, 'stop-med', 'patient', m.patientId, m.patientId, r); }, 'Medicine stopped.'), 'Stop medicine', true);
   PT.visits = (p) => { const encs = db().encounters.filter((e) => e.patientId === p.id).sort((a, b) => (a.date < b.date ? 1 : -1));
-    return `<div class="card"><table class="t"><thead><tr><th>Date</th><th>Doctor</th><th>Assessment</th><th>Diagnoses</th><th>Status</th><th></th></tr></thead><tbody>${encs.map((e) => `<tr><td>${fd(e.date)}</td><td>${esc(A.uname(e.providerId))}</td><td>${esc(e.assessment || '—')}</td><td class="mono small">${esc((e.diagnoses || []).filter((c) => !sensitiveHidden(c)).join(', '))}</td><td>${e.status === 'signed' ? `<span class="badge good">Signed</span>${(e.addenda || []).length ? ' <span class="badge">+ addendum</span>' : ''}` : '<span class="badge warn">Draft</span>'}</td><td><a class="btn sm" href="#/consult/${e.id}">Open</a></td></tr>`).join('') || '<tr><td class="muted" colspan="6">No visits yet.</td></tr>'}</tbody></table></div>`; };
+    return `<div class="card"><table class="t"><thead><tr><th>Date</th><th>Doctor</th><th>Assessment</th><th>Diagnoses</th><th>Status</th><th></th></tr></thead><tbody>${encs.map((e) => `<tr><td>${fd(e.date)}</td><td>${e.imported ? `${esc(e.externalDoctor || '—')}<div class="tiny muted">${esc(e.importedFrom || 'another practice')}</div>` : esc(A.uname(e.providerId))}</td><td>${esc(e.assessment || '—')}</td><td class="mono small">${esc((e.diagnoses || []).filter((c) => !sensitiveHidden(c)).join(', '))}</td><td>${e.imported ? '<span class="badge info" title="Imported from the shared Prac360 record with the patient’s consent">🔗 Shared record</span>' : e.status === 'signed' ? `<span class="badge good">Signed</span>${(e.addenda || []).length ? ' <span class="badge">+ addendum</span>' : ''}` : '<span class="badge warn">Draft</span>'}</td><td><a class="btn sm" href="#/consult/${e.id}">Open</a></td></tr>`).join('') || '<tr><td class="muted" colspan="6">No visits yet.</td></tr>'}</tbody></table></div>`; };
   PT.documents = (p) => { const docs = db().documents.filter((d) => d.patientId === p.id).sort((a, b) => (a.date < b.date ? 1 : -1));
     return `<div class="card"><div class="row between"><h2>Documents & results</h2><button class="btn sm" data-act="upload-doc" data-pid="${p.id}">Add document</button></div><table class="t"><thead><tr><th>Date</th><th>Type</th><th>Title</th><th>Status</th><th></th></tr></thead><tbody>${docs.map((d) => `<tr><td>${fd(d.date)}</td><td>${esc(d.kind)}</td><td>${esc(d.title)}</td><td>${d.kind === 'Lab result' ? (d.acknowledged ? '<span class="badge good">Reviewed</span>' : '<span class="badge warn">To review</span>') : ''}</td><td><button class="btn sm" data-act="view-doc" data-id="${d.id}">View</button></td></tr>`).join('') || '<tr><td colspan="5" class="muted">No documents.</td></tr>'}</tbody></table><p class="tiny">Electronic lab results (HL7/FHIR) and scanning arrive in Phase 2. Uploaded text is treated as data, never as instructions to the assistant.</p></div>`; };
   H['view-doc'] = (el) => { const d = db().documents.find((x) => x.id === el.dataset.id); A.modal(d.title, `<p class="tiny">${esc(d.kind)} · ${fd(d.date)} · ${esc(A.pname(d.patientId))}</p><div style="white-space:pre-wrap" ${/sick note|referral|certificate/i.test(d.kind) ? 'class="wm" data-watermark="DEMO"' : ''}>${esc(d.body)}${d.signature && A.sigBlock ? A.sigBlock(d.signature) : ''}${d.signature && d.signature.verifyUrl && A.qrBlock ? A.qrBlock(d.signature.verifyUrl, d.signature.cert) : ''}</div>`, `<button class="btn" data-act="modal-close">Close</button><button class="btn" data-act="print-modal">Save as PDF</button>`); E.audit(db(), A.user, 'view', 'document', d.id, d.patientId, d.title); A.save(); };
@@ -14798,6 +14815,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   // ---------- identity ----------
   const keyOf = (p) => { if (!p) return null; const id = String(p.idNumber || '').replace(/\s/g, ''); if (/^\d{13}$/.test(id)) return 'za' + E.hash('za:' + id) + E.hash(id + ':za'); const pp = String(p.passport || '').replace(/\s/g, '').toUpperCase(); if (pp && p.dob) return 'pp' + E.hash('pp:' + pp + ':' + p.dob) + E.hash(p.dob + pp); return null; };
   A.shrKey = keyOf;
+  A.shrStore = () => store(); A.shrDs = () => dsId(); A.shrPublishNow = () => publish(true);
   const consentOf = (p) => { const k = keyOf(p); return k ? store().consents[k] || null : null; };
   const isActive = (c) => !!(c && c.status === 'active');
   A.shrActive = (pid) => { const p = E.patient(db(), pid); return isActive(consentOf(p)); };
@@ -14809,7 +14827,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     const visits = d.encounters.filter((e) => e.patientId === p.id && e.status === 'signed' && !e.billingOnly && !e.historical && !e.shrPrivate).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 60)
       .map((e) => ({ id: e.id, date: e.date, by: A.uname(e.providerId), assessment: String(e.assessment || '').slice(0, 400), plan: String(e.plan || '').slice(0, 400), dx: (e.diagnoses || []).map(icd) }));
     const onc = d.onc && (d.onc.cases || []).find((c) => c.patientId === p.id);
-    return { practice: pracName(), dsId: dsId(), updatedAt: new Date().toISOString(),
+    return { practice: pracName(), dsId: dsId(), updatedAt: new Date().toISOString(), who: { firstName: p.firstName, lastName: p.lastName, dob: p.dob, sex: p.sex || '', idType: /^\d{13}$/.test(String(p.idNumber || '').replace(/\s/g, '')) ? 'za' : 'passport', country: p.passportCountry || '' },
       allergies: d.allergies.filter((a) => a.patientId === p.id).map((a) => ({ allergen: a.allergen, reaction: a.reaction || '', severity: a.severity || '' })),
       meds: d.meds.filter((m) => m.patientId === p.id && m.active !== false).map((m) => ({ name: med(m.medicineId), dose: m.dose || '', since: m.since || '' })),
       problems: d.problems.filter((x) => x.patientId === p.id && x.active !== false).map((x) => ({ text: icd(x.code), since: x.onset || '' })),
@@ -15676,6 +15694,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     t = t.replace(/[–—]/g, '-').replace(/(\d),(\d)/g, '$1.$2');
     t = t.replace(NUMW, (m) => (/^(and)$/.test(m.trim()) ? m : ' ' + wordsToNum(m.trim()) + ' '));
     t = t.replace(/(\d+)\s*(?:point|komma|comma|dot)\s*(\d+)/g, '$1.$2');
+    t = t.replace(/(\d+\.\d+)((?:\s+\d(?!\d))+)/g, (m, a1, rest) => a1 + rest.replace(/\s+/g, '')); // "one point seven two" → 1.72
     t = t.replace(/(\d)\s*(?:%|percent|per cent|persent)/g, '$1 percent').replace(/°\s*c?|degrees?(?: celsius| c)?/g, ' degrees ');
     t = t.replace(/(\d{2,3})\s*(?:\/|over|oor|on|-)\s*(\d{2,3})/g, '$1/$2');
     t = t.replace(/\b(sorry|actually|i mean|no wait|correction|rather)\s*[,.]\s*/g, '$1 ');
@@ -15735,7 +15754,10 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
         if (best && fix(ctx.last, m[1], cl) != null && rel(ctx.last, fix(ctx.last, m[1], cl)) <= 0.35) best = { k: ctx.last, v: fix(ctx.last, m[1], cl) };
         if (best) out.push({ key: best.k, value: best.v, quote: m[0], patient: false, corr: true }); } } });
     return out; };
-  const api = { parse, norm, wordsToNum, KEYS: F.map((f) => f[0]) };
+  // can more digits still arrive for this value? ("pulse 7" → 76, "weight 6" → 64) — used to fill in while the doctor is still talking
+  const canGrow = (key, v) => { v = String(v); if (key === 'BP') { const d = v.split('/')[1] || ''; return d.length < 2; } if (key === 'Viral load') return /^\d+$/.test(v);
+    const r = RX.find((x) => x.key === key); if (!r || r.hi == null) return false; if (v.includes('.')) return v.split('.')[1].length < 1; const n = +v; return n * 10 <= r.hi; };
+  const api = { parse, norm, wordsToNum, canGrow, KEYS: F.map((f) => f[0]) };
   root.VP = api; if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -16342,17 +16364,23 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   const apply = (list, log) => { let n = 0; list.forEach((x) => { if (x.patient) return; if (setVal(x.key, x.value)) { S.filled[x.key] = x.value; n++; if (log) S.heard.push(`${label(x.key)} ${x.value}`); } else if (log && S.filled[x.key] === x.value && !S.heard.some((h) => h === `${label(x.key)} ${x.value}`)) S.heard.push(`${label(x.key)} ${x.value}`); S.last = x.key; }); return n; };
   const onFinal = (text) => { if (!S.on) return; S.evt = Date.now(); const t = String(text || '').trim(); if (!t) return; clearTimeout(S.pt); S.partial = '';
     apply(window.VP.parse(t, { last: S.last, recent: S.filled }), true); bar(); };
-  // fill in while still speaking: a value is used once something follows it ("pulse 76 temp…"), so "weight 8…" never lands as 8
-  const onPartial = (p) => { S.evt = Date.now(); S.partial = p || ''; clearTimeout(S.pt); S.pt = setTimeout(() => { if (!S.on || !S.partial) return; const t = window.VP.norm(S.partial).trim();
-      const list = window.VP.parse(S.partial, { last: S.last, recent: S.filled }).filter((x) => { const q = window.VP.norm(x.quote).trim(); const i = t.lastIndexOf(q); return i >= 0 && i + q.length < t.length - 1; });
-      if (apply(list, false)) bar(); const h = document.querySelector('#vf-ai .vf-heard'); if (h) h.textContent = '… ' + S.partial.slice(-70); }, 120); };
+  // fill in while still speaking — no waiting for a pause. Every interim result is read at once; a value at the very end
+  // that could still grow ("weight 6…") waits a moment (250 ms) for the next words, anything else is filled immediately.
+  const NUMWORD = /\b(zero|oh|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|and|point|comma|komma|over|oor)\s*$/i;
+  const runPartial = (flush) => { if (!S.on || !S.partial) return; const t = window.VP.norm(S.partial).trim(); const now = []; let wait = false; const spokenTail = NUMWORD.test(S.partial.trim());
+    window.VP.parse(S.partial, { last: S.last, recent: S.filled }).forEach((x) => { const q = window.VP.norm(x.quote).trim(); const i = t.lastIndexOf(q); const rest = i >= 0 ? t.slice(i + q.length) : ''; const atEnd = i >= 0 && (i + q.length >= t.length - 1 || /^\s*(point|comma|komma|dot|over|oor|on|and|hundred)\s*$/.test(rest));
+      if (!flush && atEnd && (spokenTail || window.VP.canGrow(x.key, x.value))) { wait = true; return; } now.push(x); });
+    if (apply(now, false)) bar(); const h = document.querySelector('#vf-ai .vf-heard'); if (h) h.textContent = '… ' + S.partial.slice(-70);
+    clearTimeout(S.pt); if (wait) S.pt = setTimeout(() => runPartial(true), 250); };
+  const onPartial = (p) => { S.evt = Date.now(); S.partial = p || ''; runPartial(false); };
+  const flushPartial = () => { if (S.partial) { runPartial(true); S.heard.push(...[]); } };
   const HARD = ['not-allowed', 'service-not-allowed', 'audio-capture'];
   const restart = (why) => { if (!S.on || !document.getElementById('vf') || S.restarting) return; S.restarting = true; S.restarts = (S.restarts || 0) + 1;
     setTimeout(() => { S.restarting = false; if (!S.on || !document.getElementById('vf')) return; A.dictation.startSink(sink()).then((ok) => { if (!ok && S.on) setTimeout(() => restart('retry'), 800); }); S.evt = Date.now(); }, why === 'network' ? 1200 : 150); };
   const sink = () => ({ final: onFinal, partial: onPartial, state: (st, reason) => {
     if (st === 'listening') { S.evt = Date.now(); return; }
     if (st === 'error' && HARD.includes(reason)) { stop('microphone: ' + reason); A.toast(reason === 'audio-capture' ? 'No microphone found. The values filled in so far are kept.' : 'The microphone is blocked for this site. Allow it in the browser and press Start listening again.', 'error'); return; }
-    if (st === 'error' || st === 'idle') restart(reason); } }); // the browser stops after silence or ~60 s: carry on until Stop is pressed
+    if (st === 'error' || st === 'idle') { flushPartial(); S.partial = ''; restart(reason); } } }); // the browser stops after silence or ~60 s: carry on until Stop is pressed
   setInterval(() => { if (S.on && document.getElementById('vf') && Date.now() - (S.evt || 0) > 15000) { S.evt = Date.now(); try { A.dictation.stopSink(); } catch (e) { /* ignore */ } restart('watchdog'); } }, 3000);
   const start = () => { if (!available()) return A.toast('Listening needs a microphone in Chrome or Edge, and the Prac360 Assist add-on.', 'error');
     try { if (A.voiceMode && A.voiceMode.on && H['vm-end']) H['vm-end'](); if (A.robotHide) A.robotHide(); } catch (e) { /* ignore */ }
@@ -16712,6 +16740,173 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
 
   // ---- record the check in What's new
   const r = (A.RELEASES || []).find((x) => x.v === '0.36'); if (r && !r.items.some((i) => i.title === 'Help and walkthroughs checked')) r.items.push({ type: 'fixed', area: 'help', title: 'Help and walkthroughs checked', text: 'Every “Show me” walkthrough was run step by step and every help topic and lesson read against the screens as they are now. Walkthroughs that pointed at things that have moved (night mode, full screen, Assist’s Talk button, Add billing, oncology tabs, the Training Academy) are fixed, and topics that still described old screens are rewritten — for example writing a consultation note now starts in AI Scribe view, Practice pulse is at the bottom of the Follow-up manager, and oncology bookings are explained (they go into the main Diary under the chosen doctor).', link: '#/learn' });
+})();
+
+
+/* ===== ui-prid.js ===== */
+/* Prac360 — patient master ID and "find and import a shared clinical record".
+ *
+ *  - Details & medical aid tab: a "Prac360 patient ID" card. The master ID is the patient's South African ID number OR
+ *    passport number (with country and date of birth). It is checked as it is typed (SA ID check digit, date of birth,
+ *    duplicates in this practice) and it is what links the patient's clinical records across Prac360.
+ *  - Consent sits in the same card: the patient (or parent/guardian/representative) agrees to share, using the
+ *    existing consent form (ui-shr.js). Without consent nothing is shared and nobody can find the record.
+ *  - Find shared record by ID (Patients page, registration form, patient card): any Prac360 doctor types the ID or
+ *    passport number. If — and only if — the patient has consented, a summary is shown (practices, visits, conditions,
+ *    allergies, medicines, results). The doctor confirms the patient is in their care and gives a reason, then imports:
+ *    a new patient is created if needed and the other practices' visits (read-only, marked "from <practice>"),
+ *    conditions, allergies, measurements and a medicines/documents summary are added to this practice's file.
+ *    Every search that finds a record and every import is written to the shared access log ("Who looked") and the audit log.
+ *  - Nothing is revealed when there is no consent: the answer is the same as "not found". */
+(function () {
+  'use strict';
+  const A = window.APP, E = window.PE, H = A.H, esc = A.esc, P = A.P, PL = window.PL; const db = () => A.db; const fd = (d) => (d ? A.fd(String(d).slice(0, 10)) : '—');
+  if (!A.shrKey || !A.shrStore || !A.PT) return;
+  const COUNTRIES = ['South Africa', 'Zimbabwe', 'Mozambique', 'Malawi', 'Lesotho', 'Eswatini', 'Botswana', 'Namibia', 'Zambia', 'DR Congo', 'Nigeria', 'Ethiopia', 'Somalia', 'Pakistan', 'India', 'United Kingdom', 'Other'];
+  const clean = (s) => String(s || '').replace(/[\s-]/g, '').toUpperCase();
+  const saInfo = (id) => { id = clean(id); if (!/^\d{13}$/.test(id) || !E.validSaId(id)) return null; const yy = +id.slice(0, 2); const cur = +String(new Date().getFullYear()).slice(2); const y = (yy <= cur ? 2000 : 1900) + yy;
+    return { dob: `${y}-${id.slice(2, 4)}-${id.slice(4, 6)}`, sex: +id.slice(6, 10) >= 5000 ? 'M' : 'F', citizen: id[10] === '0' ? 'SA citizen' : 'Permanent resident' }; };
+  const fmtId = (id) => { id = clean(id); return /^\d{13}$/.test(id) ? `${id.slice(0, 6)} ${id.slice(6, 10)} ${id.slice(10)}` : id; };
+  const st = () => A.shrStore(); const myDs = () => A.shrDs();
+  const consentFor = (k) => (k ? st().consents[k] || null : null);
+  const active = (c) => !!(c && c.status === 'active');
+  const localByKey = (k) => db().patients.find((p) => A.shrKey(p) === k);
+  const canSearch = () => A.can('clinical.read'); const canImport = () => A.can('clinical.write') || A.can('patients.write');
+
+  // ================================================================ Details & medical aid → Prac360 patient ID
+  const card = (p) => { const canW = A.can('patients.write'); const isZa = /^\d{13}$/.test(clean(p.idNumber)) || (!p.passport && p.idType !== 'passport'); const k = A.shrKey(p); const c = consentFor(k);
+    const info = isZa && p.idNumber ? saInfo(p.idNumber) : null; const dobClash = info && p.dob && info.dob !== p.dob;
+    const others = k ? Object.keys(((st().records[k] || {}).practices) || {}).filter((x) => x !== myDs()).length : 0;
+    const share = !k ? '<p class="small">Add the ID or passport number above first — sharing works only with a master ID.</p>'
+      : active(c) ? `<div class="prid-ok">✓ <strong>Shared.</strong> Consent given ${fd(c.givenAt)} by ${esc(c.name)}${c.by !== 'patient' ? ' (' + esc(c.relationship || c.by) + ')' : ''} at ${esc(c.atPractice)} — ${esc({ signed: 'signed on screen', paper: 'signed paper form', verbal: 'verbal, witnessed' }[c.how] || c.how)}.${others ? ` Records from ${others} other practice${others === 1 ? '' : 's'} are linked.` : ''}</div>
+        <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:8px">${A.can('clinical.read') ? `<a class="btn sm primary" href="#/shared/${p.id}">Open the combined file</a>` : ''}<button class="btn sm" data-act="shr-log" data-pid="${p.id}">Who looked</button>${canW || A.can('clinical.write') ? `<button class="btn sm danger" data-act="shr-withdraw" data-pid="${p.id}">Patient wants to stop sharing</button>` : ''}</div>`
+      : `<div class="prid-no">${c && c.status === 'withdrawn' ? `Sharing was stopped on ${fd(c.withdrawnAt)}.` : '<strong>Not shared.</strong>'} With the patient’s consent, any Prac360 doctor treating them can find their clinical record with this ID and add it to their file.</div>${canW || A.can('clinical.write') ? `<button class="btn sm primary" data-act="shr-consent" data-pid="${p.id}" style="margin-top:8px">Ask the patient for consent</button>` : ''}`;
+    return `<div class="card prid" data-tour="prid"><div class="row between" style="flex-wrap:wrap;gap:8px"><h2 style="margin:0">Prac360 patient ID</h2>${k ? `<span class="badge good">✓ ${isZa ? 'RSA ID' : 'Passport'} ${esc(isZa ? fmtId(p.idNumber) : clean(p.passport))}</span>` : '<span class="badge warn">No master ID yet</span>'}</div>
+      <p class="small muted" style="margin:6px 0 10px">The South African ID number <strong>or</strong> passport number links this patient’s clinical records across Prac360 — either one is enough.</p>
+      <form id="prid" class="prid-form"><div class="prid-type" role="radiogroup" aria-label="Type of ID"><label class="check"><input type="radio" name="t" value="za" data-change="prid-type" ${isZa ? 'checked' : ''} ${canW ? '' : 'disabled'}> South African ID number</label><label class="check"><input type="radio" name="t" value="passport" data-change="prid-type" ${!isZa ? 'checked' : ''} ${canW ? '' : 'disabled'}> Passport</label></div>
+        <div class="grid g2 prid-za" ${isZa ? '' : 'hidden'}><label class="f"><span>RSA ID number</span><input name="id" value="${esc(fmtId(p.idNumber || ''))}" inputmode="numeric" maxlength="15" placeholder="13 digits" data-input="prid-id" ${canW ? '' : 'disabled'} data-noclean></label><div class="prid-chk" id="prid-chk">${p.idNumber ? (info ? `✓ Valid · born ${fd(info.dob)} · ${info.sex === 'M' ? 'male' : 'female'} · ${info.citizen}` : '✕ This is not a valid SA ID number') : ''}</div></div>
+        <div class="grid g3 prid-pp" ${!isZa ? '' : 'hidden'}><label class="f"><span>Passport number</span><input name="pp" value="${esc(p.passport || '')}" ${canW ? '' : 'disabled'} data-noclean></label><label class="f"><span>Country</span><select name="ctry" ${canW ? '' : 'disabled'}>${COUNTRIES.map((x) => `<option ${x === (p.passportCountry || '') ? 'selected' : ''}>${x}</option>`).join('')}</select></label><label class="f"><span>Date of birth</span><input type="date" name="dob" value="${esc(p.dob || '')}" ${canW ? '' : 'disabled'}></label></div>
+        ${dobClash ? `<div class="alert warn small">The ID number says born ${fd(info.dob)} but the file says ${fd(p.dob)}. Check which is right.</div>` : ''}
+        ${canW ? `<button class="btn" type="button" data-act="prid-save" data-pid="${p.id}">Save ID</button>` : ''}</form>
+      <h3 class="prid-h">Sharing the clinical record</h3>${share}
+      <details class="prid-what"><summary>What is shared, and what is not</summary><ul class="small"><li><strong>Shared</strong> (only with consent): visit notes (assessment and plan), diagnoses and conditions, allergies, medicines, measurements and results, clinical letters and reports.</li><li><strong>Never shared:</strong> accounts, payments, medical aid details and appointments.</li><li>Only clinical staff at a practice treating the patient can find or import it, and every look is recorded in “Who looked”.</li><li>The patient can stop sharing at any time.</li></ul></details></div>`; };
+  const _det = A.PT.details; A.PT.details = function (p) { return card(p) + _det.apply(this, arguments); };
+  H['change:prid-type'] = (el) => { const f = document.getElementById('prid'); if (!f) return; const za = el.value === 'za'; f.querySelector('.prid-za').hidden = !za; f.querySelector('.prid-pp').hidden = za; };
+  H['input:prid-id'] = (el) => { const out = document.getElementById('prid-chk'); if (!out) return; const v = clean(el.value); if (!v) { out.textContent = ''; return; } if (v.length < 13) { out.textContent = `${v.length} of 13 digits`; out.className = 'prid-chk'; return; } const i = saInfo(v); out.className = 'prid-chk ' + (i ? 'ok' : 'bad'); out.textContent = i ? `✓ Valid · born ${fd(i.dob)} · ${i.sex === 'M' ? 'male' : 'female'} · ${i.citizen}` : '✕ This is not a valid SA ID number — check the digits'; };
+  H['prid-save'] = (el) => { const p = E.patient(db(), el.dataset.pid); const v = A.fv('prid'); v.t = (document.querySelector('#prid input[name=t]:checked') || {}).value || 'za'; const old = A.shrKey(p); const c = consentFor(old);
+    const next = Object.assign({}, p); if (v.t === 'za') { const id = clean(v.id); const i = saInfo(id); if (!i) return A.toast('Type a valid 13-digit RSA ID number.', 'error'); next.idNumber = id; next.idType = 'za'; next.passport = ''; next.passportCountry = ''; }
+    else { const pp = clean(v.pp); if (!/^[A-Z0-9]{6,12}$/.test(pp)) return A.toast('Type the passport number (6 to 12 letters and digits).', 'error'); if (!v.dob) return A.toast('Give the date of birth — a passport is matched with the date of birth.', 'error'); next.passport = pp; next.passportCountry = v.ctry; next.dob = v.dob; next.idType = 'passport'; next.idNumber = ''; }
+    const k = A.shrKey(next); if (active(c) && k !== old) return A.toast('Sharing is on for this patient. Stop sharing first, then change the ID — the shared record is linked to the current ID.', 'error');
+    const dup = db().patients.find((x) => x.id !== p.id && A.shrKey(x) === k); if (dup) return A.toast(`${dup.firstName} ${dup.lastName} in this practice already has this ID. Open that file instead — one patient, one file.`, 'error');
+    const i = v.t === 'za' ? saInfo(next.idNumber) : null;
+    A.act(() => { Object.assign(p, { idNumber: next.idNumber, idType: next.idType, passport: next.passport, passportCountry: next.passportCountry, dob: next.dob }); if (i && !p.dob) p.dob = i.dob; if (i && !p.sex) p.sex = i.sex; E.audit(db(), A.user, 'update', 'patient', p.id, p.id, `Master ID saved (${next.idType === 'za' ? 'RSA ID' : 'passport, ' + next.passportCountry})`); }, 'ID saved. It links this patient’s records across Prac360.'); };
+
+  // ================================================================ find a shared record by ID, and import it
+  const finder = (pre) => { if (!canSearch()) return A.toast('Only clinical staff can search for shared clinical records.', 'error');
+    A.modal('Find a shared clinical record', `<p class="small">Type the patient’s RSA ID number or passport number. You will only see a record if the patient has <strong>agreed to share it</strong>; otherwise the answer is the same as “not found”.</p>
+      <form id="prf" class="prid-form"><div class="prid-type" role="radiogroup"><label class="check"><input type="radio" name="t" value="za" data-change="prf-type" checked> RSA ID number</label><label class="check"><input type="radio" name="t" value="passport" data-change="prf-type"> Passport</label></div>
+        <div class="grid g2 prf-za"><label class="f"><span>RSA ID number</span><input name="id" id="prf-id" value="${esc(pre || '')}" inputmode="numeric" maxlength="15" placeholder="13 digits" data-noclean></label><div class="prid-chk" id="prf-chk"></div></div>
+        <div class="grid g2 prf-pp" hidden><label class="f"><span>Passport number</span><input name="pp" data-noclean></label><label class="f"><span>Date of birth</span><input type="date" name="dob"></label></div>
+        <button class="btn primary" type="button" data-act="prid-search">Search</button></form><div id="prid-res" aria-live="polite"></div>`, '<button class="btn" data-act="modal-close">Close</button>', { wide: true });
+    const inp = document.getElementById('prf-id'); if (inp) { inp.addEventListener('input', () => { const o = document.getElementById('prf-chk'); const v = clean(inp.value); o.textContent = !v ? '' : v.length < 13 ? `${v.length} of 13 digits` : saInfo(v) ? '✓ Valid ID number' : '✕ Not a valid SA ID number'; }); inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); H['prid-search'](); } }); inp.dispatchEvent(new Event('input')); setTimeout(() => inp.focus(), 50); } };
+  A.pridFind = finder;
+  H['prid-find'] = (el) => finder(el && el.dataset && el.dataset.id);
+  H['change:prf-type'] = (el) => { const f = document.getElementById('prf'); const za = el.value === 'za'; f.querySelector('.prf-za').hidden = !za; f.querySelector('.prf-pp').hidden = za; };
+  let found = null;
+  const summary = (k) => { const rec = (st().records[k] || { practices: {} }).practices; const srcs = Object.values(rec).filter((s) => s.dsId !== myDs()); const all = (f) => srcs.flatMap((s) => (s[f] || []).map((x) => Object.assign({ _p: s.practice }, x)));
+    const who = (srcs.find((s) => s.who) || {}).who || null; const vis = all('visits').sort((a, b) => String(b.date).localeCompare(String(a.date))); return { srcs, who, vis, probs: all('problems'), allg: all('allergies'), meds: all('meds'), vit: all('vitals'), docs: all('docs') }; };
+  H['prid-search'] = () => { const v = A.fv('prf'); v.t = (document.querySelector('#prf input[name=t]:checked') || {}).value || 'za'; const res = document.getElementById('prid-res'); if (!res) return; let probe;
+    if (v.t === 'za') { const id = clean(v.id); if (!saInfo(id)) return A.toast('Type a valid 13-digit RSA ID number.', 'error'); probe = { idNumber: id }; }
+    else { const pp = clean(v.pp); if (!/^[A-Z0-9]{6,12}$/.test(pp)) return A.toast('Type the passport number.', 'error'); if (!v.dob) return A.toast('Give the date of birth — passports are matched with it.', 'error'); probe = { passport: pp, dob: v.dob }; }
+    const k = A.shrKey(probe); const c = consentFor(k); const local = localByKey(k); const S = active(c) ? summary(k) : null; found = null;
+    if (!active(c) || !S || (!S.srcs.length && !local)) { res.innerHTML = `<div class="prid-none"><strong>No shared record found.</strong> Either this patient has no record at another Prac360 practice, or they have not agreed to share it. Ask the patient — consent can be given at any Prac360 practice, including this one.${local ? `<div style="margin-top:6px">This number belongs to <a href="#/patient/${local.id}" data-act="modal-close">${esc(local.firstName + ' ' + local.lastName)}</a> in this practice.</div>` : ''}</div>`; return; }
+    found = { k, probe, local: local ? local.id : null };
+    st().access.push({ key: k, at: new Date().toISOString(), by: A.user.name, role: E.roleLabel(A.user.role), practice: (db().practice || {}).name || '', ds: myDs(), what: 'Searched by ID — summary shown' }); PL.save();
+    const w = S.who || {}; const last = S.vis[0];
+    res.innerHTML = `<div class="prid-found"><div class="row between" style="flex-wrap:wrap;gap:8px"><div><strong class="prid-name">${esc(((w.firstName || '') + ' ' + (w.lastName || '')).trim() || 'Patient')}</strong><div class="tiny muted">${w.dob ? 'Born ' + fd(w.dob) + ' · ' : ''}${w.sex === 'M' ? 'Male · ' : w.sex === 'F' ? 'Female · ' : ''}${probe.idNumber ? 'RSA ID ' + esc(fmtId(probe.idNumber)) : 'Passport ' + esc(probe.passport)}</div></div><span class="badge good">✓ Consent to share · ${fd(c.givenAt)}</span></div>
+      <div class="small" style="margin:8px 0">Records at <strong>${S.srcs.length}</strong> other practice${S.srcs.length === 1 ? '' : 's'}: ${S.srcs.map((s) => `${esc(s.practice)} <span class="tiny muted">(updated ${fd(s.updatedAt)})</span>`).join(', ') || '—'}</div>
+      ${S.allg.length ? `<div class="alert error small"><strong>Allergies:</strong> ${S.allg.map((a) => esc(a.allergen)).join(', ')}</div>` : ''}
+      <div class="prid-counts"><div><b>${S.vis.length}</b><span>visits${last ? ` · last ${fd(last.date)}` : ''}</span></div><div><b>${S.probs.length}</b><span>conditions</span></div><div><b>${S.meds.length}</b><span>medicines</span></div><div><b>${S.vit.length}</b><span>measurements</span></div><div><b>${S.docs.length}</b><span>letters and results</span></div></div>
+      ${local ? `<p class="small">This patient is already in your practice: <a href="#/patient/${local.id}" data-act="modal-close"><strong>${esc(local.firstName + ' ' + local.lastName)}</strong></a>.</p>` : ''}
+      ${canImport() ? `<form id="pri" class="grid g2" style="margin-top:8px"><label class="f"><span>Why do you need it?</span><select name="why"><option>I am treating this patient now</option><option>The patient was referred to me</option><option>Emergency care</option><option>Continuing care after a hospital stay</option></select></label><div></div>
+        <label class="check" style="grid-column:1/-1"><input type="checkbox" name="ok"> This patient is in my care and I need their history to treat them. I understand this is recorded in the patient’s access log.</label></form>
+        <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:8px">${local ? `<a class="btn" href="#/shared/${local.id}" data-act="modal-close">Open the combined file</a><button class="btn primary" data-act="prid-import">Add the shared history to this file</button>` : '<button class="btn primary" data-act="prid-import">Create the patient and import the record</button>'}</div>` : '<p class="tiny muted">Only doctors and clinical staff can import a shared record.</p>'}</div>`; };
+  H['prid-import'] = () => { if (!found || !canImport()) return; const v = A.fv('pri'); if (!v.ok) return A.toast('Tick that the patient is in your care.', 'error'); const k = found.k; if (!active(consentFor(k))) return A.toast('The patient’s consent is no longer active — nothing was imported.', 'error');
+    const d = db(); const S = summary(k); const w = S.who || {}; let p = found.local ? E.patient(d, found.local) : null; const n = { visits: 0, problems: 0, allergies: 0, vitals: 0, docs: 0 }; let created = false;
+    A.act(() => {
+      if (!p) { const za = found.probe.idNumber; const i = za ? saInfo(za) : null; p = { id: E.id('p'), firstName: w.firstName || 'Unknown', lastName: w.lastName || 'Patient', sex: w.sex || (i ? i.sex : ''), dob: w.dob || (i ? i.dob : found.probe.dob), idNumber: za || '', idType: za ? 'za' : 'passport', passport: za ? '' : found.probe.passport, passportCountry: w.country || '', language: 'English', phone: '', email: '', address: '', mainMemberId: null, synthetic: true, createdAt: E.nowIso(d), createdFrom: 'Shared record import' };
+        d.patients.push(p); created = true; E.audit(d, A.user, 'create', 'patient', p.id, p.id, 'Created from a shared Prac360 record (patient consent)'); }
+      p.shrImported = p.shrImported || [];
+      const seen = (sid) => { if (p.shrImported.includes(sid)) return true; p.shrImported.push(sid); return false; };
+      S.srcs.forEach((s) => { const from = s.practice;
+        (s.allergies || []).forEach((a) => { if (d.allergies.some((x) => x.patientId === p.id && String(x.allergen).toLowerCase() === String(a.allergen).toLowerCase())) return; d.allergies.push({ id: E.id('al'), patientId: p.id, allergen: a.allergen, allergyClass: null, reaction: a.reaction || '', severity: a.severity || 'unknown', recordedBy: A.user.id, date: E.today(d), source: 'Shared record — ' + from }); n.allergies++; });
+        (s.problems || []).forEach((x) => { const m = String(x.text || '').match(/^([A-Z]\d{2}(?:\.\d{1,2})?)/); if (!m || !E.icd(d, m[1]) || d.problems.some((y) => y.patientId === p.id && y.code === m[1] && y.active !== false)) return; d.problems.push({ id: E.id('pb'), patientId: p.id, code: m[1], active: true, onset: x.since || '', source: 'Shared record — ' + from }); n.problems++; });
+        (s.vitals || []).forEach((x) => { if (seen(`v:${s.dsId}:${x.type}:${x.date}:${x.value}`)) return; d.vitals.push({ id: E.id('vt'), patientId: p.id, type: x.type, value: String(x.value), unit: x.unit || '', date: x.date, by: 'shared', source: 'Shared record — ' + from }); n.vitals++; });
+        (s.visits || []).forEach((x) => { if (seen(`e:${s.dsId}:${x.id}`)) return; const codes = (x.dx || []).map((t) => (String(t).match(/^([A-Z]\d{2}(?:\.\d{1,2})?)/) || [])[1]).filter(Boolean);
+          d.encounters.push({ id: E.id('enc'), patientId: p.id, providerId: null, date: x.date, status: 'signed', historical: true, imported: true, importedFrom: from, importedBy: A.user.id, importedAt: E.nowIso(d), externalDoctor: x.by, subjective: '', objective: '', assessment: x.assessment || '', plan: x.plan || '', diagnoses: codes, procedures: [], addenda: [], startedAt: x.date + 'T00:00:00', signedAt: x.date + 'T00:00:00', durationMin: 0, problemsAddressed: 1, shrPrivate: true }); n.visits++; });
+        const meds = s.meds || [], docs = s.docs || []; if ((meds.length || docs.length) && !seen(`d:${s.dsId}:${s.updatedAt}`)) { d.documents.push({ id: E.id('doc'), patientId: p.id, kind: 'Shared record', title: `Shared record from ${from}`, date: E.today(d), acknowledged: true, body: `Imported ${fd(E.today(d))} by ${A.user.name} with the patient's consent.\n\nMedicines at ${from}:\n${meds.map((m) => `- ${m.name}${m.dose ? ' — ' + m.dose : ''}`).join('\n') || '- none'}\n\nLetters and results at ${from}:\n${docs.map((x) => `- ${x.date || ''} ${x.kind}: ${x.title}`).join('\n') || '- none'}` }); n.docs++; } });
+      st().access.push({ key: k, at: new Date().toISOString(), by: A.user.name, role: E.roleLabel(A.user.role), practice: (d.practice || {}).name || '', ds: myDs(), what: `Imported into this practice — ${v.why}` });
+      E.audit(d, A.user, 'shared-record-import', 'patient', p.id, p.id, `${v.why}: ${n.visits} visits, ${n.problems} conditions, ${n.allergies} allergies, ${n.vitals} measurements, ${n.docs} summary document(s) from ${S.srcs.map((s) => s.practice).join(', ')}`); });
+    PL.save(); if (A.shrPublishNow) A.shrPublishNow(); A.closeModal();
+    A.toast(`${created ? 'Patient created and record imported' : 'Shared history added'}: ${n.visits} visit${n.visits === 1 ? '' : 's'}, ${n.problems} condition${n.problems === 1 ? '' : 's'}, ${n.allergies} allerg${n.allergies === 1 ? 'y' : 'ies'}, ${n.vitals} measurement${n.vitals === 1 ? '' : 's'}${n.docs ? ', medicines and documents summary' : ''}.`);
+    A.go('#/patient/' + p.id + (created ? '/details' : '')); };
+
+  // ================================================================ entry points
+  const _pts = P.patients; P.patients = function (params) { let h = _pts.apply(this, arguments); if (!canSearch()) return h;
+    if (params[0] === 'new') return h.replace('<form id="rf"', `<div class="alert info small prid-reg" style="max-width:860px">Seen at another Prac360 practice before? <button class="btn sm" type="button" data-act="prid-find">Find their shared record by ID</button> — only with the patient’s consent.</div><form id="rf"`);
+    return h.replace('<div class="actions">', '<div class="actions"><button class="btn" data-act="prid-find" data-tour="prid-find">🔎 Find shared record by ID</button>'); };
+
+  // ================================================================ demo: a consented synthetic patient at two other practices (not in this practice)
+  const seed = () => { const d = db(); if (!d || !(A.dsEntry && A.dsEntry.dataset && A.dsEntry.dataset.sample) || d.settings.pridDemo) return; const s = st(); const probe = { idNumber: '8806155123088' }; const k = A.shrKey(probe); if (!k) return; d.settings.pridDemo = true;
+    if (!s.consents[k]) { const at = new Date(Date.now() - 90 * 864e5).toISOString(); s.consents[k] = { status: 'active', scope: 'all-clinical', by: 'patient', name: 'Sibusiso Dlamini', relationship: '', how: 'signed', givenAt: at, atPractice: 'Rosebank Family Doctors (synthetic)', atDs: 'demo-rosebank', witness: 'Sr P. Mokoena (synthetic)', history: [{ at, what: 'Consent given', practice: 'Rosebank Family Doctors (synthetic)', by: 'Sr P. Mokoena (synthetic)' }] }; }
+    const D = (n) => E.addDays(E.today(d), n); const who = { firstName: 'Sibusiso', lastName: 'Dlamini', dob: '1988-06-15', sex: 'M', idType: 'za', country: '' };
+    s.records[k] = s.records[k] || { practices: {} };
+    s.records[k].practices['demo-rosebank'] = { practice: 'Rosebank Family Doctors (synthetic)', dsId: 'demo-rosebank', updatedAt: new Date(Date.now() - 6 * 864e5).toISOString(), who,
+      allergies: [{ allergen: 'Codeine', reaction: 'Vomiting', severity: 'moderate' }], meds: [{ name: 'Metformin 500 mg', dose: 'one twice a day', since: D(-700) }, { name: 'Amlodipine 5 mg', dose: 'one daily', since: D(-300) }],
+      problems: [{ text: 'E11.9 Type 2 diabetes mellitus without complications', since: D(-700) }, { text: 'I10 Essential (primary) hypertension', since: D(-300) }],
+      vitals: [{ type: 'BP', value: '138/88', unit: 'mmHg', date: D(-6) }, { type: 'HbA1c', value: '7.4', unit: '%', date: D(-6) }, { type: 'Weight', value: '91', unit: 'kg', date: D(-6) }, { type: 'BP', value: '146/92', unit: 'mmHg', date: D(-96) }, { type: 'HbA1c', value: '8.1', unit: '%', date: D(-96) }],
+      docs: [{ kind: 'Lab result', title: 'HbA1c 7.4%, creatinine 84 (synthetic)', date: D(-6), body: '' }], visits: [{ id: 'rb1', date: D(-6), by: 'Dr T. Khumalo (synthetic)', assessment: 'Diabetes improving, HbA1c 8.1 → 7.4. BP still above target.', plan: 'Continue metformin. Amlodipine continued. Recheck BP in 6 weeks.', dx: ['E11.9 Type 2 diabetes mellitus without complications', 'I10 Essential (primary) hypertension'] }, { id: 'rb2', date: D(-96), by: 'Dr T. Khumalo (synthetic)', assessment: 'Raised BP on three visits — hypertension.', plan: 'Start amlodipine 5 mg daily. Lifestyle advice.', dx: ['I10 Essential (primary) hypertension'] }] };
+    s.records[k].practices['demo-soweto'] = s.records[k].practices['demo-soweto'] || { practice: 'Soweto Day Hospital Clinic (synthetic)', dsId: 'demo-soweto', updatedAt: new Date(Date.now() - 200 * 864e5).toISOString(), who, allergies: [], meds: [], problems: [], vitals: [{ type: 'Glucose', value: '14.2', unit: 'mmol/L', date: D(-700) }], docs: [], visits: [{ id: 'sw1', date: D(-700), by: 'Dr M. Sithole (synthetic)', assessment: 'New diagnosis of type 2 diabetes (random glucose 14.2).', plan: 'Metformin 500 mg twice a day. Refer to GP for follow-up.', dx: ['E11.9 Type 2 diabetes mellitus without complications'] }] };
+    PL.save(); };
+  setTimeout(() => { try { seed(); } catch (e) { /* ignore */ } }, 800); setInterval(() => { try { seed(); } catch (e) { /* ignore */ } }, 4000);
+  if (A.PAGE_PERMS) A.PAGE_PERMS.shared = ['patients.read'];
+})();
+
+
+/* ===== ui-v037.js ===== */
+/* Prac360 v0.37 — What's new, help topics, walkthroughs, A–Z and lessons for: instant vitals by voice, the Prac360
+ * patient ID (RSA ID or passport) on Details & medical aid, consent in the same place, and finding / importing a shared
+ * clinical record by ID. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || [];
+  const kb = (id) => KB.find((k) => k.id === id);
+  const putKB = (k) => { const i = KB.findIndex((x) => x.id === k.id); if (i >= 0) KB[i] = Object.assign({}, KB[i], k); else KB.push(k); };
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.37')) A.RELEASES.unshift({ v: '0.37', date: '2026-11-20', title: 'Instant vitals by voice and one patient ID across Prac360', items: [
+    { type: 'improved', area: 'clinical', title: 'Vitals by voice fills in instantly', text: 'Capture vitals no longer waits for you to pause. Talk continuously — “BP one twenty eight over eighty two, pulse seventy six, temperature thirty seven point four, sats ninety seven…” — and each field fills in as soon as its number is complete (usually within a fraction of a second). A number that could still continue (“weight six…” on the way to 64) waits a moment, so wrong values do not flash up. Spoken decimals such as “one point seven two metres” are understood.', link: '#/patients', guide: 'vitalslisten' },
+    { type: 'new', area: 'clinical', title: 'Prac360 patient ID on Details & medical aid', text: 'Every patient file now has a Prac360 patient ID card at the top of Details & medical aid. The master ID is the South African ID number or the passport number (with country and date of birth) — either one. The ID is checked as you type (check digit, date of birth, male/female) and a second patient with the same ID in your practice is blocked.', link: '#/patients', guide: 'prid' },
+    { type: 'new', area: 'clinical', title: 'Patient consent to share, in the same card', text: 'The ID card shows whether the clinical record is shared. “Ask the patient for consent” records who agreed, how, and the staff witness. Once the patient agrees, any Prac360 doctor treating them can find their clinical record by this ID. The patient can stop sharing at any time; accounts, medical aid details and appointments are never shared.', link: '#/patients', guide: 'prid' },
+    { type: 'new', area: 'clinical', title: 'Find a shared record by ID and import it', text: 'Patients → 🔎 Find shared record by ID (also on the New patient form). Type the RSA ID or passport number. If the patient consented, you see a summary — which practices, visits, conditions, allergies, medicines, results. Confirm the patient is in your care, give the reason and import: the patient is created if needed, and the other practices’ visits (marked “🔗 Shared record”), conditions, allergies, measurements and a medicines summary are added. Without consent the answer is simply “not found”. Every search and import is in the patient’s “Who looked” log.', link: '#/patients', guide: 'pridfind' }] });
+
+  putKB({ id: 'prid', title: 'Prac360 patient ID and consent to share', keys: ['patient id', 'id number', 'rsa id', 'passport', 'master id', 'link records', 'consent to share', 'share clinical record', 'sharing consent'], screens: ['patient'], link: '#/patients',
+    steps: ['Open the patient → Details & medical aid. The Prac360 patient ID card is at the top.', 'Choose South African ID number or Passport. Type the 13-digit ID — it is checked as you type and shows the date of birth — or the passport number, country and date of birth. Press Save ID.', 'Under “Sharing the clinical record”, press “Ask the patient for consent”. Read the explanation to the patient, record who agreed and how, tick the confirmation and save.', 'From then on any Prac360 doctor treating the patient can find their clinical record by this ID and add it to their file. “Who looked” shows every search and import.', 'The patient can stop sharing at any time: “Patient wants to stop sharing” in the same card.'] });
+  putKB({ id: 'pridfind', title: 'Find a shared clinical record by ID and import it', keys: ['find shared record', 'import clinical record', 'search by id', 'records from another practice', 'previous doctor notes', 'clinical history from another practice', 'import history'], screens: ['patients'], link: '#/patients',
+    steps: ['Patients → 🔎 Find shared record by ID (or the button on the New patient form).', 'Choose RSA ID number or Passport and type the number (passports also need the date of birth). Press Search.', 'If the patient consented you see a summary: which practices, number of visits, conditions, allergies, medicines and results. If not, the answer is “not found” — ask the patient for consent.', 'Choose why you need it, tick that the patient is in your care and press “Create the patient and import the record” (or “Add the shared history to this file” if the patient is already in your practice).', 'Imported visits show “🔗 Shared record” on the Visits tab with the other practice’s name. Importing again never duplicates. Every search and import is in “Who looked”.'] });
+  const sh = kb('shared'); if (sh && !(sh.steps || []).some((x) => /Details & medical aid/.test(x))) sh.steps = ['Open the patient → Details & medical aid. Check the Prac360 patient ID (RSA ID or passport) at the top.'].concat((sh.steps || []).slice(1), ['Other practices find the record with Patients → 🔎 Find shared record by ID, and can import it into their own file.']);
+  const vl = kb('vitalslisten'); if (vl) vl.steps = vl.steps.map((s) => (/keeps listening until you press Stop/.test(s) ? 'Talk continuously — no need to pause. Each field fills in the moment its number is complete, and it keeps listening until you press Stop.' : s));
+  if (A.GUIDES) {
+    A.GUIDES.prid = { title: 'Prac360 patient ID and consent', steps: [{ sel: '[data-tour="nav-patients"]', text: 'Click Patients in the menu on the left.', expect: 'click', skip: '^#/patient' }, { sel: 'tr.click[data-act="open-patient"]', text: 'Click the patient.', expect: 'click', skip: '^#/patient/' }, { sel: '#main .tabs a[href$="/details"]', text: 'Open Details & medical aid.', expect: 'click', skip: '/details$' }, { sel: '.prid', text: 'The Prac360 patient ID: RSA ID or passport. Save it, then press “Ask the patient for consent” to share the clinical record.', expect: 'next' }] };
+    A.GUIDES.pridfind = { title: 'Find a shared record by ID', steps: [{ sel: '[data-tour="nav-patients"]', text: 'Click Patients in the menu on the left.', expect: 'click', skip: '^#/patients' }, { sel: '[data-tour="prid-find"]', text: 'Click “Find shared record by ID”.', expect: 'click' }, { sel: '#prf-id', text: 'Type the RSA ID (or choose Passport) and press Search. You only see a record if the patient consented.', expect: 'next' }] };
+  }
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => x[0] === 'Patient file'); if (g) [['Prac360 patient ID and consent to share', 'prid'], ['Find and import a shared record by ID', 'pridfind']].forEach((e) => { if (!g[1].some((x) => x[1] === e[1])) g[1].push(e); }); }
+  const C = A.COURSES || []; const course = (id) => C.find((c) => c.id === id);
+  const add = (cid, l, at) => { const c = course(cid); if (c && !c.lessons.some((x) => x.t === l.t)) { if (at != null) c.lessons.splice(at, 0, l); else c.lessons.push(l); } };
+  add('shared', { t: 'The Prac360 patient ID', body: 'The master ID that links a patient’s records across Prac360 is their RSA ID number or passport number — either one. Set it on Details & medical aid → Prac360 patient ID. The ID is checked as you type.', guide: 'prid' }, 0);
+  add('shared', { t: 'Find and import a shared record', body: 'Patients → 🔎 Find shared record by ID. Type the ID or passport number. With the patient’s consent you see a summary; tick that the patient is in your care, give the reason and import. The patient is created if needed and the other practices’ visits, conditions, allergies and measurements are added, marked “🔗 Shared record”. Without consent the answer is “not found”.', guide: 'pridfind' });
+  const ac = course('shared'); if (ac) { const l = ac.lessons.find((x) => x.t === 'Asking for consent'); if (l) l.body = 'On Details & medical aid → Prac360 patient ID, press “Ask the patient for consent”. Read the explanation, record who agreed (patient, parent/guardian or representative) and how, tick the confirmation and save. Consent can be withdrawn at any time.';
+    if (!ac.quiz.some((q) => /never consented/.test(q.q))) ac.quiz.push({ q: 'A doctor searches the ID number of a patient who never consented to sharing. What do they see?', o: ['The full record', 'A summary without notes', '“No shared record found” — nothing is revealed'], a: 2 }, { q: 'Which number links a patient’s records across Prac360?', o: ['The medical aid number', 'The RSA ID number or passport number', 'The account number'], a: 1 }); }
+  add('records', { t: 'Prac360 patient ID', body: 'Details & medical aid starts with the Prac360 patient ID: the RSA ID or passport number that links the patient’s records across Prac360, and whether the patient agreed to share their clinical record.', guide: 'prid' });
+  const sc = course('aiscribe'); if (sc) { const l = sc.lessons.find((x) => x.t === 'Vitals by voice'); if (l) l.body = 'In Capture vitals press Start listening and talk continuously — any reading on the form, numbers in words are fine. Each field fills in the moment its number is complete; it keeps listening until you press Stop. Say “sorry, make that 37.6” to correct. Home readings the patient mentions are ignored, and what you type is never overwritten. No recording or transcript is kept.'; }
 })();
 
 

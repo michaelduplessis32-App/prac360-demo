@@ -2585,6 +2585,28 @@ a[data-tour="nav-feedback"] svg{color:#ff3fa4}
 .cx-fixbtn{font-weight:600}.cx-fix-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
 /* v0.51 demo inbox */
 .hub-box summary{cursor:pointer;list-style:none}.hub-box summary::-webkit-details-marker{display:none}.hub-box[open] summary{margin-bottom:8px}
+/* v0.52 training manual */
+.man{max-width:820px;margin:0 auto;font-size:14px;line-height:1.5}.man h4{margin:10px 0 2px}.man-cover{text-align:center;padding:40px 0 30px;border-bottom:2px solid var(--line,#ddd)}.man-logo{width:72px;height:72px}.man-cover h1{font-size:2rem;margin:10px 0 4px}.man-sub{font-size:1.1rem;color:var(--muted,#555)}.man-name{margin-top:28px}
+.man-sec{margin-top:28px}.man-part{border-bottom:2px solid #2563eb;padding-bottom:4px}.man-who{color:var(--muted,#555);margin:0 0 6px}.man-course{margin:18px 0}.man-tip{background:#eef6ff;border-radius:8px;padding:8px 10px}.man-ex{background:var(--surface-2,#f6f7f9);border-radius:8px;padding:6px 12px;margin-top:8px}.man-ex ul{list-style:none;padding-left:10px}
+.man-t{width:100%;border-collapse:collapse}.man-t th,.man-t td{border:1px solid #ccc;padding:5px 8px;text-align:left;vertical-align:top}.man-rec td{height:30px}
+@media print{body.printing-manual .nav,body.printing-manual .top,body.printing-manual .no-print,body.printing-manual #assist,body.printing-manual .as-pill{display:none!important}body.printing-manual .man-card{border:0;box-shadow:none;padding:0}.man-sec,.man-cover{break-before:page}.man-cover{break-before:auto}.man-lesson,.man-fn,.man-ex li{break-inside:avoid}.man-tip{background:#f2f2f2}}
+/* v0.52 collapsible communication card */
+.from-p360.fp-shut .fp-row,.from-p360.fp-shut [data-act="notices-all"]{display:none}.from-p360 .row.between{gap:8px}.fp-tog{margin-left:auto}.fp-sum{margin-top:4px}
+/* v0.52 calmer personal menu */
+.am-namerow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.am-st-inline{font-size:.8rem;padding:2px 6px;border-radius:999px;border:1px solid var(--line,#ccc);background:var(--surface,#fff);max-width:150px}
+.am-msgrow{display:flex;align-items:center;justify-content:space-between;gap:8px}.am-msgrow>a{flex:1}
+.am-mini-sw{display:inline-flex;align-items:center;gap:4px;cursor:pointer;position:relative;white-space:nowrap;color:var(--muted,#666)}.am-mini-sw input{position:absolute;opacity:0;width:30px;height:16px;margin:0;cursor:pointer}.am-mini-sw i{width:28px;height:16px;border-radius:8px;background:#c5cad3;position:relative;transition:background .2s}.am-mini-sw i::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:left .2s}.am-mini-sw input:checked+i{background:#16a34a}.am-mini-sw input:checked+i::after{left:14px}.am-mini-sw input:focus-visible+i{outline:2px solid var(--accent,#2563eb);outline-offset:2px}
+#acct-menu select.am-st-inline{width:auto;max-width:170px;height:auto;min-height:0;padding:2px 22px 2px 8px;font-size:.8rem;border-radius:999px;margin:0}
+#acct-menu .am-msgrow{padding-right:14px}#acct-menu .am-msgrow>a{padding-right:4px}
+/* v0.52 demo videos */
+.dvid-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}.dvid-th{display:flex;flex-direction:column;text-align:left;border:1px solid var(--line,#dde3ec);border-radius:12px;overflow:hidden;background:var(--surface,#fff);cursor:pointer;padding:0;font:inherit;color:inherit;transition:transform .15s,box-shadow .15s}.dvid-th:hover,.dvid-th:focus-visible{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.dvid-img{display:block;aspect-ratio:16/9;background:#0b1f3a center/cover no-repeat;position:relative}.dvid-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:rgba(34,197,94,.95);color:#fff;display:grid;place-items:center;font-size:22px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.dvid-txt{padding:8px 10px;display:flex;flex-direction:column;gap:2px}.dvid-sm .dvid-play{width:40px;height:40px;font-size:16px}
+.dvid-login{margin-top:22px;padding-top:16px;border-top:1px solid var(--line,#e3e7ee)}.dvid-h{font-weight:700;margin-bottom:2px}
+#dvid-ov{position:fixed;inset:0;z-index:100000;background:rgba(4,10,20,.82);display:flex;align-items:center;justify-content:center;padding:18px}.dvid-box{width:min(1180px,100%);background:#0b1f3a;color:#fff;border-radius:14px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.dvid-top{display:flex;align-items:center;gap:10px;padding:10px 14px}.dvid-top .tiny{color:#b8cbe6}.dvid-x{margin-left:auto;background:transparent;border:0;color:#fff;font-size:20px;cursor:pointer;width:36px;height:36px;border-radius:8px}.dvid-x:hover{background:rgba(255,255,255,.12)}
+.dvid-box video{display:block;width:100%;max-height:78vh;background:#000}.dvid-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;color:#b8cbe6;flex-wrap:wrap}.dvid-foot .btn{color:#fff;border-color:rgba(255,255,255,.3)}
+@media (max-width:600px){.dvid-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -7298,6 +7320,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
       <div class="grid g2"><div class="card"><h2>Recent sign-in activity</h2><table class="t small"><tbody>${hist.map((x) => `<tr><td class="mono">${esc(x.at.replace('T', ' ').slice(0, 16))}</td><td><span class="badge ${/fail|lock/.test(x.event) ? 'crit' : ''}">${esc(x.event)}</span></td><td class="small">${esc(x.detail)}</td></tr>`).join('')}</tbody></table><p class="tiny">Something you don't recognise? Change your password and tell your administrator.</p></div>
       <div class="card"><h2>Training</h2><p>${done} course${done === 1 ? '' : 's'} completed.</p><p class="small">Open a practice, then Training Academy → Training Academy.</p></div></div>`;
   };
+  A.accountPanel = (acc) => C.account(acc); // also shown inside a practice: My account and security
   H['mfa-on'] = () => { A.ui.mfaSetupOpen = true; A.ui.auth = { mfaNew: PL.newMfa() }; A.render(); };
   H['mfa-off'] = () => { const acc = PL.current(); A.modal('Turn off two-step verification', '<p class="small">Enter a current code from your authenticator app to confirm.</p><label class="f"><span>Code</span><input id="mo-code" inputmode="numeric" maxlength="6" data-noclean></label>', '<button class="btn" data-act="modal-close">Cancel</button><button class="btn danger" data-act="mfa-off-go">Turn off</button>'); };
   H['mfa-off-go'] = async () => { const acc = PL.current(); if (!(await PL.checkTotp(acc.mfa.secret, document.getElementById('mo-code').value))) { A.toast('That code is not correct.', 'error'); return; } acc.mfa = null; PL.log('mfa-disabled', acc, ''); PL.save(); A.closeModal(); A.render(); A.toast('Two-step verification is off.'); };
@@ -17623,7 +17646,7 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   const addMenu = () => { const box = document.querySelector('[data-act="notices-all"]'); if (!box || !A.db || !A.user || (box.closest('.am-links') || box.parentNode).querySelector('a[href="#/messages"]')) return; const n = A.msgUnread();
     const link = `<a href="#/messages">✉ Internal messages${n ? ` <b class="am-cnt">${n}</b>` : ''}</a>`; const wn = box.closest('.am-links') && box.closest('.am-links').querySelector(':scope > a[href="#/whatsnew"]'); if (wn) wn.insertAdjacentHTML('afterend', link); else box.insertAdjacentHTML('afterend', link); // visible, not hidden under More
     const links = box.closest('.am-links'); if (links && !links.parentNode.querySelector('.am-msgnav')) links.insertAdjacentHTML('beforebegin', `<div class="am-sec am-msgnav"><label class="am-switch"><span><span class="am-lab" style="display:block">Internal messages</span><span class="tiny muted">Show it in the menu on the left</span></span><input type="checkbox" role="switch" data-change="msgnav-m" ${A.msgNavHidden() ? '' : 'checked'} aria-label="Show Internal messages in the menu on the left"><i aria-hidden="true"></i></label></div>`); };
-  new MutationObserver(addMenu).observe(document.documentElement, { childList: true, subtree: true });
+  void addMenu; // v0.52: the Internal messages link and its small switch are built into the personal menu itself (ui-v052.js)
 
   // ===================================================================== 3. Admin tool: Bugs and ideas
   const ADM = A.ADM; if (!ADM) return;
@@ -18234,6 +18257,127 @@ window.P360_HUB = { url: '' };
     { type: 'new', area: 'admin', title: 'Admin tool: demo inbox', text: 'Bugs and ideas → 📥 Demo inbox: connect the inbox once (address and admin key) to see every report from every demo tester, with their picture of the screen. Your questions, status changes and “Implemented” go back to the tester. The inbox is a Google Sheet you own; you can also get an email for every new report.', link: '#admin/feedback' }] });
   const f = KB.find((k) => k.id === 'feedback'); if (f && !(f.steps || []).some((x) => /Prac360 team’s inbox/.test(x))) f.steps.splice(3, 0, 'During the demo your request also goes to the Prac360 team’s inbox (“✓ Sent to the Prac360 team”), so they see it even though the demo data stays in your browser.');
   const ad = KB.find((k) => k.id === 'adminfeedback'); if (ad && !(ad.steps || []).some((x) => /Demo inbox/.test(x))) ad.steps.unshift('Connect the 📥 Demo inbox once (top of Bugs and ideas): paste the web app address and your admin key, press Save and fetch. Every tester’s report then appears here; “practice replied” shows when they answer.');
+})();
+
+
+/* ===== ui-v052.js ===== */
+/* Prac360 v0.52 — Training manual you can print (built live from the Training Academy, never out of date); collapse the
+ * "Communication from your system provider" card; a calmer personal menu; My account and security inside the practice. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, esc = A.esc; const PL = () => window.PL;
+  const uKey = (k) => `p360-${k}-${(A.user && A.user.id) || 'x'}`;
+  const lsGet = (k) => { try { return localStorage.getItem(uKey(k)); } catch (e) { return null; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(uKey(k), v); } catch (e) { /* private mode */ } };
+
+  // ===================================================================== 1. Training manual (print or save as PDF)
+  const kbById = (id) => (A.KB || []).find((k) => k.id === id);
+  const manualHtml = () => { const C = (A.COURSES || []).filter((c) => !c.show || c.show()); const F = A.FUNCTIONS || []; const R = (A.RELEASES || []).slice(0, 6); const today = new Date().toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' }); const prac = A.db ? A.db.practice.name : 'Prac360';
+    const quizN = C.reduce((n, c) => n + (c.quiz || []).length, 0); let qn = 0; const answers = [];
+    return `<div class="man">
+      <section class="man-cover"><img src="${(window.CP_ASSETS || {}).mark || ''}" alt="" class="man-logo"><h1>Prac360 training manual</h1><p class="man-sub">Everything you need to use Prac360 with confidence — in plain language.</p><p>Version ${esc(A.appVersion ? A.appVersion() : '')} · ${esc(today)}<br>${esc(prac)}</p><div class="man-name">Name: ______________________________ &nbsp; Role: __________________</div></section>
+      <section class="man-sec"><h2>How to use this manual</h2><ol><li>Work through the course for your role (Part 1). Each lesson is short and says what to do on screen.</li><li>Look up any task in the A–Z (Part 2). Every task has numbered steps; in Prac360 most also have a “Show me” tour.</li><li>Test yourself with the exercises at the end of each course (answers in Part 4).</li><li>Fill in the training record (Part 5) and keep it with your practice records.</li></ol><p class="man-tip">💡 Tip: in Prac360, open Assist (green button or Ctrl+Space) and ask in your own words — “how do I send a statement?”.</p>
+        <h3>Contents</h3><ol class="man-toc"><li>Part 1 — Courses (${C.length})</li><li>Part 2 — All functions A–Z (${F.reduce((n, g) => n + g[1].length, 0)})</li><li>Part 3 — What's new</li><li>Part 4 — Exercise answers (${quizN})</li><li>Part 5 — Training record</li></ol></section>
+      <section class="man-sec"><h2 class="man-part">Part 1 — Courses</h2>${C.map((c) => `<div class="man-course"><h3>${esc(c.icon || '')} ${esc(c.title)}</h3><p class="man-who">For: ${esc(c.who || 'everyone')}${c.mins ? ` · about ${c.mins} minutes` : ''}</p>
+        ${(c.lessons || []).map((l, i) => `<div class="man-lesson"><h4>${i + 1}. ${esc(l.t)}</h4><p>${esc(l.body || '')}</p></div>`).join('')}
+        ${(c.quiz || []).length ? `<div class="man-ex"><h4>Exercises</h4><ol>${c.quiz.map((q) => { qn++; answers.push([qn, c.title, q.o[q.a]]); return `<li value="${qn}">${esc(q.q)}<ul>${q.o.map((o, k) => `<li>${'ABCD'[k]}. ${esc(o)}</li>`).join('')}</ul></li>`; }).join('')}</ol></div>` : ''}</div>`).join('')}</section>
+      <section class="man-sec"><h2 class="man-part">Part 2 — All functions A–Z</h2>${F.map(([grp, list]) => `<div class="man-grp"><h3>${esc(grp)}</h3>${list.map(([t, id]) => { const k = kbById(id); return `<div class="man-fn"><h4>${esc(t)}</h4>${k && k.steps ? `<ol>${k.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>` : ''}</div>`; }).join('')}</div>`).join('')}</section>
+      <section class="man-sec"><h2 class="man-part">Part 3 — What's new</h2>${R.map((r) => `<div class="man-rel"><h3>Version ${esc(r.v)} · ${esc(r.title || '')}</h3><ul>${(r.items || []).map((i) => `<li><strong>${esc(i.title)}.</strong> ${esc(i.text || '')}</li>`).join('')}</ul></div>`).join('')}</section>
+      <section class="man-sec"><h2 class="man-part">Part 4 — Exercise answers</h2><table class="man-t"><thead><tr><th>#</th><th>Course</th><th>Answer</th></tr></thead><tbody>${answers.map(([n, c, a]) => `<tr><td>${n}</td><td>${esc(c)}</td><td>${esc(a)}</td></tr>`).join('')}</tbody></table></section>
+      <section class="man-sec"><h2 class="man-part">Part 5 — Training record</h2><table class="man-t man-rec"><thead><tr><th>Course</th><th>Date completed</th><th>Trainee signature</th><th>Trainer / manager</th></tr></thead><tbody>${C.map((c) => `<tr><td>${esc(c.title)}</td><td></td><td></td><td></td></tr>`).join('')}</tbody></table></section></div>`; };
+  const manualPage = () => `<div class="page-head no-print"><div><h1>📘 Training manual</h1><div class="muted">Made from the Training Academy just now, so it is always up to date. Print it, or choose “Save as PDF” in the print window.</div></div><div class="actions"><a class="btn" href="#/learn">‹ Training Academy</a><button class="btn primary" data-act="manual-print">🖨 Print or save as PDF</button></div></div><div class="card man-card">${manualHtml()}</div>`;
+  if (P.learn) { const _l = P.learn; P.learn = (params) => (params && params[0] === 'manual' ? manualPage() : _l(params)); }
+  H['manual-open'] = () => { A.go('#/learn/manual'); };
+  H['manual-print'] = () => { document.body.classList.add('printing-manual'); setTimeout(() => { window.print(); setTimeout(() => document.body.classList.remove('printing-manual'), 500); }, 50); };
+  A.manualHtml = manualHtml;
+
+  // ===================================================================== 2. Collapse the communication card on the Home Dashboard
+  const _card = A.noticesCard; const _today = P.today;
+  if (_today) P.today = (...a) => { const h = _today(...a); if (!/class="card from-p360"/.test(h)) return h; const shut = lsGet('comm') === '1';
+    return h.replace(/<div class="card from-p360"([^>]*)><div class="row between"><h2 style="margin:0">([\s\S]*?)<\/h2>/, (m, attrs, title) => `<div class="card from-p360 ${shut ? 'fp-shut' : ''}"${attrs}><div class="row between"><h2 style="margin:0">${title}</h2><button class="btn sm ghost fp-tog" data-act="comm-toggle" aria-expanded="${!shut}" title="${shut ? 'Show the messages' : 'Make this smaller'}">${shut ? '▸ Show' : '▴ Collapse'}</button>`); };
+  void _card;
+  H['comm-toggle'] = () => { const shut = lsGet('comm') !== '1'; lsSet('comm', shut ? '1' : '0'); const c = document.querySelector('.card.from-p360'); if (c) { c.classList.toggle('fp-shut', shut); const b = c.querySelector('.fp-tog'); if (b) { b.textContent = shut ? '▸ Show' : '▴ Collapse'; b.setAttribute('aria-expanded', String(!shut)); b.title = shut ? 'Show the messages' : 'Make this smaller'; } } };
+  // keep a one-line summary visible when collapsed
+  new MutationObserver(() => { const c = document.querySelector('.card.from-p360.fp-shut'); if (!c || c.querySelector('.fp-sum')) return; const rows = c.querySelectorAll('.fp-row'); const need = c.querySelectorAll('.fp-row .need').length; const h = c.querySelector('.row.between'); if (h) h.insertAdjacentHTML('afterend', `<div class="fp-sum tiny muted">${rows.length} message${rows.length === 1 ? '' : 's'}${need ? ` · <strong class="need">${need} need${need === 1 ? 's' : ''} acknowledging</strong>` : ''}</div>`); }).observe(document.documentElement, { childList: true, subtree: true });
+
+  // ===================================================================== 3. A calmer personal menu
+  const _hdr = A.acctHeader; if (_hdr) A.acctHeader = function () { const html = _hdr.apply(this, arguments); if (!html || !A.db || !A.user) return html; let doc; try { doc = new DOMParser().parseFromString(`<div id="w">${html}</div>`, 'text/html'); } catch (e) { return html; }
+    const w = doc.getElementById('w'); const menu = w.querySelector('#acct-menu'); if (!menu) return html;
+    menu.querySelectorAll('.sw-tool, [data-act="switch-tool"], a[href="#/whatsnew"]').forEach((x) => x.remove()); // fewer links: What's new is in the main menu
+    const st = menu.querySelector('select[data-change="am-status"]'); if (st) { const row = st.closest('.am3-row'); const me = menu.querySelector('.am-me > div'); if (me) { st.classList.add('am-st-inline'); const nm = me.querySelector('strong'); const wrap = doc.createElement('div'); wrap.className = 'am-namerow'; if (nm) { nm.replaceWith(wrap); wrap.appendChild(nm); } else me.prepend(wrap); wrap.appendChild(st); if (row) row.remove(); } }
+    const links = menu.querySelector('.am3-links') || menu.querySelector('.am-links'); if (links && !links.querySelector('a[href="#/messages"]')) { const n = A.msgUnread ? A.msgUnread() : 0; const on = !(A.msgNavHidden && A.msgNavHidden());
+      const div = doc.createElement('div'); div.className = 'am-msgrow'; div.innerHTML = `<a href="#/messages">✉ Internal messages${n ? ` <b class="am-cnt">${n}</b>` : ''}</a><label class="am-mini-sw" title="Show Internal messages in the menu on the left"><input type="checkbox" role="switch" data-change="msgnav-m" ${on ? 'checked' : ''} aria-label="Show Internal messages in the menu on the left"><i aria-hidden="true"></i><span class="tiny">In menu</span></label>`;
+      const acc = links.querySelector('[data-act="go-account"]'); if (acc && acc.nextSibling) links.insertBefore(div, acc.nextSibling); else links.prepend(div); }
+    return w.innerHTML; };
+
+  // ===================================================================== 4. My account and security — inside the practice
+  const _go = H['go-account']; H['go-account'] = () => { A.ui.acctOpen = false; if (A.db && A.user && A.accountPanel) { A.go('#/account'); return; } if (_go) _go(); };
+  P.account = () => { const acc = PL() && PL().current && PL().current(); if (!acc || !A.accountPanel) return '<div class="card"><p>Your account details are not available here.</p></div>';
+    return `<div class="page-head"><div><h1>👤 My account and security</h1><div class="muted">${esc(acc.name)} · ${esc(acc.email)} — change your password, turn on two-step verification (2FA) and see recent sign-ins. These settings are yours and follow you to every practice.</div></div></div>${A.accountPanel(acc)}`; };
+  if (A.SCREEN_NAMES) A.SCREEN_NAMES.account = 'My account and security';
+  const _render = A.render; A.render = function () { const r = _render.apply(this, arguments); if (A.route === 'account' && A.ui.mfaSetupOpen && document.getElementById('ms') && A.wireMfaSetup && !document.getElementById('ms').dataset.wired) { document.getElementById('ms').dataset.wired = '1'; A.wireMfaSetup(PL().current(), () => { A.ui.mfaSetupOpen = false; A.toast('Two-step verification is on ✓'); A.render(); }); } return r; };
+})();
+
+
+/* ===== ui-v052v.js ===== */
+/* Prac360 v0.52 — sales demo videos (a quick overview and a full tour) on the sign-in screen and in What's new.
+ * Real screens from the demo practice with a spoken voice-over and subtitles. Videos live next to the app in media/. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P;
+  const V = {
+    short: { src: 'media/prac360-demo-short.mp4', vtt: 'media/prac360-demo-short.vtt', poster: 'media/prac360-demo-short.jpg', t: 'Quick overview', d: '2½ minutes — the whole system at a glance' },
+    long: { src: 'media/prac360-demo-long.mp4', vtt: 'media/prac360-demo-long.vtt', poster: 'media/prac360-demo-long.jpg', t: 'Full tour', d: '7 minutes — every part explained, from booking to payment' } };
+  A.DEMO_VIDEOS = V;
+  const thumbs = (cls) => `<div class="dvid-row ${cls || ''}">${Object.entries(V).map(([k, v]) => `<button type="button" class="dvid-th" data-act="demo-video" data-k="${k}" aria-label="Play the ${v.t} video"><span class="dvid-img" style="background-image:url('${v.poster}')"><span class="dvid-play" aria-hidden="true">▶</span></span><span class="dvid-txt"><strong>${v.t}</strong><span class="tiny">${v.d}</span></span></button>`).join('')}</div>`;
+  A.demoVideoThumbs = thumbs;
+  const close = () => { const o = document.getElementById('dvid-ov'); if (o) { const v = o.querySelector('video'); if (v) v.pause(); o.remove(); } document.removeEventListener('keydown', onKey, true); };
+  const onKey = (e) => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); } };
+  H['demo-video'] = (el) => { const k = (el && el.dataset && el.dataset.k) || 'short'; const v = V[k]; close(); const other = k === 'short' ? 'long' : 'short';
+    const o = document.createElement('div'); o.id = 'dvid-ov'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', 'Prac360 demo video: ' + v.t);
+    o.innerHTML = `<div class="dvid-box"><div class="dvid-top"><strong>Prac360 — ${v.t}</strong><span class="tiny">${v.d}</span><button class="dvid-x" data-act="demo-video-close" aria-label="Close">✕</button></div>
+      <video controls autoplay playsinline preload="auto" poster="${v.poster}"><source src="${v.src}" type="video/mp4"><track kind="captions" srclang="en" label="English" src="${v.vtt}" default></video>
+      <div class="dvid-foot tiny"><span>Subtitles: press CC in the player. Full screen: ⤢ in the player.</span><button class="btn sm ghost" data-act="demo-video" data-k="${other}">▶ Watch the ${V[other].t.toLowerCase()} instead</button></div></div>`;
+    o.addEventListener('click', (e) => { if (e.target === o) close(); }); document.body.appendChild(o); document.addEventListener('keydown', onKey, true);
+    const vid = o.querySelector('video'); vid.addEventListener('error', () => { const f = o.querySelector('.dvid-foot span'); if (f) f.textContent = 'The video could not be loaded here. It plays on the online demo (and in the server package).'; }, true); setTimeout(() => o.querySelector('.dvid-x').focus(), 30); };
+  H['demo-video-close'] = close;
+
+  // sign-in screen: "New to Prac360? Watch the demo"
+  const addLogin = () => { const f = document.getElementById('si'); if (!f || document.querySelector('.dvid-login')) return; const box = f.closest('.auth-card, .auth-box, .auth-main, main, section') || f.parentElement;
+    box.insertAdjacentHTML('beforeend', `<div class="dvid-login"><div class="dvid-h">🎬 New to Prac360? Watch the demo</div>${thumbs('dvid-sm')}</div>`); };
+  const _ra = A.renderAuth; if (_ra) A.renderAuth = function () { const r = _ra.apply(this, arguments); setTimeout(addLogin, 0); return r; };
+  new MutationObserver(() => addLogin()).observe(document.documentElement, { childList: true, subtree: true });
+
+  // What's new: a showcase card at the top
+  const _wn = P.whatsnew; if (_wn) P.whatsnew = (...a) => { const h = _wn(...a); const card = `<div class="card dvid-card"><div class="row between" style="flex-wrap:wrap;gap:6px"><div><h2 style="margin:0">🎬 See Prac360 in action</h2><p class="small muted" style="margin:2px 0 0">Two demo videos with a voice-over — show them to a practice that is interested, or watch them yourself.</p></div></div>${thumbs()}</div>`; const k = h.indexOf('</div></div>', h.indexOf('class="page-head"')); return k > 0 ? h.slice(0, k + 12) + card + h.slice(k + 12) : card + h; };
+})();
+
+
+/* ===== ui-v052l.js ===== */
+/* Prac360 v0.52 — What's new + Training Academy: printable manual, collapsible messages card, calmer personal menu,
+ * My account and security inside the practice, and the demo videos. Also brings older help texts up to date. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  const putKB = (k) => { const i = KB.findIndex((x) => x.id === k.id); if (i >= 0) KB[i] = Object.assign({}, KB[i], k); else KB.push(k); };
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.52')) A.RELEASES.unshift({ v: '0.52', date: '2026-11-23', title: 'Demo videos, a printable manual and a calmer menu', items: [
+    { type: 'new', area: 'help', title: 'Demo videos: a quick overview and a full tour', text: 'Two videos with a voice-over and subtitles show Prac360 on real screens: a quick overview of the whole system, and a full tour that explains every part, from the first booking to the payment from the medical aid, plus the modules you can add. Watch them on the sign-in screen (“New to Prac360? Watch the demo”) or at the top of What’s new — ideal to show a practice that is interested.', link: '#/whatsnew', guide: 'demovideo' },
+    { type: 'fixed', area: 'help', title: 'The training manual prints again', text: 'Training Academy → Training manual now opens the manual on screen, made from the Training Academy at that moment — so it is always up to date. Press “Print or save as PDF”. It has the courses for every role, all functions A–Z with steps, What’s new, exercise answers and a training record.', link: '#/learn/manual', guide: 'academy' },
+    { type: 'improved', area: 'general', title: 'Collapse the messages from Prac360', text: 'On the Home Dashboard, “Communication from your system provider” has a ▴ Collapse button. Collapsed, it shows one line (how many messages, and if one still needs acknowledging). ▸ Show opens it again. Prac360 remembers your choice.', link: '#/today', guide: 'notices' },
+    { type: 'improved', area: 'general', title: 'A calmer personal menu', text: 'Click your name: your status (Available / Do not disturb) is now right next to your name, Internal messages has a small “In menu” switch on the same line, and “Switch to support console or Admin tool” and What’s new were removed from this menu (What’s new is in the menu on the left).', link: '#/today', guide: 'pracmsg' },
+    { type: 'fixed', area: 'general', title: 'My account and security opens in the practice', text: 'Your name → My account and security now opens your own security screen inside the practice: change your password, turn on two-step verification (2FA) with your phone, and see recent sign-ins. It no longer takes you out of the practice.', link: '#/account', guide: 'myaccount' }] });
+  const ma = kb('myaccount'); if (ma) { ma.title = 'My account and security: password and two-step verification (2FA)'; ma.keys = (ma.keys || []).concat(['2fa', 'two-step', 'two factor', 'my account and security', 'change password', 'authenticator']); ma.link = '#/account'; ma.steps = ['Click your name (top right) → My account and security. It opens inside the practice.', 'Change password: type your current password and the new one twice.', 'Two-step verification: click Set up, scan the QR code with an authenticator app on your phone (for example Google or Microsoft Authenticator), type the 6-digit code and keep the recovery codes safe.', 'Recent sign-in activity shows where and when your account was used. Something you don’t recognise? Change your password and tell your manager.']; }
+  const lg = kb('login'); if (lg && lg.steps) lg.steps = lg.steps.map((x) => x.replace(/under your name \(top right\) → My account and sec\w*/i, 'under your name (top right) → My account and security'));
+  const ac = kb('academy'); if (ac && ac.steps) ac.steps = ac.steps.map((x) => (/printable training manual/i.test(x) ? 'Training manual: Training Academy → Training manual opens the manual made from the Academy right now, so it is always up to date. Press “Print or save as PDF”.' : x));
+  const pr = kb('presence'); if (pr && pr.steps) pr.steps = pr.steps.map((x) => x.replace('(or your name → Status)', '(or click your name — your status is right next to it)'));
+  const pm = kb('pracmsg'); if (pm && pm.steps) pm.steps = pm.steps.map((x) => (/switch Internal messages off/.test(x) ? 'Do not want it in the menu on the left? Click your name at the top and turn off the small “In menu” switch next to Internal messages. The link stays in your name menu, and popups still appear.' : x));
+  const nt = kb('notices'); if (nt && nt.steps && !nt.steps.some((x) => /Collapse/.test(x))) nt.steps.push('Taking too much space? Press ▴ Collapse on the card. It then shows one line; ▸ Show opens it again. Prac360 remembers this for you.');
+  putKB({ id: 'demovideo', title: 'Demo videos: show Prac360 to a practice', keys: ['demo video', 'video', 'showcase', 'sales demo', 'overview', 'watch the demo', 'presentation'], screens: ['whatsnew'], link: '#/whatsnew',
+    steps: ['On the sign-in screen (“New to Prac360? Watch the demo”) or at the top of What’s new, click a video.', 'Quick overview: the whole system at a glance. Full tour: every part explained, from the first booking to the payment from the medical aid, and the modules you can add.', 'Use ⤢ in the player for full screen and CC for subtitles. Press Esc or ✕ to close.', 'The videos use synthetic demo data — no real patients.'] });
+  if (A.GUIDES) { A.GUIDES.demovideo = { title: 'Watch the demo videos', steps: [{ sel: '.dvid-card', text: 'Click a video: the quick overview or the full tour.', expect: 'next', missing: 'Open What’s new first, then press Show me again.' }] };
+    if (A.GUIDES.myaccount) A.GUIDES.myaccount.steps = [{ sel: '.acct-btn', text: 'Click your name, then My account and security.', expect: 'next' }]; }
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => x[0] === 'Getting around') || A.FUNCTIONS[0]; if (g && !g[1].some((x) => x[1] === 'demovideo')) g[1].push(['Demo videos: show Prac360 to a practice', 'demovideo']); }
+  const C = A.COURSES || []; const st = C.find((c) => c.id === 'start'); if (st) { const l = st.lessons.find((x) => /Your login and security/.test(x.t)); if (l) l.body = l.body.replace('turn on two-step verification under My account', 'turn on two-step verification under your name → My account and security'); if (!st.lessons.some((x) => x.t === 'Watch the demo')) st.lessons.unshift({ t: 'Watch the demo', body: 'New to Prac360? Start with the quick overview video (What’s new or the sign-in screen). The full tour explains every part in more detail.', guide: 'demovideo' }); }
 })();
 
 

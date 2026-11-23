@@ -2661,6 +2661,7 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .pa-how{flex:1;min-width:300px;max-width:620px}.pa-steps{padding-left:20px;margin:6px 0 12px}.pa-steps li{margin:0 0 10px;line-height:1.5}
 .shr-vid{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
 .appt-app{display:inline-block;font-size:10.5px;font-weight:700;background:#dbeafe;color:#1e40af;border-radius:999px;padding:0 6px;margin:0 4px 2px 0}
+#talk-orb.to-barge .to-core{transform:scale(1.18);transition:transform .2s ease}
 </style>
 </head>
 <body>
@@ -9863,10 +9864,10 @@ Notes
 
   // ---------- preferences (per user, kept with the practice data so they follow the person) ----------
   const ANDREW = 'Microsoft Andrew Online (Natural) - English (United States)'; A.DEFAULT_VOICE = ANDREW;
-  const DEF = { replies: 'short', voice: 'buttery', browserVoice: ANDREW, hfVoice: '', autoSilent: false, rate: 1.2, robot: true, earcons: true, wake: false, endPause: 1100, lang: 'auto', convo: true, v: 3 };
+  const DEF = { replies: 'short', voice: 'buttery', browserVoice: ANDREW, hfVoice: '', autoSilent: false, rate: 1.2, robot: true, earcons: true, wake: false, endPause: 850, bargeIn: true, lang: 'auto', convo: true, v: 3 };
   const _vpBrowserOnly = (o) => Object.assign(o, { useBrowserVoice: true });
   // the chosen voice, else Andrew (Natural), else this browser's own default voice
-  A.pickVoice = (vs, name) => (vs || []).find((x) => x.name === name) || (vs || []).find((x) => x.name === ANDREW) || (vs || []).find((x) => /Andrew Online \(Natural\)/i.test(x.name)) || (vs || []).find((x) => x.default) || (vs || [])[0] || null;
+  A.pickVoice = (vs, name) => (vs || []).find((x) => x.name === name) || (vs || []).find((x) => x.name === ANDREW) || (vs || []).find((x) => /Andrew Online \(Natural\)/i.test(x.name)) || (vs || []).find((x) => /Online \(Natural\)/i.test(x.name) && /^en/i.test(x.lang)) || (vs || []).find((x) => /^Google UK English Male$/i.test(x.name)) || (vs || []).find((x) => /^Google (UK|US) English/i.test(x.name)) || (vs || []).find((x) => x.default) || (vs || [])[0] || null;
   A.voicePrefs = () => _vpBrowserOnly((() => { const d = A.db; const uid = A.user ? A.user.id : 'anon'; if (!d) return Object.assign({}, DEF); d.settings.voicePrefs = d.settings.voicePrefs || {}; const mine = d.settings.voicePrefs[uid]; if (mine && mine.v !== 2 && mine.v !== 3) { mine.wake = false; mine.v = 2; } if (mine && mine.v === 2) { if (!mine.browserVoice) mine.browserVoice = ANDREW; if (mine.rate === undefined || mine.rate === 1.15) mine.rate = 1.2; mine.v = 3; } return Object.assign({}, DEF, mine || {}); })());
   const setPrefs = (p) => { const d = A.db; const uid = A.user.id; d.settings.voicePrefs = d.settings.voicePrefs || {}; d.settings.voicePrefs[uid] = Object.assign(A.voicePrefs(), p); A.save(); };
   const V = A.voiceState = { speaking: false, quietUntil: 0 };
@@ -10046,7 +10047,7 @@ Notes
       <label class="check"><input type="checkbox" id="vp-autosilent" ${p.autoSilent ? 'checked' : ''}><span>Turn on "Quiet — patient in the room" automatically while a consultation is open<br><span class="tiny">Assist then answers on screen only, with no voice or sounds, until you leave the consult.</span></span></label>
       <label class="f"><span>Speed: <strong id="vp-rate-l">${p.rate.toFixed(2)}×</strong></span><input type="range" id="vp-rate" min="0.8" max="1.5" step="0.05" value="${p.rate}"></label>
       <h3>How Assist listens</h3>
-      <label class="f"><span>Wait after you stop talking</span>${seg('endPause', '', [[700, 'Quick'], [1100, 'Normal'], [1800, 'Relaxed — I pause a lot']])}</label>
+      <label class="f"><span>Wait after you stop talking</span>${seg('endPause', '', [[600, 'Quick'], [850, 'Normal'], [1500, 'Relaxed — I pause a lot']])}</label>
       <input type="checkbox" id="vp-wake" hidden ${p.wake ? 'checked' : ''}>
       <input type="checkbox" id="vp-convo" hidden ${p.convo ? 'checked' : ''}>
       <label class="f"><span>Accent / language for listening</span><select id="vp-lang">${[['auto', 'Automatic (your browser language)'], ['en-ZA', 'English — South Africa'], ['en-GB', 'English — UK'], ['en-US', 'English — US']].map(([v, l]) => `<option value="${v}" ${p.lang === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
@@ -10661,9 +10662,9 @@ Answer with JSON only:
     const g = S.gestureAt && Date.now() - S.gestureAt < 4000 ? S.gestureAt : null; S.gestureAt = null; handle(t, { heard: raw, gestureAt: g }); };
   const endPause = () => (A.voicePrefs ? A.voicePrefs().endPause : 1100);
   const sink = { late: true,
-    final: (text) => { if (A.voiceMuted && A.voiceMuted()) return; if (A.isEcho && A.isEcho(text)) return; if (S.scribe && S.scribe.on) { S.partial = ''; setPartial(''); scribeHear(A.normalizeSpeech(text)); return; }
+    final: (text) => { if (A.voiceMuted && A.voiceMuted() && !(A.bargeIn && A.bargeIn(text))) return; if (A.isEcho && A.isEcho(text)) return; if (S.scribe && S.scribe.on) { S.partial = ''; setPartial(''); scribeHear(A.normalizeSpeech(text)); return; }
       buf = (buf + ' ' + text).replace(/\s+/g, ' '); S.partial = buf.trim(); setPartial(S.partial); clearTimeout(bufT); bufT = setTimeout(flush, endPause()); },
-    partial: (t) => { if (A.voiceMuted && A.voiceMuted()) return; S.partial = (buf + ' ' + t).trim(); setPartial(S.partial); if (buf || t) { clearTimeout(bufT); if (buf) bufT = setTimeout(flush, endPause() + 500); } },
+    partial: (t) => { if (A.voiceMuted && A.voiceMuted() && !(A.bargeIn && A.bargeIn(t, true))) return; S.partial = (buf + ' ' + t).trim(); setPartial(S.partial); if (buf || t) { clearTimeout(bufT); if (buf) bufT = setTimeout(flush, endPause() + 500); } },
     state: (st, code) => {
       if (st === 'listening') { const was = S.listening; S.listening = true; S.replyHint = false; S.resumeHint = null; S.status = S.busy ? 'working' : 'listening'; if (!was) A.earcon('listen'); render(); return; }
       if (st === 'starting' || st === 'finishing') return;
@@ -18395,8 +18396,8 @@ window.P360_HUB = { url: '' };
   'use strict';
   const A = window.APP, H = A.H, P = A.P;
   const V = {
-    short: { src: 'media/prac360-demo-short.mp4', vtt: 'media/prac360-demo-short.vtt', poster: 'media/prac360-demo-short.jpg', t: 'Quick overview', d: '2½ minutes — the whole system at a glance' },
-    long: { src: 'media/prac360-demo-long.mp4', vtt: 'media/prac360-demo-long.vtt', poster: 'media/prac360-demo-long.jpg', t: 'Full tour', d: '7 minutes — every part explained, from booking to payment' } };
+    short: { src: 'media/prac360-demo-short.mp4?v=56', vtt: 'media/prac360-demo-short.vtt', poster: 'media/prac360-demo-short.jpg?v=56', t: 'Quick overview', d: '3 minutes — the whole system at a glance' },
+    long: { src: 'media/prac360-demo-long.mp4?v=56', vtt: 'media/prac360-demo-long.vtt', poster: 'media/prac360-demo-long.jpg?v=56', t: 'Full tour', d: '8 minutes — every part explained, from booking to payment' } };
   A.DEMO_VIDEOS = V;
   const thumbs = (cls) => `<div class="dvid-row ${cls || ''}">${Object.entries(V).filter(([, v]) => !v.topic).map(([k, v]) => `<button type="button" class="dvid-th" data-act="demo-video" data-k="${k}" aria-label="Play the ${v.t} video"><span class="dvid-img" style="background-image:url('${v.poster}')"><span class="dvid-play" aria-hidden="true">▶</span></span><span class="dvid-txt"><strong>${v.t}</strong><span class="tiny">${v.d}</span></span></button>`).join('')}</div>`;
   A.demoVideoThumbs = thumbs;
@@ -18570,7 +18571,7 @@ window.P360_HUB = { url: '' };
   'use strict';
   const A = window.APP, H = A.H, P = A.P, E = window.PE, esc = A.esc; const PL = window.PL; const db = () => A.db;
   const fd = (d) => (d ? A.fd(String(d).slice(0, 10)) : '—');
-  if (A.DEMO_VIDEOS) A.DEMO_VIDEOS.consent = { src: 'media/prac360-consent.mp4', vtt: 'media/prac360-consent.vtt', poster: 'media/prac360-consent.jpg', t: 'How patient consent and the Prac360 network work', d: '3 minutes — the patient, the patient app and the network practices', topic: true };
+  if (A.DEMO_VIDEOS) A.DEMO_VIDEOS.consent = { src: 'media/prac360-consent.mp4?v=56', vtt: 'media/prac360-consent.vtt', poster: 'media/prac360-consent.jpg?v=56', t: 'How patient consent and the Prac360 network work', d: '3 minutes — the patient, the patient app and the network practices', topic: true };
   const S = () => { A.ui.papp = A.ui.papp || { tab: 'home' }; return A.ui.papp; };
   const store = () => A.shrStore(); const key = (p) => A.shrKey(p);
   const consent = (p) => { const k = key(p); return k ? store().consents[k] : null; };
@@ -18681,6 +18682,50 @@ window.P360_HUB = { url: '' };
     if (!sh.lessons.some((l) => l.t === 'The patient app and the network')) sh.lessons.push({ t: 'The patient app and the network', body: 'Patients can give or stop consent themselves in the Prac360 patient app, see all their records and who looked, and book any doctor in the Prac360 network. Open 📱 Patient app preview on the Prac360 patient ID card to show a patient how it works.', guide: 'prid' });
     if (sh.quiz && !sh.quiz.some((q) => /hospital admissions/.test(q.q))) sh.quiz.push({ q: 'Are hospital admissions part of the shared file?', o: ['No, never', 'Yes, with the patient’s consent', 'Only the account for the admission'], a: 1 }); }
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /patient/i.test(x[0])) || A.FUNCTIONS.find((x) => x[0] === 'Getting around'); const add = (e) => { if (g && !g[1].some((x) => x[0] === e[0])) g[1].push(e); }; add(['Patient app preview (consent, records, network booking)', 'patientapp']); add(['Video: how patient consent works', 'prid']); }
+})();
+
+
+/* ===== ui-v056.js ===== */
+/* Prac360 v0.56 — Talk: interrupt Assist just by talking (like ChatGPT's live voice).
+ * While Assist speaks, the microphone stays open. If you start talking over it (and it is clearly you, not Assist's own voice
+ * coming back through the speakers), Assist stops at once and listens. "Stop", "wait" or "hold on" stop it too. */
+(function () {
+  'use strict';
+  const A = window.APP;
+  const words = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9' ]/g, ' ').split(/\s+/).filter((y) => y.length > 1);
+  const STOP = /^(stop|wait|hold on|hang on|pause|quiet|shh+|enough|okay stop|ok stop|sorry|excuse me|no no|actually)\b/i;
+  let lastBarge = 0;
+  A.bargeIn = (heard, partial) => {
+    const VM = A.voiceMode; if (!VM || !VM.on || VM.muted) return false; const p = A.voicePrefs ? A.voicePrefs() : {}; if (p.bargeIn === false) return false;
+    const V = A.voiceState || {}; if (!V.speaking) return false; // the short quiet time after speaking: just ignore
+    const t = String(heard || '').trim(); if (!t) return false; const h = words(t);
+    const said = new Set(words(V.lastSaid)); const overlap = h.length ? h.filter((w) => said.has(w)).length / h.length : 1;
+    const isStop = STOP.test(t) && overlap < 0.5;
+    const enough = h.length >= (partial ? 3 : 2) && overlap < 0.4;
+    if (!isStop && !enough) return false;
+    if (Date.now() - lastBarge < 800) return true; lastBarge = Date.now();
+    try { A.voiceStop && A.voiceStop(); } catch (e) { /* ignore */ }
+    V.speaking = false; V.quietUntil = 0; VM.phase = 'listening'; VM.interrupted = Date.now();
+    try { const o = document.getElementById('talk-orb'); if (o) { o.classList.add('to-barge'); setTimeout(() => o.classList.remove('to-barge'), 600); } } catch (e) { /* ignore */ }
+    // a bare "stop" just stops; anything longer is your next turn
+    return !(isStop && h.length <= 2);
+  };
+})();
+
+
+/* ===== ui-v056l.js ===== */
+/* Prac360 v0.56 — What's new + help: interrupt Talk by speaking, reworked demo videos. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.56')) A.RELEASES.unshift({ v: '0.56', date: '2026-11-23', title: 'Talk like a real conversation, and new demo videos', items: [
+    { type: 'improved', area: 'general', title: 'Talk: interrupt Assist just by speaking', text: 'Like a real conversation: while Assist is answering out loud, simply start talking and it stops and listens to you. Saying “stop”, “wait” or “hold on” stops it too. Its own voice coming back through your speakers is ignored. Assist also answers sooner after you stop talking, and picks the most natural voice your browser has. Prefer to wait longer? Talk settings → “Wait after you stop talking” → Relaxed.', link: '#/today', guide: 'talk' },
+    { type: 'improved', area: 'help', title: 'New demo videos', text: 'The quick overview, the full tour and the consent video were re-recorded in full HD. They show more of each screen, have calm background music, highlights that follow the screen as it scrolls, and no large captions in the corner. They now also show Talk, the patient app and the Prac360 network. Watch them on the sign-in page, in What’s new, and on the consent screen.', link: '#/whatsnew' }] });
+  const t = kb('talk'); if (t && t.steps && !t.steps.some((x) => /interrupt it just by talking/.test(x))) t.steps.splice(2, 0, 'Want to say something while Assist is talking? Just start talking — it stops and listens (or say “stop” or “wait”). Tapping the circle works too.');
+  const C = A.COURSES || []; const tc = C.find((c) => c.id === 'talk');
+  if (tc) { if (!tc.lessons.some((l) => l.t === 'Interrupt any time')) tc.lessons.splice(1, 0, { t: 'Interrupt any time', body: 'It is a real conversation: while Assist answers, just start talking and it stops to listen. Say “stop” or “wait” to stop it without asking something new. With speakers instead of a headset, Assist ignores its own voice.', guide: 'talk' });
+    if (tc.quiz && !tc.quiz.some((q) => /while Assist is answering/.test(q.q))) tc.quiz.push({ q: 'Assist is answering out loud and you want to change your question. What do you do?', o: ['Wait until it has finished', 'Just start talking — it stops and listens', 'Close Assist'], a: 1 }); }
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /assist/i.test(x[0])) || A.FUNCTIONS.find((x) => x[0] === 'Getting around'); if (g && !g[1].some((x) => /Interrupt Talk/.test(x[0]))) g[1].push(['Interrupt Talk by speaking', 'talk']); }
 })();
 
 

@@ -2607,6 +2607,27 @@ a[data-tour="nav-feedback"] svg{color:#ff3fa4}
 .dvid-top{display:flex;align-items:center;gap:10px;padding:10px 14px}.dvid-top .tiny{color:#b8cbe6}.dvid-x{margin-left:auto;background:transparent;border:0;color:#fff;font-size:20px;cursor:pointer;width:36px;height:36px;border-radius:8px}.dvid-x:hover{background:rgba(255,255,255,.12)}
 .dvid-box video{display:block;width:100%;max-height:78vh;background:#000}.dvid-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;color:#b8cbe6;flex-wrap:wrap}.dvid-foot .btn{color:#fff;border-color:rgba(255,255,255,.3)}
 @media (max-width:600px){.dvid-row{grid-template-columns:1fr}}
+/* v0.53 Admin tool / Support console: the menu never spills out of its dark panel on shorter screens */
+.adm-nav{overflow:hidden}
+.adm-nav nav{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#3a4d78 transparent}.adm-nav .adm-mode,.adm-nav .adm-me{flex:0 0 auto}
+@media (max-height:760px){.adm-nav nav a{padding:6px 12px}.adm-nav nav{margin-top:12px}}
+.adm-nav .adm-mode{margin-top:8px}
+/* v0.53 Assist Talk: glowing listening circle next to the Assist button; the voice window stays hidden */
+body.talk-min #vm-root{display:none!important}body.talk-min.vm-open{overflow:auto}
+#talk-orb{position:fixed;z-index:9990;display:flex;align-items:center;gap:6px;flex-direction:row-reverse}
+#talk-orb .to-core{position:relative;width:46px;height:46px;border-radius:50%;border:0;padding:0;cursor:pointer;background:radial-gradient(circle at 35% 30%,#86efac,#16a34a 60%,#0f7a35);box-shadow:0 0 0 3px rgba(255,255,255,.9),0 0 18px 6px rgba(34,197,94,.65)}
+#talk-orb .to-dot{position:absolute;inset:15px;border-radius:50%;background:#fff;opacity:.9}
+#talk-orb .to-ring{position:absolute;inset:-6px;border-radius:50%;border:3px solid rgba(34,197,94,.7);animation:toring 1.6s ease-out infinite}
+@keyframes toring{0%{transform:scale(.85);opacity:1}100%{transform:scale(1.45);opacity:0}}
+#talk-orb.to-thinking .to-core{background:radial-gradient(circle at 35% 30%,#fde68a,#f59e0b 60%,#b45309);box-shadow:0 0 0 3px #fff,0 0 18px 6px rgba(245,158,11,.6)}#talk-orb.to-thinking .to-ring{border-color:rgba(245,158,11,.7);animation-duration:.9s}
+#talk-orb.to-speaking .to-core{background:radial-gradient(circle at 35% 30%,#bfdbfe,#3b82f6 60%,#1d4ed8);box-shadow:0 0 0 3px #fff,0 0 18px 6px rgba(59,130,246,.6)}#talk-orb.to-speaking .to-ring{border-color:rgba(59,130,246,.7)}
+#talk-orb.to-muted .to-core,#talk-orb.to-tap .to-core{background:radial-gradient(circle at 35% 30%,#e5e7eb,#9ca3af 60%,#6b7280);box-shadow:0 0 0 3px #fff,0 0 8px 2px rgba(0,0,0,.2)}#talk-orb.to-muted .to-ring,#talk-orb.to-tap .to-ring{animation:none;opacity:0}
+#talk-orb .to-lab{background:rgba(11,31,58,.9);color:#fff;font-size:.78rem;font-weight:600;padding:4px 10px;border-radius:999px;white-space:nowrap}
+#talk-orb .to-mini{width:26px;height:26px;border-radius:50%;border:1px solid var(--line,#cbd5e1);background:var(--surface,#fff);color:var(--text,#1f2937);cursor:pointer;font-size:12px;line-height:1;padding:0}
+#talk-orb.to-showing .to-open{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+@media (prefers-reduced-motion:reduce){#talk-orb .to-ring{animation:none}}
+@media print{#talk-orb{display:none}}
+body.talk-min.vm-open .as-pill{display:inline-flex!important}
 </style>
 </head>
 <body>
@@ -6950,7 +6971,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
       <label class="f"><span>Password</span><input name="pw" type="password" autocomplete="current-password" required data-noclean data-nodictate></label>
       <button class="btn primary block" type="submit">Sign in</button>
       <div class="row between small"><a href="#forgot">Forgot password?</a><a href="#register"><strong>Register your practice</strong></a></div></form>
-      <div class="auth-req"><span class="badge info">Trial phase</span> No login yet? <a href="#request"><strong>Request a login</strong></a> · <a href="#accept">Have an invitation code?</a></div><div class="auth-alt"><span>Prac360 staff?</span><a class="btn block" href="#admin">Administrator sign-in</a></div>`);
+      <div class="auth-req"><a href="#accept">Have an invitation code?</a></div><div class="auth-alt"><span>Prac360 staff?</span><a class="btn block" href="#admin">Administrator sign-in</a></div>`);
     document.getElementById('si').addEventListener('submit', async (e) => { e.preventDefault(); const f = e.target; err(''); busy(f, true, 'Checking…');
       const r = await PL.signIn(f.email.value, f.pw.value); busy(f, false, 'Sign in'); f.pw.value = '';
       if (!r.ok) { if (r.needVerify) { A.ui.auth = { step: 'verify', accId: r.acc.id }; PL.sendCode(r.acc, 'verify'); return A.renderAuth(); } return err(r.msg); }
@@ -11424,8 +11445,8 @@ ${run.original}`;
     const err = (m) => { const e = document.getElementById('adm-err'); if (e) { e.hidden = !m; e.textContent = m; } };
     const si = document.getElementById('adm-si'); if (si) si.addEventListener('submit', async (e) => { e.preventDefault(); err(''); const r = await PL().signIn(si.email.value, si.pw.value); si.pw.value = ''; await next(r, err); });
     const mf = document.getElementById('adm-mfa'); if (mf) { const acc = PL().acct(st.accId); if ((st.demo || st.accId === (PL().s.demoIds || {}).admin) && acc && acc.mfa) PL().totp(acc.mfa.secret).then((c) => { const el = document.getElementById('adm-totp'); if (el) el.textContent = c; });
-      mf.addEventListener('submit', async (e) => { e.preventDefault(); const acc2 = PL().acct(st.accId); if (!(await PL().verifyMfa(acc2, mf.code.value))) { PL().log('admin-mfa-failed', acc2, ''); return err('That code is not correct.'); } A.ui.adm = {}; PL().startSession(acc2, 'admin sign-in'); PL().log('admin-sign-in', acc2, ''); alog('signed-in', acc2.email, 'Admin tool'); location.hash = '#admin'; A.render(); }); } };
-  const next = async (r, err) => { if (!r.ok) return err(r.msg); if (!A.adminRole(r.acc)) { PL().log('admin-sign-in-refused', r.acc, 'not an administrator'); return err('This account is not a Prac360 administrator.'); }
+      mf.addEventListener('submit', async (e) => { e.preventDefault(); const acc2 = PL().acct(st.accId); if (!(await PL().verifyMfa(acc2, mf.code.value))) { PL().log('admin-mfa-failed', acc2, ''); return err('That code is not correct.'); } A.ui.adm = {}; PL().startSession(acc2, 'admin sign-in'); PL().log('admin-sign-in', acc2, ''); alog('signed-in', acc2.email, A.adminRole(acc2) ? 'Admin tool' : 'Support console'); location.hash = A.adminRole(acc2) ? '#admin' : '#console'; A.render(); }); } };
+  const next = async (r, err) => { if (!r.ok) return err(r.msg); if (!A.adminRole(r.acc) && PL().kindOf(r.acc) !== 'platform') { PL().log('admin-sign-in-refused', r.acc, 'not Prac360 staff'); return err('This sign-in is only for Prac360 staff. Practices sign in on the practice sign-in page.'); }
     if (r.acc.demoAll) { PL().startSession(r.acc, 'demo'); A.ui.adm = {}; A.render(); return; }
     if (!(r.acc.mfa && r.acc.mfa.enabled)) return err('Administrators must have two-step verification. Set it up from the practice sign-in first.');
     A.ui.adm = { step: 'mfa', accId: r.acc.id, demo: !!r.acc.demo }; A.renderAdminLogin(); };
@@ -11927,7 +11948,7 @@ ${run.original}`;
       <tr><td>SwitchOn claims · ERAs · membership checks</td><td class="num">${M(R.claim)} · ${M(R.era)} · ${M(R.elig)} each</td></tr></tbody></table><p class="tiny muted">All prices excl. VAT. DEMO prices.</p>`; };
   const servicesTab = (o, mode, canAdmin) => { const b = B(); const R = b.rates; const act = (k) => b.subs.find((s) => s.orgId === o.id && s.key === k && (!s.to || s.to >= today()));
     const reqs = b.requests.filter((r) => r.orgId === o.id).slice(-8).reverse();
-    return `<section class="card"><h2>Plan</h2><div class="row between" style="flex-wrap:wrap;gap:8px"><div>${o.type === 'bureau' ? 'Billing bureau licence' : `<strong>${esc(o.plan || 'Not set')}</strong> plan · licence ${M(R.licence[o.plan] != null ? R.licence[o.plan] : R.licence[''])} per practice/branch per month`}<div class="tiny muted">${o.type === 'bureau' ? '' : `PPN ${M(R.licence.PPN)} · Corporate ${M(R.licence.Corporate)} · Vendor ${M(R.licence.Vendor)} (excl. VAT)`}</div></div>${o.type !== 'bureau' ? (mode === 'client' ? `<button class="btn sm" data-act="bill-req" data-org="${o.id}" data-k="plan">Ask to change plan</button>` : canAdmin ? `<a class="btn sm" href="#admin/org/${o.id}/details">Change plan</a>` : '') : ''}</div></section>
+    return `<section class="card"><h2>Plan</h2><div class="row between" style="flex-wrap:wrap;gap:8px"><div>${o.type === 'bureau' ? 'Billing bureau licence' : `<strong>${esc(o.plan || 'Not set')}</strong> plan · licence ${M(R.licence[o.plan] != null ? R.licence[o.plan] : R.licence[''])} per practice/branch per month`}<div class="tiny muted">${o.type === 'bureau' ? '' : `PPN ${M(R.licence.PPN)} · Corporate ${M(R.licence.Corporate)} · Vendor ${M(R.licence.Vendor)} (excl. VAT)`}</div></div>${o.type !== 'bureau' ? (mode === 'client' ? `<button class="btn sm" data-act="bill-req" data-org="${o.id}" data-k="plan">Ask to change plan</button>` : canAdmin && A.portal && A.portal() === 'admin' ? `<a class="btn sm" href="#admin/org/${o.id}/details">Change plan</a>` : '') : ''}</div></section>
       <section class="card"><h2>${mode === 'client' ? 'Add-on services' : 'Add-on services'}</h2><div class="bi-cat">${ADDONS.map(([k, t, d]) => { const s = act(k); return `<div class="bi-item ${s ? 'on' : ''}"><div class="row between"><strong>${esc(t)}</strong><span class="bi-price">${M(R.addons[k])}<small>/month</small></span></div><p class="small muted">${esc(d)}</p><div class="row between">${s ? `<span class="badge ${s.to ? 'warn' : 'good'}">${s.to ? 'Ends ' + fd(s.to) : 'Active since ' + fd(s.from)}</span>` : '<span class="badge">Not subscribed</span>'}${mode === 'support' ? '' : s ? (s.to ? `<button class="btn sm" data-act="bill-sub-keep" data-id="${s.id}">Keep it</button>` : `<button class="btn sm danger-ghost" data-act="bill-sub-stop" data-id="${s.id}">Cancel</button>`) : `<button class="btn sm primary" data-act="bill-sub-add" data-org="${o.id}" data-k="${k}">Add</button>`}</div></div>`; }).join('')}</div>
         <p class="tiny muted">A new service starts today and is charged for the rest of this month (pro-rata). A cancelled service runs until the end of the month. Prices excl. VAT.</p></section>
       <section class="card"><h2>Once-off services</h2><div class="bi-cat">${ONCE.map(([k, t, d]) => `<div class="bi-item"><div class="row between"><strong>${esc(t)}</strong><span class="bi-price">${M(R.once[k])}</span></div><p class="small muted">${esc(d)}</p>${mode === 'support' ? '' : `<button class="btn sm" data-act="bill-req" data-org="${o.id}" data-k="${k}">${mode === 'client' ? 'Request' : 'Log a request'}</button>`}</div>`).join('')}<div class="bi-item"><strong>Something else?</strong><p class="small muted">Ask about extra practices, hardware, a dealer visit or anything else.</p>${mode === 'support' ? '' : `<button class="btn sm" data-act="bill-req" data-org="${o.id}" data-k="other">Send a request</button>`}</div></div></section>
@@ -14133,17 +14154,16 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   const pwc = H['submit:pw-change']; if (pwc) H['submit:pw-change'] = function () { if (isDemo(PL.current())) return A.toast('The shared demo login keeps its password so every tester can use it.', 'error'); return pwc.apply(this, arguments); };
   // after signing in: choose where to go (a practice, the Support console or the Admin tool)
   const _after = A.afterSignIn; A.afterSignIn = function (acc) { if (isDemo(acc)) { A.db = null; A.dsEntry = null; location.hash = '#choose'; A.render(); return; } return _after.apply(this, arguments); };
-  const chooser = () => { const acc = PL.current(); const ds = PL.accessFor(acc); const assets = window.CP_ASSETS || {}; document.body.classList.remove('with-bar'); if (A.applyTheme) A.applyTheme();
+  const chooser = () => { const acc = PL.current(); const ds = A.practicesFor ? A.practicesFor(acc) : PL.accessFor(acc); const assets = window.CP_ASSETS || {}; document.body.classList.remove('with-bar'); if (A.applyTheme) A.applyTheme();
     document.getElementById('root').innerHTML = `<main class="choose"><div class="choose-in"><div class="choose-brand"><img src="${assets.mark || ''}" alt=""><strong>Prac360</strong></div>
-      <h1>Hi ${A.esc(acc.name.split(' ')[0])} — where would you like to go?</h1><p class="muted">You can switch at any time from the menu.</p>
-      <div class="choose-grid"><section class="choose-card prac"><div class="choose-ico">🏥</div><h2>A practice</h2><p class="small">Work in a practice as practice manager and doctor: diary, consultations, billing, claims, stock, reports.</p><div class="choose-list">${ds.map((e) => `<button class="btn block" data-act="open-ds" data-id="${e.dataset.id}"><span>${A.esc(e.dataset.name)}</span><small>${A.esc(PL.TYPES[e.org.type] || '')}</small></button>`).join('')}</div></section>
-        <a class="choose-card sup" href="#console"><div class="choose-ico">🛠</div><h2>Support console</h2><p class="small">Help practices: open any practice, Live support, login requests, Tariff service, client billing, security log.</p><span class="btn primary">Open Support console</span></a>
-        <a class="choose-card adm" href="#admin"><div class="choose-ico">🛡</div><h2>Admin tool</h2><p class="small">Run the platform: organisations, users and access, approvals, messages, billing, audit log, security policy.</p><span class="btn primary">Open Admin tool</span></a></div>
-      <p class="tiny muted" style="margin-top:18px">Shared demo login · synthetic data only · <button class="linkish" data-act="sign-out">Sign out</button></p></div></main>`; mark(); };
+      <h1>Hi ${A.esc(acc.name.split(' ')[0])} — which practice would you like to open?</h1><p class="muted">Choose once. You stay in this practice until you sign out.</p>
+      <div class="choose-grid choose-one"><section class="choose-card prac"><div class="choose-ico">🏥</div><h2>Your practices</h2><div class="choose-list">${ds.map((e) => `<button class="btn block" data-act="open-ds" data-id="${e.dataset.id}"><span>${A.esc(e.dataset.name)}</span><small>${A.esc(PL.TYPES[e.org.type] || '')}</small></button>`).join('') || '<p class="small">You do not have access to a practice yet. Ask your practice manager for an invitation.</p>'}</div></section></div>
+      <p class="tiny muted" style="margin-top:18px">${isDemo(acc) ? 'Shared demo login · synthetic data only · ' : ''}<button class="linkish" data-act="sign-out">Sign out</button></p></div></main>`; mark(); };
   const _r0 = A.render; A.render = function () { const acc = PL.current && PL.current(); if (location.hash.replace(/^#\/?/, '').split('/')[0] === 'choose' && acc && PL.session && PL.session()) { if (A.dsEntry) { const s = PL.session(); s.datasetId = null; PL.setSession(s); A.db = null; A.dsEntry = null; } return chooser(); } return _r0.apply(this, arguments); };
   H['switch-tool'] = () => { const s = PL.session(); if (s) { s.datasetId = null; PL.setSession(s); } A.db = null; A.dsEntry = null; location.hash = '#choose'; };
   // a way back to the choice from every tool
-  const addSwitch = () => { const acc = PL.current && PL.current(); if (!isDemo(acc)) return; const side = document.querySelector('.adm-nav'); if (side && !side.querySelector('.sw-tool')) { const a = document.createElement('a'); a.href = '#choose'; a.className = 'sw-tool'; a.dataset.act = 'switch-tool'; a.textContent = '⇄ Switch: practice · Support console · Admin tool'; const me = side.querySelector('.adm-me'); side.insertBefore(a, me); }
+  const addSwitch = () => { return; // v0.53: no switching to the Support console or Admin tool from a practice
+    const acc = PL.current && PL.current(); if (!isDemo(acc)) return; const side = document.querySelector('.adm-nav'); if (side && !side.querySelector('.sw-tool')) { const a = document.createElement('a'); a.href = '#choose'; a.className = 'sw-tool'; a.dataset.act = 'switch-tool'; a.textContent = '⇄ Switch: practice · Support console · Admin tool'; const me = side.querySelector('.adm-me'); side.insertBefore(a, me); }
     const am = document.querySelector('#acct-menu .am-links'); if (am && !am.querySelector('.sw-tool')) am.insertAdjacentHTML('afterbegin', '<button class="sw-tool" data-act="switch-tool">⇄ Switch to Support console or Admin tool</button>'); };
   // a clear marker while testing with the shared login
   const mark = () => { const acc = PL.current && PL.current(); let b = document.getElementById('demo-all-chip'); if (!isDemo(acc) || /^#(console|admin)\b/.test(location.hash) || ['console', 'admin'].includes(A.route)) { if (b) b.remove(); return; } const slot = document.getElementById('foot-chip'); if (slot && slot.offsetParent !== null) { if (b) b.remove(); if (!slot.querySelector('.demo-chip-in')) slot.innerHTML = '<span class="demo-chip-in">Shared demo login · synthetic data</span>'; return; } if (!b) { b = document.createElement('div'); b.id = 'demo-all-chip'; b.className = 'demo-all-chip'; b.textContent = 'Shared demo login · synthetic data only'; document.body.appendChild(b); } };
@@ -18378,6 +18398,75 @@ window.P360_HUB = { url: '' };
     if (A.GUIDES.myaccount) A.GUIDES.myaccount.steps = [{ sel: '.acct-btn', text: 'Click your name, then My account and security.', expect: 'next' }]; }
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => x[0] === 'Getting around') || A.FUNCTIONS[0]; if (g && !g[1].some((x) => x[1] === 'demovideo')) g[1].push(['Demo videos: show Prac360 to a practice', 'demovideo']); }
   const C = A.COURSES || []; const st = C.find((c) => c.id === 'start'); if (st) { const l = st.lessons.find((x) => /Your login and security/.test(x.t)); if (l) l.body = l.body.replace('turn on two-step verification under My account', 'turn on two-step verification under your name → My account and security'); if (!st.lessons.some((x) => x.t === 'Watch the demo')) st.lessons.unshift({ t: 'Watch the demo', body: 'New to Prac360? Start with the quick overview video (What’s new or the sign-in screen). The full tour explains every part in more detail.', guide: 'demovideo' }); }
+})();
+
+
+/* ===== ui-v053.js ===== */
+/* Prac360 v0.53 — (1) Practice sign-in only leads to practices: choose the practice once; no Support console or Admin tool from
+ * there, and no links to them inside a practice. The Support console and Admin tool open only through Administrator sign-in.
+ * (2) Assist Talk: the conversation window stays out of the way; a glowing circle next to the Assist button shows it is listening. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H; const PL = window.PL;
+
+  // ===================================================================== 1. which door did you come in by?
+  const _start = PL.startSession; PL.startSession = function () { const r = _start.apply(this, arguments); try { const s = PL.session(); if (s) { s.portal = /^#admin\b/.test(location.hash) ? 'admin' : 'practice'; PL.setSession(s); } } catch (e) { /* ignore */ } return r; };
+  A.portal = () => { const s = PL.session && PL.session(); return (s && s.portal) || 'practice'; };
+  const partner = (acc) => ['dealer', 'bureau'].includes(PL.kindOf(acc)); // dealers and billing bureaus keep their own console
+  A.practicesFor = (acc) => PL.accessFor(acc).filter((e) => e.via !== 'support');
+  const _after = A.afterSignIn; A.afterSignIn = function (acc) {
+    if (partner(acc)) return _after.apply(this, arguments);
+    const list = A.practicesFor(acc); A.db = null; A.dsEntry = null;
+    if (!list.length) { H['sign-out'](); setTimeout(() => { location.hash = '#admin'; A.toast('This is a Prac360 staff account — please use Administrator sign-in.'); }, 50); return; }
+    if (list.length === 1) { A.openDataset(list[0]); return; }
+    location.hash = '#choose'; A.render(); };
+  // practice door: no Support console / Admin tool
+  const _rc = A.renderConsole; A.renderConsole = function () { const acc = PL.current && PL.current();
+    if (acc && A.portal() === 'practice' && !partner(acc)) { const list = A.practicesFor(acc); if (list.length === 1 && !A.db) { A.openDataset(list[0]); return; } location.hash = list.length ? '#choose' : '#signin'; return; }
+    return _rc.apply(this, arguments); };
+  const _ra = A.renderAdmin; if (_ra) A.renderAdmin = function () { if (A.portal() === 'practice' && A.renderAdminLogin) { A.ui.adm = A.ui.adm || {}; return A.renderAdminLogin(); } return _ra.apply(this, arguments); };
+  // personal menu in a practice: "Switch practice" (only if you have more than one) — never a console link
+  const _hdr = A.acctHeader; if (_hdr) A.acctHeader = function () { const html = _hdr.apply(this, arguments); if (!html) return html; const acc = PL.current && PL.current(); if (!acc || A.portal() === 'admin' || partner(acc)) return html;
+    let doc; try { doc = new DOMParser().parseFromString(`<div id="w">${html}</div>`, 'text/html'); } catch (e) { return html; } const w = doc.getElementById('w');
+    w.querySelectorAll('[data-act="to-console"], .sw-tool, a[href^="#console"], a[href^="#admin"]').forEach((b) => { if (A.practicesFor(acc).length > 1 && !w.querySelector('[data-act="switch-practice"]')) { const n = doc.createElement('button'); n.dataset.act = 'switch-practice'; n.textContent = '🏥 Switch practice'; b.replaceWith(n); } else b.remove(); });
+    return w.innerHTML; };
+  H['switch-practice'] = () => { A.ui.acctOpen = false; const s = PL.session(); if (s) { s.datasetId = null; PL.setSession(s); } A.db = null; A.dsEntry = null; location.hash = '#choose'; A.render(); };
+  // inside a practice, never route into the consoles (e.g. the end of a live session for a practice user)
+  const _tc = H['to-console']; if (_tc) H['to-console'] = function () { const acc = PL.current && PL.current(); if (acc && A.portal() === 'practice' && !partner(acc)) return H['switch-practice'](); return _tc.apply(this, arguments); };
+  // the Admin tool keeps its own link to the Support console (same staff sign-in)
+
+  // ===================================================================== 2. Assist Talk: a glowing circle instead of a window
+  const VM = () => A.voiceMode || {};
+  const orb = () => { let o = document.getElementById('talk-orb'); if (!o) { o = document.createElement('div'); o.id = 'talk-orb'; o.innerHTML = '<button class="to-core" data-act="vm-orb" aria-label="Talk is on — tap to interrupt or to say you are done"><span class="to-ring"></span><span class="to-dot"></span></button><span class="to-lab" aria-live="polite"></span><button class="to-mini to-open" data-act="talk-show" title="Show the conversation" aria-label="Show the conversation">⤢</button><button class="to-mini to-end" data-act="vm-end" title="End Talk" aria-label="End Talk">✕</button>'; document.body.appendChild(o); } return o; };
+  const LAB = { listening: 'Listening…', thinking: 'Thinking…', speaking: 'Speaking', idle: 'Talk is on', muted: 'Mic paused', tap: 'Tap to listen' };
+  let showConvo = false;
+  const tick = () => { const v = VM(); const on = !!v.on; document.body.classList.toggle('talk-min', on && !showConvo);
+    const o = document.getElementById('talk-orb'); if (!on) { if (o) o.remove(); showConvo = false; return; }
+    const el = orb(); const ph = v.muted ? 'muted' : v.needTap ? 'tap' : (v.phase || 'idle'); el.className = 'to-' + ph + (showConvo ? ' to-showing' : ''); const lab = el.querySelector('.to-lab'); if (lab && lab.textContent !== LAB[ph]) lab.textContent = LAB[ph] || '';
+    const pill = document.querySelector('.as-pill'); const pr = pill && pill.getBoundingClientRect(); if (!pr || !pr.width) { el.style.right = '24px'; el.style.bottom = '24px'; } else if (pill) { const r = pr; el.style.right = Math.round(window.innerWidth - r.left + 10) + 'px'; el.style.bottom = Math.round(window.innerHeight - r.bottom + (r.height - 46) / 2) + 'px'; } };
+  setInterval(tick, 250);
+  H['talk-show'] = () => { showConvo = !showConvo; tick(); };
+})();
+
+
+/* ===== ui-v053l.js ===== */
+/* Prac360 v0.53 — What's new + help: one sign-in door per job, practice chosen once, calmer Talk, Admin menu fix. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  const putKB = (k) => { const i = KB.findIndex((x) => x.id === k.id); if (i >= 0) KB[i] = Object.assign({}, KB[i], k); else KB.push(k); };
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.53')) A.RELEASES.unshift({ v: '0.53', date: '2026-11-23', title: 'Simpler sign-in and a quieter Talk', items: [
+    { type: 'improved', area: 'general', title: 'Sign in, choose your practice once', text: 'After signing in you go straight to your practice. If you work in more than one, Prac360 asks once which practice to open. You stay there until you sign out (your name → Switch practice if you need another one). The sign-in page no longer shows “Trial phase — Request a login”.', link: '#/today', guide: 'login' },
+    { type: 'improved', area: 'platform', title: 'Support console and Admin tool only through Administrator sign-in', text: 'The practice sign-in only leads to practices. The Support console and the Admin tool open only through “Administrator sign-in” on the sign-in page (Prac360 staff, with two-step verification). Inside a practice there are no links to them any more, and typing their address asks for the Administrator sign-in.', link: '#/today', guide: 'login' },
+    { type: 'improved', area: 'general', title: 'Talk: a glowing circle instead of a window', text: 'When you talk to Assist, the conversation no longer covers your work. A glowing circle next to the Assist button shows it is on: green and pulsing while it listens, amber while it thinks, blue while it speaks, grey when paused. Tap the circle to interrupt or to say you are done; ⤢ shows the conversation; ✕ ends Talk.', link: '#/today', guide: 'talk' },
+    { type: 'fixed', area: 'platform', title: 'Admin tool menu on smaller screens', text: 'On shorter screens the Admin tool menu ran past the dark panel, so your name, Sign out and Support console were white on white. The menu now scrolls inside the panel and your name and buttons always stay visible at the bottom.', link: '#admin' }] });
+  const lg = kb('login'); if (lg && lg.steps && !lg.steps.some((x) => /which practice/.test(x))) lg.steps.splice(1, 0, 'Work in more than one practice? Prac360 asks once which practice to open. Need another one later? Your name → Switch practice.', 'Prac360 staff (support and administrators) use “Administrator sign-in” at the bottom of the sign-in page — it is the only way into the Support console and the Admin tool.');
+  const at = kb('admintool'); if (at && at.steps) at.steps[0] = 'On the sign-in page click "Administrator sign-in" (or go to #admin). Only Prac360 staff can sign in here, always with two-step verification. Administrators open the Admin tool; support staff open the Support console. The Admin tool has a “Support console” button at the bottom left.';
+  const talkSteps = ['Open Assist (bottom right) and click 🎙 Talk, or press Ctrl+Space. A glowing circle appears next to the Assist button — the conversation stays out of your way.', 'The circle shows what Assist is doing: green and pulsing = listening, amber = thinking, blue = speaking, grey = paused.', 'Just talk. Pause when you are done — Assist answers out loud and listens again by itself. Tap the circle to interrupt or to say you are done.', '⤢ next to the circle shows the conversation (and the settings: voice, speed, warmth); ✕ ends Talk.'];
+  const vm = kb('voicemode'); if (vm) vm.steps = talkSteps.slice();
+  const tk = kb('talk'); if (tk) tk.steps = talkSteps.slice();
+  const C = A.COURSES || []; const tc = C.find((c) => c.id === 'talk'); if (tc) { const l0 = tc.lessons.find((l) => /^Start a conversation/.test(l.t)); if (l0) l0.body = 'Open Assist and click 🎙 Talk, or press Ctrl+Space. A glowing circle next to the Assist button shows it is listening (green), thinking (amber) or speaking (blue). Tap it to interrupt; ✕ ends Talk; ⤢ shows the conversation.'; const lm = tc.lessons.find((l) => /^Make it yours/.test(l.t)); if (lm) lm.body = 'Press ⤢ next to the Talk circle to show the conversation; the sound-wave button there changes voice, speed, answers, pause, warmth and humour.'; if (tc.quiz && !tc.quiz.some((q) => /glowing circle/.test(q.q))) tc.quiz.push({ q: 'You are talking to Assist. What does the green, pulsing circle next to the Assist button mean?', o: ['Assist is switched off', 'Assist is listening to you', 'There is a new message'], a: 1 }); }
+  putKB({ id: 'switchpractice', title: 'Switch to another practice', keys: ['switch practice', 'other practice', 'change practice', 'branch', 'choose practice'], screens: ['today'], link: '#/today', steps: ['Click your name (top right) → Switch practice. (Only shown if you work in more than one practice.)', 'Choose the practice to open.'] });
 })();
 
 

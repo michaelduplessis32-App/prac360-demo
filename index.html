@@ -2628,6 +2628,16 @@ body.talk-min #vm-root{display:none!important}body.talk-min.vm-open{overflow:aut
 @media (prefers-reduced-motion:reduce){#talk-orb .to-ring{animation:none}}
 @media print{#talk-orb{display:none}}
 body.talk-min.vm-open .as-pill{display:inline-flex!important}
+/* v0.54 lighter personal menu */
+#acct-menu.am4 .am-me .av{width:40px!important;height:40px!important;font-size:16px!important}#acct-menu.am4 .am-me{padding-bottom:8px}
+.am-prefs{border-top:1px solid var(--line,#e5e7eb);border-bottom:1px solid var(--line,#e5e7eb);margin:4px 0}
+.am-prefs-t{display:flex;align-items:center;gap:10px;width:100%;background:transparent;border:0;padding:9px 12px;cursor:pointer;font:inherit;color:inherit;text-align:left;border-radius:8px}.am-prefs-t:hover{background:var(--surface-2,#f3f4f6)}
+.am-prefs-txt{display:flex;flex-direction:column;flex:1;min-width:0}.am-prefs-lab{font-weight:500}.am-prefs-sum{font-size:.78rem;color:var(--muted,#6b7280);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.am-prefs-chev{color:var(--muted,#6b7280)}
+.am-prefs-b{padding:2px 12px 10px}.am-prefs-b[hidden]{display:none}.am-prefs-b .am3-row{padding:4px 0}.am-prefs-b .am3-lab{font-size:.78rem}
+#acct-menu .am-prefs .am-prefs-t{display:flex!important;flex-direction:row;align-items:center;gap:10px;width:100%;padding:9px 12px}
+#acct-menu .am-prefs .am-prefs-txt{display:flex!important;flex-direction:column;flex:1;min-width:0}#acct-menu .am-prefs .am-prefs-lab,#acct-menu .am-prefs .am-prefs-sum{display:block}
+#acct-menu .am-prefs .am-prefs-ico,#acct-menu .am-prefs .am-prefs-chev{display:inline-block;flex:0 0 auto}
+#acct-menu .am-prefs .am-prefs-t[aria-expanded="true"]{background:transparent}#acct-menu .am-prefs .am-prefs-t:hover{background:var(--surface-2,#f3f4f6)}
 </style>
 </head>
 <body>
@@ -13738,7 +13748,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
         ${signOut ? `<div class="am3-sep"></div>${signOut.outerHTML}` : ''}</div>`;
     menu.innerHTML = out; menu.classList.add('am3'); return w.innerHTML; };
   H['change:am-status'] = (el) => { A.ui.acctOpen = true; H['my-status-m']({ dataset: { v: el.value } }); };
-  document.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('.am3-links a, .am3-links button:not(.am3-more)'); if (t) { A.ui.acctOpen = false; const m = document.getElementById('acct-menu'); if (m) m.hidden = true; } }, true);
+  document.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('.am3-links a, .am3-links button:not(.am3-more)'); if (t && !t.closest('.am-prefs')) { A.ui.acctOpen = false; const m = document.getElementById('acct-menu'); if (m) m.hidden = true; } }, true);
   H['am-more'] = () => { A.ui.amMore = !A.ui.amMore; A.ui.acctOpen = true; const b = document.querySelector('.am3-more'); const s = document.querySelector('.am3-moreset'); if (b && s) { s.hidden = !A.ui.amMore; b.textContent = (A.ui.amMore ? '▾' : '▸') + ' More'; b.setAttribute('aria-expanded', A.ui.amMore); } };
   // theme picker: shorter text, compact cards
   const _tp = H['theme-pick']; if (_tp) H['theme-pick'] = function () { _tp.apply(this, arguments); const m = document.querySelector('.modal'); if (!m) return; m.classList.add('th-simple'); const p = m.querySelector('p.small.muted'); if (p) p.textContent = 'Pick how Prac360 looks. It only changes for you.'; };
@@ -18467,6 +18477,48 @@ window.P360_HUB = { url: '' };
   const tk = kb('talk'); if (tk) tk.steps = talkSteps.slice();
   const C = A.COURSES || []; const tc = C.find((c) => c.id === 'talk'); if (tc) { const l0 = tc.lessons.find((l) => /^Start a conversation/.test(l.t)); if (l0) l0.body = 'Open Assist and click 🎙 Talk, or press Ctrl+Space. A glowing circle next to the Assist button shows it is listening (green), thinking (amber) or speaking (blue). Tap it to interrupt; ✕ ends Talk; ⤢ shows the conversation.'; const lm = tc.lessons.find((l) => /^Make it yours/.test(l.t)); if (lm) lm.body = 'Press ⤢ next to the Talk circle to show the conversation; the sound-wave button there changes voice, speed, answers, pause, warmth and humour.'; if (tc.quiz && !tc.quiz.some((q) => /glowing circle/.test(q.q))) tc.quiz.push({ q: 'You are talking to Assist. What does the green, pulsing circle next to the Assist button mean?', o: ['Assist is switched off', 'Assist is listening to you', 'There is a new message'], a: 1 }); }
   putKB({ id: 'switchpractice', title: 'Switch to another practice', keys: ['switch practice', 'other practice', 'change practice', 'branch', 'choose practice'], screens: ['today'], link: '#/today', steps: ['Click your name (top right) → Switch practice. (Only shown if you work in more than one practice.)', 'Choose the practice to open.'] });
+})();
+
+
+/* ===== ui-v054.js ===== */
+/* Prac360 v0.54 — a lighter personal menu: Mode, Theme, Language, Screen and View as are grouped under one
+ * "Display and language" line (closed by default, with a one-line summary of your choices). */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H;
+  const _hdr = A.acctHeader; if (!_hdr) return;
+  A.acctHeader = function () { const html = _hdr.apply(this, arguments); if (!html) return html; let doc; try { doc = new DOMParser().parseFromString(`<div id="w">${html}</div>`, 'text/html'); } catch (e) { return html; }
+    const w = doc.getElementById('w'); const menu = w.querySelector('#acct-menu'); const body = menu && menu.querySelector('.am3-body'); if (!body || !body.querySelector('.am3-row')) return html;
+    const txt = (el) => (el ? el.textContent.replace(/[›▸▾]/g, '').trim() : '');
+    const mode = txt(body.querySelector('[data-act="set-mode"].on')).replace(/^[☀◐☾]\s*/, ''); const theme = txt(body.querySelector('[data-act="theme-pick"]')); const lang = txt((body.querySelector('select[data-change="lang-m"]') || { selectedOptions: [] }).selectedOptions[0] || body.querySelector('select[data-change="lang-m"] option[selected]') || body.querySelector('select[data-change="lang-m"] option'));
+    const sum = [mode, theme, lang].filter(Boolean).join(' · ');
+    const open = !!A.ui.amPrefs; const wrap = doc.createElement('div'); wrap.className = 'am-prefs';
+    wrap.innerHTML = `<button class="am-prefs-t" data-act="am-prefs" aria-expanded="${open}" aria-controls="am-prefs-b"><span class="am-prefs-ico" aria-hidden="true">🎨</span><span class="am-prefs-txt"><span class="am-prefs-lab">Display and language</span><span class="am-prefs-sum">${sum}</span></span><span class="am-prefs-chev" aria-hidden="true">${open ? '▾' : '▸'}</span></button><div class="am-prefs-b" id="am-prefs-b" ${open ? '' : 'hidden'}></div>`;
+    const box = wrap.querySelector('.am-prefs-b'); [...body.children].forEach((c) => box.appendChild(c)); body.replaceWith(wrap);
+    // the links come first; display settings sit just above "More"
+    const links = menu.querySelector('.am3-links'); const more = links && links.querySelector('.am3-more'); if (links) { if (more) links.insertBefore(wrap, more); else links.appendChild(wrap); }
+    menu.classList.add('am4'); return w.innerHTML; };
+  H['am-prefs'] = () => { A.ui.amPrefs = !A.ui.amPrefs; A.ui.acctOpen = true; const b = document.querySelector('.am-prefs-t'); const p = document.getElementById('am-prefs-b'); if (b && p) { p.hidden = !A.ui.amPrefs; b.setAttribute('aria-expanded', String(A.ui.amPrefs)); const c = b.querySelector('.am-prefs-chev'); if (c) c.textContent = A.ui.amPrefs ? '▾' : '▸'; } };
+  // clicks inside the display settings keep the menu open
+  document.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('.am-prefs')) A.ui.acctOpen = true; }, true);
+})();
+
+
+/* ===== ui-v054l.js ===== */
+/* Prac360 v0.54 — What's new + help: a lighter personal menu (Display and language grouped). */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  const where = 'Click your name or photo (top right) → Display and language';
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.54')) A.RELEASES.unshift({ v: '0.54', date: '2026-11-23', title: 'A lighter personal menu', items: [
+    { type: 'improved', area: 'general', title: 'Your menu is shorter and calmer', text: 'Click your name or photo (top right). Mode, Theme, Language, Full screen and View as now sit together under one line, “Display and language”, which stays closed until you need it. The line shows your current choices (for example “Day · Classic · English”), so you can see them at a glance. Click it to open, change what you need, click it again to close. Your account, Internal messages, billing, More and Sign out are right below your name.', link: '#/today', guide: 'themes' }] });
+  const th = kb('themes'); if (th && th.steps) th.steps = th.steps.map((x) => /→ Theme/.test(x) ? where + ' → Theme.' : x);
+  ['display', 'language', 'fullscreen', 'darkmode', 'mode'].forEach((id) => { const k = kb(id); if (k && k.steps && !k.steps.some((x) => /Display and language/.test(x))) k.steps.unshift(where + ' to open your screen settings.'); });
+  if (A.GUIDES && A.GUIDES.themes) A.GUIDES.themes = { steps: [{ sel: '[data-act="acct-menu"]', text: 'Click your name or photo to open your menu.', expect: 'next' }, { sel: '[data-act="am-prefs"]', text: 'Click “Display and language”. Mode, Theme, Language, Full screen and View as are all here.', expect: 'next' }] };
+  const C = A.COURSES || []; const tools = C.find((c) => c.id === 'tools'); const ys = tools && tools.lessons.find((l) => l.t === 'Your screen');
+  if (ys) ys.body = 'Click your name (top right), then “Display and language”. There you choose Day, Dusk or Night mode, the theme, your language and full screen. The line shows your current choices even when it is closed, and everything is remembered for you.';
+  if (tools && tools.quiz && !tools.quiz.some((q) => /Night mode/.test(q.q))) tools.quiz.push({ q: 'Where do you switch Prac360 to Night mode?', o: ['Settings → Practice details', 'Your name (top right) → Display and language', 'It cannot be changed'], a: 1 });
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => x[0] === 'Getting around'); if (g && !g[1].some((x) => x[0] === 'Display and language (mode, theme, language, full screen)')) g[1].push(['Display and language (mode, theme, language, full screen)', 'themes']); }
 })();
 
 

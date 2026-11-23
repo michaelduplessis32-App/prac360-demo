@@ -2583,6 +2583,8 @@ a[data-tour="nav-feedback"] svg{color:#ff3fa4}
 .chair-addbar{display:flex;align-items:center;gap:10px;margin:0 0 8px}.onc-chair{position:relative}.chair-plus{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:1px dashed #94a3b8;background:transparent;cursor:pointer;font-size:15px;line-height:1;color:#475569}.chair-plus:hover{background:#e0f2fe;border-style:solid}
 .ch-pl{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto;border:1px solid var(--line,#ddd);border-radius:8px;padding:4px}.ch-p{text-align:left;padding:8px 10px;border-radius:6px;border:0;background:transparent;cursor:pointer;font:inherit}.ch-p:hover{background:var(--surface-2,#f3f4f6)}.ch-p.on{background:#dbeafe;font-weight:600}.ch-p[hidden]{display:none}.ch-picked{margin:6px 0}
 .cx-fixbtn{font-weight:600}.cx-fix-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+/* v0.51 demo inbox */
+.hub-box summary{cursor:pointer;list-style:none}.hub-box summary::-webkit-details-marker{display:none}.hub-box[open] summary{margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -17532,7 +17534,7 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
       { id: 'fb_s2', ref: 'PR-1002', type: 'bug', title: 'Statement PDF cuts off the last line on page 2', area: 'Accounts', where: '#/accounts', happened: 'On long statements the last line of page 2 is not printed.', expected: 'All lines are printed; the line moves to page 3.', steps: '1. Open an account with more than 30 lines\n2. Print statement\n3. Look at the bottom of page 2', often: 'always', impact: 'slows', practice: 'Sample: Riverside Medical Centre', datasetId: '', byName: 'Accounts clerk (sample)', at: ago(2), status: 'new', thread: [{ at: ago(2), from: 'practice', kind: 'created', text: 'Request logged.' }], notify: [] }]; };
   const myDs = () => (A.dsEntry && A.dsEntry.dataset ? A.dsEntry.dataset.id : '');
   const fbMine = () => fbAll().filter((r) => r.datasetId && r.datasetId === myDs()).sort((a, b) => (a.at < b.at ? 1 : -1));
-  const nextRef = () => 'PR-' + (1001 + fbAll().reduce((n, r) => Math.max(n, +String(r.ref || '').replace(/\D/g, '') - 1001 + 1 || 0), 0));
+  const nextRef = () => { const AL = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let r; do { r = 'PR-' + Array.from({ length: 5 }, () => AL[Math.floor(Math.random() * AL.length)]).join(''); } while (fbAll().some((x) => x.ref === r)); return r; }; // unique across browsers, so reports from many demo testers never clash
   const notifyKey = () => myDs() + ':' + (A.user ? A.user.id : '');
   const fbNotes = () => { if (!A.user || !myDs()) return []; const out = []; fbMine().forEach((r) => (r.notify || []).forEach((n) => { if (!(n.seen || {})[notifyKey()] && (r.byUser === A.user.id || A.can('setup'))) out.push({ r, n }); })); return out; };
   A.fbPractice = () => { try { return fbMine().filter((r) => r.status === 'info').length + fbNotes().length; } catch (e) { return 0; } };
@@ -17562,7 +17564,9 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
       <div class="alert info"><span class="ico">i</span><div class="body tiny">Do not include patient names, ID numbers or clinical details. Prac360 records the screen, your browser and the version (v${esc(A.appVersion ? A.appVersion() : '')}) with the request. <strong>What happens next:</strong> we review it within 2 working days. You can follow it under Report a problem or idea, and Prac360 notifies you if we have a question and when it is implemented.${bug ? ' If it stops you working, also phone Prac360 support.' : ''}</div></div></form>`,
       `<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="fb-send">${bug ? 'Send problem report' : 'Send idea'}</button>`, { wide: true }); };
   const readShot = (inp) => new Promise((res) => { const f = inp && inp.files && inp.files[0]; if (!f) return res(''); if (!/^image\//.test(f.type)) { A.toast('The picture must be an image (PNG or JPG).', 'error'); return res(null); } if (f.size > 1.5e6) { A.toast('The picture is too big (more than 1.5 MB). Take a smaller screenshot.', 'error'); return res(null); } const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => res(''); r.readAsDataURL(f); });
-  H['fb-send'] = async () => { const f = document.getElementById('fbf'); if (!f) return; const g = (n) => (f[n] ? String(f[n].value || '').trim() : ''); const type = g('type'); const bug = type === 'bug';
+  let fbSending = false;
+  H['fb-send'] = async () => { if (fbSending) return; fbSending = true; try { await fbSend(); } finally { setTimeout(() => { fbSending = false; }, 400); } }; // one press = one report
+  const fbSend = async () => { const f = document.getElementById('fbf'); if (!f) return; const g = (n) => (f[n] ? String(f[n].value || '').trim() : ''); const type = g('type'); const bug = type === 'bug';
     if (!g('title')) { A.toast('Please give your request a short title.', 'error'); return; }
     if (bug && !g('happened')) { A.toast('Please describe what happened.', 'error'); return; } if (bug && !g('expected')) { A.toast('Please say what you expected to happen.', 'error'); return; }
     if (!bug && !g('need')) { A.toast('Please describe what you would like Prac360 to do.', 'error'); return; } if (!bug && !g('why')) { A.toast('Please say why you need it.', 'error'); return; }
@@ -18142,6 +18146,94 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   const ai = C.find((c) => c.id === 'aiscribe'); L(ai, 'Review, approve and sign', { t: 'Fix items with one click', body: 'Under “Items requiring attention”, press 🔧 Fix: choose the right value when two were heard, fill in a missing dose, duration, vitals or follow-up, or add a new allergy to the list. The item is marked Fixed.', guide: 'cxfix' }); if (ai && ai.quiz && !ai.quiz.some((q) => /Fix/.test(q.q))) ai.quiz.push({ q: 'AI Scribe heard BP 120/80 and later 135/85. How do you correct it fastest?', o: ['Start the consultation again', 'Press 🔧 Fix and choose the right value', 'Ignore it'], a: 1 });
   const onc = C.find((c) => c.id === 'oncology'); L(onc, 'Booking oncology visits', { t: 'Put a patient in a treatment chair', body: 'Press ＋ on a free chair on the chair board (or ＋ Add in the diary’s Treatment chairs column), type the name, choose the chair and time, and press Put in chair. Start the treatment from the Treatment tab once the checks are done.', guide: 'chairadd' });
   const as = C.find((c) => c.id === 'assist'); L(as, 'Capture things by talking', { t: 'Ask questions and go anywhere', body: '“What do I need to do today?” · “How much did we bill this month?” · “Who is my next patient?” · “What allergies does Thandiwe have?” · “Go to rejected claims” · “Open the oncology diary”. Assist answers in plain words and takes you straight there.', guide: 'assist' });
+})();
+
+
+/* ===== hub-config.js ===== */
+/* Prac360 demo inbox address (Google Apps Script web app). Set by the Prac360 team; empty = reports stay in each browser. */
+window.P360_HUB = { url: '' };
+
+
+/* ===== ui-v051.js ===== */
+/* Prac360 v0.51 — Demo inbox: during the demo, "Report a problem or idea" also goes to one central inbox (a Google Sheet
+ * owned by the Prac360 team, via a small Apps Script web app). The Admin tool (Bugs and ideas) reads every report from it and
+ * sends questions, status changes and "Implemented" back; each tester's Prac360 picks those up and shows the usual popup.
+ * The inbox address is public (it only accepts reports and returns updates for the tester's own reports); reading all reports and
+ * answering needs the admin key, which is kept only in the administrator's browser. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H; const PL = () => window.PL; const esc = A.esc;
+  // ↓ The Prac360 team's inbox address for the demo — set once the Google Apps Script web app is deployed.
+  const DEFAULT_URL = (window.P360_HUB && window.P360_HUB.url) || '';
+  const st = () => (PL() && PL().s) || null;
+  const HUB = () => { const s = st(); return (s && s.hub && s.hub.url) || DEFAULT_URL; };
+  const KEY = () => { const s = st(); return (s && s.hub && s.hub.key) || ''; };
+  const fbAll = () => ((st() && st().feedback) || []);
+  const save = () => { try { PL().save(); } catch (e) { /* ignore */ } };
+  const tid = (t) => t.id || (t.id = `${t.from || ''}:${t.at || ''}`);
+  const merge = (a, b, key) => { const m = new Map(); (a || []).forEach((x) => m.set(key(x), x)); (b || []).forEach((x) => { const k = key(x); m.set(k, Object.assign({}, m.get(k) || {}, x, { seen: (m.get(k) || {}).seen || x.seen })); }); return [...m.values()].sort((x, y) => (String(x.at) < String(y.at) ? -1 : 1)); };
+  const post = (obj) => fetch(HUB(), { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(obj) });
+  const get = async (params) => { const u = new URL(HUB()); Object.entries(params).forEach(([k, v]) => u.searchParams.set(k, v)); const r = await fetch(u.toString(), { redirect: 'follow' }); return r.json(); };
+  A.hubOn = () => !!HUB();
+
+  // a smaller picture so it travels well (max 1200 px wide, JPEG)
+  const shrink = (dataUrl) => new Promise((res) => { if (!dataUrl || !/^data:image/.test(dataUrl)) return res(dataUrl || ''); const im = new Image(); im.onload = () => { const k = Math.min(1, 1200 / im.width); const c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); try { res(c.toDataURL('image/jpeg', 0.72)); } catch (e) { res(''); } }; im.onerror = () => res(''); im.src = dataUrl; });
+  const sendReport = async (r) => { if (!HUB() || !r || (r.hub && r.hub.sent)) return; try { const rep = Object.assign({}, r, { shot: await shrink(r.shot), thread: (r.thread || []).map((t) => (tid(t), t)), notify: [] }); await post({ action: 'report', report: rep }); r.hub = { sent: new Date().toISOString() }; } catch (e) { r.hub = { pending: true, err: String(e.message || e).slice(0, 80) }; } save(); };
+
+  // ---- practice side: every new report also goes to the inbox; replies too
+  const _send = H['fb-send']; if (_send) H['fb-send'] = async (el) => { const before = new Set(fbAll().map((r) => r.id)); await _send(el); const r = fbAll().find((x) => !before.has(x.id)); if (r && HUB()) { await sendReport(r); const m = document.querySelector('#modal .mb'); if (m && r.hub && r.hub.sent) m.insertAdjacentHTML('beforeend', '<p class="tiny ok-t">✓ Sent to the Prac360 team.</p>'); } };
+  const _reply = H['fb-reply']; if (_reply) H['fb-reply'] = (el) => { const r = fbAll().find((x) => x.id === el.dataset.id); const n = r ? (r.thread || []).length : 0; _reply(el); if (r && HUB() && (r.thread || []).length > n) { const e = r.thread[r.thread.length - 1]; tid(e); post({ action: 'reply', id: r.id, entry: e }).catch(() => {}); } };
+  // pick up questions, status changes and "Implemented" for this browser's own reports
+  let lastMine = 0;
+  const syncMine = async (force) => { if (!HUB() || !A.db || !st()) return; if (!force && Date.now() - lastMine < 120000) return; lastMine = Date.now();
+    fbAll().filter((r) => r.hub && r.hub.pending).forEach((r) => { r.hub = null; sendReport(r); });
+    const mine = fbAll().filter((r) => r.hub && r.hub.sent); if (!mine.length) return;
+    try { const j = await get({ action: 'mine', ids: mine.map((r) => r.id).join(',') }); if (!j || !j.ok) return; let ch = false;
+      (j.items || []).forEach((it) => { const r = fbAll().find((x) => x.id === it.id); if (!r) return; (r.thread || []).forEach(tid);
+        const before = JSON.stringify([r.status, (r.thread || []).length, (r.notify || []).length]); r.status = it.status || r.status; if (it.implemented) r.implemented = it.implemented;
+        r.thread = merge(r.thread, it.thread, tid); r.notify = merge(r.notify, (it.notify || []).map((n) => Object.assign({ seen: {} }, n)), (n) => n.id);
+        if (before !== JSON.stringify([r.status, r.thread.length, r.notify.length])) ch = true; });
+      if (ch) { save(); A.render(); if (A.msgGateCheck) setTimeout(A.msgGateCheck, 50); } } catch (e) { /* offline — try again later */ } };
+  A.hubSyncMine = syncMine;
+  setInterval(() => syncMine(false), 30000); setTimeout(() => syncMine(true), 4000);
+  window.addEventListener('hashchange', () => { if (/^#\/feedback/.test(location.hash)) syncMine(true); });
+
+  // ---- Admin tool: read every report from the inbox; send questions, status and "Implemented" back
+  let lastAll = 0;
+  const syncAll = async (force) => { if (!HUB() || !KEY() || !st()) return { ok: false, why: !HUB() ? 'no-url' : 'no-key' }; if (!force && Date.now() - lastAll < 60000) return { ok: true, skipped: true }; lastAll = Date.now();
+    try { const j = await get({ action: 'list', key: KEY() }); if (!j || !j.ok) { st().hub = Object.assign({}, st().hub, { ok: false }); save(); return { ok: false, why: j && j.error === 'key' ? 'key' : 'bad' }; } const s = st(); s.feedback = s.feedback || []; let added = 0;
+      (j.items || []).forEach((it) => { const r = s.feedback.find((x) => x.id === it.id); if (!r) { s.feedback.push(Object.assign({}, it, { fromHub: true })); added++; return; } (r.thread || []).forEach(tid);
+        const prac = (it.thread || []).filter((t) => t.from === 'practice' && !(r.thread || []).some((x) => tid(x) === tid(t))); if (prac.length) { r.unreadAdmin = true; if (r.status === 'info') r.status = 'review'; }
+        r.thread = merge(r.thread, it.thread, tid); if (it.shot && !r.shot) r.shot = it.shot; r.fromHub = true; });
+      s.hub = Object.assign({}, s.hub, { fetched: new Date().toISOString(), count: (j.items || []).length, ok: true }); save(); return { ok: true, added }; } catch (e) { return { ok: false, why: 'net', msg: String(e.message || e) }; } };
+  A.hubSyncAll = syncAll;
+  const pushAdmin = (r) => { if (!HUB() || !KEY() || !r || !r.fromHub) return; (r.thread || []).forEach(tid); post({ action: 'admin', key: KEY(), id: r.id, rec: { status: r.status, implemented: r.implemented || null, ai: r.ai || null, thread: r.thread, notify: (r.notify || []).map((n) => ({ id: n.id, at: n.at, kind: n.kind, text: n.text, status: n.status })), updated: new Date().toISOString() } }).catch(() => A.toast('Saved here, but the demo inbox could not be reached — try again later.', 'error')); };
+  ['adm-fb-ask', 'adm-fb-status', 'adm-fb-int', 'adm-fb-ai'].forEach((k) => { const o = H[k]; if (!o) return; H[k] = async (el) => { const id = el && el.dataset && el.dataset.id; await o(el); const r = fbAll().find((x) => x.id === id); if (r) pushAdmin(r); }; });
+  const ADM = A.ADM; if (ADM && ADM.V && ADM.V.feedback) { const _v = ADM.V.feedback;
+    ADM.V.feedback = (params) => { const html = _v(params); if (params && params[0]) return html; const s = st() || {}; const hb = s.hub || {}; if (HUB() && KEY() && Date.now() - lastAll > 60000) syncAll(false).then((r) => { if (r && r.ok && !r.skipped) A.render(); });
+      const box = `<details class="adm-card hub-box" ${HUB() && KEY() && hb.ok ? '' : 'open'}><summary><strong>📥 Demo inbox</strong> <span class="tiny muted">${HUB() && KEY() && hb.ok ? `connected · ${hb.count || 0} report${hb.count === 1 ? '' : 's'} · last checked ${hb.fetched ? hb.fetched.slice(11, 16) : '—'}` : 'not connected — reports from demo testers stay in their own browsers'}</span></summary>
+        <p class="tiny">During the demo every tester's Prac360 sends “Report a problem or idea” to one inbox (a Google Sheet you own). Connect it here once to see every report and to answer them. Your questions, status changes and “Implemented” go back to the tester as a popup.</p>
+        <div class="grid g2"><label class="f"><span>Inbox address (web app URL)</span><input id="hub-url" value="${esc((s.hub && s.hub.url) || DEFAULT_URL)}" placeholder="https://script.google.com/macros/s/…/exec" data-noclean></label><label class="f"><span>Admin key</span><input id="hub-key" type="password" value="${esc(KEY())}" placeholder="the ADMIN_KEY from the script" data-noclean autocomplete="off"></label></div>
+        <div class="row" style="gap:6px"><button class="btn primary" data-act="hub-save">Save and fetch reports</button><button class="btn" data-act="hub-fetch" ${HUB() && KEY() ? '' : 'disabled'}>↻ Fetch now</button><button class="btn ghost" data-act="hub-test">Test the address</button></div>
+        <p class="tiny muted" style="margin-bottom:0">The key is kept only in this browser. ${DEFAULT_URL ? 'Demo testers already send to the built-in address.' : 'Testers start sending to the inbox once its address is built into Prac360.'}</p></details>`;
+      return html.replace(/(<div class="adm-tiles">)/, box + '$1'); }; }
+  H['hub-save'] = async () => { const s = st(); const url = (document.getElementById('hub-url').value || '').trim(), key = (document.getElementById('hub-key').value || '').trim(); if (url && !/^https:\/\/script\.google(usercontent)?\.com\/|^https?:\/\/localhost[:/]|^https:\/\//.test(url)) return A.toast('That does not look like a web address.', 'error'); s.hub = Object.assign({}, s.hub, { url, key }); save(); if (!url || !key) { A.toast('Saved. Fill in both the address and the key to fetch reports.'); A.render(); return; } const r = await syncAll(true); A.toast(r.ok ? `Connected ✓ — ${r.added || 0} new report${r.added === 1 ? '' : 's'} fetched.` : r.why === 'key' ? 'The admin key is not right.' : 'Could not reach the inbox. Check the address and that the web app is deployed for "Anyone".', r.ok ? null : 'error'); A.render(); };
+  H['hub-fetch'] = async () => { const r = await syncAll(true); A.toast(r.ok ? `${r.added ? r.added + ' new report' + (r.added === 1 ? '' : 's') : 'No new reports'} — up to date.` : 'Could not reach the inbox right now.', r.ok ? null : 'error'); A.render(); };
+  H['hub-test'] = async () => { const url = (document.getElementById('hub-url').value || '').trim(); if (!url) return A.toast('Type the address first.', 'error'); try { const r = await fetch(url, { redirect: 'follow' }); const j = await r.json(); A.toast(j && j.ok ? 'The inbox answered ✓ ' + (j.hello || '') : 'The address answered, but not like the Prac360 inbox.', j && j.ok ? null : 'error'); } catch (e) { A.toast('No answer from that address. Check that it ends in /exec and is deployed for "Anyone".', 'error'); } };
+})();
+
+
+/* ===== ui-v051l.js ===== */
+/* Prac360 v0.51 — What's new + help: the demo inbox for problems and ideas. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || [];
+  const putKB = (k) => { const i = KB.findIndex((x) => x.id === k.id); if (i >= 0) KB[i] = Object.assign({}, KB[i], k); else KB.push(k); };
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.51')) A.RELEASES.unshift({ v: '0.51', date: '2026-11-23', title: 'Problems and ideas reach the Prac360 team', items: [
+    { type: 'new', area: 'help', title: 'Your problems and ideas reach the Prac360 team', text: 'During the demo, everything you send with Report a problem or idea now also goes to the Prac360 team’s inbox — even though the rest of the demo stays in your browser. You see “✓ Sent to the Prac360 team”. Questions from the team and “Implemented” come back to you as a popup, and your answers go back to them. Each request has its own reference, e.g. PR-K7Q2M.', link: '#/feedback', guide: 'feedback' },
+    { type: 'new', area: 'admin', title: 'Admin tool: demo inbox', text: 'Bugs and ideas → 📥 Demo inbox: connect the inbox once (address and admin key) to see every report from every demo tester, with their picture of the screen. Your questions, status changes and “Implemented” go back to the tester. The inbox is a Google Sheet you own; you can also get an email for every new report.', link: '#admin/feedback' }] });
+  const f = KB.find((k) => k.id === 'feedback'); if (f && !(f.steps || []).some((x) => /Prac360 team’s inbox/.test(x))) f.steps.splice(3, 0, 'During the demo your request also goes to the Prac360 team’s inbox (“✓ Sent to the Prac360 team”), so they see it even though the demo data stays in your browser.');
+  const ad = KB.find((k) => k.id === 'adminfeedback'); if (ad && !(ad.steps || []).some((x) => /Demo inbox/.test(x))) ad.steps.unshift('Connect the 📥 Demo inbox once (top of Bugs and ideas): paste the web app address and your admin key, press Save and fetch. Every tester’s report then appears here; “practice replied” shows when they answer.');
 })();
 
 

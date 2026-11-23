@@ -10372,7 +10372,8 @@ Answer with JSON only: {"actions":[{"tool":"name","args":{}}],"reply":"one short
     if (!A.user || !A.db) return; if (!opts.silentUser) push('user', opts.heard || text); S.replyHint = false; S.resumeHint = null;
     if (!opts.voiceDone) S.lastWasVoice = !!opts.heard;
     if (A.featureOn && !A.featureOn('assist') && A.assistBasic) { const b = A.assistBasic(text); push('assist', b.say, b.items); render(); return; }
-    text = A.normalizeSpeech ? A.normalizeSpeech(text) : text; text = text.replace(/^(?:hey |ok |okay )?(?:assist|prac ?360)[,.:!]?\s+(?=\S)/i, '');
+    const raw0 = text; text = A.normalizeSpeech ? A.normalizeSpeech(text) : text; text = text.replace(/^(?:hey |ok |okay )?(?:assist|prac ?360)[,.:!]?\s+(?=\S)/i, '');
+    if (A.assistTalk && !opts.local) { let done = false; try { done = await A.assistTalk(text || raw0, opts, raw0); } catch (e) { console.warn('assist talk', e); } if (done) { S.busy = false; S.status = S.listening ? 'listening' : 'ready'; if (S.handsFree) S.followUntil = Date.now() + 12000; render(); return; } } // conversation layer: small talk, answers to its own questions, everyday phrasing
     if (A.screenLocal) { const sl = A.screenLocal(text); if (sl) { push('assist', sl.say); A.earcon(sl.done ? 'done' : 'tap'); say(sl.say); render(); return; } }
     if (A.screenResolve) { const r = A.screenResolve(text); if (r !== text) { S.resolvedNote = text; text = r; } }
     if (/^(stop|stop talking|be quiet|quiet|shush|silence)[.!]?$/i.test(text)) { A.voiceStop(); push('assist', 'OK.'); return; }
@@ -10392,6 +10393,7 @@ Answer with JSON only: {"actions":[{"tool":"name","args":{}}],"reply":"one short
     if (!opts.local && (!clear || quick.actions[0].tool === 'go_to') && A.assistFastNav) { const nv = A.assistFastNav(text); if (nv) { push('assist', nv.say, nv.items || []); A.earcon('done'); say(nv.say); if (A.assistLearnUse) A.assistLearnUse('navigate'); S.busy = false; S.status = S.listening ? 'listening' : 'ready'; render(); if (S.handsFree) S.followUntil = Date.now() + 10000; return; } }
     if (!clear && !opts.local && A.assistBrain && A.caps.sample && db().settings.aiEnabled !== false) { let ok = false; try { ok = await A.assistBrain(text, opts); } catch (e) { console.warn('brain', e); } if (ok) { S.busy = false; S.status = S.listening ? 'listening' : 'ready'; A.render(); sealUndo(); render(); if (S.handsFree) S.followUntil = Date.now() + 12000; return; } }
     if (clear || opts.local) plan = quick; else { plan = await aiPlan(text); if (!plan) plan = quick; }
+    if (!plan && A.assistClarify && !/\b(page|screen|tab|section|menu)\b/i.test(text)) { const cq = A.assistClarify(text); S.busy = false; S.status = S.listening ? 'listening' : 'ready'; push('assist', cq.say, cq.items); A.earcon('tap'); say(cq.say); render(); return; }
     if (!plan && A.assistNearest) { const nb = A.assistNearest(text); if (nb) { S.busy = false; S.status = S.listening ? 'listening' : 'ready'; push('assist', nb.say, nb.items); A.earcon(nb.done ? 'done' : 'tap'); say(nb.say); render(); return; } }
     if (!plan) { S.busy = false; S.status = S.listening ? 'listening' : 'ready'; A.earcon('miss'); say("Sorry, I didn't catch what to do. Try saying it another way."); push('assist', `I'm not sure what to do with "${text}". You can say things like "book Pieter van der Merwe tomorrow at 10", "BP 130 over 85", "who's waiting?", or "how do I send a statement?".`, [{ kind: 'button', label: 'What can you do?', cmd: 'what can you do' }]); return; }
     let spoken = []; let cue = null;
@@ -17682,6 +17684,217 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.48')) A.RELEASES.unshift({ v: '0.48', date: '2026-11-23', title: 'Internal messages — show or hide it in the menu', items: [
     { type: 'improved', area: 'general', title: 'Messages is now called Internal messages', text: 'In the menu on the left and in your personal menu (under your name), Messages is now Internal messages, so it is clear these are messages inside the practice — not from Prac360 or to patients.', link: '#/messages', guide: 'pracmsg' },
     { type: 'new', area: 'general', title: 'Switch Internal messages on or off in the menu', text: 'Click your name at the top. Under Internal messages, the switch shows or hides it in the menu on the left — just for you. When it is off, open it from your personal menu; messages that must be acknowledged still pop up.', link: '#/messages', guide: 'pracmsg' }] });
+})();
+
+
+/* ===== ui-assist-talk.js ===== */
+/* Prac360 Assist — conversational layer (v0.49).
+ * Makes Assist talk like a helpful colleague instead of a command line:
+ *  • understands everyday phrasing ("can you please…", "I need to…", "Thandiwe is allergic to penicillin", "Pieter paid 200 cash");
+ *  • small talk (hello, thanks, how are you) answered warmly;
+ *  • asks a question when something is missing or unclear — and remembers it, so the next thing you say is taken as the answer
+ *    ("Book an appointment" → "Sure — who is it for?" → "Pieter" → "When should Pieter come in?" → "Friday at 10");
+ *  • captures things on the system: allergies, chronic conditions, cell/email/address, notes on the patient file,
+ *    internal messages to staff (after a tap), payments, follow-ups, problems/ideas for Prac360;
+ *  • when it really does not understand, it says so in plain words and offers the likely things to do.
+ * Same safety as Assist: the user's own permissions, Undo for record-keeping, a tap before anything with consequences. */
+(function () {
+  'use strict';
+  const A = window.APP, E = window.PE, H = A.H; const C = () => A.assistCore; const db = () => A.db;
+  if (!A.assistCore || !A.assistTools) return;
+  const T = A.assistTools; const PZ = () => A.assistParse;
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+  const low = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’']/g, "'").replace(/[^a-z0-9' ]/g, ' ').replace(/\s+/g, ' ').trim();
+  const OK = (say, extra) => Object.assign({ say }, extra || {});
+  const first = () => String((A.user && A.user.name) || '').replace(/^(dr|sr|prof|mr|mrs|ms)\.?\s+/i, '').split(' ')[0];
+  const pn = (p) => `${p.firstName} ${p.lastName}`;
+  const cap = (s) => String(s || '').replace(/^./, (c) => c.toUpperCase());
+
+  // ---------------------------------------------------------------- understanding everyday phrasing
+  const clean = (text) => { let s = String(text || '').trim().replace(/[.!?]+$/, '');
+    for (let i = 0; i < 3; i++) s = s.replace(/^(?:(?:hey|hi|ok|okay|so|um+|uh+|right|alright|please|kindly|assist|prac ?360)[,\s]+)/i, '')
+      .replace(/^(?:can|could|would|will) you(?: please| kindly| just| quickly)?\s+/i, '').replace(/^(?:i (?:need|want|would like|wanna|'d like)(?: you)? to|i need you to|help me(?: to)?|let'?s|please|kindly|quickly|just|go ahead and)\s+/i, '');
+    return s.replace(/\s+(?:please|for me|thanks|thank you|now)$/i, '').trim(); };
+  const pInText = (text) => { const hm = String(text || '').match(/#([a-z]+_[a-z0-9_]+)/i); if (hm) { const hp = E.patient(db(), hm[1]); if (hp) return hp; } const t = ' ' + low(text).replace(/'s\b/g, '') + ' '; let best = null;
+    (db().patients || []).forEach((p) => { const f = low(p.firstName), l = low(p.lastName); let s = 0;
+      if (t.includes(` ${f} ${l} `)) s = 100; else if (t.includes(` ${l} ${f} `)) s = 95; else if (l.length > 3 && t.includes(` ${l} `)) s = 40; else if (f.length > 3 && t.includes(` ${f} `)) s = 35;
+      if (s && (!best || s > best.s)) best = { p, s, tie: false }; else if (s && best && s === best.s) best.tie = true; });
+    return best && !best.tie ? best.p : null; };
+  const pRef = (text) => { const p = pInText(text); return p ? '#' + p.id : ''; };
+  const ctxP = () => { const id = C().ctxPatientId() || C().S.lastPid; return id ? E.patient(db(), id) : null; };
+  const users = () => (db().users || []).filter((u) => u.active !== false && !u.blocked && !u.external && !u.system);
+  const userIn = (name) => { const n = low(name).replace(/^(dr|doctor|sister|sr|nurse|prof)\s+/, ''); if (!n) return null; const hits = users().filter((u) => { const un = low(u.name).replace(/^(dr|sr|prof|mr|mrs|ms)\s+/, ''); return un === n || un.split(' ').includes(n) || un.startsWith(n); }); return hits.length === 1 ? hits[0] : null; };
+
+  // ---------------------------------------------------------------- remembering a question we asked
+  const S = () => C().S;
+  const setAsk = (tool, args, slot, q) => { S().ask = { tool, args: Object.assign({}, args || {}), slot, q, at: Date.now() }; };
+  const clearAsk = () => { S().ask = null; };
+  const FRIENDLY = [[/^Which patient\? Say their name, or open their file first\.?$/, () => pick(['Sure — who is it for?', 'Happy to. Which patient is it for?', 'No problem — which patient?']), 'patient'],
+    [/^I couldn't find a patient called "(.+?)"\..*$/, (m) => `I couldn't find anyone called "${m[1]}". Who did you mean? You can say their first and last name.`, 'patient'],
+    [/^How much was paid\?$/, () => 'How much did they pay?', 'amount'],
+    [/^When should (.+?) see .+?\?(.*)$/, (m) => `When should ${m[1]} come in?${/free times/.test(m[2]) ? ' Here are the next free times — or just tell me a day and time.' : ' ' + m[2].trim()}`, 'when'],
+    [/is in the past\. Which day do you mean\?$/, (m) => m[0], 'when']];
+  // wrap every Assist tool: make questions friendlier and remember them so a plain answer works
+  const wrapAll = () => Object.keys(T).forEach((k) => { const t = T[k]; if (!t || t.__talk) return; const run = t.run; t.__talk = true;
+    t.run = (a) => { a = a || {}; if (k === 'book_appointment' && /^(?:an?\s+|the\s+|new\s+)?(?:appointment|booking|consult(?:ation)?|visit|slot)s?$/i.test(String(a.patient || '').trim())) a.patient = '';
+      if (k === 'book_appointment' && !a.patient && !['patient', 'consult'].includes(A.route)) { const lp = S().lastPid && E.patient(db(), S().lastPid); setAsk(k, a, 'patient'); return OK(pick(['Sure — who is the appointment for?', 'Happy to. Which patient is it for?']), { buttons: lp ? [{ label: `For ${pn(lp)}`, cmd: `book #${lp.id}` }] : [] }); }
+      const res = run(a); if (!res || res.done || res.confirm) return res; const msg = res.say || ''; for (const [re, fn, slot] of FRIENDLY) { const m = msg.match(re); if (m) { res.say = fn(m); setAsk(k, a, slot, res.say); break; } }
+      if (res.ask) setAsk(k, a, res.ask, res.say); return res; }; });
+  const _ts = T.today_summary && T.today_summary.run; if (_ts) T.today_summary.run = (a) => { const r = _ts(a); if (r && r.say) r.say = r.say.replace(/^0 appointments today( for you)?\./, (x, y) => (y ? 'You have no appointments today.' : 'There are no appointments today.')).replace(/^1 appointment today for you\./, 'You have 1 appointment today.').replace(/^(\d+) appointments today for you\./, 'You have $1 appointments today.'); return r; };
+  const _help = T.help && T.help.run; if (_help) T.help.run = (a) => { const r = _help(a); if (r && /could not find a help article/i.test(r.say || '')) return OK("I'm not sure about that one. Tell me what you're trying to do in Prac360 and I'll help — or I can open the Training Academy.", { buttons: [{ label: '🎓 Training Academy', cmd: 'open the training academy' }, { label: 'What can you do?', cmd: 'what can you do' }] }); return r; };
+
+  // ---------------------------------------------------------------- new things Assist can capture
+  const ALG = [[/penicillin|amoxicillin|augmentin|amoxil|ampicillin|flucloxacillin/, 'penicillin'], [/sulfa|sulpha|sulfonamide|bactrim|co-trimoxazole/, 'sulfonamide'], [/ibuprofen|nsaid|diclofenac|voltaren|aspirin|naproxen|brufen|anti-inflammator/, 'nsaid']];
+  T.add_allergy = { risk: 'write', run: (a) => { if (!A.canAny('clinical.write', 'patients.write')) return OK("Your role can't change allergies. Ask your practice manager if you need to."); const p = whoP(a);
+    if (!p) return askWho(`Sure — which patient is allergic${a.allergen ? ' to ' + a.allergen : ''}?`); if (!a.allergen) return OK(`What is ${p.firstName} allergic to?`, { ask: 'allergen' });
+    const al = cap(String(a.allergen).trim()); if ((db().allergies || []).some((x) => x.patientId === p.id && low(x.allergen) === low(al))) return OK(`${p.firstName} already has ${al} on the allergy list — nothing to add.`, { link: `#/patient/${p.id}` });
+    const cls = (ALG.find(([re]) => re.test(low(al))) || [])[1] || null; db().allergies.push({ id: E.id('al'), patientId: p.id, allergen: al, allergyClass: cls, reaction: a.reaction || '', severity: a.severity || 'unknown', recordedBy: A.user.id, date: E.today(db()), source: 'Prac360 Assist' }); C().S.lastPid = p.id;
+    return OK(`Done — I've added ${al} to ${p.firstName}'s allergies${a.reaction ? ` (${a.reaction})` : ''}.${cls ? ' Prescribing will now warn about ' + ({ penicillin: 'penicillins', sulfonamide: 'sulfonamides', nsaid: 'NSAIDs' })[cls] + '.' : ''}`, { done: true, link: `#/patient/${p.id}` }); } };
+  T.add_condition = { risk: 'write', run: (a) => { if (!A.canAny('clinical.write')) return OK("Your role can't add conditions to the problem list. A doctor or nurse can."); const p = whoP(a);
+    if (!p) return askWho('Which patient has this condition?'); if (!a.text) return OK(`Which condition should I add for ${p.firstName}?`, { ask: 'text' });
+    const SYN = { 'high blood pressure': 'hypertension', 'sugar': 'diabetes', 'sugar diabetes': 'type 2 diabetes', 'diabetes': 'type 2 diabetes', 'hiv': 'HIV disease', 'high cholesterol': 'hypercholesterolaemia', 'underactive thyroid': 'hypothyroidism', 'heart failure': 'heart failure', 'copd': 'chronic obstructive pulmonary disease' };
+    const q = SYN[low(a.text)] || a.text; const f = PZ().findIcd(q); const c = f.c || (f.choose && f.choose.length === 1 ? f.choose[0] : null);
+    if (!c) { const opts = (f.choose || []).slice(0, 4); return opts.length ? { say: `Which ICD-10 code fits "${a.text}" for ${p.firstName}?`, choices: { q: '', list: opts.map((x) => ({ label: `${x.code} ${x.desc}`, set: { text: x.code } })), retry: 'add_condition' } } : OK(`I couldn't find an ICD-10 code for "${a.text}" in your practice's list. Can you say it another way, or give me the code?`, { ask: 'text' }); }
+    if ((db().problems || []).some((x) => x.patientId === p.id && x.code === c.code && x.active !== false)) return OK(`${p.firstName} already has ${c.code} ${c.desc} on the problem list.`, { link: `#/patient/${p.id}` });
+    db().problems.push({ id: E.id('pr'), patientId: p.id, code: c.code, onset: E.today(db()), active: true, chronic: true, source: 'Prac360 Assist' }); C().S.lastPid = p.id;
+    return OK(`Done — ${c.desc} (${c.code}) is on ${p.firstName}'s problem list as a chronic condition. Please check the code is right.`, { done: true, link: `#/patient/${p.id}` }); } };
+  const whoP = (a) => (a.patient ? (String(a.patient).startsWith('#') ? E.patient(db(), a.patient.slice(1)) : (C().resolvePatient(a.patient) || {}).p) : ['patient', 'consult'].includes(A.route) ? ctxP() : null);
+  const askWho = (q) => { const lp = S().lastPid && E.patient(db(), S().lastPid); return OK(q, { ask: 'patient', buttons: lp ? [{ label: `${pn(lp)}`, cmd: pn(lp) }] : [] }); };
+  const FIELD = (w) => (/e-?mail/.test(w) ? 'email' : /emergency/.test(w) ? 'emergencyContact' : /address/.test(w) ? 'address' : 'phone');
+  const FLAB = { phone: 'cell number', email: 'email address', address: 'address', emergencyContact: 'emergency contact' };
+  T.update_contact = { risk: 'write', run: (a) => { if (!A.canAny('patients.write')) return OK("Your role can't change patient details."); const p = whoP(a); const fld = a.field || 'phone';
+    if (!p) return askWho(`Sure — whose ${FLAB[fld]} should I change?`); let v = String(a.value || '').trim(); if (!v) return OK(`What is ${p.firstName}'s new ${FLAB[fld]}?`, { ask: 'value' });
+    if (fld === 'phone') { const d = v.replace(/[^\d+]/g, '').replace(/^\+27/, '0'); if (!/^0\d{9}$/.test(d)) return OK(`"${v}" doesn't look like a South African cell number — it should have 10 digits, like 082 555 1234. What is the number?`, { ask: 'value' }); v = `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`; }
+    if (fld === 'email') { v = v.replace(/\s+at\s+/i, '@').replace(/\s+dot\s+/gi, '.').replace(/\s+/g, '').toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/.test(v)) return OK(`"${v}" doesn't look like an email address. Can you say it again?`, { ask: 'value' }); }
+    const old = p[fld] || ''; if (low(old) === low(v)) return OK(`${p.firstName}'s ${FLAB[fld]} is already ${v} — nothing to change.`, { link: `#/patient/${p.id}/details` }); p[fld] = v; E.audit(db(), A.user, 'edit-patient', 'patient', p.id, p.id, `${FLAB[fld]}: ${old || '—'} → ${v} (via Prac360 Assist)`); C().S.lastPid = p.id;
+    return OK(`Done — ${p.firstName}'s ${FLAB[fld]} is now ${v}${old ? ` (it was ${old})` : ''}.`, { done: true, link: `#/patient/${p.id}/details` }); } };
+  T.patient_note = { risk: 'write', run: (a) => { if (!A.canAny('patients.write', 'clinical.write')) return OK("Your role can't add notes to patient files."); const p = whoP(a);
+    if (!p) return askWho('Sure — which patient should the note go on?'); const t = String(a.text || '').trim(); if (!t) return OK(`What should the note on ${p.firstName}'s file say?`, { ask: 'text' }); if (/\b\d{13}\b/.test(t)) return OK('Please leave the ID number out of the note. What should it say?', { ask: 'text' });
+    db().documents.push({ id: E.id('doc'), patientId: p.id, kind: 'Note', title: cap(t).slice(0, 60) + (t.length > 60 ? '…' : ''), date: E.today(db()), body: cap(t), by: A.user.name, acknowledged: true, source: 'Prac360 Assist' }); C().S.lastPid = p.id;
+    return OK(`Done — I've added a note to ${p.firstName}'s file: "${cap(t)}".`, { done: true, link: `#/patient/${p.id}/documents` }); } };
+  T.send_message = { risk: 'confirm', run: (a) => { const to = String(a.to || '').trim(); const txt = String(a.text || '').trim(); const everyone = /^(everyone|everybody|all|all staff|the staff|staff|the team|team|the practice|whole practice)$/i.test(to);
+    const u = everyone ? null : userIn(to); if (!everyone && !u) return to ? OK(`I couldn't find "${to}" among the users. Who should get the message — everyone, or one person?`, { ask: 'to' }) : OK('Who should get the message — everyone in the practice, or one person?', { ask: 'to' });
+    if (u && A.user && u.id === A.user.id) return OK("That's you! Who else should get it?", { ask: 'to' }); if (!txt) return OK(`What should the message to ${everyone ? 'everyone' : u.name} say?`, { ask: 'text' }); if (/\b\d{13}\b/.test(txt)) return OK('Please leave ID numbers out of messages. What should it say?', { ask: 'text' });
+    const ids = everyone ? users().filter((x) => x.id !== A.user.id).map((x) => x.id) : [u.id]; if (!ids.length) return OK('There is nobody else in the practice to send it to yet.');
+    const title = cap(txt).split(/[.!?]/)[0].slice(0, 70);
+    return { say: `Here's the message for ${everyone ? 'everyone in the practice' : u.name}. Shall I send it?`, confirm: { text: `Send to ${everyone ? `everyone (${ids.length})` : u.name}: "${cap(txt)}"`, detail: 'It pops up for them to acknowledge — never during a consultation.', btn: '✉ Send message', go: () => { db().messages = db().messages || []; db().messages.push({ id: 'msg_' + Date.now().toString(36), from: A.user.id, fromName: A.user.name, toAll: everyone, to: ids, title, body: cap(txt), level: /\b(urgent|asap|immediately|now)\b/i.test(txt) ? 'urgent' : 'info', ack: true, at: new Date().toISOString(), acks: {}, reads: {}, via: 'assist' }); E.audit(db(), A.user, 'message-sent', 'message', title, null, 'via Prac360 Assist'); return OK(`Sent ✓ — ${everyone ? 'everyone' : u.name} will see it as a popup. You can see who read it under Internal messages.`, { link: '#/messages' }); } } }; } };
+  T.report_problem = { risk: 'read', run: (a) => { if (!H['fb-new']) return OK('That form is not available here.'); setTimeout(() => { H['fb-new']({ dataset: { type: a.type || 'bug' } }); setTimeout(() => { const f = document.getElementById('fbf'); if (f && a.title && f.title) f.title.value = cap(a.title).slice(0, 100); }, 60); }, 30); return OK(a.type === 'enhancement' ? "Good idea — I've opened the form so you can tell the Prac360 team. Add why you need it and how it should work." : "Sorry about that! I've opened the form so you can tell the Prac360 team. Say what happened and what you expected."); } };
+
+  wrapAll();
+
+  // ---------------------------------------------------------------- run + show a result
+  const show = (res, items0) => { const c = C(); if (!res) return; const items = (items0 || []).concat(c.resultItems(res)); c.push('assist', res.say || '', items); A.earcon(res.confirmId || res.choiceId ? 'tap' : res.done ? 'done' : 'tap'); c.say(res.confirm ? res.say + ' Tap to confirm.' : res.say); A.render(); c.sealUndo(); c.render(); };
+  const run = (tool, args) => { clearAsk(); const res = C().runTool(tool, args || {}); show(res); return true; };
+  const reply = (say, chips) => { const c = C(); c.push('assist', say, (chips || []).map((x) => ({ kind: 'button', label: x[0], cmd: x[1] }))); A.earcon('tap'); c.say(say); c.render(); return true; };
+  const STARTERS = () => [["Who's waiting?", "who's waiting"], ['Book an appointment', 'book an appointment'], ['Find a patient', 'find a patient'], ['Take a payment', 'take a payment']];
+
+  // ---------------------------------------------------------------- the conversation layer
+  const STRONG = /^(book|open|go to|show|add|record|capture|change|update|set|send|message|tell|cancel|move|reschedule|check in|start|prescribe|refer|write|remind|register|who|what|how|where|why|bp|blood pressure|pulse|temp|undo|sign|bill|report|find|search)\b/i;
+  const answerAsk = (raw) => { const k = S().ask; if (!k || Date.now() - k.at > 3 * 60000) { clearAsk(); return false; } const t = clean(raw); const l = low(t);
+    if (/^(never ?mind|cancel( that| it)?|forget (it|that)|stop|no( thanks| thank you)?|leave it|don'?t worry( about it)?|not now)$/.test(l)) { clearAsk(); return reply(pick(["No problem — I've left it.", "Okay, I'll leave that.", 'Sure, cancelled.'])); }
+    if ((k.slot === 'text' || k.slot === 'value') && /^(what can you do|what|how|who|where|why|when is|undo|open|go to|show me|take me|book|help)\b/.test(l) && !/\d/.test(l)) { clearAsk(); return false; }
+    const pp = pInText(t); const shortName = pp && l.split(' ').length <= 4; const lp = A.assistLocal ? A.assistLocal(t) : null;
+    if (!(k.slot === 'patient' && shortName) && !(k.slot === 'text' || k.slot === 'value') && ((STRONG.test(l) && l.split(' ').length > 3) || /\b(appointment|book|booking)\b/.test(l) && k.tool !== 'book_appointment' || (pp && k.args.patient && k.args.patient !== '#' + pp.id && k.slot !== 'patient') || (lp && lp.actions && lp.actions[0] && lp.actions[0].tool !== k.tool && !['open_patient', 'go_to'].includes(lp.actions[0].tool)) || (k.slot === 'when' && pp && /\b(book|appointment|make)\b/.test(l)))) { clearAsk(); return false; } // a new request, not an answer
+    const a = Object.assign({}, k.args); const ans = t.replace(/^(?:it'?s|it is|that'?s|for|to|the patient is|patient|its|his|her|their)\s+/i, '').replace(/\s+(?:please)$/i, '').trim();
+    if (k.slot === 'patient') { const p = pInText(ans); a.patient = p ? '#' + p.id : ans; }
+    else if (k.slot === 'when') { const d = PZ().parseDate(ans), tm = PZ().parseTime(ans); if (!d && !tm) { return reply(`Sorry, I didn't get the day or time. Try something like "tomorrow at 10" or "Friday at half past two".`); } if (d) a.date = d; if (tm) a.time = tm; }
+    else if (k.slot === 'amount') { const m = PZ().parseAmount(ans) || (ans.match(/\d+(?:[.,]\d{1,2})?/) || [])[0]; if (!m) return reply('How much, in rand? For example "350".'); a.amount = String(m).replace(',', '.'); const meth = (low(ans).match(/\b(cash|card|eft|transfer)\b/) || [])[1]; if (meth) a.method = meth; }
+    else if (k.slot === 'to') a.to = ans; else a[k.slot] = ans;
+    return run(k.tool, a); };
+
+  const smallTalk = (raw) => { const l = low(raw).replace(/\b(assist|prac ?360)\b/g, '').trim(); const nm = first();
+    if (/^(hi|hello|hey|hiya|howzit|heita|sawubona|molo|dumela|good (morning|afternoon|evening|day)|morning|afternoon|evening|goeie (more|middag|naand)|hallo)( there| again)?$/.test(l)) { const h = new Date().getHours(); return reply(`${pick([h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening', 'Hi', 'Hello'])}${nm ? ' ' + nm : ''}! What can I help you with?`, STARTERS()); }
+    if (/^(thanks|thank you|thank u|thx|ta|cheers|baie dankie|dankie|ngiyabonga|enkosi)( so much| very much| a lot)?( assist)?$|^(great|perfect|awesome|lovely|brilliant|nice|cool|excellent|super)( thanks| thank you)?$|^(ok|okay) (thanks|thank you)$/.test(l)) return reply(pick(["You're welcome! Anything else?", 'Pleasure! Let me know if you need anything else.', 'Glad I could help. Anything else?']));
+    if (/^how are you( doing| today)?$|^how'?s it going$|^are you ok(ay)?$/.test(l)) return reply(`I'm good, thanks for asking${nm ? ', ' + nm : ''}! What can I do for you?`, STARTERS());
+    if (/^(who|what) are you$|^what'?s your name$|^what is assist$/.test(l)) return reply("I'm Assist, your helper inside Prac360. Just tell me what you need in your own words — book patients, find files, capture allergies, conditions or contact details, take payments, send internal messages, and much more. If I'm not sure what you mean, I'll ask.", STARTERS());
+    if (/^(help|help me|can you help( me)?|i need (some )?help|assist me|i'?m stuck)$/.test(l)) return reply(pick(['Of course — what do you need?', "Sure! What would you like to do? Tell me in your own words.", "I'm here. What can I help with?"]), STARTERS());
+    if (/^(never ?mind|forget (it|that)|cancel( that)?|leave it|nothing|no thanks|that'?s all|that'?s it)$/.test(l)) return reply(pick(['No problem. Just ask when you need me.', 'Okay! I\'m here when you need me.']));
+    if (/^(yes|yeah|yep|sure|ok|okay|alright|fine|no|nope)$/.test(l)) return reply("Sure — what would you like me to do? Tell me in your own words, and I'll ask if I need more.");
+    if (/\b(weather|news|joke|rugby|soccer|football|cricket|lotto|traffic|recipe|movie)\b/.test(l)) return reply("I can only help with things in Prac360 — I can't check that for you. Is there something in the practice I can do?", STARTERS());
+    return false; };
+
+  const intents = (raw) => { const t = clean(raw); const l = low(t); const pr = pRef(t);
+    if (!l) return reply(pick(['Of course — what do you need?', "Sure, what would you like to do?"]), STARTERS());
+    // today
+    if (/\b(who'?s?( is)? (on my list|booked|coming( in)?|in today|seeing me|waiting)|my (list|patients|appointments|bookings|day|diary)( today| for today| look like)?|how many patients( today| do i have| are (booked|waiting))?|what'?s?( is)? (on )?(my day|today|on today|on the list)|today'?s (list|appointments|bookings|patients))\b/.test(l)) return run('today_summary');
+    // allergy
+    let m = t.match(/^(.+?)\s+(?:is|are|has been|was|became)\s+allergic\s+to\s+(.+)$/i) || t.match(/^(.+?)\s+has\s+an?\s+allergy\s+to\s+(.+)$/i);
+    if (m) { const al = m[2].replace(/\s*[,(-]?\s*(?:it\s+)?(?:causes|gives (?:him|her|them)|reaction(?: is)?:?)\s+.*$/i, '').trim(); const re = (m[2].match(/(?:causes|gives (?:him|her|them)|reaction(?: is)?:?)\s+(.+)$/i) || [])[1] || ''; return run('add_allergy', { patient: /^(he|she|they|the patient|patient|this patient)$/i.test(m[1].trim()) ? '' : (pRef(m[1]) || m[1]), allergen: al.replace(/^(an?|the)\s+/i, ''), reaction: re, severity: /\bsevere|anaphyla/i.test(t) ? 'severe' : /\bmild\b/i.test(t) ? 'mild' : '' }); }
+    m = t.match(/^(?:add|record|capture|note|put)\s+(?:an?\s+)?allergy(?:\s+to|\s*:)?\s+(.+?)(?:\s+(?:for|to|on)\s+(.+?)(?:'s)?(?:\s+file)?)?$/i) || t.match(/^(?:add|record|capture|put)\s+(.+?)\s+(?:as an? allergy|to (?:the )?allerg(?:y|ies)(?: list)?)(?:\s+(?:for|of)\s+(.+))?$/i);
+    if (m) return run('add_allergy', { patient: m[2] ? pRef(m[2]) || m[2] : '', allergen: m[1] });
+    if (/\ballerg/.test(l) && !/^(what|which|show|does|is there|any)\b/.test(l)) { const al = (t.match(/allerg(?:y|ic|ies)\s+(?:to\s+)?(.+?)(?:\s+for\s+.+)?$/i) || [])[1]; return run('add_allergy', { patient: pr, allergen: al && !pInText(al) ? al : '' }); }
+    // chronic condition / problem list
+    m = t.match(/^(?:add|record|capture|put)\s+(.+?)\s+(?:as|to)\s+(?:an?\s+)?(?:chronic\s+)?(?:condition|illness|disease|problem|diagnosis)(?:\s+list)?(?:\s+(?:for|of|on)\s+(.+?)(?:'s)?(?:\s+file)?)?$/i) || t.match(/^(?:add|record|capture)\s+(?:a\s+)?chronic\s+(?:condition|illness|disease)\s*:?\s+(.+?)(?:\s+(?:for|to)\s+(.+))?$/i);
+    if (m) return run('add_condition', { patient: m[2] ? pRef(m[2]) || m[2] : pr, text: m[1].replace(/^(an?|the)\s+/i, '') });
+    m = t.match(/^(.+?)\s+(?:has|is|has got|suffers from|is on treatment for|lives with)\s+(?:got\s+)?(?:chronic\s+)?(diabetes|sugar diabetes|type [12] diabetes|hypertension|high blood pressure|asthma|copd|epilepsy|hiv|arthritis|gout|hypothyroidism|underactive thyroid|high cholesterol|heart failure|depression|kidney disease)\b/i);
+    if (m && pInText(m[1])) return run('add_condition', { patient: pRef(m[1]), text: m[2] });
+    // contact details
+    m = t.match(/^(?:change|update|set|correct|fix|replace|edit)\s+(?:the\s+)?(?:(.+?)'s\s+)?(cell(?:phone)?(?:\s+number)?|mobile(?:\s+number)?|phone(?:\s+number)?|contact number|number|e-?mail(?:\s+address)?|(?:home\s+|postal\s+|physical\s+)?address|emergency contact)(?:\s+(?:of|for)\s+(.+?))?\s+(?:to|is|as|with|into)\s+(.+)$/i);
+    if (m) return run('update_contact', { patient: pRef(m[1] || m[3] || '') || m[1] || m[3] || '', field: FIELD(low(m[2])), value: m[4] });
+    m = t.match(/^(.+?)'s\s+(?:new\s+)?(cell(?:phone)?(?:\s+number)?|mobile(?:\s+number)?|phone(?:\s+number)?|number|e-?mail(?:\s+address)?|address)\s+is\s+(?:now\s+)?(.+)$/i) || t.match(/^(.+?)\s+has\s+a\s+new\s+(cell(?:phone)?(?:\s+number)?|number|phone(?:\s+number)?|e-?mail(?:\s+address)?|address)\s*[:,-]?\s*(.*)$/i);
+    if (m && pInText(m[1])) return run('update_contact', { patient: pRef(m[1]), field: FIELD(low(m[2])), value: m[3] });
+    // internal message
+    m = t.match(/^(?:send|write)\s+(?:an?\s+)?(?:internal\s+)?(?:message|msg|note)\s+to\s+(.+?)\s*(?:that|saying|to say|:|-|,)\s*(.+)$/i) || t.match(/^(?:message|tell|inform|notify)\s+(everyone|everybody|all staff|the staff|staff|the team|all|(?:dr\.?\s+|sister\s+)?[a-z]+(?:\s+[a-z]+)?)\s+(?:that\s+)?(.+)$/i) || t.match(/^let\s+(everyone|everybody|all staff|the staff|the team|(?:dr\.?\s+|sister\s+)?[a-z]+(?:\s+[a-z]+)?)\s+know\s+(?:that\s+)?(.+)$/i);
+    if (m && !/^(me|myself|the patient|patient)$/i.test(m[1]) && (/^(everyone|everybody|all|all staff|the staff|staff|the team|team)$/i.test(m[1]) || userIn(m[1]) || /^(send|write)/i.test(t))) return run('send_message', { to: m[1], text: m[2] });
+    if (/^(?:send|write)\s+(?:an?\s+)?(?:internal\s+)?message\b/i.test(t)) { const to = (t.match(/\bto\s+(.+)$/i) || [])[1] || ''; return run('send_message', { to }); }
+    // note on the patient file (not the consult note)
+    m = t.match(/^(?:add|make|write|put|leave|capture)\s+(?:a\s+)?note\s+(?:on|to|in|for)\s+(.+?)(?:'s)?(?:\s+(?:file|record|profile|folder))?\s*(?:that|saying|:|-|,)\s*(.+)$/i) || t.match(/^note\s+(?:on|for|in)\s+(.+?)(?:'s)?(?:\s+(?:file|record))?\s*(?:that|:|-|,)\s*(.+)$/i);
+    if (m && pInText(m[1]) && (/\b(file|record|profile)\b/i.test(t) || !C().draftEnc())) return run('patient_note', { patient: pRef(m[1]), text: m[2] });
+    m = t.match(/^(?:add|make|write|put|leave)\s+(?:a\s+)?note\s+(?:on|to|in|for)\s+(.+?)(?:'s)?(?:\s+(?:file|record|profile))?$/i); if (m && pInText(m[1])) return run('patient_note', { patient: pRef(m[1]) });
+    // payments said naturally
+    m = t.match(/^(.+?)\s+(?:has\s+)?(?:paid|pays|payed|settled|made a payment of|gave me|brought)\s+(?:r\s*)?(\d[\d\s.,]*)\s*(?:rand|r)?\s*(?:in\s+|by\s+|with\s+)?(cash|card|eft|transfer)?/i) || t.match(/^(?:take|receive|capture|record)\s+(?:a\s+)?payment(?:\s+of)?\s+(?:r\s*)?(\d[\d.,]*)?\s*(?:rand)?\s*(?:from\s+)?(.+?)?(?:\s+(?:in|by|with)\s+(cash|card|eft))?$/i);
+    if (m && /paid|pays|payed|settled|payment|gave me|brought/i.test(t)) { const isTake = /^(take|receive|capture|record)/i.test(t); const who = isTake ? m[2] : m[1]; const amt = isTake ? m[1] : m[2]; return run('receive_payment', { patient: who ? pRef(who) || who : '', amount: amt ? String(amt).replace(/\s/g, '').replace(',', '.') : '', method: (isTake ? m[3] : m[3]) || '' }); }
+    m = t.match(/^(.+?)\s+(?:has\s+)?(?:paid|wants to pay|is paying|is here to pay|came to pay)$/i); if (m && pInText(m[1])) return run('receive_payment', { patient: pRef(m[1]) });
+    m = t.match(/^(?:change|update|set|correct|fix|edit)\s+(?:the\s+)?(?:(.+?)'s\s+)?(cell(?:phone)?(?:\s+number)?|mobile(?:\s+number)?|phone(?:\s+number)?|contact number|number|e-?mail(?:\s+address)?|(?:home\s+|postal\s+)?address|emergency contact)(?:\s+(?:of|for)\s+(.+))?$/i); if (m) return run('update_contact', { patient: pRef(m[1] || m[3] || '') || m[1] || m[3] || '', field: FIELD(low(m[2])) });
+    if (/^(?:add|make|write|leave|capture)\s+(?:a\s+)?(?:file\s+)?note$/i.test(t) && !C().draftEnc()) return run('patient_note', {});
+    if (/^(?:add|make|write|leave|capture)\s+(?:a\s+|to the\s+)?(?:consult(?:ation)?\s+)?note$/i.test(t) && C().draftEnc()) { setAsk('write_note', { section: 'plan' }, 'text'); return reply(pick(['Sure — what should I add to the consult note?', 'Okay — what would you like in the note?'])); }
+    if (/^(?:add|record|capture)\s+(?:a\s+)?chronic\s+(?:condition|illness|disease)$/i.test(t)) return run('add_condition', {});
+    // problem / idea for Prac360
+    if (/^(?:report|log|raise)\s+(?:a\s+)?(?:problem|bug|issue|fault)|^(?:i have|i'?ve got|got)\s+(?:an?\s+)?(?:idea|suggestion)|^(?:suggest|request)\s+(?:a\s+)?(?:feature|change|improvement|new function)/i.test(t)) return run('report_problem', { type: /idea|suggest|feature|improvement|request|new function/i.test(t) ? 'enhancement' : 'bug', title: t.replace(/^(?:report|log|raise)\s+(?:a\s+)?(?:problem|bug|issue|fault)\s*(?:with|that|:|-|about)?\s*/i, '').replace(/^(?:i have|i'?ve got|got)\s+(?:an?\s+)?(?:idea|suggestion)\s*(?:for|:|-|about|to)?\s*/i, '') });
+    // find a patient
+    if (/^(?:find|search(?: for)?|look up|lookup|look for)\s+(?:a\s+)?patient$/i.test(t)) { setAsk('open_patient', {}, 'patient', 'Who are you looking for?'); return reply(pick(['Sure — who are you looking for?', 'Happy to. What is the patient\'s name?'])); }
+    m = t.match(/^(?:find|search(?: for)?|look up|lookup|look for|pull up)\s+(?:the\s+)?(?:patient\s+)?(.+?)(?:'s)?(?:\s+(?:file|record|folder))?$/i); if (m && pInText(m[1])) return run('open_patient', { patient: pRef(m[1]) });
+    if (/^take a payment$/i.test(t)) return run('receive_payment', { patient: pr });
+    return false; };
+
+  A.assistTalk = async (text, opts, raw0) => { if (!db() || !A.user) return false; if (smallTalk(raw0 || text)) { clearAsk(); return true; } if (S().ask && answerAsk(text)) return true; return intents(text) || false; };
+
+  // ---------------------------------------------------------------- when it truly is not sure: ask, in plain words
+  const HINTS = [[/\bclaim/, [['Claims with problems', 'show rejected claims'], ['Open Claims', 'open claims']]], [/\b(stock|medicine|tablets|order)\b/, [['Check a stock level', 'how many paracetamol do we have'], ['Open Stock', 'open stock']]], [/\b(bill|invoice|charge)\b/, [['Bill the open consult', 'bill this consult'], ['Open Billing', 'open billing']]],
+    [/\b(sms|whatsapp|email|statement)\b/, [['Email a statement', 'email statement'], ['Open Payments and accounts', 'open accounts']]], [/\b(report|numbers|figures|income|money)\b/, [['Open Reports', 'open reports']]], [/\b(script|prescri|medication)\b/, [['Prescribe in the open consult', 'prescribe']]], [/\b(diary|appointment|booking|slot)\b/, [['Book an appointment', 'book an appointment'], ['Open the diary', 'open the diary']]],
+    [/\b(message|staff|colleague)\b/, [['Send an internal message', 'send a message'], ['Open Internal messages', 'open internal messages']]], [/\b(note|history)\b/, [['Add a note to a patient file', 'add a note']]]];
+  A.assistClarify = (text) => { const t = clean(text); const l = low(t); const p = pInText(t) || null; const items = [];
+    if (p) [[`Open ${p.firstName}'s file`, `open #${p.id}`], [`Book ${p.firstName}`, `book #${p.id}`], [`What does ${p.firstName} owe?`, `what does #${p.id} owe`], [`Add a note to ${p.firstName}'s file`, `add a note on #${p.id} file`]].forEach((x) => items.push(x));
+    HINTS.forEach(([re, ch]) => { if (re.test(l)) ch.forEach((x) => { if (items.length < 6 && !items.some((y) => y[0] === x[0])) items.push(x); }); });
+    if (!items.length) STARTERS().forEach((x) => items.push(x));
+    const say = p ? pick([`I want to get this right — what would you like me to do for ${p.firstName}?`, `Sorry, I'm not quite sure what you need for ${p.firstName}. Is it one of these, or can you say it another way?`])
+      : items.length && HINTS.some(([re]) => re.test(l)) ? pick(['Just to make sure I understand — did you mean one of these?', "I'm not 100% sure what you mean. Is it one of these?"])
+      : pick(["Sorry, I didn't quite get that. Could you tell me a bit more — what would you like me to do, and for which patient?", "I'm not sure I understood. Can you say it another way? For example: \"book Pieter tomorrow at 10\" or \"Thandiwe is allergic to penicillin\"."]);
+    return { say, items: items.map((x) => ({ kind: 'button', label: x[0], cmd: x[1] })) }; };
+})();
+
+
+/* ===== ui-v049.js ===== */
+/* Prac360 v0.49 — Assist talks like a helpful colleague: understands everyday phrasing, asks when it is not sure, and captures things on the system. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || [];
+  const putKB = (k) => { const i = KB.findIndex((x) => x.id === k.id); if (i >= 0) KB[i] = Object.assign({}, KB[i], k); else KB.push(k); };
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.49')) A.RELEASES.unshift({ v: '0.49', date: '2026-11-23', title: 'Assist understands you — and asks when it is not sure', items: [
+    { type: 'improved', area: 'general', title: 'Talk to Assist in your own words', text: 'Assist now understands everyday phrasing — “can you please…”, “I need to…”, “who is on my list today?”, “Pieter paid 200 cash”. It greets you, says “you’re welcome”, and answers in plain, friendly sentences instead of commands.', link: '#/today', guide: 'assist' },
+    { type: 'new', area: 'general', title: 'Assist asks you questions', text: 'If something is missing, Assist asks — and your next answer is used: “Book an appointment” → “Who is it for?” → “Pieter” → “When should Pieter come in?” → “Friday at 10” → booked. If it really does not understand, it says so and offers the likely things to do. Say “never mind” to stop.', link: '#/today', guide: 'assist' },
+    { type: 'new', area: 'clinical', title: 'Assist captures things for you', text: 'Just say it: “Thandiwe is allergic to penicillin, it causes a rash” · “Add asthma as a chronic condition for Ayesha” · “Change Pieter’s cell number to 082 123 4567” · “Ayesha’s new email is …” · “Add a note to Pieter’s file that he phoned about his results” · “Send a message to everyone that the meeting is at 2” · “Let Dr Naidoo know the lab called” · “Report a problem with printing”. Record-keeping has Undo; messages and payments wait for your tap. Your role’s permissions still apply.', link: '#/today', guide: 'assist' }] });
+  const ak = KB.find((k) => k.id === 'assist'); if (ak) { ak.keys = (ak.keys || []).concat(['assist does not understand', 'talk to assist', 'assist questions', 'capture with assist']);
+    ak.steps = ['Open Assist (green button or Ctrl+Space). Type, or tap 🎙 Talk and speak — in your own words, like you would to a colleague.', 'Ask for anything: “Who is on my list today?”, “Book Pieter on Friday at 10”, “BP 135 over 85”, “What does Ayesha owe?”, “How do I send a statement?”.',
+      'Capture things: allergies (“Thandiwe is allergic to penicillin”), chronic conditions (“Add asthma as a chronic condition for Ayesha”), contact details (“Change Pieter’s cell number to …”), notes on the file, payments (“Ayesha paid R350 cash”), follow-ups, internal messages to staff.',
+      'If something is missing, Assist asks you — just answer (“Pieter”, “Friday at 10”, “R350 cash”). Tap a suggested button or say “never mind” to stop.', 'Record-keeping has an Undo button. Payments and messages wait for your tap. Assist never signs, submits claims or overrides a safety alert, and it can only do what your role allows.']; }
+  putKB({ id: 'assistcapture', title: 'Assist: capture allergies, conditions, contact details, notes and messages', keys: ['assist allergy', 'assist chronic', 'assist cell number', 'assist note', 'assist message', 'say it and assist captures', 'capture by voice'], screens: ['today', 'patient', 'consult'], link: '#/today',
+    steps: ['Allergy: “Thandiwe is allergic to penicillin, it causes a rash.” Prescribing then warns about the medicine class.', 'Chronic condition: “Add asthma as a chronic condition for Ayesha” or “Pieter has hypertension.” Assist links the ICD-10 code from your practice list — check it.', 'Contact details: “Change Pieter’s cell number to 082 123 4567” · “Ayesha’s new email is ayesha at example dot com.” Numbers and emails are checked.', 'Note on the file: “Add a note to Pieter’s file that he phoned about his results.” In a consultation, “add a note” goes into the consult note.', 'Internal message: “Send a message to everyone that the meeting is at 2” · “Let Dr Naidoo know the lab called.” You tap Send first.', 'Missing something? Assist asks. Every change is in the audit log as “via Prac360 Assist”, and you can Undo it.'] });
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => x[0] === 'Getting around') || A.FUNCTIONS[0]; if (g && !g[1].some((x) => x[1] === 'assistcapture')) g[1].push(['Assist: capture allergies, conditions, contact details, notes and messages', 'assistcapture']); }
+  const c = (A.COURSES || []).find((x) => x.id === 'assist'); if (c) {
+    if (!c.lessons.some((l) => l.t === 'Talk naturally — Assist asks when it is not sure')) c.lessons.splice(2, 0, { t: 'Talk naturally — Assist asks when it is not sure', body: 'Speak like you would to a colleague: “Can you book Pieter for Friday morning?”. If something is missing Assist asks — “Who is it for?”, “When should Pieter come in?” — and simply uses your answer. If it does not understand, it says so and shows the likely things to do. Say “never mind” to stop.', guide: 'assist' });
+    if (!c.lessons.some((l) => l.t === 'Capture things by talking')) c.lessons.splice(3, 0, { t: 'Capture things by talking', body: '“Thandiwe is allergic to penicillin” · “Add asthma as a chronic condition for Ayesha” · “Change Pieter’s cell number to 082 123 4567” · “Add a note to Pieter’s file that he phoned” · “Ayesha paid R350 cash” · “Let Dr Naidoo know the lab called”. Record-keeping has Undo; payments and messages wait for your tap.', guide: 'assistcapture' });
+    if (c.quiz && !c.quiz.some((q) => /Who is it for/.test(q.q))) c.quiz.push({ q: 'You say “Book an appointment” and Assist asks “Who is it for?”. What do you do?', o: ['Start again with the full sentence', 'Just answer with the name — Assist uses it and asks for anything else it needs', 'Close Assist'], a: 1 }, { q: 'How do you add an allergy with Assist?', o: ['You cannot', 'Say e.g. “Thandiwe is allergic to penicillin” — it is added with Undo', 'Email support'], a: 1 }); }
 })();
 
 

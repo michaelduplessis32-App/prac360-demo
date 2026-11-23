@@ -18233,7 +18233,7 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
 /* Prac360 demo inbox address (Google Apps Script web app). Set by the Prac360 team.
  * Until it is built in here, a tester's browser learns it from the "inbox link" the administrator shares
  * (…/prac360-demo/?inbox=https://script.google.com/macros/s/…/exec). Only a Google Apps Script /exec address is accepted. */
-window.P360_HUB = { url: '' };
+window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgghtDEDYqLJSyDbt2657iWMawhIvZ97GqKvlSgdq6OK3dYUvP51lxDH/exec', builtIn: true };
 (function () {
   try {
     const ok = (u) => /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(u || '');

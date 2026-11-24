@@ -2855,6 +2855,10 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .cu-tn{display:flex;flex-direction:column}.cu-ta{display:flex;gap:6px;align-items:center;justify-content:space-between;margin-top:auto}
 .cu-mk{display:flex;gap:16px;flex-wrap:wrap}.cu-mk-prev{width:180px;height:210px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-radius:12px}.cu-mk-prev img{max-width:170px;max-height:200px}.cu-mk-f{flex:1;min-width:220px}
 .linkish{background:none;border:0;padding:0;color:#2563eb;cursor:pointer;text-decoration:underline}
+/* v0.75 — staff sign-in: Support console or Admin tool */
+.auth-staff{display:grid;grid-template-columns:1fr 1fr;gap:8px}.auth-staff .btn{display:flex;align-items:center;justify-content:center;gap:6px}
+.adm-login-card .adm-to{display:flex;width:100%;margin:4px 0 14px}.adm-login-card .adm-to button{flex:1;padding:8px 6px;font-weight:600}
+.adm-login-card .adm-to{margin-top:14px;border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.04)}.adm-login-card .adm-to button{background:transparent;color:#cbd5e1}.adm-login-card .adm-to button.on{background:#2563eb;color:#fff}
 </style>
 </head>
 <body>
@@ -7383,7 +7387,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
       <label class="f"><span>Password</span><input name="pw" type="password" autocomplete="current-password" required data-noclean data-nodictate></label>
       <button class="btn primary block" type="submit">Sign in</button>
       <div class="row between small"><a href="#forgot">Forgot password?</a><a href="#register"><strong>Register your practice</strong></a></div></form>
-      <div class="auth-req"><a href="#accept">Have an invitation code?</a></div><div class="auth-alt"><span>Prac360 staff?</span><a class="btn block" href="#admin">Administrator sign-in</a></div>`);
+      <div class="auth-req"><a href="#accept">Have an invitation code?</a></div><div class="auth-alt"><span>Prac360 staff?</span><div class="auth-staff"><a class="btn block" href="#admin" data-act="adm-to" data-to="console"><span aria-hidden="true">🎧</span> Support console</a><a class="btn block" href="#admin" data-act="adm-to" data-to="admin"><span aria-hidden="true">🛡</span> Admin tool</a></div></div>`);
     document.getElementById('si').addEventListener('submit', async (e) => { e.preventDefault(); const f = e.target; err(''); busy(f, true, 'Checking…');
       const r = await PL.signIn(f.email.value, f.pw.value); busy(f, false, 'Sign in'); f.pw.value = '';
       if (!r.ok) { if (r.needVerify) { A.ui.auth = { step: 'verify', accId: r.acc.id }; PL.sendCode(r.acc, 'verify'); return A.renderAuth(); } return err(r.msg); }
@@ -11851,21 +11855,24 @@ ${run.original}`;
   const _boot = A.boot; A.boot = async () => { await window.PL.init(); await A.ensureAdmin(); return _boot(); };
 
   // ===================================================================== admin sign-in page
-  A.renderAdminLogin = () => { document.body.classList.remove('with-bar'); const st = A.ui.adm || {}; const a = window.CP_ASSETS || {};
+  A.renderAdminLogin = () => { document.body.classList.remove('with-bar'); const st = A.ui.adm || {}; const a = window.CP_ASSETS || {}; const to = A.admTo(); const TN = to === 'console' ? 'Support console' : 'Admin tool';
     const card = st.step === 'mfa' ? `<h1>Two-step verification</h1><p class="small">Enter the 6-digit code from your authenticator app.</p><form id="adm-mfa" class="auth-form"><div id="adm-err" class="alert crit" hidden></div><label class="f"><span>Code</span><input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="11" required autofocus data-noclean data-nodictate></label><button class="btn primary block" type="submit">Verify</button>${(st.demo || st.accId === (PL().s.demoIds || {}).admin) ? '<p class="tiny muted">Demo administrator: current code <strong id="adm-totp" class="mono">…</strong></p>' : ''}<a class="small" href="#admin" data-act="adm-cancel">Cancel</a></form>`
-      : `<h1>Administrator sign-in</h1><p class="small">For authorised Prac360 staff only. Every sign-in and every change is recorded.</p><form id="adm-si" class="auth-form" autocomplete="on"><div id="adm-err" class="alert crit" hidden></div>
+      : `<div class="seg adm-to" role="group" aria-label="Sign in to"><button type="button" class="${to === 'console' ? 'on' : ''}" data-act="adm-to" data-to="console" aria-pressed="${to === 'console'}">🎧 Support console</button><button type="button" class="${to === 'admin' ? 'on' : ''}" data-act="adm-to" data-to="admin" aria-pressed="${to === 'admin'}">🛡 Admin tool</button></div><h1>${TN} sign-in</h1><p class="small">${to === 'console' ? 'For the Prac360 support team: tickets, practices, live support and customisation.' : 'For Prac360 administrators: organisations, users, access, approvals and the audit log.'} For authorised Prac360 staff only. Every sign-in and every change is recorded.</p><form id="adm-si" class="auth-form" autocomplete="on"><div id="adm-err" class="alert crit" hidden></div>
         <label class="f"><span>Email</span><input name="email" type="email" autocomplete="username" required data-noclean data-nodictate></label><label class="f"><span>Password</span><input name="pw" type="password" autocomplete="current-password" required data-noclean data-nodictate></label>
         <button class="btn primary block" type="submit">Continue</button></form><p class="tiny" style="text-align:center;margin-top:12px"><a href="#signin">← Practice sign-in</a></p>`;
-    root().innerHTML = `<main class="adm-login"><div class="adm-login-card"><div class="adm-brand"><img src="${a.markLight || a.mark || ''}" alt=""><div><strong>Prac360</strong><span>Admin</span></div></div>${card}</div><p class="adm-foot">Restricted system. Unauthorised access is prohibited and monitored.</p></main>`;
+    root().innerHTML = `<main class="adm-login"><div class="adm-login-card"><div class="adm-brand"><img src="${a.markLight || a.mark || ''}" alt=""><div><strong>Prac360</strong><span>${to === 'console' ? 'Support console' : 'Admin'}</span></div></div>${card}</div><p class="adm-foot">Restricted system. Unauthorised access is prohibited and monitored.</p></main>`;
     const err = (m) => { const e = document.getElementById('adm-err'); if (e) { e.hidden = !m; e.textContent = m; } };
     const si = document.getElementById('adm-si'); if (si) si.addEventListener('submit', async (e) => { e.preventDefault(); err(''); const r = await PL().signIn(si.email.value, si.pw.value); si.pw.value = ''; await next(r, err); });
     const mf = document.getElementById('adm-mfa'); if (mf) { const acc = PL().acct(st.accId); if ((st.demo || st.accId === (PL().s.demoIds || {}).admin) && acc && acc.mfa) PL().totp(acc.mfa.secret).then((c) => { const el = document.getElementById('adm-totp'); if (el) el.textContent = c; });
-      mf.addEventListener('submit', async (e) => { e.preventDefault(); const acc2 = PL().acct(st.accId); if (!(await PL().verifyMfa(acc2, mf.code.value))) { PL().log('admin-mfa-failed', acc2, ''); return err('That code is not correct.'); } A.ui.adm = {}; PL().startSession(acc2, 'admin sign-in'); PL().log('admin-sign-in', acc2, ''); alog('signed-in', acc2.email, A.adminRole(acc2) ? 'Admin tool' : 'Support console'); location.hash = A.adminRole(acc2) ? '#admin' : '#console'; A.render(); }); } };
+      mf.addEventListener('submit', async (e) => { e.preventDefault(); const acc2 = PL().acct(st.accId); if (!(await PL().verifyMfa(acc2, mf.code.value))) { PL().log('admin-mfa-failed', acc2, ''); return err('That code is not correct.'); } A.ui.adm = {}; PL().startSession(acc2, 'admin sign-in'); PL().log('admin-sign-in', acc2, ''); alog('signed-in', acc2.email, A.adminRole(acc2) ? 'Admin tool' : 'Support console'); location.hash = A.admTo() === 'admin' && A.adminRole(acc2) ? '#admin' : '#console'; A.render(); }); } };
   const next = async (r, err) => { if (!r.ok) return err(r.msg); if (!A.adminRole(r.acc) && PL().kindOf(r.acc) !== 'platform') { PL().log('admin-sign-in-refused', r.acc, 'not Prac360 staff'); return err('This sign-in is only for Prac360 staff. Practices sign in on the practice sign-in page.'); }
-    if (r.acc.demoAll) { PL().startSession(r.acc, 'demo'); A.ui.adm = {}; A.render(); return; }
+    if (A.admTo() === 'admin' && !A.adminRole(r.acc)) { PL().log('admin-sign-in-refused', r.acc, 'not an administrator'); return err('Your account cannot open the Admin tool. Choose Support console above to sign in to the Support console.'); }
+    if (r.acc.demoAll) { PL().startSession(r.acc, 'demo'); A.ui.adm = {}; location.hash = A.admTo() === 'admin' ? '#admin' : '#console'; A.render(); return; }
     if (!(r.acc.mfa && r.acc.mfa.enabled)) return err('Administrators must have two-step verification. Set it up from the practice sign-in first.');
     A.ui.adm = { step: 'mfa', accId: r.acc.id, demo: !!r.acc.demo }; A.renderAdminLogin(); };
   H['adm-demo'] = async () => { await A.ensureAdmin(); const acc = PL().acct(PL().s.demoIds.admin); const r = await PL().signIn(acc.email, PL().DEMO_PW); await next(r, (m) => A.toast(m, 'error')); };
+  A.admTo = () => { try { return sessionStorage.getItem('p360AdmTo') === 'console' ? 'console' : 'admin'; } catch (e) { return 'admin'; } };
+  H['adm-to'] = (el, ev) => { if (ev && ev.preventDefault) ev.preventDefault(); try { sessionStorage.setItem('p360AdmTo', el.dataset.to); } catch (e) { /* ignore */ } A.ui.adm = {}; if (location.hash !== '#admin') location.hash = '#admin'; else A.renderAdminLogin(); };
   H['adm-cancel'] = () => { A.ui.adm = {}; A.renderAdminLogin(); };
 
   // ===================================================================== shell
@@ -20938,6 +20945,21 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   if (ac && ac.lessons && !ac.lessons.some((l) => /Assist avatar/.test(l.t))) ac.lessons.push({ t: 'The Assist avatar', body: 'The helper that rises from behind the Assist button is the Assist avatar. Click it to talk to Assist, or switch it off at the top of Assist. Prac360 support changes the picture with the seasons.', guide: '' });
   if (ac && ac.quiz && !ac.quiz.some((q) => /avatar/.test(q.q))) ac.quiz.push({ q: 'Who chooses the Assist avatar picture?', o: ['Each user', 'Prac360 support, in Customisation', 'The medical aid'], a: 1 });
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /getting around/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /Assist avatar/.test(x[0]))) g[1].push(['Assist avatar (helper behind the Assist button)', 'helperrobot']); }
+})();
+
+
+/* ===== ui-v075l.js ===== */
+/* Prac360 v0.75 — What's new + help: two staff sign-in buttons (Support console, Admin tool). */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.75')) A.RELEASES.unshift({ v: '0.75', date: '2026-11-24', title: 'Clearer sign-in for Prac360 staff', items: [
+    { type: 'improved', area: 'admin', title: 'Support console or Admin tool — pick where you sign in', text: 'Under “Prac360 staff?” on the sign-in page there are now two buttons: Support console and Admin tool. The sign-in page shows which one you are signing in to, and you can switch at the top. Support agents sign in to the Support console; the Admin tool is only for Prac360 administrators.', link: '#signin' }] });
+  const t = kb('admintool'); const line = 'On the sign-in page, under “Prac360 staff?”, click Admin tool (or Support console for the support team). You can switch between the two at the top of the staff sign-in page.';
+  if (t && t.steps && !t.steps.includes(line)) t.steps.unshift(line);
+  if (!kb('staffsignin')) KB.push({ id: 'staffsignin', title: 'Prac360 staff sign-in: Support console or Admin tool', keys: ['staff sign in', 'support console sign in', 'admin tool sign in', 'administrator sign-in', 'where do support staff log in'], screens: ['signin'], link: '#signin',
+    steps: ['On the sign-in page, look under “Prac360 staff?”.', 'Support console: for the support team — tickets, practices, live support and customisation.', 'Admin tool: for Prac360 administrators — organisations, users, access, approvals and the audit log.', 'Enter your email and password, then the 6-digit code from your authenticator app. A support agent who chooses Admin tool is told to use the Support console instead.'] });
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /getting around/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /Staff sign-in/.test(x[0]))) g[1].push(['Staff sign-in: Support console or Admin tool', 'staffsignin']); }
 })();
 
 

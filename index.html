@@ -19841,6 +19841,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const run = (t) => { const ai = t.ai; if (!ai || ai.state !== 'queued') return; const extra = t.thread.filter((m) => m.from === 'client').slice(1).map((m) => m.text).join(' ');
     log(t, 'Read the request', ai.replies ? 'Read the practice’s reply' : 'Subject, description and category');
     if (!ai.replies && !ai.repeatDone) { ai.repeatDone = true; const w0 = risk(`${t.subject} ${firstMsg(t)}`); if ((!w0 || w0 === FAULT) && repeat(t)) return; }
+    if (!ai.replies && t.source === 'report') { handoff(t, 'Problem report — a consultant should investigate (and send it to development if needed)', false); return; }
     const lastClient = (t.thread.filter((m) => m.from === 'client').slice(-1)[0] || {}).text || ''; const why = risk(ai.replies ? lastClient : `${t.subject} ${lastClient}`);
     if (why) { handoff(t, why, ai.replies > 0); return; }
     const an = analyse(t, extra, ai.used); if (!an.top) { handoff(t, 'No matching Prac360 help found — not sure how to help', ai.replies > 0); return; }
@@ -20180,6 +20181,75 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const A = window.APP;
   if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.65')) A.RELEASES.unshift({ v: '0.65', date: '2026-11-24', title: 'Cleaner videos', items: [
     { type: 'improved', area: 'help', title: 'Video captions start off', text: 'All Prac360 videos now start without captions, so you see the whole screen. Want the words on screen? Press CC (or the captions option in the video menu) to switch them on. The Prac360 Assist video has a captions option too.', link: '#/learn' }] });
+})();
+
+
+/* ===== ui-v066.js ===== */
+/* Prac360 v0.66 — "Report a problem or idea", practice side:
+ *  • 🐞 Something is not working → a support request (ticket) in Client support. Prac360 Support (the assistant first, then a
+ *    consultant if needed) picks it up, and the practice follows it under Client support.
+ *  • 💡 Idea or change → straight to development (Admin → Bugs and ideas), as before.
+ * Support, admin and other console users keep the old behaviour (everything to Bugs and ideas). */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, esc = A.esc; const E = window.PE;
+  if (!H['fb-send'] || !H['fb-new']) return;
+  const practice = () => !!(A.dsEntry && A.dsEntry.dataset && A.supportNewTicket);
+  const CAT = (area) => { const a = String(area || '').toLowerCase();
+    return /claim|edi|remittance|switch/.test(a) ? 'Claims and EDI' : /bill|payment|account|statement|debtor|invoice|tariff|transaction/.test(a) ? 'Billing and claims' : /scribe|assist|talk/.test(a) ? 'AI Scribe and Assist'
+      : /oncolog/.test(a) ? 'Oncology' : /hospital|ward|admission/.test(a) ? 'Hospital and wards' : /stock|dispens/.test(a) ? 'Stock and dispensing' : /report/.test(a) ? 'Reports and statements'
+      : /consult|patient|clinical|vital|follow|diary|recall|script/.test(a) ? 'Consultations and clinical' : /sign|login|user|role|setup|setting|security|account/.test(a) ? 'Login, users and security' : 'Other'; };
+  const PRI = { blocks: 'P2', slows: 'P3', minor: 'P4' };
+  const OFTEN = { always: 'Every time', sometimes: 'Sometimes', once: 'It happened once' }; const IMPACT = { blocks: 'I cannot work — it stops me', slows: 'It slows me down', minor: 'Minor — I can work around it' };
+  const browser = () => { const u = navigator.userAgent; const m = u.match(/(Edg|OPR|Chrome|Firefox|Version)\/(\d+)/); const n = m ? { Edg: 'Edge', OPR: 'Opera', Chrome: 'Chrome', Firefox: 'Firefox', Version: 'Safari' }[m[1]] + ' ' + m[2] : 'Browser'; return `${n} · ${/Windows/.test(u) ? 'Windows' : /Mac/.test(u) ? 'Mac' : /Android/.test(u) ? 'Android' : /iPhone|iPad/.test(u) ? 'iOS' : 'Linux'}`; };
+  const readShot = (inp) => new Promise((res) => { const f = inp && inp.files && inp.files[0]; if (!f) return res(''); if (!/^image\//.test(f.type) || f.size > 1.5e6) return res(null); const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => res(''); r.readAsDataURL(f); });
+
+  // the form says where each kind of request goes
+  const _new = H['fb-new']; H['fb-new'] = function (el) { const r = _new.apply(this, arguments); if (!practice()) return r;
+    setTimeout(() => { const f = document.getElementById('fbf'); if (!f || f.querySelector('.fb-route')) return; const bug = (f.type || {}).value === 'bug'; const seg = f.querySelector('.fb-type');
+      if (seg) seg.insertAdjacentHTML('afterend', `<p class="tiny fb-route">${bug ? '🎧 This goes to <b>Prac360 Support</b> as a support request. You follow it — and every reply — under <b>Client support</b> (click your name, top right).' : '🛠 This goes straight to the <b>Prac360 developers</b>. You follow it here, under Report a problem or idea.'}</p>`);
+      const info = f.querySelector('.alert.info .body'); if (info && bug) info.innerHTML = `Do not include patient names, ID numbers or clinical details. Prac360 adds the screen, your browser and the version (v${esc(A.appVersion ? A.appVersion() : '')}) to the request. <strong>What happens next:</strong> Prac360 Support replies in Client support, usually quickly. If it stops you working, also phone support on +27 10 555 0360.`;
+      const btn = document.querySelector('#modal [data-act=fb-send]'); if (btn && bug) btn.textContent = 'Send to Prac360 Support'; }, 0); return r; };
+
+  // a problem from a practice → a support ticket
+  let sending = false; const _send = H['fb-send'];
+  H['fb-send'] = async function (el) { const f = document.getElementById('fbf'); if (!practice() || !f || (f.type || {}).value !== 'bug') return _send.apply(this, arguments);
+    if (sending) return; sending = true; try { const g = (n) => (f[n] ? String(f[n].value || '').trim() : '');
+      if (!g('title')) return A.toast('Please give your problem a short title.', 'error'); if (!g('happened')) return A.toast('Please describe what happened.', 'error'); if (!g('expected')) return A.toast('Please say what you expected to happen.', 'error');
+      const all = ['title', 'happened', 'expected', 'steps'].map(g).join(' '); if (/\b\d{13}\b/.test(all)) return A.toast('Please remove the ID number — requests must not contain patient details.', 'error');
+      const shot = await readShot(f.shot); if (shot === null) return A.toast('The picture must be an image (PNG or JPG) smaller than 1.5 MB.', 'error');
+      const where = g('area'); const from = A.ui.fbFrom || location.hash; const u = A.user || {}; const acc = window.PL && window.PL.current && window.PL.current();
+      const desc = [`What happened: ${g('happened')}`, `Expected: ${g('expected')}`, g('steps') ? `Steps to make it happen again:\n${g('steps')}` : '', `How often: ${OFTEN[g('often')] || g('often')}`, `Effect on work: ${IMPACT[g('impact')] || g('impact')}`, `Where: ${where}${from ? ' (' + from.split('?')[0] + ')' : ''}`, `Prac360 v${A.appVersion ? A.appVersion() : ''} · ${browser()} · ${innerWidth}×${innerHeight}`].filter(Boolean).join('\n');
+      const t = A.supportNewTicket({ dsId: A.dsEntry.dataset.id, orgId: A.dsEntry.org && A.dsEntry.org.id, practice: A.dsEntry.dataset.name, subject: g('title'), desc, category: CAT(where), priority: PRI[g('impact')] || 'P3', channel: 'portal', source: 'report', contact: { name: u.name || 'Practice user', role: u.roleLabel || u.title || u.role || '', phone: '', email: (acc && acc.email) || u.email || '' } });
+      t.local = true; if (shot) { if (shot.length <= 30000) t.shot = shot; else t.thread.push({ at: new Date().toISOString(), from: 'system', kind: 'assign', text: 'The practice attached a screenshot that was too large to share — ask for it if needed.' }); }
+      try { window.PL.save(); } catch (e) { /* ignore */ } try { E.audit(A.db, A.user, 'support-request', 'ticket', t.ref, null, `Problem reported: ${t.subject}`); A.save(); } catch (e) { /* ignore */ }
+      A.closeModal(); A.modal(`Thank you — support request ${t.ref} logged`, `<p>Your problem <strong>“${esc(t.subject)}”</strong> is with <b>Prac360 Support</b>.</p><ul class="tiny"><li>You get a reply in <b>Client support</b> (click your name, top right) — usually quickly.</li><li>Everyone in your practice can see the request and add to it.</li><li>If it stops you working, also phone support on +27 10 555 0360.</li></ul>`,
+        `<button class="btn" data-act="modal-close">Close</button><button class="btn primary" data-act="fb-open-tk" data-id="${t.id}">Open ${esc(t.ref)} →</button>`);
+    } finally { setTimeout(() => { sending = false; }, 400); } };
+
+  H['fb-open-tk'] = (el) => { A.closeModal(); A.go('#/support/' + el.dataset.id); };
+  // the Report a problem or idea page: problems now live in Client support
+  const _pg = A.P.feedback; if (_pg) A.P.feedback = function () { const h = _pg.apply(this, arguments); if (!practice()) return h; const k = h.indexOf('</div></div>'); const note = `<div class="card fb-routecard"><div><b>🐞 Problems</b> are support requests — follow them in <a href="#/support">Client support</a>. <b>💡 Ideas</b> go to our developers and are listed below.</div></div>`;
+    return k > 0 ? h.slice(0, k + 12) + note + h.slice(k + 12) : note + h; };
+  // the support desk shows where a ticket came from, and a screenshot when there is one
+  const _side = A.supportAISide; if (_side) A.supportAISide = (t) => (t.source === 'report' || t.shot ? `<div class="card"><h4>🐞 Reported with “Report a problem”</h4>${t.shot ? `<a href="${t.shot}" target="_blank" rel="noopener"><img src="${t.shot}" alt="Screenshot from the practice" style="max-width:100%;border:1px solid var(--line,#e5e7eb);border-radius:8px"></a>` : '<p class="tiny muted">No screenshot.</p>'}</div>` : '') + _side(t);
+})();
+
+
+/* ===== ui-v066l.js ===== */
+/* Prac360 v0.66 — What's new + help: problems become support requests; ideas go straight to the developers. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id); const add = (k, x) => { if (k && k.steps && !k.steps.includes(x)) k.steps.push(x); };
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.66')) A.RELEASES.unshift({ v: '0.66', date: '2026-11-24', title: 'Problems go to Support, ideas go to the developers', items: [
+    { type: 'improved', area: 'general', title: 'Report a problem → a support request', text: 'When you report that something is not working, it now becomes a support request with Prac360 Support, so you get help quickly and can follow every reply under Client support (click your name, top right). Everyone in your practice can see it.', link: '#/support' },
+    { type: 'improved', area: 'general', title: 'Ideas go straight to our developers', text: 'An idea or change still goes directly to the Prac360 developers. Follow it under Report a problem or idea — you are told when there is a question and when it is built.', link: '#/feedback' }] });
+  const fb = kb('feedback');
+  add(fb, '🐞 Something is not working: this becomes a support request with Prac360 Support. Follow it under Client support (click your name, top right).');
+  add(fb, '💡 Idea or change: this goes straight to the Prac360 developers. Follow it under Report a problem or idea.');
+  add(kb('clientsupport'), 'Reporting a problem (Report a problem or idea → Something is not working) also logs a support request here.');
+  const C = A.COURSES || []; const sc = C.find((c) => c.id === 'start');
+  if (sc && sc.quiz && !sc.quiz.some((q) => /report that something is not working/.test(q.q))) sc.quiz.push({ q: 'You report that something is not working. Where do you follow it?', o: ['Nowhere — you cannot follow it', 'Under Client support, as a support request', 'In the patient file'], a: 1 });
 })();
 
 

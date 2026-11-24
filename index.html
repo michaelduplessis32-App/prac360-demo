@@ -2735,6 +2735,7 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .cs-done summary{cursor:pointer;font-weight:700;margin:12px 0}
 .am-support{font-weight:600}
 .vmd-min{margin-right:4px}
+.sd-syncbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.85rem}.sd-sync{font-weight:600}.sd-sync.ok{color:#15803d}.sd-sync.warn{color:#b45309}.sd-sync.off{color:var(--muted,#64748b)}.sd-key{display:inline-flex;gap:6px}.sd-key input{width:240px}
 </style>
 </head>
 <body>
@@ -18487,6 +18488,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const save = () => { try { PL().save(); } catch (e) { /* ignore */ } };
   const tid = (t) => t.id || (t.id = `${t.from || ''}:${t.at || ''}`);
   const merge = (a, b, key) => { const m = new Map(); (a || []).forEach((x) => m.set(key(x), x)); (b || []).forEach((x) => { const k = key(x); m.set(k, Object.assign({}, m.get(k) || {}, x, { seen: (m.get(k) || {}).seen || x.seen })); }); return [...m.values()].sort((x, y) => (String(x.at) < String(y.at) ? -1 : 1)); };
+  A.hubInfo = () => ({ url: HUB(), key: KEY() }); A.hubSetKey = (k) => { const s = st(); if (!s) return; s.hub = Object.assign({}, s.hub || {}, { key: k }); try { PL().save(); } catch (e) { /* ignore */ } };
   const post = (obj) => fetch(HUB(), { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(obj) });
   const get = async (params) => { const u = new URL(HUB()); Object.entries(params).forEach(([k, v]) => u.searchParams.set(k, v)); const r = await fetch(u.toString(), { redirect: 'follow' }); return r.json(); };
   A.hubOn = () => !!HUB();
@@ -19131,6 +19133,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const LEAVE = ['Annual leave', 'Sick leave', 'Half day (morning)', 'Half day (afternoon)', 'Training', 'Project', 'Public holiday', 'On call (after hours)'];
   const AWAY = ['Annual leave', 'Sick leave', 'Training', 'Project', 'Public holiday'];
   const SUPPORT_NO = '+27 10 555 0360';
+  const pk = (n) => String(n || '').toLowerCase().replace(/[^a-z0-9]/g, ''); A.supportPkey = pk;
 
   // ------------------------------------------------------------------ data
   const seed = () => { const ds = ((PL().s && PL().s.datasets) || []).slice(0, 6); const t0 = now();
@@ -19142,7 +19145,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
       { id: 'st_megan', name: 'Megan Jacobs', role: 'Trainer', skills: ['training', 'clinical'], ext: '205', status: 'available' },
       { id: 'st_zanele', name: 'Zanele Khumalo', role: 'Team manager', skills: ['general', 'billing', 'clinical', 'technical'], ext: '200', status: 'available', manager: true }];
     const contacts = ['Anna Pretorius', 'Johan Smit', 'Nomsa Zulu', 'Lindiwe Mthembu', 'Pieter Kruger', 'Ayanda Cele']; const roles = ['Practice manager', 'Reception', 'Billing clerk'];
-    const clients = ds.map((d, i) => ({ dsId: d.id, orgId: d.orgId, name: d.name, phone: `+27 12 555 01${String(10 + i * 7).padStart(2, '0')}`, plan: i % 3 === 0 ? 'Practice Pro' : i % 3 === 1 ? 'Practice Plus' : 'Practice Core', manager: staff[i % 5].id,
+    const clients = ds.map((d, i) => ({ dsId: d.id, pkey: pk(d.name), orgId: d.orgId, name: d.name, phone: `+27 12 555 01${String(10 + i * 7).padStart(2, '0')}`, plan: i % 3 === 0 ? 'Practice Pro' : i % 3 === 1 ? 'Practice Plus' : 'Practice Core', manager: staff[i % 5].id,
       contacts: [{ name: contacts[i % 6], role: roles[0], phone: `+27 82 555 0${100 + i * 11}`, email: contacts[i % 6].toLowerCase().replace(' ', '.') + '@example.com' }, { name: contacts[(i + 3) % 6], role: roles[(i % 2) + 1], phone: `+27 83 555 0${200 + i * 13}`, email: contacts[(i + 3) % 6].toLowerCase().replace(' ', '.') + '@example.com' }], notes: i === 0 ? 'Prefers a phone call for urgent matters. Go-live was 3 months ago.' : '' }));
     const T = [
       ['Claims to Discovery rejected — dependant code', 'Claims and EDI', 'P2', 'open', 'st_ruan', 0, 95, 'phone', 'Since this morning, 6 claims for Discovery came back rejected with "dependant code invalid".'],
@@ -19158,7 +19161,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
       ['ERA from Medscheme not importing', 'Claims and EDI', 'P2', 'resolved', 'st_ruan', 1, 60 * 24 * 2, 'phone', 'The electronic remittance from Medscheme gives an error.'],
       ['Assist does not understand Afrikaans', 'AI Scribe and Assist', 'P3', 'new', null, 4, 40, 'portal', 'Dr says Assist does not understand when she speaks Afrikaans.']];
     const tickets = T.map(([subj, cat, pri, st, who, ci, agoMin, ch, desc], k) => { const cl = clients[ci % Math.max(1, clients.length)] || { dsId: '', name: 'Practice', contacts: [{ name: 'Contact', phone: '' }] }; const created = t0 - agoMin * MIN; const first = who ? created + Math.min(agoMin * MIN * 0.3, (6 + (k * 5) % 22) * MIN) : null;
-      const t = { id: 'tk_' + (k + 1), ref: 'T-' + (1040 + k), dsId: cl.dsId, orgId: cl.orgId, practice: cl.name, contact: cl.contacts[k % 2] || cl.contacts[0], subject: subj, category: cat, priority: pri, channel: ch, status: st, assignee: who, createdAt: iso(created), updatedAt: iso(t0 - agoMin * MIN * 0.2), firstResponseAt: first ? iso(first) : null, resolvedAt: ['resolved', 'closed'].includes(st) ? iso(t0 - agoMin * MIN * 0.1) : null, time: [], calls: [], tags: [], csat: st === 'closed' ? 5 : null, flagged: false,
+      const t = { id: 'tk_' + (k + 1), ref: 'T-' + (1040 + k), dsId: cl.dsId, pkey: pk(cl.name), orgId: cl.orgId, practice: cl.name, contact: cl.contacts[k % 2] || cl.contacts[0], subject: subj, category: cat, priority: pri, channel: ch, status: st, assignee: who, createdAt: iso(created), updatedAt: iso(t0 - agoMin * MIN * 0.2), firstResponseAt: first ? iso(first) : null, resolvedAt: ['resolved', 'closed'].includes(st) ? iso(t0 - agoMin * MIN * 0.1) : null, time: [], calls: [], tags: [], csat: st === 'closed' ? 5 : null, flagged: false,
         thread: [{ at: iso(created), from: 'client', by: (cl.contacts[k % 2] || cl.contacts[0]).name, text: desc, kind: ch === 'phone' ? 'call' : 'message' }] };
       if (who) { t.thread.push({ at: iso(created + 60000), from: 'system', text: `Assigned to ${staff.find((s) => s.id === who).name}${k % 3 === 0 ? ' automatically (rule: ' + SKILL[cat] + ' skills, least busy)' : ''}.`, kind: 'assign' });
         t.thread.push({ at: iso(first), from: 'staff', by: who, text: k === 2 ? 'Hi! Open the consultation from yesterday, press Bill, and change the Date of service at the top to yesterday before you submit. Shall I stay on the line while you try?' : `Hi ${t.contact.name.split(' ')[0]}, thank you — I am looking into this now and will update you shortly.`, kind: 'reply' });
@@ -19179,7 +19182,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const S = () => { const s = PL().s; if (!s.support) { s.support = seed(); save(); } return s.support; };
   const save = () => { try { PL().save(); } catch (e) { /* ignore */ } };
   A.supportData = S;
-  const me = () => { const acc = PL().current && PL().current(); const s = S(); if (!acc) return s.staff[s.staff.length - 1]; let m = s.staff.find((x) => x.accountId === acc.id); if (!m) { m = { id: 'st_' + acc.id.slice(-6), accountId: acc.id, name: acc.name, role: 'Team manager', skills: ['general', 'billing', 'clinical', 'technical'], ext: '210', status: 'available', manager: true }; s.staff.push(m); save(); } return m; };
+  const me = () => { const acc = PL().current && PL().current(); const s = S(); if (!acc) return s.staff[s.staff.length - 1]; const em = String(acc.email || acc.id).toLowerCase(); let m = s.staff.find((x) => (x.email && x.email === em) || x.accountId === acc.id); if (m && !m.email) m.email = em; if (!m) { m = { id: 'st_' + em.replace(/[^a-z0-9]/g, '').slice(0, 24), email: em, accountId: acc.id, name: acc.name, role: 'Team manager', skills: ['general', 'billing', 'clinical', 'technical'], ext: '210', status: 'available', manager: true }; s.staff.push(m); save(); } return m; };
   const staff = (id) => S().staff.find((x) => x.id === id); const sname = (id) => (staff(id) || {}).name || 'Unassigned';
   const client = (dsId) => S().clients.find((c) => c.dsId === dsId);
   const tk = (id) => S().tickets.find((t) => t.id === id);
@@ -19197,7 +19200,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     let pool = s.staff.filter((x) => (x.skills || []).includes(sk) && !x.manager && x.status !== 'offline' && !(s.opts.skipLeave && away(x.id))); if (!pool.length) pool = s.staff.filter((x) => !x.manager && x.status !== 'offline' && !away(x.id)); if (!pool.length) return null;
     let pick; if (rule.how === 'round robin') { s.rr = (s.rr + 1) % pool.length; pick = pool[s.rr]; } else pick = pool.slice().sort((a, b) => load(a.id) - load(b.id))[0];
     t.assignee = pick.id; t.status = t.status === 'new' ? 'open' : t.status; t.thread.push({ at: iso(), from: 'system', text: `Assigned to ${pick.name} automatically (${why || 'rule: ' + rule.name}).`, kind: 'assign' }); return pick; };
-  A.supportNewTicket = (o) => { const s = S(); s.seq += 1; const cl = client(o.dsId) || {}; const t = Object.assign({ id: 'tk_' + now().toString(36), ref: 'T-' + s.seq, createdAt: iso(), updatedAt: iso(), status: 'new', assignee: null, firstResponseAt: null, resolvedAt: null, time: [], calls: [], tags: [], csat: null, flagged: false, thread: [] }, o, { practice: o.practice || cl.name || 'Practice', orgId: o.orgId || cl.orgId });
+  A.supportNewTicket = (o) => { const s = S(); s.seq += 1; const cl = client(o.dsId) || {}; const t = Object.assign({ id: 'tk_' + now().toString(36) + Math.random().toString(36).slice(2, 5), ref: 'T-' + String(Math.floor(now() / 1000) % 90000 + 10000), createdAt: iso(), updatedAt: iso(), status: 'new', assignee: null, firstResponseAt: null, resolvedAt: null, time: [], calls: [], tags: [], csat: null, flagged: false, thread: [] }, o, { practice: o.practice || cl.name || 'Practice', orgId: o.orgId || cl.orgId, pkey: pk(o.practice || cl.name || '') });
     t.thread.unshift({ at: t.createdAt, from: o.fromStaff ? 'staff' : 'client', by: o.fromStaff ? me().id : (t.contact || {}).name, text: o.desc || o.subject, kind: o.channel === 'phone' ? 'call' : 'message' });
     s.tickets.unshift(t); if (!t.assignee) autoAssign(t); save(); return t; };
 
@@ -19240,7 +19243,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     return `<div class="sd-filter">${chips.map(([k, l]) => `<button class="sd-chip ${f === k ? 'on' : ''}" data-act="sd-f" data-f="${k}">${l} <span>${s.tickets.filter((t) => { const o = A.ui.sdF; A.ui.sdF = k; const r = keep(t); A.ui.sdF = o; return r; }).length}</span></button>`).join('')}<input type="search" placeholder="Search ticket, practice or person" value="${esc(A.ui.sdQ || '')}" data-input="sd-q" aria-label="Search tickets"></div>
       <div class="card sd-list">${list(L) || '<div class="empty">No tickets here.</div>'}</div>`; };
 
-  const ticketView = (t) => { const s = S(); const cl = client(t.dsId) || {}; const x = sla(t); const m = me(); const tot = t.time.reduce((a, b) => a + b.mins, 0); const fb = t.dev && t.dev.fbId && (PL().s.feedback || []).find((r) => r.id === t.dev.fbId);
+  const ticketView = (t) => { ['thread', 'time', 'calls', 'tags'].forEach((k) => { if (!Array.isArray(t[k])) t[k] = []; }); const s = S(); const cl = client(t.dsId) || {}; const x = sla(t); const m = me(); const tot = t.time.reduce((a, b) => a + b.mins, 0); const fb = t.dev && t.dev.fbId && (PL().s.feedback || []).find((r) => r.id === t.dev.fbId);
     const msg = (e) => { const who = e.from === 'staff' ? sname(e.by) : e.from === 'client' ? (e.by || 'Practice') : 'Prac360'; return `<div class="sd-msg ${e.from} ${e.internal ? 'internal' : ''} ${e.kind}">${e.from === 'staff' ? av(e.by, 'sm') : e.from === 'client' ? `<span class="sd-av cl">${esc(ini(who))}</span>` : '<span class="sd-av sys">⚙</span>'}<div class="grow"><div class="tiny"><b>${esc(who)}</b> ${e.internal ? '<span class="badge warn">Internal note — the practice does not see this</span>' : e.kind === 'call' ? '<span class="badge info">📞 Phone call</span>' : ''} · ${fdt(e.at)}</div><div class="sd-txt">${esc(e.text).replace(/\n/g, '<br>')}</div></div></div>`; };
     const mode = A.ui.sdMode || 'reply';
     return `<div class="sd-crumb"><button class="linkish" data-act="sd-tab" data-t="${A.ui.sdTab || 'tickets'}">← Back</button> · <b>${esc(t.ref)}</b></div>
@@ -19360,7 +19363,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   H['sd-dev'] = (el) => { const t = tk(el.dataset.id); A.modal('Send to development', `<form id="sddv"><label class="f"><span>Type</span><select name="ty"><option value="bug">Problem (bug)</option><option value="enhancement">Idea / enhancement</option></select></label><label class="f"><span>What should development know? <small>(steps, what happened, what was expected)</small></span><textarea name="t" rows="5" data-noclean>${esc(t.thread[0].text)}</textarea></label></form><p class="tiny muted">It goes to Admin tool → Bugs and ideas. The practice sees “With development” and is told when it is done.</p>`, `<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="sd-dev-go" data-id="${t.id}">Send</button>`); };
   H['sd-dev-go'] = (el) => { const t = tk(el.dataset.id); const v = A.fv('sddv'); A.closeModal(); const ps = PL().s; ps.feedback = ps.feedback || []; const AL = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; const ref = 'PR-' + Array.from({ length: 5 }, () => AL[Math.floor(Math.random() * AL.length)]).join('');
     const fb = { id: 'fb_' + now().toString(36), ref, type: v.ty, title: t.subject, area: t.category, where: '', at: iso(), status: 'new', practice: t.practice, datasetId: t.dsId, orgId: t.orgId, byName: me().name + ' (Support, ' + t.ref + ')', byEmail: '', role: 'Support desk', version: (A.RELEASES && A.RELEASES[0] && A.RELEASES[0].v) || '', happened: v.ty === 'bug' ? v.t : '', expected: '', need: v.ty !== 'bug' ? v.t : '', thread: [{ at: iso(), from: 'practice', kind: 'created', text: `Logged by the support desk from ticket ${t.ref}.`, byName: me().name }], notify: [], unreadAdmin: true, supportTicket: t.id };
-    ps.feedback.unshift(fb); t.dev = { fbId: fb.id, ref, at: iso() }; t.status = 'dev'; t.thread.push({ at: iso(), from: 'system', text: `Sent to the development team (${ref}).`, kind: 'dev' }); t.unreadClient = true; t.updatedAt = iso(); act(`sent ${t.ref} to development (${ref})`); rr(); A.toast(`${ref} created in Bugs and ideas.`); };
+    ps.feedback.unshift(fb); try { if (A.supportPostReport) A.supportPostReport(fb); } catch (e) { /* ignore */ } t.dev = { fbId: fb.id, ref, at: iso() }; t.status = 'dev'; t.thread.push({ at: iso(), from: 'system', text: `Sent to the development team (${ref}).`, kind: 'dev' }); t.unreadClient = true; t.updatedAt = iso(); act(`sent ${t.ref} to development (${ref})`); rr(); A.toast(`${ref} created in Bugs and ideas.`); };
   H['sd-connect'] = (el) => { const ds = el.dataset.ds; const acc = PL().current(); const e = ds && PL().accessFor(acc).find((x) => x.dataset.id === ds); if (e && H['open-ds']) { act('connected to ' + e.dataset.name); save(); return H['open-ds']({ dataset: { id: ds } }); } A.toast('Ask the practice to allow support access (Practice setup → Support access), then connect.', 'error'); };
   H['sd-client'] = (el) => { A.ui.sdTab = 'clients'; A.ui.sdTicket = null; A.ui.sdClient = el.dataset.ds || null; rr(); };
   H['sd-cnote'] = (el) => { const c = client(el.dataset.ds); if (c) { c.notes = (document.getElementById('sd-cnote') || {}).value || ''; save(); A.toast('Notes saved.'); } };
@@ -19397,8 +19400,10 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
 
   // ------------------------------------------------------------------ the practice: Client support portal
   const myDs = () => (A.dsEntry && A.dsEntry.dataset && A.dsEntry.dataset.id) || null;
-  const mine = () => { const ds = myDs(); return ds ? S().tickets.filter((t) => t.dsId === ds) : []; };
-  A.supportAwaiting = () => { try { return mine().filter((t) => t.unreadClient || t.status === 'client').length; } catch (e) { return 0; } };
+  const myKey = () => pk(A.dsEntry && A.dsEntry.dataset && A.dsEntry.dataset.name); const mine = () => { const k = myKey(); return k ? S().tickets.filter((t) => (t.pkey || pk(t.practice)) === k) : []; }; A.supportMyKey = myKey;
+  const seenMap = () => { const s = PL().s; s.supportSeen = s.supportSeen || {}; return s.supportSeen; }; const unread = (t) => { const at = seenMap()[t.id] || ''; return (t.thread || []).some((m) => m.from === 'staff' && !m.internal && m.kind !== 'note' && String(m.at) > at); };
+  A.supportMarkSeenAll = () => { const m = seenMap(); if (Object.keys(m).length) return; const t = new Date().toISOString(); mine().forEach((x) => { m[x.id] = t; }); m._init = t; };
+  A.supportAwaiting = () => { try { return mine().filter((t) => unread(t) || t.status === 'client').length; } catch (e) { return 0; } };
   const STAGES = (t) => { const L = [['Received', true], ['A consultant is helping you', !!t.assignee]]; if (t.dev || t.status === 'dev') L.push(['With our developers', true]); L.push(['Solved', ['resolved', 'closed'].includes(t.status)]); return L; };
   const friendly = (t) => { const s = S(); const who = staff(t.assignee); const x = sla(t); const lim = s.sla[t.priority];
     if (['resolved', 'closed'].includes(t.status)) return `✅ Solved ${t.resolvedAt ? ago(t.resolvedAt) : ''}${who ? ' by ' + esc(who.name.split(' ')[0]) : ''}.`;
@@ -19406,10 +19411,10 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     if (t.status === 'dev') return `🛠 Our developers are working on this. ${who ? esc(who.name.split(' ')[0]) + ' keeps an eye on it and will update you.' : ''}`;
     if (who) return `👋 <b>${esc(who.name)}</b> is helping you${t.firstResponseAt ? ` — first reply came ${dur((new Date(t.firstResponseAt) - new Date(t.createdAt)) / MIN)} after you logged it` : ''}.`;
     return `👋 Our team has your request and will reply within ${dur(lim.first)}${x.due ? ' (by ' + new Date(x.due).toTimeString().slice(0, 5) + ')' : ''}.`; };
-  P.support = (params) => { if (!myDs()) return '<div class="card">Open a practice first.</div>'; const id = params && params[0]; const s = S(); if (id) { const t = s.tickets.find((x) => x.id === id && x.dsId === myDs()); if (t) { if (t.unreadClient) { t.unreadClient = false; save(); } return portalTicket(t); } }
-    const L = mine(); const open = L.filter((t) => OPEN.includes(t.status)), done = L.filter((t) => !OPEN.includes(t.status)); const cl = client(myDs()) || {};
-    const card = (t) => `<a class="cs-tk ${t.unreadClient ? 'new' : ''}" href="#/support/${t.id}"><div class="row between" style="gap:8px"><b>${esc(t.subject)}</b><span class="badge ${ST[t.status][1]}">${t.status === 'open' || t.status === 'new' ? 'Being handled' : esc(ST[t.status][0])}</span></div><div class="tiny muted">${esc(t.ref)} · ${esc(t.category)} · logged ${fdt(t.createdAt)} by ${esc((t.contact || {}).name || 'your practice')}</div>
-      <div class="cs-steps">${STAGES(t).map(([l, on]) => `<span class="${on ? 'on' : ''}">${esc(l)}</span>`).join('')}</div><div class="cs-who">${t.assignee ? av(t.assignee, 'sm') : ''}<span>${friendly(t)}</span>${t.unreadClient ? '<b class="cs-newb">New reply</b>' : ''}</div></a>`;
+  P.support = (params) => { if (!myDs()) return '<div class="card">Open a practice first.</div>'; const id = params && params[0]; const s = S(); if (id) { const t = mine().find((x) => x.id === id); if (t) { if (unread(t)) { seenMap()[t.id] = new Date().toISOString(); save(); } return portalTicket(t); } }
+    const L = mine(); const open = L.filter((t) => OPEN.includes(t.status)), done = L.filter((t) => !OPEN.includes(t.status)); const cl = S().clients.find((c) => (c.pkey || pk(c.name)) === myKey()) || {};
+    const card = (t) => `<a class="cs-tk ${unread(t) ? 'new' : ''}" href="#/support/${t.id}"><div class="row between" style="gap:8px"><b>${esc(t.subject)}</b><span class="badge ${ST[t.status][1]}">${t.status === 'open' || t.status === 'new' ? 'Being handled' : esc(ST[t.status][0])}</span></div><div class="tiny muted">${esc(t.ref)} · ${esc(t.category)} · logged ${fdt(t.createdAt)} by ${esc((t.contact || {}).name || 'your practice')}</div>
+      <div class="cs-steps">${STAGES(t).map(([l, on]) => `<span class="${on ? 'on' : ''}">${esc(l)}</span>`).join('')}</div><div class="cs-who">${t.assignee ? av(t.assignee, 'sm') : ''}<span>${friendly(t)}</span>${unread(t) ? '<b class="cs-newb">New reply</b>' : ''}</div></a>`;
     return `<div class="page-head"><div><h1>🎧 Client support</h1><div class="muted">Your practice’s support requests — everyone in ${esc((A.dsEntry.dataset || {}).name || 'your practice')} can see them and add to them.</div></div></div>
       <div class="cs-help"><div><h3 style="margin:0">Need help now?</h3><p class="tiny" style="margin:2px 0 0">Monday to Friday 07:00–18:00, Saturday 08:00–13:00. Urgent after-hours line for practices that cannot work.</p></div><a class="btn" href="tel:${tel(SUPPORT_NO)}">📞 Call support ${esc(SUPPORT_NO)}</a><button class="btn" data-act="cs-callback">☎ Ask us to call you</button><button class="btn primary" data-act="cs-new">＋ Log a request</button></div>
       ${cl.manager ? `<div class="cs-mgr">${av(cl.manager)}<div><b>${esc(sname(cl.manager))}</b> is your account manager.<div class="tiny muted">For anything bigger — training, new modules or how things are going.</div></div></div>` : ''}
@@ -19431,7 +19436,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     `<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="cs-new-go" data-cb="${cb ? 1 : ''}">${cb ? 'Request the call' : 'Send request'}</button>`, { wide: true }); };
   H['cs-callback'] = () => H['cs-new']({ dataset: { cb: '1' } });
   H['cs-new-go'] = (el) => { const v = A.fv('csnt'); const cb = !!el.dataset.cb; if ((!cb && !v.sub) || !v.d) return A.toast(cb ? 'Tell us what to call about.' : 'Add a short subject and tell us more.', 'error'); if (/\b\d{13}\b/.test(v.d + ' ' + (v.sub || ''))) return A.toast('Please remove the ID number — we do not need it.', 'error');
-    A.closeModal(); const ct = Object.assign(contactMe(), { phone: v.ph || '' }); const t = A.supportNewTicket({ dsId: myDs(), orgId: A.dsEntry.org && A.dsEntry.org.id, practice: A.dsEntry.dataset.name, subject: cb ? 'Please call me back' + (v.how ? ' — ' + v.how.toLowerCase() : '') : v.sub, desc: v.d + (v.how === 'Phone call' ? '\n(Prefers a phone call.)' : ''), category: v.cat, priority: v.pri, channel: cb ? 'callback' : 'portal', contact: ct });
+    A.closeModal(); const ct = Object.assign(contactMe(), { phone: v.ph || '' }); const t = A.supportNewTicket({ dsId: myDs(), orgId: A.dsEntry.org && A.dsEntry.org.id, practice: A.dsEntry.dataset.name, subject: cb ? 'Please call me back' + (v.how ? ' — ' + v.how.toLowerCase() : '') : v.sub, desc: v.d + (v.how === 'Phone call' ? '\n(Prefers a phone call.)' : ''), category: v.cat, priority: v.pri, channel: cb ? 'callback' : 'portal', contact: ct }); t.local = true; save();
     if (cb) { S().calls.push({ id: 'cl_cb' + now().toString(36), dir: 'in', number: v.ph || '', name: ct.name, practice: t.practice, dsId: t.dsId, staffId: null, at: iso(), secs: 0, status: 'missed', ticketId: t.id, callback: true }); save(); }
     A.go('#/support/' + t.id); A.toast(`${t.ref} logged — ${t.assignee ? sname(t.assignee).split(' ')[0] + ' is helping you' : 'a consultant will reply soon'}.`); };
   H['cs-reply'] = (el) => { const t = S().tickets.find((x) => x.id === el.dataset.id); const txt = ((document.getElementById('cs-text') || {}).value || '').trim(); if (!t || !txt) return A.toast('Write a message first.', 'error'); if (/\b\d{13}\b/.test(txt)) return A.toast('Please remove the ID number — we do not need it.', 'error');
@@ -19446,6 +19451,95 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
 })();
 
 
+/* ===== ui-support-sync.js ===== */
+/* Prac360 demo — the Support desk and every practice's Client support portal share their tickets through the demo inbox
+ * (the Google Sheet + Apps Script that already collects problem reports). Tabs "Tickets" and "Desk" in that sheet.
+ *  • Support desk (console or Admin tool, with the desk key): pulls every ticket and the shared desk data every 15 s and
+ *    pushes every change within a few seconds.
+ *  • Practice: pulls its own practice's tickets (no internal notes) every 20 s while Client support is open, otherwise every
+ *    90 s, and pushes new requests, replies, ratings and "sorted" / "reopen".
+ *  • First sync in a browser: the sheet wins for everything it already has, so testers never overwrite each other.
+ * Writes are fire-and-forget POSTs (the Apps Script answer cannot be read cross-site); reads are GETs. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, esc = A.esc; const PL = () => window.PL;
+  if (!A.supportData || !A.hubInfo) return;
+  const S = () => A.supportData(); const pk = A.supportPkey; const save = () => { try { PL().save(); } catch (e) { /* ignore */ } };
+  const DOCS = ['staff', 'clients', 'calls', 'leave', 'rules', 'opts', 'sla', 'cx', 'activity'];
+  const hub = () => (A.hubInfo() || {}).url; const key = () => (A.hubInfo() || {}).key || '';
+  const ST = (A.sdSync = A.sdSync || { last: {}, lastDoc: {}, first: true, firstDoc: true, ok: null, at: null, err: '', busy: false, mineAt: null });
+  const isDesk = () => /^#(console|admin)/.test(location.hash) && !!(PL().current && PL().current() && !A.dsEntry);
+  const localDs = (k) => { const d = ((PL().s && PL().s.datasets) || []).find((x) => pk(x.name) === k); return d ? d.id : null; };
+  const fix = (t) => { ['thread', 'time', 'calls', 'tags'].forEach((k) => { if (!Array.isArray(t[k])) t[k] = []; }); if (!t.pkey) t.pkey = pk(t.practice); const ds = localDs(t.pkey); if (ds) t.dsId = ds; return t; };
+  const J = (o) => { try { return JSON.stringify(o); } catch (e) { return ''; } };
+  const post = (obj) => fetch(hub(), { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(obj) });
+  const get = async (params) => { const u = new URL(hub()); Object.entries(params).forEach(([k, v]) => u.searchParams.set(k, v)); const r = await fetch(u.toString(), { redirect: 'follow' }); return r.json(); };
+  const msgKey = (m) => (m.at || '') + '|' + (m.from || '') + '|' + String(m.text || '').slice(0, 60);
+  const unionBy = (a, b, f) => { const m = new Map(); (a || []).concat(b || []).forEach((x) => { if (x) m.set(f(x), Object.assign({}, m.get(f(x)) || {}, x)); }); return [...m.values()]; };
+  const strip = (t) => { const c = JSON.parse(J(t)); c.dsId = undefined; return c; }; // the dsId differs per browser — the sheet keys by practice name
+
+  // ---------------------------------------------------------------- pull
+  const adoptTickets = (server, scope) => { const s = S(); let changed = 0; const seen = new Set();
+    server.forEach((st) => { fix(st); seen.add(st.id); const i = s.tickets.findIndex((x) => x.id === st.id); const lt = i >= 0 ? s.tickets[i] : null;
+      if (!lt) { s.tickets.unshift(st); ST.last[st.id] = J(strip(st)); changed++; return; }
+      const dirty = !ST.first && ST.last[lt.id] !== undefined && ST.last[lt.id] !== J(strip(lt));
+      if (!dirty) { if (J(strip(lt)) !== J(strip(st))) { s.tickets[i] = Object.assign(st, scope === 'practice' ? {} : {}); changed++; } ST.last[st.id] = J(strip(s.tickets[i])); }
+      else { lt.thread = unionBy(lt.thread, st.thread, msgKey).sort((a, b) => (String(a.at) < String(b.at) ? -1 : 1)); if (st.csat && !lt.csat) lt.csat = st.csat; if (st.unreadStaff) lt.unreadStaff = true; changed++; } });
+    // the first time in this browser, local sample tickets the sheet does not know are pushed (desk) or dropped (practice)
+    if (scope === 'practice') { const k = A.supportMyKey(); const before = s.tickets.length; s.tickets = s.tickets.filter((t) => (t.pkey || pk(t.practice)) !== k || seen.has(t.id) || t.local); s.tickets.forEach((t) => { if (seen.has(t.id)) delete t.local; }); if (s.tickets.length !== before) changed++; }
+    ST.first = false; return changed; };
+  const adoptDocs = (docs) => { const s = S(); let changed = 0;
+    DOCS.forEach((n) => { if (!(n in docs)) return; const sv = docs[n]; const lv = s[n]; const dirty = !ST.firstDoc && ST.lastDoc[n] !== undefined && ST.lastDoc[n] !== J(lv);
+      if (!dirty) { if (J(lv) !== J(sv)) { s[n] = sv; changed++; } ST.lastDoc[n] = J(s[n]); return; }
+      if (Array.isArray(lv) && Array.isArray(sv)) { s[n] = unionBy(sv, lv, (x) => x.id || x.at); changed++; } });
+    (s.clients || []).forEach((c) => { if (!c.pkey) c.pkey = pk(c.name); const ds = localDs(c.pkey); if (ds) c.dsId = ds; });
+    ST.firstDoc = false; return changed; };
+  const pullDesk = async () => { const r = await get({ action: 'sd_all', key: key() }); if (r && r.ok && !Array.isArray(r.tickets)) { ST.ok = false; ST.err = 'old'; return 0; } if (!r || !r.ok) { ST.ok = false; ST.err = r && r.error === 'key' ? 'key' : 'other'; return 0; }
+    const s = S(); const had = r.tickets.length; let n = adoptDocs(r.docs || {}); n += adoptTickets(r.tickets || [], 'desk'); ST.ok = true; ST.err = ''; ST.at = new Date().toISOString(); ST.empty = !had; return n; };
+  const pullMine = async () => { const k = A.supportMyKey && A.supportMyKey(); if (!k) return 0; const r = await get({ action: 'sd_mine', practice: k }); if (r && r.ok && !Array.isArray(r.tickets)) { ST.ok = false; ST.err = 'old'; return 0; } if (!r || !r.ok) { ST.ok = false; return 0; }
+    const s = S(); (r.staff || []).forEach((x) => { if (!s.staff.some((y) => y.id === x.id)) s.staff.push(Object.assign({ skills: [], ext: '', status: 'available' }, x)); });
+    if (r.manager) { const c = s.clients.find((x) => (x.pkey || pk(x.name)) === k); if (c) c.manager = r.manager; } if (r.sla) s.sla = r.sla;
+    const firstTime = ST.first; const n = adoptTickets(r.tickets || [], 'practice'); if (firstTime && A.supportMarkSeenAll) A.supportMarkSeenAll(); ST.ok = true; ST.at = new Date().toISOString(); ST.mineAt = ST.at; return n; };
+
+  // ---------------------------------------------------------------- push (anything that changed since the last sync)
+  const pushChanges = () => { if (!hub()) return; const s = S(); const desk = isDesk() && !!key();
+    if (!desk && !A.dsEntry) return; const k = A.supportMyKey && A.supportMyKey();
+    s.tickets.forEach((t) => { if (!desk && (t.pkey || pk(t.practice)) !== k) return; const now = J(strip(t)); if (ST.last[t.id] === now) return;
+      if (ST.first) return; // never push before the first pull in this browser
+      ST.last[t.id] = now; const out = strip(t); out.assigneeName = (s.staff.find((x) => x.id === t.assignee) || {}).name || ''; post({ action: 'sd_ticket', key: desk ? key() : '', ticket: out }).catch(() => { ST.last[t.id] = undefined; }); });
+    if (desk && !ST.firstDoc) DOCS.forEach((n) => { const v = n === 'activity' ? (s.activity || []).slice(0, 80) : s[n]; const j = J(n === 'activity' ? s.activity : v); if (ST.lastDoc[n] === j) return; ST.lastDoc[n] = j; post({ action: 'sd_doc', key: key(), name: n, value: v }).catch(() => { ST.lastDoc[n] = undefined; }); }); };
+  A.supportPostReport = (fb) => { if (!hub()) return; const r = Object.assign({}, fb, { shot: '' }); post({ action: 'report', report: r }).catch(() => {}); fb.hub = { sent: true, at: new Date().toISOString() }; };
+
+  // ---------------------------------------------------------------- the loop
+  let lastPull = 0;
+  const tick = async (force) => { if (!hub() || ST.busy || document.hidden) return; const desk = isDesk(); const practice = !!A.dsEntry; if (!desk && !practice) return;
+    const every = desk ? 15000 : /^#\/support/.test(location.hash) ? 20000 : 90000; if (!force && Date.now() - lastPull < every) { pushChanges(); return; }
+    if (desk && !key()) { ST.ok = null; ST.err = 'nokey'; return; }
+    ST.busy = true; lastPull = Date.now();
+    try { pushChanges(); const n = desk ? await pullDesk() : await pullMine(); if (desk && ST.ok && ST.empty) { ST.first = false; ST.firstDoc = false; pushChanges(); }
+      if (n) { save(); const ae = document.activeElement; const typing = ae && /^(TEXTAREA|INPUT|SELECT)$/.test(ae.tagName) && ae.value; if (!typing && !document.querySelector('#modal .modal')) A.render(); } }
+    catch (e) { ST.ok = false; ST.err = 'network'; } finally { ST.busy = false; paintStatus(); } };
+  setInterval(() => tick(false), 3000); window.addEventListener('hashchange', () => setTimeout(() => tick(/#console\/desk|#admin\/support|#\/support/.test(location.hash)), 300)); window.addEventListener('online', () => tick(true));
+  A.supportSyncNow = () => tick(true);
+
+  // ---------------------------------------------------------------- what people see
+  const statusHtml = () => { if (!hub()) return '<span class="sd-sync off">● Only on this computer — the demo inbox is not connected</span>';
+    if (isDesk() && !key()) return `<span class="sd-sync warn">● Not shared yet</span> <form class="sd-key" data-submit="sd-key"><input name="k" type="password" placeholder="Desk key (the inbox ADMIN_KEY)" aria-label="Desk key" autocomplete="off" data-noclean><button class="btn sm primary" type="submit">Connect</button></form>`;
+    if (ST.err === 'key') return `<span class="sd-sync warn">● The desk key was not accepted</span> <form class="sd-key" data-submit="sd-key"><input name="k" type="password" placeholder="Desk key" aria-label="Desk key" autocomplete="off" data-noclean><button class="btn sm primary" type="submit">Try again</button></form>`;
+    if (ST.err === 'old') return '<span class="sd-sync warn">● The demo inbox script needs the support update (see the set-up note) — working on this computer only for now</span>';
+    if (ST.ok === false) return '<span class="sd-sync warn">● Could not reach the shared desk — retrying</span>';
+    return `<span class="sd-sync ok">● Shared with all demo users${ST.at ? ' · synced ' + new Date(ST.at).toTimeString().slice(0, 5) : ''}</span> <button class="btn sm ghost" data-act="sd-sync-now">↻ Sync now</button>`; };
+  const paintStatus = () => { document.querySelectorAll('[data-sd-sync]').forEach((el) => { el.innerHTML = statusHtml(); }); };
+  H['submit:sd-key'] = (el, ev) => { if (ev) ev.preventDefault(); const k = (el.k && el.k.value || '').trim(); if (!k) return; A.hubSetKey(k); ST.err = ''; ST.first = true; ST.firstDoc = true; tick(true).then(() => A.toast(ST.ok ? 'Connected — the desk is shared with all demo users.' : 'That key was not accepted.', ST.ok ? undefined : 'error')); };
+  H['sd-sync-now'] = () => tick(true).then(() => A.toast(ST.ok ? 'Synced.' : 'Could not reach the shared desk.', ST.ok ? undefined : 'error'));
+  // show the status in the desk header and on the practice portal
+  const wrap = (fn) => function () { const h = fn.apply(this, arguments); return typeof h === 'string' ? h.replace('<nav class="sd-tabs">', `<div class="sd-syncbar" data-sd-sync>${statusHtml()}</div><nav class="sd-tabs">`) : h; };
+  if (A.CONSOLE && A.CONSOLE.desk) A.CONSOLE.desk = wrap(A.CONSOLE.desk);
+  if (A.ADM && A.ADM.V && A.ADM.V.support) A.ADM.V.support = wrap(A.ADM.V.support);
+  const P = A.P; if (P.support) { const _p = P.support; P.support = function () { const h = _p.apply(this, arguments); return typeof h === 'string' && hub() && ST.err !== 'old' ? h.replace('</h1>', '</h1>').replace(/(<div class="muted">[^<]*<\/div>)/, `$1<div class="tiny" data-sd-sync-p>${ST.mineAt ? '✓ Shared with the Prac360 support team · updated ' + new Date(ST.mineAt).toTimeString().slice(0, 5) : '✓ Shared with the Prac360 support team'}</div>`) : h; }; }
+})();
+
+
 /* ===== ui-v059l.js ===== */
 /* Prac360 v0.59 — What's new + help: Client support portal (practices). The Support desk itself is for the Prac360 team
  * and is explained by its training video in the support console and the Admin tool (not in the Training Academy). */
@@ -19455,6 +19549,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.59')) A.RELEASES.unshift({ v: '0.59', date: '2026-11-24', title: 'Client support: see every support request of your practice', items: [
     { type: 'new', area: 'general', title: 'Client support portal', text: 'Click your name (top right) → 🎧 Client support. Everyone in your practice sees all of the practice’s support requests: who at Prac360 is helping you, where each request is (received, with a consultant, with our developers, solved) and every reply. Log a new request, ask us to call you back, or call support directly. Reply right there, tell us when it is sorted, and rate how we did.', link: '#/support' },
     { type: 'fixed', area: 'clinical', title: 'AI Scribe no longer stops when the connection drops', text: 'The browser’s speech service needs the internet. When it drops for a moment, AI Scribe now stays on and reconnects by itself (it tries again after 1, 2, 4… up to 15 seconds, and immediately when the connection is back). It tells you out loud once — “Connection lost. AI Scribe keeps trying.” — and “AI Scribe is listening again” when it is back. A consultation that was left on “Interrupted” resumes on its own; only a Pause you pressed stays paused. Nothing heard is lost.', link: '#/today' },
+    { type: 'new', area: 'general', title: 'Demo: support requests are shared with everyone', text: 'During the demo, support requests are kept in the shared demo inbox (the Google Sheet), so the Prac360 support team sees what any practice logs — from any computer — and the practice sees every reply. Client support shows “✓ Shared with the Prac360 support team”.', link: '#/support' },
     { type: 'improved', area: 'general', title: 'Faster, friendlier support behind the scenes', text: 'Your requests now go straight to the right Prac360 consultant, with a reply time we commit to for each level of urgency, phone calls linked to your request, and a named account manager for your practice.', link: '#/support' }] });
   if (!KB.some((k) => k.id === 'clientsupport')) KB.push({ id: 'clientsupport', title: 'Client support: log and follow your support requests', keys: ['support', 'help desk', 'ticket', 'call support', 'call back', 'problem', 'client support', 'support request', 'who is helping'], screens: ['support', 'today'], link: '#/support',
     steps: ['Click your name (top right) → 🎧 Client support. A number next to it means a reply is waiting for you.', 'Everyone in your practice sees the practice’s requests — not just the ones you logged.', 'Each request shows who is helping you and where it is: Received → A consultant is helping you → (With our developers) → Solved.', '＋ Log a request: say what it is about and how urgent it is. A consultant is assigned straight away. Please do not include patient ID numbers.', '☎ Ask us to call you: we phone you back at a time that suits you. Or call support directly on the number at the top.', 'Open a request to read every reply and answer questions. When it is solved, rate us — or press “It is not fixed — reopen”.'] });

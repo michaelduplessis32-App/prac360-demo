@@ -2762,6 +2762,8 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 @keyframes sdpIn{from{transform:translateY(18px) scale(.96);opacity:0}to{transform:none;opacity:1}}@keyframes sdpFade{from{opacity:0}to{opacity:1}}
 @keyframes sdpPulse{0%{box-shadow:0 0 0 0 rgba(94,234,212,.7)}70%{box-shadow:0 0 0 14px rgba(94,234,212,0)}100%{box-shadow:0 0 0 0 rgba(94,234,212,0)}}
 @media (prefers-reduced-motion:reduce){.sdp,.sdp-ic,.sdp-back{animation:none}}
+.sd-live{border-top:3px solid #16a34a}.sd-live h4{display:flex;align-items:center;gap:8px}.sd-livedot{width:10px;height:10px;border-radius:50%;background:#94a3b8;display:inline-block}.sd-livedot.on{background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:sdpPulse 1.8s infinite}
+.sd-liveu{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line,#eef0f3)}.sd-liveu:last-of-type{border-bottom:0}.sd-liveu .btn{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -19335,7 +19337,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
           <textarea id="sd-text" rows="4" placeholder="${mode === 'reply' ? `Write to ${esc(((t.contact || {}).name || 'the practice').split(' ')[0])} — they see this in their Client support portal` : mode === 'note' ? 'Only the support team sees internal notes' : 'What was discussed on the call'}"></textarea>
           <div class="row between" style="gap:8px;flex-wrap:wrap"><div class="row" style="gap:6px;align-items:center"><span class="tiny">Time spent</span>${[5, 10, 15, 30].map((n) => `<button class="sd-chip sm" data-act="sd-tpre" data-n="${n}">${n} min</button>`).join('')}<input id="sd-mins" type="number" min="0" max="600" placeholder="min" style="width:70px" aria-label="Minutes"></div>
           <div class="row" style="gap:6px">${mode === 'reply' ? `<select id="sd-after" aria-label="Status after sending"><option value="open">Keep in progress</option><option value="client">Waiting for the practice</option><option value="resolved">Mark as resolved</option></select>` : ''}<button class="btn primary" data-act="sd-send" data-id="${t.id}">${mode === 'reply' ? 'Send' : mode === 'note' ? 'Save note' : 'Log call'}</button></div></div></div>` : `<div class="card tiny muted">This ticket is closed${t.csat ? ` · the practice rated it ${'★'.repeat(t.csat)}` : ''}. <button class="btn sm" data-act="sd-reopen" data-id="${t.id}">Reopen</button></div>`}</div>
-      <aside class="sd-tv-side">${A.supportAISide ? A.supportAISide(t) : ''}<div class="card"><h4>Details</h4>
+      <aside class="sd-tv-side">${A.supportLiveCard ? A.supportLiveCard(t) : ''}${A.supportAISide ? A.supportAISide(t) : ''}<div class="card"><h4>Details</h4>
           <label class="f"><span>Status</span><select data-change="sd-set" data-k="status" data-id="${t.id}">${Object.entries(ST).map(([k, [l]]) => `<option value="${k}" ${t.status === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
           <label class="f"><span>Consultant</span><select data-change="sd-set" data-k="assignee" data-id="${t.id}"><option value="">— not assigned —</option>${s.staff.map((x) => `<option value="${x.id}" ${t.assignee === x.id ? 'selected' : ''}>${esc(x.name)}${away(x.id) ? ' (on leave)' : ''} · ${load(x.id)} open</option>`).join('')}</select></label>
           <label class="f"><span>Priority</span><select data-change="sd-set" data-k="priority" data-id="${t.id}">${Object.entries(PRI).map(([k, [l, , d]]) => `<option value="${k}" ${t.priority === k ? 'selected' : ''}>${k} ${l} — ${d}</option>`).join('')}</select></label>
@@ -19900,6 +19902,30 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   setTimeout(() => { try { seedAI(); } catch (e) { /* ignore */ } }, 800); A.supportSeedAI = seedAI;
 })();
 
+/* v0.63 — open tickets: who is live at the practice right now, and "Connect to screen" (Live support: the user must allow it). */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, esc = A.esc;
+  if (!A.supportX) return;
+  const X = () => A.supportX();
+  const ini = (n) => String(n || '?').split(/\s+/).map((x) => x[0]).slice(0, 2).join('').toUpperCase();
+  const scr = (route) => { const k = (String(route || '').match(/^#\/([a-z]+)/) || [])[1] || 'today'; return (A.SCREEN_NAMES && A.SCREEN_NAMES[k]) || k; };
+  const rl = (u) => { const r = String(u.role || ''); const n = String(u.name || ''); return r.indexOf(n) === 0 ? r.slice(n.length).replace(/^\s*\((.*)\)\s*$/, '$1').trim() : r; };
+  const liveAt = (t) => { if (!A.liveOnline || !t.dsId) return []; const by = {}; A.liveOnline(t.dsId).forEach((u) => { if (!by[u.accId] || by[u.accId].at < u.at) by[u.accId] = u; }); return Object.values(by).sort((a, b) => String(a.name).localeCompare(String(b.name))); };
+  A.supportLiveCard = (t) => { if (!X().OPEN.includes(t.status)) return ''; const L = liveAt(t); const who = ((t.contact || {}).name || '').toLowerCase();
+    return `<div class="card sd-live" data-tk="${esc(t.id)}"><h4><span class="sd-livedot ${L.length ? 'on' : ''}"></span> Live at the practice <span class="tiny muted">${L.length}</span></h4>
+      ${L.length ? L.map((u) => `<div class="sd-liveu"><span class="sd-av sm cl">${esc(ini(u.name))}</span><div class="grow"><b>${esc(u.name)}</b>${String(u.name).toLowerCase() === who ? ' <span class="badge info">logged this ticket</span>' : ''}<div class="tiny muted">${esc(rl(u))}${rl(u) ? ' · ' : ''}on ${esc(scr(u.route))}${u.busy ? ' · in a live support session' : ''}</div></div>
+        <button class="btn sm ${String(u.name).toLowerCase() === who ? 'primary' : ''}" data-act="sd-live-join" data-tab="${esc(u.tab)}" data-id="${esc(t.id)}" ${u.busy ? 'disabled title="Already in a live support session"' : ''}>🖥 Connect to screen</button></div>`).join('')
+        : `<p class="tiny muted" style="margin:0">Nobody from ${esc(t.practice)} is signed in to Prac360 right now. Ask them to sign in, then connect.</p>`}
+      <p class="tiny muted" style="margin:6px 0 0">The user sees your name and reason and must allow it. Updates every few seconds.</p></div>`; };
+  H['sd-live-join'] = (el) => { const t = X().tk(el.dataset.id); if (!H['live-join']) return A.toast('Live support is not available here.', 'error'); A.ui.sdLiveTk = t && t.id; H['live-join']({ dataset: { tab: el.dataset.tab } });
+    setTimeout(() => { const i = document.getElementById('lv-why'); if (i && t && !i.value) i.value = `Ticket ${t.ref} — ${t.subject}`.slice(0, 120); }, 60); };
+  const ask = H['live-ask']; if (ask) H['live-ask'] = function (el) { const tid = A.ui.sdLiveTk; const u = A.liveOnline && A.liveOnline().find((x) => x.tab === (el && el.dataset && el.dataset.tab)); const why = ((document.getElementById('lv-why') || {}).value || '').trim(); const r = ask.apply(this, arguments);
+    const t = tid && X().tk(tid); if (t && u && A.ui.liveWait && why.length >= 8) { t.thread.push({ at: X().iso(), from: 'system', kind: 'assign', text: `${X().me().name} asked ${u.name} to share their screen (${why}).` }); t.updatedAt = X().iso(); X().save(); } A.ui.sdLiveTk = null; return r; };
+  // keep the card current without re-rendering the whole ticket (so a half-written reply is not disturbed)
+  setInterval(() => { try { const c = document.querySelector('.sd-live[data-tk]'); if (!c) return; const t = X().tk(c.dataset.tk); if (!t) return; const d = document.createElement('div'); d.innerHTML = A.supportLiveCard(t); const n = d.firstElementChild; if (!n) { c.remove(); return; } if (n.innerHTML !== c.innerHTML) c.replaceWith(n); } catch (e) { /* ignore */ } }, 4000);
+})();
+
 
 /* ===== ui-v059l.js ===== */
 /* Prac360 v0.59 — What's new + help: Client support portal (practices). The Support desk itself is for the Prac360 team
@@ -19969,6 +19995,21 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   if (sc && sc.lessons && !sc.lessons.some((l) => l.t === 'Support reminders')) sc.lessons.push({ t: 'Support reminders', body: 'When Prac360 Support needs an answer from your practice, a reminder pops up for everyone. Press “Reply now”, or tick “Mute for 2 hours” if you are busy.', guide: '' });
   if (sc && sc.quiz && !sc.quiz.some((q) => /Mute support reminders/.test(q.q))) sc.quiz.push({ q: 'You tick “Mute support reminders for 2 hours”. What happens?', o: ['You never see support reminders again', 'The reminder comes back after 2 hours if support still needs your reply', 'The support request is closed'], a: 1 });
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => x[0] === 'Getting around') || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /Support reminders/.test(x[0]))) g[1].push(['Support reminders, mute and sorting requests', 'clientsupport']); }
+})();
+
+
+/* ===== ui-v063l.js ===== */
+/* Prac360 v0.63 — What's new + help: support sees who is signed in at the practice on open tickets and can ask to join a screen. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id); const add = (k, x) => { if (k && k.steps && !k.steps.includes(x)) k.steps.push(x); };
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.63')) A.RELEASES.unshift({ v: '0.63', date: '2026-11-24', title: 'Quicker screen help on support requests', items: [
+    { type: 'improved', area: 'general', title: 'Support can offer to join your screen', text: 'While your support request is open, the support team can see who at your practice is signed in and ask to join that person’s screen to help. You always see who is asking and why, and you choose whether to allow it. Every session is in your audit log.', link: '#/support' }] });
+  add(kb('livesupport'), 'On an open support request, the support team sees who at your practice is signed in and can ask to join your screen straight from the ticket. You always decide whether to allow it.');
+  add(kb('clientsupport'), 'While a request is open, support may ask to join your screen to help — you see their name and reason, and you choose Allow or Decline.');
+  const C = A.COURSES || []; const sc = C.find((c) => c.id === 'start');
+  if (sc && sc.quiz && !sc.quiz.some((q) => /join your screen/.test(q.q))) sc.quiz.push({ q: 'Support asks to join your screen about your open request. What happens?', o: ['They join straight away', 'You see who is asking and why, and you choose Allow or Decline', 'Your request is closed'], a: 1 });
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => x[0] === 'Getting around') || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /Support joins your screen/.test(x[0]))) g[1].push(['Support joins your screen (you allow it)', 'livesupport']); }
 })();
 
 

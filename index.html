@@ -2776,6 +2776,29 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 @media (prefers-reduced-motion:reduce){.p360-fresh{animation:none}}
 .badge.sd-dupb{background:#f1f5f9;color:#334155;border:1px solid #cbd5e1}.badge.sd-dupb.warn{background:#fffbeb;color:#92400e;border-color:#fde68a}
 .sd-dupcard{border-top:3px solid #f59e0b}.cs-dup{border-left:4px solid #14b8a6}
+/* v0.70 — Medical aids (overview, our medical aids, all medical aids) and the Medprax catalogue */
+.ma-toolbar{align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
+.ma-kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.ma-kpi{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line,#e5e7eb);border-top:3px solid #64748b;border-radius:12px;background:var(--surface,#fff)}
+.ma-kpi .n{font-size:1.45rem;font-weight:800;letter-spacing:-.3px}.ma-kpi .l{font-weight:600;font-size:.9rem}.ma-kpi .s{font-size:.75rem;color:var(--muted,#64748b)}
+.ma-kpi.good{border-top-color:#16a34a}.ma-kpi.warn{border-top-color:#d97706}.ma-kpi.crit{border-top-color:#dc2626}
+@media (max-width:1100px){.ma-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}@media (max-width:640px){.ma-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ma-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:1000px){.ma-grid{grid-template-columns:1fr}}
+.ma-ins ul{margin:4px 0 0;padding-left:18px}.ma-ins li{margin:3px 0}.ma-ins{border-left:4px solid #2563eb}
+.ma-tbl td{vertical-align:middle;padding-top:6px;padding-bottom:6px}.ma-bc{width:42%}.ma-two .ma-bar{margin:2px 0}
+.ma-bar{display:block;height:10px;border-radius:5px;background:var(--surface-2,#f1f5f9);overflow:hidden}.ma-bar i{display:block;height:100%;border-radius:0 5px 5px 0;background:#2563eb}
+.ma-bar.c i{background:#93c5fd}.ma-bar.p i{background:#1d4ed8}.ma-bar.muted i{background:#94a3b8}
+.ma-key{display:inline-block;width:12px;height:10px;border-radius:3px;vertical-align:middle}.ma-key.c{background:#93c5fd}.ma-key.p{background:#1d4ed8}
+.ma-priv td{color:var(--muted,#475569)}.ma-tot td{border-top:2px solid var(--line,#e5e7eb);background:var(--surface-2,#f8fafc)}
+.ma-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.ma-card{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:inherit;margin:0;transition:box-shadow .15s}.ma-card:hover{box-shadow:0 4px 14px rgba(15,23,42,.1)}.ma-card.off{opacity:.65}
+.ma-mini{display:flex;gap:14px;font-size:.9rem}
+.ma-pa td,.ma-pa th{white-space:nowrap}.ma-pa td .tiny{white-space:normal;max-width:220px}
+.ma-dir{padding:4px 0}.ma-di{border-bottom:1px solid var(--line,#eef0f3)}.ma-dh{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:10px 14px;background:none;border:0;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.ma-dh:hover{background:var(--surface-2,#f8fafc)}.ma-di.open{background:var(--surface-2,#f8fafc)}.ma-di .tbl-wrap{padding:0 14px 12px}
+.ma-allp summary{cursor:pointer}
+.mp-head h2{font-size:1.2rem}.mp-tbl td{vertical-align:top}.mp-disc{opacity:.7}
+.mp-tbl td.mono{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -20365,6 +20388,250 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const C = A.COURSES || []; const bc = C.find((c) => c.id === 'billing');
   if (bc && bc.quiz && !bc.quiz.some((q) => /retired/.test(q.q))) bc.quiz.push({ q: 'Checks before claiming says an ICD-10 code was retired. What do you do?', o: ['Submit anyway', 'Choose the current, more specific code', 'Delete the transaction'], a: 1 });
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /billing/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /ICD-10 master table/.test(x[0]))) g[1].push(['ICD-10 master table (MIT v6) and search', 'icd']); }
+})();
+
+
+/* ===== ui-medprax.js ===== */
+/* Prac360 — Medprax catalogue: every medicine (26 365) and material (98 123) from the practice's Medprax NAPPI files.
+ * The catalogue is shared (media/medprax-medicine.js and media/medprax-materials.js) and loaded only when needed — the first
+ * time billing or stock is opened — so signing in stays fast.
+ *  • Billing → Add a transaction: type a medicine or material (name, strength, NAPPI or supplier number) and press Enter or pick
+ *    it from the list. The item is billed at the Medprax price (medicines: plus the practice's dispensing fee, as for stock).
+ *  • A billed item is added to the practice's Stock catalogue automatically (catalogue only, nothing on hand), keeping its NAPPI,
+ *    pack size and price; receive stock against it later if the practice keeps it.
+ *  • Stock → Medprax catalogue: search, add items to stock, and update the prices of the practice's stock from Medprax.
+ * Items marked "D" in the Medprax file (usually discontinued) are kept, shown last and marked. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, E = window.PE, esc = A.esc; if (!A || !E) return;
+  const db = () => A.db; const M = (n) => E.money(n);
+  const MP = (A.medprax = { items: [], map: new Map(), loaded: {}, loading: false, latest: '' });
+  const FILES = { medicine: 'media/medprax-medicine.js?v=1', materials: 'media/medprax-materials.js?v=1' };
+  const parse = (d) => { String(d.raw || '').split('\n').forEach((ln) => { if (!ln) return; const f = ln.split('|');
+      const x = { nappi: f[0], name: f[1], form: f[2], strength: f[3], vol: f[4], units: +f[5] || 1, unitPrice: +f[6] || 0, packPrice: +f[7] || 0, sched: f[8], mfr: f[9], date: f[10], disc: f[11] === 'D', ref: f[12] || '', kind: d.kind };
+      x.label = [x.name, x.form, x.strength, x.vol].filter(Boolean).join(' ') + (x.units > 1 ? ` ×${x.units}` : ''); x.hay = (x.label + ' ' + x.nappi + ' ' + x.nappi.replace('-', '') + ' ' + x.ref).toLowerCase();
+      MP.items.push(x); if (!MP.map.has(x.nappi)) MP.map.set(x.nappi, x); });
+    MP.loaded[d.kind] = d.count; if (d.latest > MP.latest) MP.latest = d.latest; };
+  window.__mpLoad = (d) => { if (MP.loaded[d.kind]) return; parse(d); if (Object.keys(MP.loaded).length === 2) { MP.loading = false; MP.items.sort((a, b) => (a.disc - b.disc) || (a.kind === b.kind ? 0 : a.kind === 'medicine' ? -1 : 1)); } (MP.wait || []).forEach((f) => { try { f(); } catch (e) { /* ignore */ } }); MP.wait = []; };
+  Object.values(window.MEDPRAX_DATA || {}).forEach((d) => window.__mpLoad(d));
+  A.mpLoad = (cb) => { if (Object.keys(MP.loaded).length === 2) { if (cb) cb(); return; } if (cb) (MP.wait = MP.wait || []).push(cb); if (MP.loading) return; MP.loading = true;
+    Object.entries(FILES).forEach(([k, src]) => { if (MP.loaded[k] || document.getElementById('mp-' + k)) return; const s = document.createElement('script'); s.id = 'mp-' + k; s.async = true; s.src = src; s.onerror = () => { MP.error = 'The Medprax catalogue could not be loaded.'; MP.loading = false; }; document.head.appendChild(s); }); };
+  A.mpReady = () => Object.keys(MP.loaded).length === 2;
+  const NAPPI = /^(\d{6,7})-?(\d{3})$/;
+  A.mpFind = (code) => { const m = String(code || '').trim().match(NAPPI); return m ? MP.map.get(m[1] + '-' + m[2]) || null : MP.map.get(String(code || '').trim()) || null; };
+  A.mpSearch = (q, opt) => { opt = opt || {}; const s = String(q || '').toLowerCase().trim(); const n = opt.limit || 25; if (!s) return [];
+    const exact = A.mpFind(s); const words = s.split(/\s+/).filter(Boolean); const out = exact ? [exact] : [];
+    for (const x of MP.items) { if (opt.kind && x.kind !== opt.kind) continue; if (x === exact) continue; if (words.every((w) => x.hay.includes(w))) { out.push(x); if (out.length >= n * 4) break; } }
+    const st = (x) => (x.hay.startsWith(words[0]) ? 0 : 1); return out.sort((a, b) => (a === exact ? -1 : b === exact ? 1 : 0) || (a.disc - b.disc) || st(a) - st(b) || a.label.length - b.label.length).slice(0, n); };
+  const KIND = (x) => (x.kind === 'medicine' ? (/vacc|vaxi|vax\b/i.test(x.name) ? 'vaccine' : 'medicine') : 'consumable');
+  // the practice's stock item for a Medprax item (created as catalogue-only when it is first used)
+  A.mpToStock = (d, x, why) => { let it = d.stockItems.find((s) => s.nappi === x.nappi); if (it) return it;
+    it = { id: E.id('s'), name: x.label, category: KIND(x), medicineId: null, unit: (x.form || 'each').toLowerCase(), packSize: x.units, sep: x.packPrice, sellPrice: x.packPrice, min: 0, max: 0, includedIn: [], location: 'Unassigned', nappi: x.nappi, barcode: '', avgCost: 0, supplier: x.mfr || '', coldChain: KIND(x) === 'vaccine', nappiNote: `Medprax ${x.kind} file (price ${fdt(x.date)})`, medprax: { kind: x.kind, date: x.date, schedule: x.sched, disc: x.disc || undefined, ref: x.ref || undefined } };
+    d.stockItems.push(it); try { E.audit(d, A.user, 'stock-add', 'stock', it.id, null, `${it.name} (${x.nappi}) added from Medprax${why ? ' — ' + why : ''}`); } catch (e) { /* ignore */ } return it; };
+  const fdt = (s) => (s && s.length === 8 ? `${s.slice(6, 8)}/${s.slice(4, 6)}/${s.slice(0, 4)}` : s || '');
+  const sch = (x) => (x.sched ? `S${x.sched}` : '');
+  const tag = (x) => `${x.kind === 'medicine' ? '💊' : '🩹'} ${x.nappi}`;
+
+  // ---------------------------------------------------------------- billing: the code box also finds medicines and materials
+  const codeBox = (t) => t && t.matches && t.matches('#tx-add [name=code]');
+  document.addEventListener('focusin', (e) => { if (codeBox(e.target)) A.mpLoad(); }, true);
+  let tm = null;
+  const fillList = (inp) => { const dl = document.getElementById('tx-codes'); if (!dl) return; if (!dl.dataset.base) dl.dataset.base = dl.innerHTML; const v = String(inp.value || '').trim();
+    if (v.length < 3 || /^\d{1,4}$/.test(v) || !A.mpReady()) { if (dl.innerHTML !== dl.dataset.base) dl.innerHTML = dl.dataset.base; return; }
+    const lo = v.toLowerCase(); const tmp = document.createElement('div'); tmp.innerHTML = '<datalist>' + dl.dataset.base + '</datalist>';
+    const tar = [...tmp.querySelectorAll('option')].filter((o) => (o.value + ' ' + o.textContent).toLowerCase().includes(lo)).slice(0, 10).map((o) => o.outerHTML).join('');
+    const mp = A.mpSearch(v, { limit: 30 }).map((x) => `<option value="${esc(x.nappi + ' — ' + x.label)}">${esc(`${x.kind === 'medicine' ? 'Medicine' : 'Material'} · ${M(x.packPrice)}${x.units > 1 ? ' per ' + x.units : ''}${x.sched ? ' · S' + x.sched : ''}${x.disc ? ' · marked D in Medprax' : ''}`)}</option>`).join('');
+    dl.innerHTML = tar + mp; };
+  document.addEventListener('input', (e) => { if (!codeBox(e.target)) return; clearTimeout(tm); const t = e.target; tm = setTimeout(() => { if (A.mpReady()) fillList(t); else A.mpLoad(() => fillList(t)); }, 150); }, true);
+  // is the typed text a tariff code (or a unique tariff description)? then billing handles it as before
+  const isTariff = (v) => { const head = String(v || '').split(' — ')[0].trim(); if (!head) return false; const d = db(); const T = (d.tariffs || []).concat((A.TS && A.TS.all ? A.TS.all() : []) || []); const lo = head.toLowerCase();
+    if (T.some((t) => String(t.code).toLowerCase() === lo) || (/^\d{1,4}$/.test(head) && T.some((t) => t.code === head.padStart(4, '0')))) return true; return T.filter((t) => String(t.desc || '').toLowerCase().includes(lo)).length === 1; };
+  const _sub = H['submit:tx-add'];
+  H['submit:tx-add'] = function (f) { const typed = String((f && f.code && f.code.value) || '').trim(); const head = typed.split(' — ')[0].trim();
+    if (!typed || isTariff(typed)) return _sub.apply(this, arguments);
+    const nappiLike = NAPPI.test(head) || /^\d{9,10}$/.test(head);
+    if (!A.mpReady()) { if (nappiLike || typed.length >= 3) { A.mpLoad(() => H['submit:tx-add'](f)); return A.toast('Loading the Medprax catalogue…'); } return _sub.apply(this, arguments); }
+    let x = nappiLike ? A.mpFind(head.length >= 9 && !head.includes('-') ? head.slice(0, -3) + '-' + head.slice(-3) : head) : null;
+    if (!x) { const picked = /^\d{6,7}-\d{3} — /.test(typed) ? A.mpFind(head) : null; if (picked) x = picked; }
+    if (!x) { const L = A.mpSearch(typed, { limit: 40 }); const cur = L.filter((y) => !y.disc);
+      if (cur.length === 1) x = cur[0];
+      else if (cur.length > 1) return A.toast(`${cur.length >= 40 ? 'Many' : cur.length} medicines and materials match “${typed}” — pick one from the list, or type more of the name or the NAPPI code.`, 'error');
+      else if (L.length) return A.toast(`Only item${L.length === 1 ? '' : 's'} marked D in Medprax (usually discontinued) match “${typed}”. Pick it from the list if you are sure, or check the name.`, 'error'); }
+    if (!x) return _sub.apply(this, arguments);
+    const inv = A.P && db().invoices && (() => { const enc = db().encounters.find((e) => e.id === A.params[0]); return enc && db().invoices.find((i) => i.id === enc.invoiceId); })(); if (!inv) return A.toast('Open a bill first.', 'error');
+    const enc = db().encounters.find((e) => e.id === inv.encounterId) || {}; const ld = (f.ld && f.ld.value) || inv.date; if (ld > E.today(db())) return A.toast('The date cannot be in the future.', 'error');
+    const dx = [...f.querySelectorAll('[name=dx]:checked')].map((y) => y.value).concat(String((f.dxmore && f.dxmore.value) || '').split(/[,\s]+/).map((y) => y.trim().toUpperCase()).filter(Boolean)); const bad = dx.filter((c) => !E.icd(db(), c)); if (bad.length) return A.toast(`${bad.join(', ')} is not in the ICD-10 master table.`, 'error');
+    const qty = Math.max(1, +(f.qty && f.qty.value) || 1); A.ui.txNew = { ld: ld !== inv.date ? ld : '' };
+    A.act(() => { const it = A.mpToStock(db(), x, 'billed'); const l = E.addLine(db(), inv, { kind: 'item', itemId: it.id, code: it.nappi, qty, icd: dx.length ? dx : (enc.diagnoses || []).slice() }, A.user, 'manual'); l.date = ld; if (A.TS && A.TS.reprice) A.TS.reprice(db(), inv); },
+      `${x.label} × ${qty} added${x.disc ? ' — note: marked D in Medprax (usually discontinued)' : ''}.`);
+    setTimeout(() => { const i = document.querySelector('#tx-add [name=code]'); if (i) i.focus(); }, 60); };
+
+  // choosing a Medprax item in the code box: no "not a tariff code" message; show its price and move to Qty
+  const pickOf = (v) => { const head = String(v || '').split(' — ')[0].trim(); if (NAPPI.test(head)) return A.mpFind(head); if (/^\d{9,10}$/.test(head)) return A.mpFind(head.slice(0, -3) + '-' + head.slice(-3)); const L = A.mpSearch(v, { limit: 5 }).filter((y) => !y.disc); return L.length === 1 ? L[0] : null; };
+  const hint = (x) => { const h = [...document.querySelectorAll('#tx-add .small, #tx-add .tiny')].find((e) => /Choose a code to see its price|each/.test(e.textContent)); if (!h) return;
+    h.innerHTML = `${x.kind === 'medicine' ? '💊' : '🩹'} <b>${esc(x.label)}</b> · NAPPI ${esc(x.nappi)} · <strong>${M(x.packPrice)}</strong> per ${x.units > 1 ? 'pack of ' + x.units + ' (' + M(x.unitPrice) + ' each)' : (x.form || 'item').toLowerCase()}${x.kind === 'medicine' ? ' + dispensing fee' : ''}${x.sched ? ' · Schedule ' + esc(x.sched) : ''}${x.disc ? ' · <span class="warn-t">marked D in Medprax (usually discontinued)</span>' : ''} <span class="muted">· Medprax ${fdt(x.date)}</span>`; };
+  const _chg = H['change:tx-code'];
+  H['change:tx-code'] = function (el) { const v = String((el && el.value) || ''); if (!v.trim() || isTariff(v) || !A.mpReady()) return _chg.apply(this, arguments);
+    const x = pickOf(v); const f = el.form; const keep = { qty: f && f.qty ? f.qty.value : 1, ld: f && f.ld ? f.ld.value : '' };
+    if (!x) { if (A.mpSearch(v, { limit: 2 }).length) return; return _chg.apply(this, arguments); }
+    const val = x.nappi + ' — ' + x.label; A.ui.txNew = Object.assign(keep, { typed: val, mp: x.nappi }); A.render();
+    setTimeout(() => { const i = document.querySelector('#tx-add [name=code]'); if (i) i.value = val; hint(x); const q = document.querySelector('#tx-add [name=qty]'); if (q) { q.focus(); q.select(); } }, 30); };
+  // keep the hint after any redraw of the bill
+  const _rr = A.render; A.render = function () { const r = _rr.apply(this, arguments); try { const st = A.ui.txNew || {}; if (st.mp && /^#\/billing\//.test(location.hash) && A.mpReady()) { const x = MP.map.get(st.mp); const i = document.querySelector('#tx-add [name=code]'); if (x && i && String(i.value).startsWith(x.nappi)) hint(x); } } catch (e) { /* ignore */ } return r; };
+
+  // ---------------------------------------------------------------- Stock → Medprax catalogue
+  const page = () => { const ready = A.mpReady(); if (!ready) { A.mpLoad(() => { if (/^#\/stock\/medprax/.test(location.hash)) A.render(); }); }
+    const q = A.ui.mpQ || ''; const kind = A.ui.mpK || ''; const L = ready && q.trim().length >= 2 ? A.mpSearch(q, { kind, limit: 60 }) : []; const have = new Set(db().stockItems.map((s) => s.nappi));
+    const mine = db().stockItems.filter((s) => MP.map.has(s.nappi)); const diff = mine.filter((s) => Math.abs((MP.map.get(s.nappi).packPrice) - s.sep) > 0.004);
+    return `<div class="card mp-head"><div class="row between" style="gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">Medprax catalogue</h2><p class="small muted" style="margin:4px 0 0">${ready ? `${MP.loaded.medicine.toLocaleString('en-ZA')} medicines and ${MP.loaded.materials.toLocaleString('en-ZA')} materials · prices up to ${fdt(MP.latest)}` : MP.error ? esc(MP.error) : 'Loading the Medprax catalogue…'}</p></div>
+      ${A.canAny('stock.price', 'setup') && ready ? `<div class="row" style="gap:8px;align-items:center"><span class="tiny muted">${mine.length} of your stock items are in Medprax${diff.length ? ` · <b>${diff.length} with a new price</b>` : ''}</span>${diff.length ? `<button class="btn sm primary" data-act="mp-prices">Update ${diff.length} price${diff.length === 1 ? '' : 's'}</button>` : ''}</div>` : ''}</div>
+      <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><input type="search" id="mp-q" value="${esc(q)}" placeholder="Search by name, strength, NAPPI or supplier number — e.g. amoxicillin 500, 712890, suture 3/0" style="flex:1;min-width:260px" data-noclean aria-label="Search Medprax">
+      <div class="seg" role="group" aria-label="Show">${[['', 'All'], ['medicine', '💊 Medicines'], ['materials', '🩹 Materials']].map(([k, l]) => `<button class="${kind === k ? 'on' : ''}" data-act="mp-k" data-k="${k}">${l}</button>`).join('')}</div></div>
+      <p class="tiny muted" style="margin:6px 0 0">Every item can be billed: in Billing → Add a transaction, type its name or NAPPI code. It is added to your stock catalogue automatically.</p></div>
+      ${q.trim().length >= 2 && ready ? `<div class="card"><table class="t small mp-tbl"><thead><tr><th>NAPPI</th><th>Item</th><th>Pack</th><th class="num">Price</th><th class="num">Per unit</th><th>Schedule</th><th>Price date</th><th></th></tr></thead><tbody>${L.map((x) => `<tr class="${x.disc ? 'mp-disc' : ''}"><td class="mono">${tag(x)}</td><td><b>${esc(x.name)}</b> <span class="tiny muted">${esc([x.form, x.strength, x.vol].filter(Boolean).join(' '))}${x.ref ? ' · supplier no. ' + esc(x.ref) : ''}${x.mfr ? ' · ' + esc(x.mfr) : ''}</span>${x.disc ? ' <span class="badge warn" title="Marked D in the Medprax file — usually discontinued">D</span>' : ''}</td><td>${x.units}</td><td class="num">${M(x.packPrice)}</td><td class="num">${M(x.unitPrice)}</td><td>${sch(x) || '—'}</td><td class="tiny">${fdt(x.date)}</td><td>${have.has(x.nappi) ? '<span class="badge good">In your stock</span>' : A.canAny('stock.price', 'setup', 'stock.receive') ? `<button class="btn sm" data-act="mp-add" data-n="${esc(x.nappi)}">Add to stock</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="8" class="muted">Nothing matches. Try fewer words, or the NAPPI code.</td></tr>'}</tbody></table>${L.length >= 60 ? '<p class="tiny muted">Showing the first 60 — type more to narrow it down.</p>' : ''}</div>` : ''}`; };
+  H['mp-k'] = (el) => { A.ui.mpK = el.dataset.k; A.render(); };
+  let qt = null; document.addEventListener('input', (e) => { if (e.target && e.target.id === 'mp-q') { clearTimeout(qt); const v = e.target.value; qt = setTimeout(() => { A.ui.mpQ = v; A.render(); const i = document.getElementById('mp-q'); if (i) { i.focus(); i.setSelectionRange(v.length, v.length); } }, 250); } }, true);
+  H['mp-add'] = (el) => { const x = MP.map.get(el.dataset.n); if (!x) return; A.act(() => { A.mpToStock(db(), x, 'added from the catalogue'); }, `${x.label} added to your stock catalogue.`); };
+  H['mp-prices'] = () => { const mine = db().stockItems.filter((s) => MP.map.has(s.nappi) && Math.abs(MP.map.get(s.nappi).packPrice - s.sep) > 0.004);
+    A.act(() => { mine.forEach((s) => { const x = MP.map.get(s.nappi); try { E.audit(db(), A.user, 'price-import', 'stock', s.id, null, `${s.name}: ${M(s.sep)} → ${M(x.packPrice)} (Medprax ${fdt(x.date)})`); } catch (e) { /* ignore */ } s.sep = x.packPrice; if (s.category === 'consumable') s.sellPrice = x.packPrice; s.packSize = x.units || s.packSize; s.nappiNote = `Medprax ${x.kind} file (price ${fdt(x.date)})`; }); }, `${mine.length} price${mine.length === 1 ? '' : 's'} updated from Medprax.`); };
+  const _stock = P.stock; if (_stock) P.stock = function (params) { const h = _stock.apply(this, arguments); if (!db() || !db().settings.stockEnabled) return h;
+    const tabbed = h.replace(/(<a href="#\/stock\/catalogue"[^>]*>Catalogue<\/a>)/, `$1<a href="#/stock/medprax" class="${params[0] === 'medprax' ? 'on' : ''}">Medprax catalogue</a>`);
+    if (params[0] !== 'medprax') return tabbed; const k = tabbed.indexOf('</nav>'); return (k > 0 ? tabbed.slice(0, k + 6).replace(/class="on"/g, (m, i) => m) : tabbed) + page(); };
+  // a dashboard/overview link: the Stock page's Overview tab is marked "on" when params[0] is unknown — fix the tab highlight
+  const _r = A.render; A.render = function () { const r = _r.apply(this, arguments); if (/^#\/stock\/medprax/.test(location.hash)) document.querySelectorAll('nav.tabs a').forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#/stock/medprax')); return r; };
+})();
+
+
+/* ===== ui-schemes2.js ===== */
+/* Prac360 — Medical aids (reworked, v0.70). Three simple tabs:
+ *  • Overview — who is on which medical aid (patients and %), how much was claimed and paid per medical aid, paid %,
+ *    rejections, waiting for payment and days to payment, for a chosen period.
+ *  • Our medical aids — the practice's medical aids: each plan (option) with its patients, the Prac360 plan it is linked to and
+ *    that plan's payment arrangements (Medical, Private, Other, Special), and the practice's rules (rate %, day-to-day, auth).
+ *  • All medical aids — the full Prac360 medical aid list (731 medical aids, 2 575 plans, 996 payment arrangements), searchable,
+ *    each medical aid with its plans and their payment arrangements.
+ * Amounts: claimed = invoice totals of claims sent for services in the period; paid = what the medical aid paid on those claims
+ * (remittances); waiting = claimed, accepted and not yet paid. Synthetic data in the demo. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, E = window.PE, esc = A.esc; if (!P.schemes) return;
+  const db = () => A.db; const TS = () => A.TS || {}; const M = (n) => E.money(n); const pct = (a, b) => (b ? Math.round((a / b) * 1000) / 10 : 0);
+  const today = () => E.today(db()); const PERIODS = [['1m', 'This month'], ['3m', 'Last 3 months'], ['12m', 'Last 12 months'], ['all', 'All time']];
+  const since = (p) => { const t = today(); if (p === 'all') return ''; if (p === '1m') return t.slice(0, 8) + '01'; const d = new Date(t + 'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() - (p === '3m' ? 3 : 12)); return d.toISOString().slice(0, 10); };
+  const schemeOfOpt = (oid) => db().schemes.find((s) => s.options.some((o) => o.id === oid));
+  const nf = (n) => Number(n || 0).toLocaleString('en-ZA');
+
+  // ---------------------------------------------------------------- numbers per medical aid
+  const stats = (period) => { const d = db(); const from = since(period); const by = {}; const row = (s) => (by[s.id] = by[s.id] || { s, patients: new Set(), plans: {}, claimed: 0, paid: 0, claims: 0, rejected: 0, waiting: 0, days: [], shortfall: 0 });
+    d.schemes.forEach((s) => row(s));
+    const active = d.memberships.filter((m) => m.status !== 'inactive'); const onAid = new Set();
+    active.forEach((m) => { const s = schemeOfOpt(m.optionId); if (!s) return; const r = row(s); r.patients.add(m.patientId); r.plans[m.optionId] = (r.plans[m.optionId] || 0) + 1; onAid.add(m.patientId); });
+    const remBy = {}; (d.remittances || []).forEach((rm) => (rm.lines || []).forEach((l) => { remBy[l.claimId] = { paid: +l.paid || 0, short: +l.shortfall || +l.patientLiable || 0, date: rm.date }; }));
+    d.claims.forEach((c) => { const inv = d.invoices.find((i) => i.id === c.invoiceId); if (!inv || (from && inv.date < from)) return; const ms = d.memberships.find((m) => m.id === inv.membershipId); const s = ms && schemeOfOpt(ms.optionId); if (!s) return; const r = row(s);
+      const v = (c.versions || [])[0] || {}; const st = (v.response || {}).status; r.claims++; r.claimed += +inv.total || 0; const pd = remBy[c.id];
+      if (st === 'rejected' && !pd) r.rejected++; if (pd) { r.paid += pd.paid; r.shortfall += pd.short; const sent = String(((c.versions || []).slice(-1)[0] || {}).at || inv.date).slice(0, 10); const dd = E.daysBetween(sent, pd.date); if (dd >= 0) r.days.push(dd); } else if (st !== 'rejected') r.waiting += +inv.total || 0; });
+    const rows = Object.values(by).filter((r) => r.patients.size || r.claims || r.s.active).map((r) => Object.assign(r, { n: r.patients.size, paidPct: pct(r.paid, r.claimed), avgDays: r.days.length ? Math.round(r.days.reduce((a, b) => a + b, 0) / r.days.length) : null }));
+    const allPat = d.patients.filter((p) => !p.deceased).length; const t = rows.reduce((a, r) => ({ claimed: a.claimed + r.claimed, paid: a.paid + r.paid, claims: a.claims + r.claims, rejected: a.rejected + r.rejected, waiting: a.waiting + r.waiting, days: a.days.concat(r.days) }), { claimed: 0, paid: 0, claims: 0, rejected: 0, waiting: 0, days: [] });
+    return { rows, allPat, onAid: onAid.size, privateN: Math.max(0, allPat - onAid.size), t: Object.assign(t, { avgDays: t.days.length ? Math.round(t.days.reduce((a, b) => a + b, 0) / t.days.length) : null }) }; };
+  A.schemeStats = stats;
+
+  // ---------------------------------------------------------------- shared bits
+  const kpi = (n, l, s, cls) => `<div class="ma-kpi ${cls || ''}"><span class="n">${n}</span><span class="l">${l}</span>${s ? `<span class="s">${s}</span>` : ''}</div>`;
+  const bar = (v, max, cls, label) => `<span class="ma-bar ${cls || ''}" role="img" aria-label="${esc(label || '')}"><i style="width:${max ? Math.max(1.5, Math.min(100, (v / max) * 100)) : 0}%"></i></span>`;
+  const short = (n) => String(n).replace(/ Medical (Scheme|Fund|Aid)$/i, '').replace(/ Medical Scheme \(([^)]+)\)$/i, ' ($1)');
+  const tabs = (cur) => `<nav class="tabs">${[['overview', 'Overview'], ['ours', 'Our medical aids'], ['all', 'All medical aids']].map(([k, l]) => `<a href="#/schemes/${k}" class="${k === cur ? 'on' : ''}">${l}</a>`).join('')}</nav>`;
+  const head = `<div class="page-head"><div><h1>Medical aids</h1><div class="muted">Who your patients are on, how each medical aid pays, and every plan with its payment arrangements.</div></div><div class="actions">${A.can('setup') ? '<button class="btn" data-act="scheme-add">Add a medical aid</button>' : ''}</div></div>`;
+  const periodSel = (p) => `<div class="seg ma-period" role="group" aria-label="Period">${PERIODS.map(([k, l]) => `<button class="${p === k ? 'on' : ''}" data-act="ma-period" data-p="${k}">${l}</button>`).join('')}</div>`;
+  H['ma-period'] = (el) => { A.ui.maP = el.dataset.p; A.render(); };
+
+  // ---------------------------------------------------------------- Overview
+  const overview = () => { const p = A.ui.maP || '3m'; const S = stats(p); const rows = S.rows.slice().sort((a, b) => b.claimed - a.claimed || b.n - a.n); const maxN = Math.max(1, ...rows.map((r) => r.n), S.privateN); const maxC = Math.max(1, ...rows.map((r) => r.claimed));
+    const best = rows.filter((r) => r.claims >= 3).sort((a, b) => b.paidPct - a.paidPct)[0]; const worst = rows.filter((r) => r.claims >= 3).sort((a, b) => a.paidPct - b.paidPct)[0]; const most = rows.slice().sort((a, b) => b.n - a.n)[0];
+    const insights = [most && most.n ? `<b>${esc(short(most.s.name))}</b> has the most patients: ${most.n} (${pct(most.n, S.allPat)}% of your patients).` : '', best ? `<b>${esc(short(best.s.name))}</b> pays best: ${best.paidPct}% of what was claimed${best.avgDays != null ? `, in about ${best.avgDays} days` : ''}.` : '', worst && worst !== best ? `<b>${esc(short(worst.s.name))}</b> pays least: ${worst.paidPct}% of what was claimed${worst.rejected ? ` and ${worst.rejected} claim${worst.rejected === 1 ? ' was' : 's were'} rejected` : ''}.` : '', S.t.waiting > 0 ? `<b>${M(S.t.waiting)}</b> is still waiting for payment from medical aids.` : ''].filter(Boolean);
+    return `<div class="row between ma-toolbar">${periodSel(p)}<span class="tiny muted">Claims for services ${p === 'all' ? 'at any time' : 'from ' + A.fd(since(p))} · synthetic demo data</span></div>
+      <div class="ma-kpis">${kpi(`${pct(S.onAid, S.allPat)}%`, 'Patients on a medical aid', `${nf(S.onAid)} of ${nf(S.allPat)} · ${nf(S.privateN)} private`)}${kpi(M(S.t.claimed), 'Claimed', `${nf(S.t.claims)} claims`)}${kpi(M(S.t.paid), 'Paid by medical aids', `${pct(S.t.paid, S.t.claimed)}% of claimed`, 'good')}${kpi(M(S.t.waiting), 'Waiting for payment', 'accepted, not paid yet', S.t.waiting ? 'warn' : '')}${kpi(nf(S.t.rejected), 'Rejected claims', S.t.claims ? `${pct(S.t.rejected, S.t.claims)}% of claims` : '', S.t.rejected ? 'crit' : '')}${kpi(S.t.avgDays == null ? '—' : S.t.avgDays + ' days', 'Average time to payment', 'from sending to paid')}</div>
+      ${insights.length ? `<div class="card ma-ins"><h3>What stands out</h3><ul>${insights.map((x) => `<li>${x}</li>`).join('')}</ul></div>` : ''}
+      <div class="ma-grid"><div class="card"><h3>Who your patients are on</h3><p class="tiny muted">Patients per medical aid, and the share of all your patients.</p>
+        <table class="t small ma-tbl"><tbody>${rows.filter((r) => r.n).sort((a, b) => b.n - a.n).map((r) => `<tr><td><a href="#/schemes/ours/${r.s.id}">${esc(short(r.s.name))}</a></td><td class="ma-bc">${bar(r.n, maxN, '', `${r.n} patients`)}</td><td class="num">${r.n}</td><td class="num"><b>${pct(r.n, S.allPat)}%</b></td></tr>`).join('')}
+        <tr class="ma-priv"><td>Private (no medical aid)</td><td class="ma-bc">${bar(S.privateN, maxN, 'muted', `${S.privateN} private patients`)}</td><td class="num">${S.privateN}</td><td class="num"><b>${pct(S.privateN, S.allPat)}%</b></td></tr></tbody></table></div>
+      <div class="card"><h3>Claimed and paid per medical aid</h3><p class="tiny muted"><span class="ma-key c"></span> Claimed &nbsp; <span class="ma-key p"></span> Paid</p>
+        <table class="t small ma-tbl"><tbody>${rows.filter((r) => r.claims).map((r) => `<tr><td><a href="#/schemes/ours/${r.s.id}">${esc(short(r.s.name))}</a><div class="tiny muted">${r.claims} claim${r.claims === 1 ? '' : 's'}</div></td><td class="ma-bc ma-two">${bar(r.claimed, maxC, 'c', `Claimed ${M(r.claimed)}`)}${bar(r.paid, maxC, 'p', `Paid ${M(r.paid)}`)}</td><td class="num">${M(r.claimed)}<div class="tiny good-t">${M(r.paid)}</div></td><td class="num"><b class="${r.paidPct >= 85 ? 'good-t' : r.paidPct < 60 ? 'crit-t' : ''}">${r.paidPct}%</b><div class="tiny muted">paid</div></td></tr>`).join('') || '<tr><td class="muted">No claims in this period.</td></tr>'}</tbody></table></div></div>
+      <div class="card"><h3>Per medical aid</h3><div class="tbl-wrap"><table class="t small"><thead><tr><th>Medical aid</th><th class="num">Patients</th><th class="num">% of patients</th><th class="num">Claims</th><th class="num">Claimed</th><th class="num">Paid</th><th class="num">Paid %</th><th class="num">Waiting</th><th class="num">Rejected</th><th class="num">Days to pay</th></tr></thead><tbody>
+        ${rows.map((r) => `<tr class="click" data-act="ma-open" data-id="${r.s.id}"><td><b>${esc(r.s.name)}</b>${r.s.active ? '' : ' <span class="badge">not accepted</span>'}</td><td class="num">${r.n}</td><td class="num">${pct(r.n, S.allPat)}%</td><td class="num">${r.claims}</td><td class="num">${M(r.claimed)}</td><td class="num">${M(r.paid)}</td><td class="num"><b>${r.claims ? r.paidPct + '%' : '—'}</b></td><td class="num">${r.waiting ? M(r.waiting) : '—'}</td><td class="num">${r.rejected || '—'}</td><td class="num">${r.avgDays == null ? '—' : r.avgDays}</td></tr>`).join('')}
+        <tr class="ma-tot"><td><b>All medical aids</b></td><td class="num">${nf(S.onAid)}</td><td class="num">${pct(S.onAid, S.allPat)}%</td><td class="num">${S.t.claims}</td><td class="num">${M(S.t.claimed)}</td><td class="num">${M(S.t.paid)}</td><td class="num"><b>${pct(S.t.paid, S.t.claimed)}%</b></td><td class="num">${M(S.t.waiting)}</td><td class="num">${S.t.rejected}</td><td class="num">${S.t.avgDays == null ? '—' : S.t.avgDays}</td></tr></tbody></table></div><p class="tiny muted" style="margin:6px 0 0">Click a medical aid for its plans, payment arrangements and rules. Paid % counts what the medical aid paid; shortfalls moved to patients are not included.</p></div>`; };
+  H['ma-open'] = (el) => A.go('#/schemes/ours/' + el.dataset.id);
+
+  // ---------------------------------------------------------------- the Prac360 plan and payment arrangements for a practice plan
+  const wds = (x) => String(x || '').toUpperCase().replace(/[^A-Z0-9 ]/g, ' ').split(/\s+/).filter((w) => w.length > 1);
+  const homeOf = (s) => { const T = TS(); const c = {}; s.options.forEach((o) => { const g = T.guessPlan && T.guessPlan(s.name, o.name); if (g) c[g.scheme] = (c[g.scheme] || 0) + 1; }); const sw = wds(s.name)[0]; return Object.keys(c).sort((x, y) => (c[y] - c[x]) || ((x === sw ? 0 : 1) - (y === sw ? 0 : 1)) || x.length - y.length)[0] || null; };
+  const planFor = (s, o) => { const T = TS(); if (!T.guessPlan) return null; const ms = db().memberships.find((m) => m.optionId === o.id && m.planRef); if (ms && T.plan && T.plan(ms.planRef)) return T.plan(ms.planRef);
+    const g = T.guessPlan(s.name, o.name); const home = homeOf(s); const fam = wds(home || s.name)[0]; const dRaw = String((db().practice || {}).discipline || 'gp').toLowerCase(); const disc = /dent/.test(dRaw) ? 'dental' : /general|^gp$|family/.test(dRaw) ? 'gp' : 'specialist'; const ow = wds(o.name).filter((w) => !['PLAN', 'OPTION'].includes(w));
+    // best plan of this medical aid's family (e.g. DISCOVERY, DISCOVERY KEYCARE) whose name has the option's words — preferring plans that fit the practice
+    const fit = (p) => { const n = ' ' + wds(p.name).join(' ') + ' '; let x = 0; if (disc !== 'dental' && / DENTISTRY | DRC /.test(n + ' ' + p.scheme + ' ')) x -= 2; if (disc === 'dental' && / DENTISTRY /.test(n)) x += 2; if (/ OPTOMETRY | ISOLESO /.test(n)) x -= 2; if (/ HOSP | ONC | CHR | CHRONIC /.test(n)) x -= 0.6; if (/ PRIMARY /.test(n) && ['gp', 'dental'].includes(disc)) x += 0.4; if (/ SPECIALIST /.test(n) && !['gp', 'dental'].includes(disc)) x += 0.4; if (/ ACU | ACUTE /.test(n)) x += 0.3; return x; };
+    let best = null, bs = -1e9; T.plans().filter((p) => !p.closed && wds(p.scheme)[0] === fam).forEach((p) => { const pw = wds(p.name); const hit = ow.filter((w) => pw.includes(w)).length; if (hit < Math.min(ow.length, 2) && hit < ow.length) return; const sc = hit * 2 + fit(p) - pw.length * 0.02 + (p.scheme === home ? 0.2 : 0); if (sc > bs) { bs = sc; best = p; } });
+    return best || g; };
+  const paCell = (code) => { if (!code) return '<span class="muted">—</span>'; const p = TS().pa ? TS().pa(code) : null; return `<span class="mono">${esc(code)}</span>${p ? `<div class="tiny muted">${esc(p.name)}</div>` : ''}`; };
+  const paRow = (pl) => `<td>${paCell(pl && pl.pa.medical)}</td><td>${paCell(pl && pl.pa.private)}</td><td>${paCell(pl && pl.pa.other)}</td><td>${paCell(pl && pl.pa.special)}</td>`;
+
+  // ---------------------------------------------------------------- Our medical aids
+  const ours = (id) => { const S = stats(A.ui.maP || '3m'); const rows = S.rows.slice().sort((a, b) => b.n - a.n || String(a.s.name).localeCompare(b.s.name));
+    if (id) { const r = rows.find((x) => x.s.id === id) || { s: E.scheme(db(), id), n: 0, plans: {}, claims: 0, claimed: 0, paid: 0, waiting: 0, rejected: 0, paidPct: 0, avgDays: null }; if (!r.s) return '<div class="card">That medical aid is not in your list.</div>'; return detail(r, S); }
+    return `<p class="small muted" style="margin:4px 0 10px">The medical aids your practice works with. Open one to see its plans and the payment arrangements that price each claim.</p>
+      <div class="ma-cards">${rows.map((r) => `<a class="card ma-card ${r.s.active ? '' : 'off'}" href="#/schemes/ours/${r.s.id}"><div class="row between"><b>${esc(r.s.name)}</b>${r.s.active ? '' : '<span class="badge">not accepted</span>'}</div>
+        <div class="ma-mini"><span><b>${r.n}</b> patient${r.n === 1 ? '' : 's'}</span><span><b>${r.s.options.length}</b> plan${r.s.options.length === 1 ? '' : 's'}</span><span>${!r.claims ? '<b>—</b> paid' : !r.paid && r.waiting ? '<b>not paid yet</b>' : `<b>${r.paidPct}%</b> paid`}</span></div>
+        <div class="tiny muted">${pct(r.n, S.allPat)}% of your patients${r.claims ? ` · claimed ${M(r.claimed)}` : ''}</div></a>`).join('')}</div>`; };
+  const detail = (r, S) => { const s = r.s; const reasons = {}; db().claims.forEach((c) => { const v = (c.versions || [])[0] || {}; const re = v.response || {}; if (re.status !== 'rejected') return; const inv = db().invoices.find((i) => i.id === c.invoiceId); const ms = inv && db().memberships.find((m) => m.id === inv.membershipId); if (!ms || !s.options.some((o) => o.id === ms.optionId)) return; const k = re.code + ' ' + ((E.REJECTION_HELP || {})[re.code] || { title: re.text || '' }).title; reasons[k] = (reasons[k] || 0) + 1; });
+    const T = TS(); const anyPlan = s.options.map((o) => planFor(s, o)).find(Boolean); const all = anyPlan && T.plans ? T.plans().filter((p) => p.scheme === anyPlan.scheme) : [];
+    return `<div class="crumbs no-crumb"><a href="#/schemes/ours">Our medical aids</a> › ${esc(s.name)}</div>
+      <div class="row between" style="gap:10px;flex-wrap:wrap;margin:6px 0 10px"><h2 style="margin:0">${esc(s.name)}</h2><label class="check small" style="margin:0"><input type="checkbox" data-change="scheme-active" data-id="${s.id}" ${s.active ? 'checked' : ''} ${A.can('setup') ? '' : 'disabled'}> Accepted by the practice</label></div>
+      <div class="ma-kpis">${kpi(r.n, 'Patients', `${pct(r.n, S.allPat)}% of your patients`)}${kpi(M(r.claimed), 'Claimed', `${r.claims} claims · ${(PERIODS.find((x) => x[0] === (A.ui.maP || '3m')) || [])[1]}`)}${kpi(M(r.paid), 'Paid', `${r.paidPct}% of claimed`, 'good')}${kpi(M(r.waiting), 'Waiting for payment', '', r.waiting ? 'warn' : '')}${kpi(r.rejected || 0, 'Rejected', '', r.rejected ? 'crit' : '')}${kpi(r.avgDays == null ? '—' : r.avgDays + ' days', 'Time to payment', '')}</div>
+      <div class="card"><h3>Plans your patients are on</h3><p class="tiny muted">Each plan is linked to a plan in the Prac360 medical aid list; its payment arrangements set the price of every claim (Medical — claimed from the medical aid; Private — patient pays and claims back; Other and Special).</p>
+        <div class="tbl-wrap"><table class="t small ma-pa"><thead><tr><th>Plan</th><th class="num">Patients</th><th>Linked Prac360 plan</th><th>Medical</th><th>Private</th><th>Other</th><th>Special</th><th class="num">Pays % of rate</th><th class="num">Day-to-day</th><th>Auth needed for</th>${A.can('setup') ? '<th></th>' : ''}</tr></thead><tbody>
+        ${s.options.map((o) => { const pl = planFor(s, o); return `<tr><td><b>${esc(o.name)}</b></td><td class="num">${r.plans[o.id] || 0}</td><td>${pl ? `${esc(pl.scheme)} · ${esc(pl.name)}${pl.closed ? ' <span class="badge">closed</span>' : ''}` : '<span class="muted">Not linked</span>'}</td>${paRow(pl)}<td class="num">${o.ratePct}%</td><td class="num">${o.dayToDay ? M(o.dayToDay) : 'None'}</td><td>${(o.requiresAuth || []).map(esc).join(', ') || '—'}</td>${A.can('setup') ? `<td><button class="btn sm ghost" data-act="opt-edit" data-s="${s.id}" data-o="${o.id}">Edit rules</button></td>` : ''}</tr>`; }).join('')}</tbody></table></div>
+        ${A.can('setup') ? `<button class="btn sm" data-act="ma-opt-add" data-s="${s.id}" style="margin-top:8px">＋ Add a plan</button>` : ''}</div>
+      ${Object.keys(reasons).length ? `<div class="card"><h3>Why claims were rejected</h3>${Object.entries(reasons).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<div class="sd-row2"><span>${esc(k)}</span><b>${n}</b></div>`).join('')}<a class="btn sm ghost" href="#/claims" style="margin-top:6px">Open Claims →</a></div>` : ''}
+      ${all.length ? `<details class="card ma-allp"><summary><b>All ${all.length} plans of ${esc(anyPlan.scheme)}</b> in the Prac360 medical aid list</summary><div class="tbl-wrap"><table class="t small ma-pa"><thead><tr><th>Plan</th><th>Medical</th><th>Private</th><th>Other</th><th>Special</th></tr></thead><tbody>${all.map((pl) => `<tr class="${pl.closed ? 'muted' : ''}"><td>${esc(pl.name)}${pl.closed ? ' <span class="badge">closed</span>' : ''}</td>${paRow(pl)}</tr>`).join('')}</tbody></table></div></details>` : ''}`; };
+  H['ma-opt-add'] = (el) => A.modal('Add a plan', `<label class="f"><span>Plan name (as on the member's card)</span><input id="mo-n" placeholder="e.g. Classic Comprehensive" data-noclean></label><p class="tiny muted">Prac360 links it to the matching plan and its payment arrangements in the medical aid list. You can edit the rules afterwards.</p>`, `<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="ma-opt-go" data-s="${el.dataset.s}">Add</button>`);
+  H['ma-opt-go'] = (el) => { const n = (document.getElementById('mo-n').value || '').trim(); if (!n) return A.toast('Give the plan name.', 'error'); A.closeModal(); A.act(() => { const s = E.scheme(db(), el.dataset.s); s.options.push({ id: s.id + '_o' + Date.now().toString(36), name: n, year: new Date().getFullYear(), ratePct: 100, dayToDay: 0, requiresAuth: [], excludedIcd: [], ruleNote: 'Added by the practice' }); E.audit(db(), A.user, 'scheme-option-add', 'scheme', s.id, null, n); }, `${n} added.`); };
+
+  // ---------------------------------------------------------------- All medical aids (the Prac360 list)
+  const allAids = () => { const T = TS(); if (!T.schemes) return '<div class="card">The medical aid list is not available.</div>'; const q = (A.ui.maQ || '').toLowerCase().trim(); const showClosed = !!A.ui.maClosed;
+    const plans = T.plans(); const byScheme = {}; plans.forEach((p) => { (byScheme[p.scheme] = byScheme[p.scheme] || []).push(p); });
+    const names = [...new Set(T.schemes().map((s) => s.name))]; const sch = T.schemes();
+    let list = names.map((n) => ({ name: n, rows: sch.filter((s) => s.name === n), plans: byScheme[n] || [] })).filter((x) => showClosed || x.rows.some((r) => !r.closed) || x.plans.some((p) => !p.closed));
+    if (q) list = list.filter((x) => (x.name + ' ' + x.rows.map((r) => r.admin + ' ' + r.code).join(' ') + ' ' + x.plans.map((p) => p.name).join(' ')).toLowerCase().includes(q));
+    list.sort((a, b) => a.name.localeCompare(b.name)); const open = A.ui.maOpen;
+    return `<div class="row ma-toolbar" style="gap:8px;flex-wrap:wrap"><input type="search" id="ma-q" value="${esc(A.ui.maQ || '')}" placeholder="Search a medical aid, administrator or plan — e.g. Discovery, Medscheme, Classic" style="flex:1;min-width:260px" data-noclean aria-label="Search medical aids"><label class="check small" style="margin:0"><input type="checkbox" data-change="ma-closed" ${showClosed ? 'checked' : ''}> Show closed</label></div>
+      <p class="tiny muted">${list.length} medical aid${list.length === 1 ? '' : 's'} · ${nf(plans.length)} plans and ${nf(T.pas().length)} payment arrangements in the Prac360 list (kept by the Prac360 tariff team).</p>
+      <div class="card ma-dir">${list.slice(0, 150).map((x) => { const o = open === x.name; const live = x.plans.filter((p) => showClosed || !p.closed); const r0 = x.rows[0] || {};
+        return `<div class="ma-di ${o ? 'open' : ''}"><button class="ma-dh" data-act="ma-di" data-n="${esc(x.name)}" aria-expanded="${o}"><span><b>${esc(x.name)}</b> <span class="tiny muted">${esc(r0.admin || '')}${r0.route ? ' · claims via ' + esc(r0.route) : ''}</span></span><span class="tiny">${live.length} plan${live.length === 1 ? '' : 's'} ${o ? '▴' : '▾'}</span></button>
+          ${o ? `<div class="tbl-wrap"><table class="t small ma-pa"><thead><tr><th>Plan</th><th>Medical</th><th>Private</th><th>Other</th><th>Special</th></tr></thead><tbody>${live.map((pl) => `<tr class="${pl.closed ? 'muted' : ''}"><td>${esc(pl.name)}${pl.closed ? ' <span class="badge">closed</span>' : ''}</td>${paRow(pl)}</tr>`).join('') || '<tr><td colspan="5" class="muted">No plans listed.</td></tr>'}</tbody></table></div>` : ''}</div>`; }).join('') || '<p class="muted">Nothing matches.</p>'}${list.length > 150 ? `<p class="tiny muted">Showing 150 of ${list.length} — type to narrow it down.</p>` : ''}</div>`; };
+  H['ma-di'] = (el) => { A.ui.maOpen = A.ui.maOpen === el.dataset.n ? null : el.dataset.n; A.render(); };
+  H['change:ma-closed'] = (el) => { A.ui.maClosed = el.checked; A.render(); };
+  let qt = null; document.addEventListener('input', (e) => { if (e.target && e.target.id === 'ma-q') { clearTimeout(qt); const v = e.target.value; qt = setTimeout(() => { A.ui.maQ = v; A.ui.maOpen = null; A.render(); const i = document.getElementById('ma-q'); if (i) { i.focus(); i.setSelectionRange(v.length, v.length); } }, 250); } }, true);
+
+  P.schemes = (params) => { const tab = ['overview', 'ours', 'all'].includes(params && params[0]) ? params[0] : 'overview'; const body = tab === 'ours' ? ours(params[1]) : tab === 'all' ? allAids() : overview(); return head + tabs(tab) + `<div class="ma-page">${body}</div>`; };
+  if (A.SCREEN_NAMES) A.SCREEN_NAMES.schemes = 'Medical aids';
+})();
+
+
+/* ===== ui-v070l.js ===== */
+/* Prac360 v0.70 — What's new + help: Medprax medicines and materials; the reworked Medical aids section. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id); const add = (k, x) => { if (k && k.steps && !k.steps.includes(x)) k.steps.push(x); };
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.70')) A.RELEASES.unshift({ v: '0.70', date: '2026-11-24', title: 'Medprax medicines and materials, and a clearer Medical aids section', items: [
+    { type: 'new', area: 'billing', title: 'Bill any medicine or material from Medprax', text: 'All 26 365 medicines and 98 123 materials from the Medprax files are available. In Billing → Add a transaction, type the name, strength or NAPPI code and press Enter (or pick it from the list). It is billed at the Medprax price — medicines with your dispensing fee — and added to your stock catalogue automatically.', link: '#/billing' },
+    { type: 'new', area: 'stock', title: 'Stock → Medprax catalogue', text: 'Search every Medprax item by name, strength, NAPPI or supplier number, add items to your stock, and update the prices of your stock items from Medprax with one click.', link: '#/stock/medprax' },
+    { type: 'improved', area: 'billing', title: 'Medical aids: simpler, with insights', text: 'Overview shows who your patients are on (patients and % per medical aid, and private patients), how much was claimed and paid per medical aid, paid %, rejections, money waiting and days to payment. Our medical aids shows each plan your patients are on with its payment arrangements. All medical aids lists every medical aid with its plans and payment arrangements.', link: '#/schemes' }] });
+  const mp = kb('medprax'); add(mp, 'Prac360 also includes the full Medprax medicine and material files: Stock → Medprax catalogue to search them, add items to your stock or update your prices from Medprax.');
+  add(mp, 'To bill a medicine or material: Billing → Add a transaction → type its name or NAPPI code and press Enter. It is added to your stock catalogue automatically.');
+  add(kb('billtx'), 'Medicines and materials: type the name or NAPPI code in the code box (e.g. amoxicillin 500, or 712890-001) and press Enter.');
+  const sc = kb('schemes'); if (sc) { sc.steps = ['Medical aids → Overview: who your patients are on, how much was claimed and paid per medical aid, paid %, rejections and days to payment. Choose the period at the top.', 'Our medical aids: open one to see the plans your patients are on, the payment arrangements that price each claim (Medical, Private, Other, Special) and the practice\'s rules.', 'All medical aids: search every medical aid and see its plans and payment arrangements.', 'Untick "Accepted by the practice" for a medical aid you no longer accept.']; }
+  const C = A.COURSES || []; const bc = C.find((c) => c.id === 'billing');
+  if (bc && bc.quiz && !bc.quiz.some((q) => /Medprax/.test(q.q))) bc.quiz.push({ q: 'How do you bill a medicine that is not yet in your stock list?', o: ['You cannot', 'Type its name or NAPPI code in Add a transaction and press Enter', 'Phone Medprax'], a: 1 });
+  if (bc && bc.lessons && !bc.lessons.some((l) => l.t === 'Medical aids at a glance')) bc.lessons.push({ t: 'Medical aids at a glance', body: 'Medical aids → Overview shows how many patients are on each medical aid, how much you claimed and were paid, and which medical aid pays best and fastest.', guide: '' });
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /billing/i.test(x[0])) || A.FUNCTIONS[0]; if (g) { if (!g[1].some((x) => /Medprax catalogue/.test(x[0]))) g[1].push(['Medprax catalogue: bill any medicine or material', 'medprax']); if (!g[1].some((x) => /Medical aids overview/.test(x[0]))) g[1].push(['Medical aids overview, plans and payment arrangements', 'schemes']); } }
 })();
 
 

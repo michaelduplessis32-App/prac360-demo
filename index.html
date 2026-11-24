@@ -2865,6 +2865,13 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .cx-rgrp .cx-switch{margin:0}.cx-defstar{color:#f59e0b;font-size:.85em;margin-left:2px}
 .cx-def-on{font-size:.82rem;font-weight:600;color:#15803d;background:#dcfce7;border-radius:999px;padding:4px 10px;white-space:nowrap}
 .cx-def-set{font-size:.82rem;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:999px;padding:4px 10px;cursor:pointer;white-space:nowrap}.cx-def-set:hover{background:#dbeafe}
+/* v0.77 — suggested codes inside Add a transaction */
+.tx-sug{margin:8px 0 12px;padding:10px 12px;border:1px solid #fcd34d;background:#fffbeb;border-radius:12px}
+.tx-sug-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}.tx-sug-h .btn{margin-left:auto}
+.tx-sug-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 0;border-top:1px dashed #fde68a}.tx-sug-r:first-of-type{border-top:0}
+.tx-sug-d{font-weight:600}.tx-sug-w{flex:1;min-width:160px}.tx-sug-b{display:inline-flex;gap:4px;margin-left:auto}
+.tx-sug-done{background:#f0fdf4;border-color:#bbf7d0;color:#166534;font-size:.88rem}
+[data-theme=dark] .tx-sug,[data-theme=dusk] .tx-sug{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.35)}
 </style>
 </head>
 <body>
@@ -13456,13 +13463,23 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   const addForm = (inv, enc) => { const pr = inv.pricing || {}; const codes = db().tariffs.filter((t) => t.kind !== 'modifier' && t.kind !== 'balance'); const st = A.ui.txNew || {}; const dx = enc.diagnoses || [];
     const pick = st.code || ''; const t = pick && tdef(pick); const mods = t ? TS.mods().filter((m) => m.disc.includes(pr.disc || 'gp') && (m.applies === 'any' || (m.applies === 'procedure' && t.kind === 'procedure'))) : [];
     const rate = t && pr.pa ? TS.rate(pr.pa, pr.disc, pick, inv.date) : null; const unit = t ? (pr.chargeAt === 'rate' && rate != null ? rate : t.fee) : 0;
-    return `<form class="tx-add" id="tx-add" data-submit="tx-add"><div class="tx-add-h"><strong>Add a transaction</strong><span class="tiny muted">one at a time — code, ICD-10, modifiers</span></div>
+    return `<form class="tx-add" id="tx-add" data-submit="tx-add"><div class="tx-add-h"><strong>Add a transaction</strong><span class="tiny muted">one at a time — code, ICD-10, modifiers</span></div>${sugBox(inv, enc)}
       <div class="tx-add-grid"><label class="f tx-codef"><span>Treatment code <small>— type it, or a few words</small></span><input name="code" list="tx-codes" value="${esc(pick ? pick + (t ? ' — ' + t.desc : '') : (st.typed || ''))}" placeholder="e.g. 0190" autocomplete="off" data-change="tx-code" data-noclean data-nodictate aria-label="Treatment code"><datalist id="tx-codes">${codes.map((x) => `<option value="${esc(x.code)}">${esc(x.code)} — ${esc(x.desc)}</option>`).join('')}</datalist></label>
         <label class="f"><span>Date</span><input name="ld" type="date" value="${esc(st.ld || inv.date)}" max="${E.today(db())}" aria-label="Date of this transaction"></label>
         <label class="f"><span>Qty</span><input name="qty" type="number" min="1" value="${st.qty || 1}" style="width:80px"></label>
         <div class="f"><span>ICD-10 for this transaction</span><div class="tx-dx">${dx.map((c, i) => `<label class="check"><input type="checkbox" name="dx" value="${esc(c)}" ${st.dx ? (st.dx.includes(c) ? 'checked' : '') : 'checked'}> <span class="mono">${esc(c)}</span> <span class="tiny">${esc(((E.icd(db(), c) || {}).desc || '').slice(0, 40))}${i === 0 ? ' · primary' : ''}</span></label>`).join('') || '<span class="tiny muted">No diagnoses on the note — add ICD-10 after adding.</span>'}<input name="dxmore" placeholder="other ICD-10, comma separated" value="${esc(st.dxmore || '')}" data-noclean style="margin-top:4px"></div></div>
         ${mods.length ? `<div class="f"><span>Modifiers</span><div class="tx-dx">${mods.map((m) => `<label class="check" title="${esc(m.note)}"><input type="checkbox" name="mod" value="${m.code}"> <span class="mod-chip ${m.type}">${m.code}</span> ${esc(m.name)}</label>`).join('')}</div></div>` : ''}</div>
       <div class="row between" style="flex-wrap:wrap;gap:8px;margin-top:8px"><div class="small">${t ? `Price: <strong>${M(unit)}</strong> each${rate != null ? ` · medical aid rate ${M(rate)} (${esc(pr.pa)})` : pr.pa ? ` · <span class="warn-t">no ${esc(pr.pa)} rate for ${esc(pick)} — practice price used</span>` : ''}${t.afterHoursOnly ? ' · <span class="warn-t">after hours only</span>' : ''}` : '<span class="muted">Choose a code to see its price.</span>'}</div><button class="btn primary" type="submit">Add transaction</button></div></form>`; };
+  // suggested codes to bill, shown inside Add a transaction
+  const sugBox = (inv, enc) => { let sug = []; try { sug = E.suggestCodes(db(), enc) || []; } catch (e) { return ''; } const done = (x) => inv.lines.some((l) => l.code === x.code || (l.nappi && l.nappi === x.code)) || (inv.rejected || []).includes(x.code);
+    const open = sug.map((x, i) => [x, i]).filter(([x]) => !done(x) && !x.included); if (!sug.length) return '';
+    if (!open.length) return '<div class="tx-sug tx-sug-done">✓ All suggested codes are on this account or were set aside.</div>';
+    return `<div class="tx-sug" role="region" aria-label="Suggested to bill"><div class="tx-sug-h"><span>💡 <strong>Suggested to bill</strong></span><span class="tiny muted">from the signed note, procedures and stock used</span>${open.length > 1 ? `<button type="button" class="btn sm primary" data-act="tx-sug-all">Add all ${open.length}</button>` : ''}</div>
+      ${open.map(([x, i]) => `<div class="tx-sug-r"><span class="mono"><strong>${esc(x.code)}</strong></span>${x.modifier ? ` <span class="mod-chip RM">${esc(x.modifier)}</span>` : ''} <span class="tx-sug-d">${esc(x.desc)}${x.qty > 1 ? ` × ${x.qty}` : ''}</span><span class="badge ${x.confidence === 'high' ? 'good' : x.confidence === 'medium' ? 'warn' : ''}">${esc(x.confidence)}</span>${x.undocumented ? '<span class="badge warn">Not in note text</span>' : ''}
+        <span class="tiny muted tx-sug-w" title="${esc(x.reason)}">${esc((x.evidence || {}).field || '')}${(x.evidence || {}).snippet ? ': “' + esc(String(x.evidence.snippet).slice(0, 60)) + '”' : ''}</span>
+        <span class="tx-sug-b"><button type="button" class="btn sm primary" data-act="sug-accept" data-i="${i}">＋ Add</button><button type="button" class="btn sm" data-act="sug-edit" data-i="${i}">Edit</button><button type="button" class="btn sm ghost" data-act="sug-reject" data-i="${i}" title="Not this time">✕</button></span></div>`).join('')}</div>`; };
+  H['tx-sug-all'] = () => { const enc = encById(A.params[0]); const inv = db().invoices.find((i) => i.id === enc.invoiceId); if (!inv) return; const sug = E.suggestCodes(db(), enc) || [];
+    const open = sug.filter((x) => !x.included && !inv.lines.some((l) => l.code === x.code) && !(inv.rejected || []).includes(x.code)); A.act(() => open.forEach((x) => E.addLine(db(), inv, x, A.user, 'accepted')), `${open.length} suggested codes added.`); };
   const allCodes = () => db().tariffs.filter((t) => t.kind !== 'modifier' && t.kind !== 'balance');
   const resolveCode = (v) => { const head = String(v || '').split(' — ')[0].trim(); if (!head) return { code: '' }; const C = allCodes(); const lo = head.toLowerCase();
     let c = C.find((t) => t.code.toLowerCase() === lo) || (/^\d{1,4}$/.test(head) ? C.find((t) => t.code === head.padStart(4, '0')) : null);
@@ -13553,7 +13570,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     let h = _bill(params); inv = enc && db().invoices.find((i) => i.id === enc.invoiceId); if (!inv) return h;
     if (!inv.pricing && inv.status === 'draft') { TS.reprice(db(), inv); h = _bill(params); } trialTake(inv);
     const a = h.indexOf('<div class="card"><h2>Invoice lines</h2>'); if (a < 0) return h; const b = h.indexOf('</table></div>', a) + '</table></div>'.length;
-    h = h.slice(0, a) + '<div class="card tx-funding">' + h.slice(b); const sp = h.indexOf('<div class="split"><div>'); h = sp >= 0 ? h.slice(0, sp) + txCard(inv, enc) + h.slice(sp) : h + txCard(inv, enc);
+    h = h.slice(0, a) + '<div class="card tx-funding">' + h.slice(b); { const sa = h.indexOf('<div class="card"><div class="row between"><h2>Suggested codes</h2>'); const sb = sa >= 0 ? h.indexOf('<div class="card tx-funding">', sa) : -1; if (sa >= 0 && sb > sa) h = h.slice(0, sa) + h.slice(sb); } const sp = h.indexOf('<div class="split"><div>'); h = sp >= 0 ? h.slice(0, sp) + txCard(inv, enc) + h.slice(sp) : h + txCard(inv, enc);
     if (enc.billingOnly) { h = h.replace(`<a class="btn" href="#/consult/${enc.id}">View note</a>`, `<a class="btn" href="#/statement/${inv.accountId}/transactions">Account transactions</a>`); const ph = h.indexOf('<div class="page-head">'); const pe = h.indexOf('</div></div>', ph); if (pe > 0) h = h.slice(0, pe + 12) + `<div class="alert info">Billing entry without a consultation note — captured by ${esc(A.uname(enc.capturedBy) || 'staff')} for ${esc(A.uname(enc.providerId))}, ${fd(enc.date)} ${esc(enc.time || '')}${enc.reason ? ' · ' + esc(enc.reason) : ''}.</div>` + h.slice(pe + 12); }
     if (enc.billingOnly) h = h.replace('are documented in the signed note.', 'were provided by the treating doctor (no consultation note — reason recorded).');
     const c = h.indexOf('<aside>'); if (c > 0) h = h.slice(0, c + 7) + coachCard(inv) + h.slice(c + 7);
@@ -15681,7 +15698,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     const visits = d.encounters.filter((e) => e.patientId === p.id && e.status === 'signed' && !e.billingOnly && !e.historical && !e.shrPrivate).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 60)
       .map((e) => ({ id: e.id, date: e.date, by: A.uname(e.providerId), assessment: String(e.assessment || '').slice(0, 400), plan: String(e.plan || '').slice(0, 400), dx: (e.diagnoses || []).map(icd) }));
     const onc = d.onc && (d.onc.cases || []).find((c) => c.patientId === p.id);
-    return { practice: pracName(), dsId: dsId(), updatedAt: new Date().toISOString(), who: { firstName: p.firstName, lastName: p.lastName, dob: p.dob, sex: p.sex || '', idType: /^\d{13}$/.test(String(p.idNumber || '').replace(/\s/g, '')) ? 'za' : 'passport', country: p.passportCountry || '' },
+    return { practice: pracName(), dsId: dsId(), updatedAt: new Date().toISOString(), who: { firstName: p.firstName, lastName: p.lastName, dob: p.dob, sex: p.sex || '', idType: /^\d{13}$/.test(String(p.idNumber || '').replace(/\s/g, '')) ? 'za' : 'passport', country: p.passportCountry || '' }, family: A.shrFamily ? A.shrFamily(p) : null,
       allergies: d.allergies.filter((a) => a.patientId === p.id).map((a) => ({ allergen: a.allergen, reaction: a.reaction || '', severity: a.severity || '' })),
       meds: d.meds.filter((m) => m.patientId === p.id && m.active !== false).map((m) => ({ name: med(m.medicineId), dose: m.dose || '', since: m.since || '' })),
       problems: d.problems.filter((x) => x.patientId === p.id && x.active !== false).map((x) => ({ text: icd(x.code), since: x.onset || '' })),
@@ -15699,10 +15716,10 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   const _save = A.save; if (_save) A.save = function () { const r = _save.apply(this, arguments); try { setTimeout(() => publish(false), 50); } catch (e) { /* ignore */ } return r; };
 
   // ---------- consent ----------
-  const WHAT = ['Consultation notes (assessment and plan), diagnoses and chronic conditions', 'Medicines and allergies', 'Measurements and results (blood pressure, glucose, lab results)', 'Clinical letters, reports and documents', 'Hospital admissions: why, procedures and discharge', 'Oncology: diagnosis, stage and treatment plan, where relevant'];
+  const WHAT = ['Consultation notes (assessment and plan), diagnoses and chronic conditions', 'Medicines and allergies', 'Measurements and results (blood pressure, glucose, lab results)', 'Clinical letters, reports and documents', 'Hospital admissions: why, procedures and discharge', 'Oncology: diagnosis, stage and treatment plan, where relevant', 'Personal details as on the patient file (contact details, address, emergency contact), medical aid and plan, and the dependants on the account'];
   H['shr-consent'] = (el) => { const p = E.patient(db(), el.dataset.pid); const k = keyOf(p); if (!k) return A.toast('Add the patient\'s SA ID number (or passport number and date of birth) first — the shared record is matched on it.', 'error'); const minor = isMinor(p);
     A.modal('Share the clinical record with other Prac360 practices', `<div class="small"><div class="shr-vid"><button type="button" class="btn sm" data-act="demo-video" data-k="consent">▶ Watch how consent works</button><span class="tiny muted">3-minute video: the patient, the patient app and the Prac360 network</span></div><p>Read this to <strong>${esc(p.firstName + ' ' + p.lastName)}</strong>${minor ? ' and their parent or guardian' : ''} in plain words:</p>
-      <div class="shr-explain"><p>"With your permission, your clinical file at this practice will be joined with your files at any other practice that uses Prac360 and treats you. Each doctor who treats you will see one file with:</p><ul>${WHAT.map((w) => `<li>${esc(w)}</li>`).join('')}</ul><p>Your <strong>accounts, payments and appointments are not shared</strong>. Only people treating you can see it, every time someone opens it is recorded, and you can ask to see who looked. You can stop sharing at any time by telling any of your practices, or yourself in the Prac360 patient app. Saying no does not change your care here."</p></div></div>
+      <div class="shr-explain"><p>"With your permission, your clinical file at this practice will be joined with your files at any other practice that uses Prac360 and treats you. Each doctor who treats you will see one file with:</p><ul>${WHAT.map((w) => `<li>${esc(w)}</li>`).join('')}</ul><p>Your <strong>accounts, payments and appointments are not shared</strong>. When a new practice finds your file, your details and your dependants are added to their patient list, so you do not have to fill in forms again. Only people treating you can see it, every time someone opens it is recorded, and you can ask to see who looked. You can stop sharing at any time by telling any of your practices, or yourself in the Prac360 patient app. Saying no does not change your care here."</p></div></div>
       <form id="shrf" class="grid g2" style="margin-top:10px"><label class="f"><span>Consent given by</span><select name="who">${minor ? '<option value="guardian">Parent or guardian</option><option value="patient">The patient (child old enough to decide)</option>' : '<option value="patient">The patient</option><option value="guardian">Parent or guardian</option>'}<option value="representative">Legal representative / curator</option></select></label>
       <label class="f"><span>Name of the person giving consent</span><input name="name" value="${minor ? '' : esc(p.firstName + ' ' + p.lastName)}" data-noclean></label>
       <label class="f"><span>Relationship <small>(if not the patient)</small></span><input name="rel" data-noclean></label>
@@ -17884,7 +17901,7 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
         ${dobClash ? `<div class="alert warn small">The ID number says born ${fd(info.dob)} but the file says ${fd(p.dob)}. Check which is right.</div>` : ''}
         ${canW ? `<button class="btn" type="button" data-act="prid-save" data-pid="${p.id}">Save ID</button>` : ''}</form>
       <h3 class="prid-h">Sharing the clinical record</h3>${share}
-      <details class="prid-what"><summary>What is shared, and what is not</summary><ul class="small"><li><strong>Shared</strong> (only with consent): visit notes (assessment and plan), diagnoses and conditions, allergies, medicines, measurements and results, clinical letters and reports.</li><li><strong>Never shared:</strong> accounts, payments, medical aid details and appointments.</li><li>Only clinical staff at a practice treating the patient can find or import it, and every look is recorded in “Who looked”.</li><li>The patient can stop sharing at any time.</li></ul></details></div>`; };
+      <details class="prid-what"><summary>What is shared, and what is not</summary><ul class="small"><li><strong>Shared</strong> (only with consent): visit notes (assessment and plan), diagnoses and conditions, allergies, medicines, measurements and results, clinical letters and reports.</li><li><strong>Also shared</strong> (only with consent): the patient’s details as on the patient file — contact details, address, emergency contact, medical aid and plan — and the dependants on the account. A practice that finds the record gets them on its patient list without new forms.</li><li><strong>Never shared:</strong> accounts, balances, payments and appointments.</li><li>Only clinical staff at a practice treating the patient can find or import it, and every look is recorded in “Who looked”.</li><li>The patient can stop sharing at any time.</li></ul></details></div>`; };
   const _det = A.PT.details; A.PT.details = function (p) { return card(p) + _det.apply(this, arguments); };
   H['change:prid-type'] = (el) => { const f = document.getElementById('prid'); if (!f) return; const za = el.value === 'za'; f.querySelector('.prid-za').hidden = !za; f.querySelector('.prid-pp').hidden = za; };
   H['input:prid-id'] = (el) => { const out = document.getElementById('prid-chk'); if (!out) return; const v = clean(el.value); if (!v) { out.textContent = ''; return; } if (v.length < 13) { out.textContent = `${v.length} of 13 digits`; out.className = 'prid-chk'; return; } const i = saInfo(v); out.className = 'prid-chk ' + (i ? 'ok' : 'bad'); out.textContent = i ? `✓ Valid · born ${fd(i.dob)} · ${i.sex === 'M' ? 'male' : 'female'} · ${i.citizen}` : '✕ This is not a valid SA ID number — check the digits'; };
@@ -17965,6 +17982,62 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
     PL.save(); };
   setTimeout(() => { try { seed(); } catch (e) { /* ignore */ } }, 800); setInterval(() => { try { seed(); } catch (e) { /* ignore */ } }, 4000);
   if (A.PAGE_PERMS) A.PAGE_PERMS.shared = ['patients.read'];
+})();
+
+
+/* ===== ui-prid2.js ===== */
+/* Prac360 v0.77 — Find shared record by ID brings the patient's details and the dependants on the account.
+ * When a patient has consented to share, the shared record now also carries the details as captured on the patient file
+ * (contact details, address, emergency contact, language, medical aid and plan) and the account's family: the main member
+ * and every dependant with their dependant code. Importing creates (or completes) all of them in this practice, linked as
+ * main member and dependants, with their medical aid memberships. Clinical history is imported for the searched patient. */
+(function () {
+  'use strict';
+  const A = window.APP, E = window.PE, H = A.H, esc = A.esc, PL = window.PL; const db = () => A.db;
+  if (!A.shrKey || !A.shrStore) return;
+  const EXCL = new Set(['id', 'mainMemberId', 'synthetic', 'createdAt', 'createdFrom', 'fileNo', 'accountNo', 'shrImported', 'importedAt']);
+  const pick = (p) => { const o = {}; Object.keys(p).forEach((k) => { const v = p[k]; if (EXCL.has(k) || v == null || v === '' || typeof v === 'object' || typeof v === 'function') return; o[k] = v; }); return o; };
+  const msOf = (d, p) => (d.memberships || []).find((m) => m.patientId === p.id && m.status !== 'ended');
+  const medaid = (d, p) => { const m = msOf(d, p); if (!m) return null; const o = E.option(d, m.optionId) || {}; const sc = (d.schemes || []).find((s) => (s.options || []).some((x) => x.id === m.optionId)) || {}; return { scheme: o.schemeName || sc.name || '', plan: o.name || '', memberNo: m.memberNo || '', depCode: m.depCode || '', status: m.status || 'active' }; };
+  const member = (d, p) => ({ key: A.shrKey(p) || '', details: pick(p), medaid: medaid(d, p) });
+  A.shrFamily = (p) => { const d = db(); if (!d || !p) return null; const holder = (p.mainMemberId && E.patient(d, p.mainMemberId)) || p;
+    return { holder: member(d, holder), deps: d.patients.filter((x) => x.mainMemberId === holder.id).map((x) => member(d, x)), self: A.shrKey(p) || '' }; };
+
+  const st = () => A.shrStore(); const myDs = () => A.shrDs();
+  const famFor = (k) => { const rec = ((st().records[k] || {}).practices) || {}; const srcs = Object.values(rec).filter((s) => s.dsId !== myDs() && s.family).sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt))); return srcs[0] ? srcs[0].family : null; };
+  const probeKey = () => { const f = document.getElementById('prf'); if (!f) return null; const t = (f.querySelector('input[name=t]:checked') || {}).value || 'za'; const clean = (s) => String(s || '').replace(/[\s-]/g, '').toUpperCase();
+    return t === 'za' ? A.shrKey({ idNumber: clean(f.id.value) }) : A.shrKey({ passport: clean(f.pp.value), dob: f.dob.value }); };
+  const nm = (m) => `${(m.details.title ? m.details.title + ' ' : '')}${m.details.firstName || ''} ${m.details.lastName || ''}`.trim();
+  const findLocal = (d, m) => d.patients.find((p) => (m.key && A.shrKey(p) === m.key)) || d.patients.find((p) => m.details.dob && p.dob === m.details.dob && String(p.firstName).toLowerCase() === String(m.details.firstName || '').toLowerCase() && String(p.lastName).toLowerCase() === String(m.details.lastName || '').toLowerCase());
+  const maTxt = (ma) => (ma ? `${esc(ma.scheme)}${ma.plan ? ' · ' + esc(ma.plan) : ''}${ma.memberNo ? ' · no. ' + esc(ma.memberNo) : ''}${ma.depCode ? ' · dep. ' + esc(ma.depCode) : ''}` : 'Private (no medical aid)');
+
+  // ---------------------------------------------------------------- preview in the search result
+  const _search = H['prid-search']; H['prid-search'] = function () { const r = _search.apply(this, arguments); try { preview(); } catch (e) { /* ignore */ } return r; };
+  const preview = () => { const box = document.querySelector('#prid-res .prid-found'); if (!box) return; const k = probeKey(); const fam = k && famFor(k); if (!fam) return; const d = db();
+    const self = [fam.holder, ...fam.deps].find((m) => m.key === fam.self) || fam.holder; const det = self.details;
+    const row = (m, role) => { const loc = findLocal(d, m); return `<tr><td><strong>${esc(nm(m))}</strong>${m.key === fam.self ? ' <span class="badge info">searched</span>' : ''}</td><td>${role}</td><td>${m.details.dob ? A.fd(m.details.dob) : '—'}</td><td class="small">${maTxt(m.medaid)}</td><td>${loc ? '<span class="badge">Already in your practice</span>' : '<span class="badge good">Will be added</span>'}</td></tr>`; };
+    const html = `<div class="prid-det"><h3 style="margin:10px 0 6px">Patient details (as on the patient file)</h3><div class="grid g3 small prid-det-g">${[['Phone', det.phone], ['Email', det.email], ['Address', det.address], ['Emergency contact', det.emergencyContact], ['Language', det.language], ['Medical aid', self.medaid ? `${self.medaid.scheme} · ${self.medaid.plan}` : 'Private']].map(([l, v]) => `<div><span class="tiny muted">${l}</span><div>${esc(v || '—')}</div></div>`).join('')}</div>
+      <h3 style="margin:12px 0 6px">Account and dependants</h3><div class="tbl-wrap"><table class="tbl small"><thead><tr><th>Name</th><th>On the account</th><th>Born</th><th>Medical aid</th><th>In this practice</th></tr></thead><tbody>${row(fam.holder, 'Main member')}${fam.deps.map((m) => row(m, `Dependant${m.medaid && m.medaid.depCode ? ' (' + esc(m.medaid.depCode) + ')' : ''}`)).join('')}</tbody></table></div>
+      <p class="tiny muted">Importing adds everyone on this account to your patient list with their details and medical aid, linked to the main member. Clinical history is added for the searched patient only.</p></div>`;
+    const form = box.querySelector('#pri'); if (form) form.insertAdjacentHTML('beforebegin', html); else box.insertAdjacentHTML('beforeend', html); };
+
+  // ---------------------------------------------------------------- import the family with the history
+  const _imp = H['prid-import']; H['prid-import'] = function () { const k = probeKey(); const v = A.fv('pri') || {}; const fam = k && famFor(k); const d = db(); const before = new Set(d.patients.map((p) => p.id));
+    const r = _imp.apply(this, arguments); if (!fam || !v.ok) return r; const searched = d.patients.find((p) => A.shrKey(p) === k); if (!searched) return r; // the import did not go ahead
+    const added = [], completed = [], noScheme = [];
+    const ensure = (m) => { let p = m.key === k ? searched : findLocal(d, m); const fresh = !p || !before.has(p.id);
+      if (!p) { p = { id: E.id('p'), mainMemberId: null, synthetic: true, createdAt: E.nowIso(d), createdFrom: 'Shared record import' }; d.patients.push(p); E.audit(d, A.user, 'create', 'patient', p.id, p.id, 'Created from a shared Prac360 record (dependant or main member on the account)'); }
+      let changed = 0; Object.keys(m.details).forEach((f) => { if (fresh || p[f] == null || p[f] === '') { if (p[f] !== m.details[f]) { p[f] = m.details[f]; changed++; } } });
+      (fresh ? added : changed ? completed : []).push(p); return p; };
+    A.act(() => { const holder = ensure(fam.holder); const all = [[fam.holder, holder]];
+      fam.deps.forEach((m) => { const p = ensure(m); if (!p.mainMemberId && p.id !== holder.id) p.mainMemberId = holder.id; all.push([m, p]); });
+      all.forEach(([m, p]) => { if (!m.medaid || msOf(d, p)) return; const sc = (d.schemes || []).find((s) => String(s.name).toLowerCase() === String(m.medaid.scheme).toLowerCase()); const op = sc && (sc.options || []).find((o) => String(o.name).toLowerCase() === String(m.medaid.plan).toLowerCase());
+        if (!op) { noScheme.push(`${nm(m)}: ${m.medaid.scheme} ${m.medaid.plan}`); p.medaidNote = `${m.medaid.scheme} · ${m.medaid.plan} · member no. ${m.medaid.memberNo} · dependant ${m.medaid.depCode}`; return; }
+        d.memberships.push({ id: 'ms_' + p.id, patientId: p.id, optionId: op.id, memberNo: m.medaid.memberNo, depCode: m.medaid.depCode || '00', mainMember: p.id === holder.id ? 'Self' : `${holder.firstName} ${holder.lastName}`, status: 'active', verifiedAt: null, savingsRemaining: null }); });
+      E.audit(d, A.user, 'shared-record-import', 'patient', searched.id, searched.id, `Patient details and account imported: ${added.length} added, ${completed.length} completed${noScheme.length ? '; medical aid not in this practice’s list: ' + noScheme.join('; ') : ''}`); });
+    if (A.ptNumbers) try { A.ptNumbers(); } catch (e) { /* ignore */ }
+    setTimeout(() => A.toast(`Patient details imported. ${added.length} on the account added to your patient list${completed.length ? `, ${completed.length} completed` : ''}${noScheme.length ? '. Check the medical aid for ' + noScheme.length + ' — that plan is not in your list.' : '.'}`), 400);
+    return r; };
 })();
 
 
@@ -20987,6 +21060,21 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   if (cc && cc.lessons && !cc.lessons.some((l) => /default view/i.test(l.t))) cc.lessons.push({ t: 'Your default view', body: steps.join(' '), guide: '' });
   if (cc && cc.quiz && !cc.quiz.some((q) => /default view/.test(q.q))) cc.quiz.push({ q: 'How do you make Classic your default view?', o: ['Ask support', 'Open Classic and click “☆ Make Classic my default” at the top right', 'It cannot be changed'], a: 1 });
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /consultation/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /default view/i.test(x[0]))) g[1].push(['Default consultation view (Classic or AI Scribe)', 'cxdefault']); }
+})();
+
+
+/* ===== ui-v077l.js ===== */
+/* Prac360 v0.77 — What's new + help: suggestions inside Add a transaction; shared record import brings details and dependants. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.77')) A.RELEASES.unshift({ v: '0.77', date: '2026-11-24', title: 'Suggestions where you bill, and complete shared records', items: [
+    { type: 'improved', area: 'billing', title: 'Suggested codes are inside “Add a transaction”', text: 'When you capture transactions, the codes Prac360 suggests from the signed note, procedures and stock used now sit at the top of the Add a transaction block under “💡 Suggested to bill”. Click ＋ Add, Edit or ✕ for each one, or “Add all”. The separate Suggested codes card is gone.', link: '#/billing' },
+    { type: 'improved', area: 'patients', title: 'Find shared record by ID brings the patient details and dependants', text: 'When a patient has agreed to share, finding them by ID now shows their details as on the patient file (contact details, address, emergency contact, language, medical aid and plan) and everyone on the account. Importing adds the main member and all dependants to your patient list with their medical aid, linked to the main member. Patients who have not agreed still cannot be found.', link: '#/patients' }] });
+  const s = kb('suggestions'); if (s) s.steps = ['Open the consultation in Billing review (Capture transactions).', 'In the Add a transaction block, “💡 Suggested to bill” lists the codes from the signed note, procedures and stock used.', 'Click ＋ Add to bill a suggestion, Edit to change it first, or ✕ to set it aside. “Add all” adds every suggestion at once.', 'Anything not suggested: type the code or a few words in Treatment code and click Add transaction.'];
+  const sh = kb('shared'); const line = 'Find shared record by ID shows the patient’s details and everyone on the account. Importing adds the main member and dependants to your patient list with their medical aid.'; if (sh && sh.steps && !sh.steps.includes(line)) sh.steps.push(line);
+  const C = A.COURSES || []; const bc = C.find((c) => c.id === 'billing');
+  if (bc && bc.quiz && !bc.quiz.some((q) => /Suggested to bill/.test(q.q))) bc.quiz.push({ q: 'Where do you find the codes Prac360 suggests to bill?', o: ['In the claims list', 'At the top of the Add a transaction block, under “Suggested to bill”', 'In Practice setup'], a: 1 });
 })();
 
 

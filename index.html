@@ -2859,6 +2859,12 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .auth-staff{display:grid;grid-template-columns:1fr 1fr;gap:8px}.auth-staff .btn{display:flex;align-items:center;justify-content:center;gap:6px}
 .adm-login-card .adm-to{display:flex;width:100%;margin:4px 0 14px}.adm-login-card .adm-to button{flex:1;padding:8px 6px;font-weight:600}
 .adm-login-card .adm-to{margin-top:14px;border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.04)}.adm-login-card .adm-to button{background:transparent;color:#cbd5e1}.adm-login-card .adm-to button.on{background:#2563eb;color:#fff}
+/* v0.76 — consultation view controls grouped at the top right */
+.cx-ribbon{display:flex;justify-content:flex-end;border:0;background:none;box-shadow:none;padding:0;margin:0 0 8px}
+.cx-rgrp{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 8px 6px 12px;border:1px solid var(--line,#e5e7eb);border-radius:12px;background:var(--surface,#fff);box-shadow:0 1px 2px rgba(15,23,42,.05)}
+.cx-rgrp .cx-switch{margin:0}.cx-defstar{color:#f59e0b;font-size:.85em;margin-left:2px}
+.cx-def-on{font-size:.82rem;font-weight:600;color:#15803d;background:#dcfce7;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.cx-def-set{font-size:.82rem;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:999px;padding:4px 10px;cursor:pointer;white-space:nowrap}.cx-def-set:hover{background:#dbeafe}
 </style>
 </head>
 <body>
@@ -6668,10 +6674,10 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
     const fdl = (s) => (s ? A.fd(s) : '—'); const visit = (p) => todayB(p) || `<span class="tiny muted">Last visit</span> <span class="small">${fdl(lastVisit[p.id])}</span>`;
     const head = `<div class="page-head"><div><h1>Patients</h1><div class="muted">One line per account (main member). The main member is responsible for the account.</div></div><div class="actions">${A.can('patients.write') ? '<a class="btn primary" href="#/patients/new">New patient</a>' : ''}</div></div>`;
     const tools = `<div class="card pt2-tools"><div class="pt2-row"><input id="pq" type="search" placeholder="Search name, ID number, file no., account no. or member no." value="${esc(A.ui.pq || '')}" data-input="pq" aria-label="Search patients">
-        <label class="pt3-deps"><input type="checkbox" data-change="pt-deps" ${A.ui.ptDeps ? 'checked' : ''}> Include dependants</label></div>
+        <label class="pt3-deps"><input type="checkbox" data-change="pt-deps" ${A.ui.ptDeps !== false ? 'checked' : ''}> Include dependants</label></div>
       <div class="pt-chips" role="group" aria-label="Show">${FILT.map(([k, l, f]) => `<button class="chip ${k === pf ? 'on' : ''}" data-act="pt-filter" data-f="${k}">${l} <strong>${base.filter(f).length}</strong></button>`).join('')}</div></div>`;
     // one row per account (main member); tick "Include dependants" to list each account's dependants under it
-    const deps = !!A.ui.ptDeps; const acc = {}; shown.forEach((p) => { const h = holderOf(p); (acc[h] = acc[h] || []).push(p); });
+    const deps = A.ui.ptDeps !== false; const acc = {}; shown.forEach((p) => { const h = holderOf(p); (acc[h] = acc[h] || []).push(p); });
     const ids = Object.keys(acc).sort((a, b) => { const x = E.patient(d, a), y = E.patient(d, b); return (x.lastName + x.firstName).localeCompare(y.lastName + y.firstName); }); const lim = A.ui.ptLim || 150;
     const depsOf = (hid) => d.patients.filter((p) => p.id !== hid && holderOf(p) === hid).sort((a, b) => String(depOf(a)).localeCompare(String(depOf(b))));
     const body = `<div class="card pt3"><div class="tbl-wrap"><table class="t pt3-t"><thead><tr><th>Account</th><th>Main member</th><th>Medical aid</th><th class="num">Dependants</th>${fin ? '<th class="num">Balance</th>' : ''}<th>Visits</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody>
@@ -17086,7 +17092,9 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
       <details class="cx-gl-d"><summary class="cx-gl">${meds.length} medicine${meds.length === 1 ? '' : 's'}</summary><div class="cx-gl-pop">${meds.map((m) => esc(((E.medicine(d, m.medicineId) || {}).name || '') + (m.dose ? ' — ' + m.dose : ''))).join('<br>') || 'None recorded'}</div></details>
       <details class="cx-gl-d"><summary class="cx-gl">${probs.length} condition${probs.length === 1 ? '' : 's'}</summary><div class="cx-gl-pop">${probs.map((x) => esc(A.icdLabel(x.code))).join('<br>') || 'None recorded'}</div></details>
       ${prev ? `<span class="cx-gl">Last visit ${fd(prev.date)}</span>` : '<span class="cx-gl">First visit</span>'}<a class="cx-gl link" href="#/patient/${p.id}">Patient file →</a></div>`; };
-  const ribbon = (e, which) => `<div class="cx-ribbon" role="region" aria-label="Consultation view"><div class="cx-rib-l"><span class="cx-rib-t">View</span>${viewSwitch(e, which, true)}<span class="cx-rib-h tiny muted">${which === 'classic' ? 'You type the note yourself.' : 'Prac360 listens and fills in the note for you.'}</span></div>${A.cxDefaultPicker ? A.cxDefaultPicker() : ''}</div>`;
+  const ribbon = (e, which) => { const def = A.cxDefault ? A.cxDefault() : 'ai'; const NM = { classic: 'Classic', ai: 'AI Scribe' }; const star = (v) => v === def ? ' <span class="cx-defstar" title="Your default view" aria-label="(your default)">★</span>' : '';
+    return `<div class="cx-ribbon" role="region" aria-label="Consultation view"><div class="cx-rgrp"><span class="cx-rib-t">View</span><div class="cx-switch" role="group" aria-label="Consultation view"><a href="#/consult/${e.id}/classic" class="${which === 'classic' ? 'on' : ''}" ${which === 'classic' ? 'aria-current="page"' : ''} title="You type the note yourself">Classic${star('classic')}</a><a href="#/consult/${e.id}/ai" class="${which === 'ai' ? 'on' : ''}" ${which === 'ai' ? 'aria-current="page"' : ''} title="Prac360 listens and fills in the note for you">✦ AI Scribe${star('ai')}</a></div>
+      ${which === def ? `<span class="cx-def-on" title="Every consultation you open starts in ${NM[def]}. Switch views at any time.">★ Your default view</span>` : `<button class="cx-def-set" data-act="cx-def-set" data-v="${which}" title="Every consultation you open will start in ${NM[which]}">☆ Make ${NM[which]} my default</button>`}</div></div>`; };
   const viewSwitch = (e, which, bare) => `<div class="cx-switch" role="group" aria-label="Consultation view"><a href="#/consult/${e.id}/classic" class="${which === 'classic' ? 'on' : ''}" ${which === 'classic' ? 'aria-current="page"' : ''}>Classic</a><a href="#/consult/${e.id}/ai" class="${which === 'ai' ? 'on' : ''}" ${which === 'ai' ? 'aria-current="page"' : ''}>✦ AI Scribe</a></div>`;
   A.cxViewSwitch = viewSwitch;
   const card = (c, id, title, body, opts) => secWrap(c, id, title, body, opts);
@@ -20884,6 +20892,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const NAME = { classic: 'Classic', ai: 'AI Scribe' };
   // the same control in both views: which view consultations start in (for this user)
   A.cxDefaultPicker = () => { const v = A.cxDefault(); return `<label class="cx-rib-r" title="The view every consultation you open starts in. You can still switch views at any time."><span>Start my consultations in</span><select data-change="cx-def-pick" aria-label="Start my consultations in"><option value="ai" ${v === 'ai' ? 'selected' : ''}>✦ AI Scribe</option><option value="classic" ${v === 'classic' ? 'selected' : ''}>Classic</option></select></label>`; };
+  H['cx-def-set'] = (el) => { H['change:cx-def-pick']({ value: el.dataset.v }); A.render(); };
   H['change:cx-def-pick'] = (el) => { const v = el.value === 'classic' ? 'classic' : 'ai'; setDefault(v); A.toast(`Your consultations will now start in ${NAME[v]}. You can still switch views at any time.`); };
   A.cxDefaultToggle = (which) => { const on = A.cxDefault() === which; return `<label class="cx-def" title="When ticked, every consultation you open starts in the ${NAME[which]} view. You can still switch views at any time."><input type="checkbox" data-change="cx-def" data-v="${which}" ${on ? 'checked' : ''}> <span>Open my consultations in <b>${NAME[which]}</b></span></label>`; };
   H['change:cx-def'] = (el) => { const v = el.checked ? el.dataset.v : (el.dataset.v === 'classic' ? 'ai' : 'classic'); setDefault(v); A.toast(`Your consultations will now open in ${NAME[v]}. You can switch views at any time.`); A.render(); };
@@ -20960,6 +20969,23 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   if (!kb('staffsignin')) KB.push({ id: 'staffsignin', title: 'Prac360 staff sign-in: Support console or Admin tool', keys: ['staff sign in', 'support console sign in', 'admin tool sign in', 'administrator sign-in', 'where do support staff log in'], screens: ['signin'], link: '#signin',
     steps: ['On the sign-in page, look under “Prac360 staff?”.', 'Support console: for the support team — tickets, practices, live support and customisation.', 'Admin tool: for Prac360 administrators — organisations, users, access, approvals and the audit log.', 'Enter your email and password, then the 6-digit code from your authenticator app. A support agent who chooses Admin tool is told to use the Support console instead.'] });
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /getting around/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /Staff sign-in/.test(x[0]))) g[1].push(['Staff sign-in: Support console or Admin tool', 'staffsignin']); }
+})();
+
+
+/* ===== ui-v076l.js ===== */
+/* Prac360 v0.76 — What's new + help: consultation view controls grouped top right; dependants shown by default. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.76')) A.RELEASES.unshift({ v: '0.76', date: '2026-11-24', title: 'Simpler consultation view controls', items: [
+    { type: 'improved', area: 'clinical', title: 'Choose your default consultation view in one click', text: 'The view controls now sit together at the top right of a consultation: View (Classic | ✦ AI Scribe). A ★ marks your default view. When you are in your default you see “★ Your default view”; in the other view click “☆ Make … my default” and every consultation you open starts there.', link: '#/today' },
+    { type: 'improved', area: 'patients', title: 'Dependants are shown by default', text: 'The Patients list now shows main members and their dependants. Untick “Include dependants” to see main members only.', link: '#/patients' }] });
+  const steps = ['At the top right of a consultation: View — Classic (you type the note) or ✦ AI Scribe (Prac360 listens and fills in the note). Switch at any time.', 'A ★ marks your default view — the one every consultation you open starts in.', 'To change it, open the other view and click “☆ Make … my default”. Your choice is saved for you only.'];
+  if (!kb('cxdefault')) KB.push({ id: 'cxdefault', title: 'Classic or AI Scribe: setting your default consultation view', keys: ['default view', 'default consultation', 'classic or ai scribe', 'start in classic', 'make my default', 'consultation view'], screens: ['consult'], link: '#/today', steps });
+  const C = A.COURSES || []; const cc = C.find((c) => c.id === 'consult' || c.id === 'clinical');
+  if (cc && cc.lessons && !cc.lessons.some((l) => /default view/i.test(l.t))) cc.lessons.push({ t: 'Your default view', body: steps.join(' '), guide: '' });
+  if (cc && cc.quiz && !cc.quiz.some((q) => /default view/.test(q.q))) cc.quiz.push({ q: 'How do you make Classic your default view?', o: ['Ask support', 'Open Classic and click “☆ Make Classic my default” at the top right', 'It cannot be changed'], a: 1 });
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /consultation/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /default view/i.test(x[0]))) g[1].push(['Default consultation view (Classic or AI Scribe)', 'cxdefault']); }
 })();
 
 

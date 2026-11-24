@@ -2736,6 +2736,32 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .am-support{font-weight:600}
 .vmd-min{margin-right:4px}
 .sd-syncbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.85rem}.sd-sync{font-weight:600}.sd-sync.ok{color:#15803d}.sd-sync.warn{color:#b45309}.sd-sync.off{color:var(--muted,#64748b)}.sd-key{display:inline-flex;gap:6px}.sd-key input{width:240px}
+/* v0.62 — AI support assistant, touchpoints, sorting, and the practice "support is waiting for your reply" popup */
+.sd-av.ai{background:linear-gradient(135deg,#0ea5a4,#4f46e5);color:#fff;font-size:1rem}
+.badge.sd-aib{background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}.badge.sd-aib.good{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}.badge.sd-aib.warn{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+.sd-msg.ai>.grow{border-left:3px solid #6366f1;padding-left:8px}
+.sd-sort{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0}.sd-sort select{margin-left:6px}
+.sd-aicard{border-top:3px solid #6366f1}.sd-aicard h4{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.sd-qa div{padding:4px 0;border-bottom:1px dashed var(--line,#e5e7eb)}.sd-qa .ok b{color:#047857}.sd-qa .bad b{color:#b91c1c}
+.sd-touch ol{list-style:none;margin:0;padding:0;max-height:340px;overflow:auto}.sd-touch li{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--line,#eef0f3)}.sd-touch li .i{width:20px;text-align:center}.sd-touch li.ai{background:linear-gradient(90deg,rgba(99,102,241,.06),transparent)}
+.sd-aistrip{margin-top:12px;border-left:4px solid #6366f1}.sd-aih{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.sd-aig{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.sd-aig>div{display:flex;flex-direction:column}.sd-aig .n{font-size:1.4rem;font-weight:800}.sd-aig .n.good{color:#047857}.sd-aig .n.warn{color:#c2410c}
+@media (max-width:900px){.sd-aig{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sd-aiset{border-left:4px solid #6366f1;margin-bottom:12px}
+.cs-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.cs-sorthd{align-items:center;gap:10px;flex-wrap:wrap}.cs-sorthd select{margin-left:6px}
+.sdp-back{position:fixed;inset:0;z-index:9500;background:rgba(15,23,42,.55);display:grid;place-items:center;padding:16px;animation:sdpFade .2s ease}
+.sdp{width:min(560px,100%);background:var(--surface,#fff);color:var(--text,#0f172a);border-radius:18px;overflow:hidden;box-shadow:0 0 0 3px rgba(20,184,166,.55),0 24px 60px rgba(2,6,23,.45);animation:sdpIn .35s cubic-bezier(.2,.9,.3,1.3)}
+.sdp-top{display:flex;gap:14px;align-items:flex-start;padding:18px 20px;background:linear-gradient(120deg,#0f766e,#1e3a8a);color:#fff}
+.sdp-top h2{margin:2px 0 4px;font-size:1.25rem;color:#fff}.sdp-top p{margin:0;opacity:.92;font-size:.92rem}
+.sdp-ic{flex:0 0 auto;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:1.6rem;background:rgba(255,255,255,.16);box-shadow:0 0 0 0 rgba(94,234,212,.7);animation:sdpPulse 1.8s infinite}
+.sdp-tag{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.12em;background:#5eead4;color:#134e4a;border-radius:999px;padding:2px 9px}
+.sdp-list{padding:12px 20px;display:flex;flex-direction:column;gap:10px;max-height:46vh;overflow:auto}
+.sdp-tk{display:flex;gap:12px;align-items:center;justify-content:space-between;border:1px solid var(--line,#e5e7eb);border-left:4px solid #14b8a6;border-radius:12px;padding:10px 12px}
+.sdp-tk>div{display:flex;flex-direction:column;gap:2px;min-width:0}.sdp-tk q{font-size:.85rem;color:var(--muted,#475569);font-style:italic;quotes:none}
+.sdp-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 20px 16px;border-top:1px solid var(--line,#e5e7eb);background:var(--surface-2,#f8fafc)}
+.sdp-mute{display:flex;align-items:center;gap:8px;font-size:.9rem;cursor:pointer}.sdp-mute input{width:18px;height:18px}
+@keyframes sdpIn{from{transform:translateY(18px) scale(.96);opacity:0}to{transform:none;opacity:1}}@keyframes sdpFade{from{opacity:0}to{opacity:1}}
+@keyframes sdpPulse{0%{box-shadow:0 0 0 0 rgba(94,234,212,.7)}70%{box-shadow:0 0 0 14px rgba(94,234,212,0)}100%{box-shadow:0 0 0 0 rgba(94,234,212,0)}}
+@media (prefers-reduced-motion:reduce){.sdp,.sdp-ic,.sdp-back{animation:none}}
 </style>
 </head>
 <body>
@@ -19233,8 +19259,9 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const S = () => { const s = PL().s; if (!s.support) { s.support = seed(); save(); } return s.support; };
   const save = () => { try { PL().save(); } catch (e) { /* ignore */ } };
   A.supportData = S;
+  A.supportX = () => ({ OPEN, ST, PRI, CATS, SKILL, sla, staff, sname, me, save, iso, fdt, ago, dur, client, V, kpi: typeof kpi === 'function' ? kpi : null, av, tk });
   const me = () => { const acc = PL().current && PL().current(); const s = S(); if (!acc) return s.staff[s.staff.length - 1]; const em = String(acc.email || acc.id).toLowerCase(); let m = s.staff.find((x) => (x.email && x.email === em) || x.accountId === acc.id); if (m && !m.email) m.email = em; if (!m) { m = { id: 'st_' + em.replace(/[^a-z0-9]/g, '').slice(0, 24), email: em, accountId: acc.id, name: acc.name, role: 'Team manager', skills: ['general', 'billing', 'clinical', 'technical'], ext: '210', status: 'available', manager: true }; s.staff.push(m); save(); } return m; };
-  const staff = (id) => S().staff.find((x) => x.id === id); const sname = (id) => (staff(id) || {}).name || 'Unassigned';
+  const AIS = { id: 'ai', name: 'Prac360 Support', role: 'Support team', skills: [], ai: true }; const staff = (id) => (id === 'ai' ? AIS : S().staff.find((x) => x.id === id)); const sname = (id) => (staff(id) || {}).name || 'Unassigned';
   const client = (dsId) => S().clients.find((c) => c.dsId === dsId);
   const tk = (id) => S().tickets.find((t) => t.id === id);
   const act = (text) => { const s = S(); s.activity.unshift({ at: iso(), by: me().id, text }); s.activity = s.activity.slice(0, 300); };
@@ -19253,11 +19280,12 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     t.assignee = pick.id; t.status = t.status === 'new' ? 'open' : t.status; t.thread.push({ at: iso(), from: 'system', text: `Assigned to ${pick.name} automatically (${why || 'rule: ' + rule.name}).`, kind: 'assign' }); return pick; };
   A.supportNewTicket = (o) => { const s = S(); s.seq += 1; const cl = client(o.dsId) || {}; const t = Object.assign({ id: 'tk_' + now().toString(36) + Math.random().toString(36).slice(2, 5), ref: 'T-' + String(Math.floor(now() / 1000) % 90000 + 10000), createdAt: iso(), updatedAt: iso(), status: 'new', assignee: null, firstResponseAt: null, resolvedAt: null, time: [], calls: [], tags: [], csat: null, flagged: false, thread: [] }, o, { practice: o.practice || cl.name || 'Practice', orgId: o.orgId || cl.orgId, pkey: pk(o.practice || cl.name || '') });
     t.thread.unshift({ at: t.createdAt, from: o.fromStaff ? 'staff' : 'client', by: o.fromStaff ? me().id : (t.contact || {}).name, text: o.desc || o.subject, kind: o.channel === 'phone' ? 'call' : 'message' });
-    s.tickets.unshift(t); if (!t.assignee) autoAssign(t); save(); return t; };
+    s.tickets.unshift(t); const aiTakes = !t.assignee && A.supportAIWants && A.supportAIWants(t); if (!t.assignee && !aiTakes) autoAssign(t); save(); return t; };
+  A.supportAutoAssign = autoAssign;
 
   // ------------------------------------------------------------------ shared bits
   const badge = (k, map) => `<span class="badge ${map[k] ? map[k][1] : ''}">${esc(map[k] ? map[k][0] : k)}</span>`;
-  const av = (id, sz) => { const x = staff(id); return x ? `<span class="sd-av ${sz || ''}" title="${esc(x.name)}" style="--h:${[...x.name].reduce((a, c) => a + c.charCodeAt(0), 0) % 360}">${esc(ini(x.name))}</span>` : '<span class="sd-av none">?</span>'; };
+  const av = (id, sz) => { if (id === 'ai') return `<span class="sd-av ai ${sz || ''}" title="Prac360 Support">🎧</span>`; const x = staff(id); return x ? `<span class="sd-av ${sz || ''}" title="${esc(x.name)}" style="--h:${[...x.name].reduce((a, c) => a + c.charCodeAt(0), 0) % 360}">${esc(ini(x.name))}</span>` : '<span class="sd-av none">?</span>'; };
   const stDot = (x) => { const a = away(x.id); const st = a ? 'leave' : x.status; return `<span class="sd-dot ${st}" title="${esc({ available: 'Available', 'on-call': 'On a call', away: 'Away', offline: 'Offline', leave: onLeave(x.id, day()).join(', ') }[st] || st)}"></span>`; };
   const slaB = (t) => { const x = sla(t); return `<span class="sd-sla ${x.cls}">${x.cls === 'late' ? '⏰ ' : x.cls === 'risk' ? '⚠ ' : ''}${esc(x.txt)}</span>`; };
   const tel = (n) => String(n || '').replace(/[^\d+]/g, '');
@@ -19286,16 +19314,19 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
       ${missed.length ? `<div class="card"><h3 style="margin-top:0">📞 Missed calls</h3>${missed.map((c) => `<div class="sd-row2"><span>${esc(c.practice || c.number)} · ${ago(c.at)}</span><button class="btn sm" data-act="sd-dial" data-n="${esc(c.number)}" data-cid="${c.id}">Call back</button></div>`).join('')}</div>` : ''}
       <div class="card"><h3 style="margin-top:0">Recent activity</h3>${s.activity.slice(0, 6).map((a) => `<div class="tiny sd-act">${ago(a.at)} · <b>${esc(sname(a.by))}</b> ${esc(a.text)}</div>`).join('') || '<p class="tiny muted">Activity shows here as the team works.</p>'}</div>`; };
   const bySla = (a, b) => { const o = { late: 0, risk: 1, ok: 2, pause: 3 }; return (o[sla(a).cls] - o[sla(b).cls]) || a.priority.localeCompare(b.priority); };
-  const list = (arr, compact) => arr.map((t) => `<button class="sd-tk ${compact ? 'c' : ''}" data-act="sd-open" data-id="${t.id}"><span class="sd-pri ${PRI[t.priority][1]}" title="${PRI[t.priority][0]}">${t.priority}</span><span class="grow"><b>${esc(t.ref)}</b> ${esc(t.subject)}<span class="tiny muted">${esc(t.practice)} · ${esc(t.category)} · ${ago(t.updatedAt)}</span></span>${compact ? '' : badge(t.status, ST)}${slaB(t)}${t.assignee ? av(t.assignee, 'sm') : '<span class="badge warn">Not assigned</span>'}</button>`).join('');
+  const list = (arr, compact) => arr.map((t) => `<button class="sd-tk ${compact ? 'c' : ''}" data-act="sd-open" data-id="${t.id}"><span class="sd-pri ${PRI[t.priority][1]}" title="${PRI[t.priority][0]}">${t.priority}</span><span class="grow"><b>${esc(t.ref)}</b> ${esc(t.subject)}<span class="tiny muted">${esc(t.practice)} · ${esc(t.category)} · ${ago(t.updatedAt)}</span></span>${t.ai ? A.supportAIBadge(t) : ''}${compact ? '' : badge(t.status, ST)}${slaB(t)}${t.assignee ? av(t.assignee, 'sm') : '<span class="badge warn">Not assigned</span>'}</button>`).join('');
   V.tickets = () => { const s = S(); const f = A.ui.sdF || 'open', q = (A.ui.sdQ || '').toLowerCase(); const m = me();
-    const keep = (t) => (f === 'open' ? OPEN.includes(t.status) : f === 'mine' ? t.assignee === m.id && OPEN.includes(t.status) : f === 'unassigned' ? !t.assignee && OPEN.includes(t.status) : f === 'attention' ? OPEN.includes(t.status) && ['late', 'risk'].includes(sla(t).cls) : f === 'all' ? true : t.status === f) && (!q || `${t.ref} ${t.subject} ${t.practice} ${t.category} ${(t.contact || {}).name}`.toLowerCase().includes(q));
-    const L = s.tickets.filter(keep).sort((a, b) => (OPEN.includes(a.status) && OPEN.includes(b.status) ? bySla(a, b) : 0) || (a.updatedAt < b.updatedAt ? 1 : -1));
-    const chips = [['open', 'Open'], ['mine', 'Mine'], ['unassigned', 'Not assigned'], ['attention', 'Need attention'], ['client', 'Waiting for practice'], ['dev', 'With development'], ['resolved', 'Resolved'], ['all', 'All']];
+    const keep = (t) => (f === 'open' ? OPEN.includes(t.status) : f === 'mine' ? t.assignee === m.id && OPEN.includes(t.status) : f === 'unassigned' ? !t.assignee && OPEN.includes(t.status) : f === 'attention' ? OPEN.includes(t.status) && ['late', 'risk'].includes(sla(t).cls) : f === 'all' ? true : f === 'ai' ? !!t.ai : t.status === f) && (!q || `${t.ref} ${t.subject} ${t.practice} ${t.category} ${(t.contact || {}).name}`.toLowerCase().includes(q));
+    const so = A.ui.sdSort || 'urgent', dir = A.ui.sdDir === 'asc' ? 1 : -1; const num = (t) => parseInt(String(t.ref || '').replace(/\D/g, ''), 10) || 0;
+    const L = s.tickets.filter(keep).sort(so === 'ref' ? (a, b) => dir * (num(a) - num(b)) : so === 'created' ? (a, b) => dir * (String(a.createdAt) < String(b.createdAt) ? -1 : String(a.createdAt) > String(b.createdAt) ? 1 : 0) : so === 'updated' ? (a, b) => dir * (String(a.updatedAt) < String(b.updatedAt) ? -1 : String(a.updatedAt) > String(b.updatedAt) ? 1 : 0) : (a, b) => (OPEN.includes(a.status) && OPEN.includes(b.status) ? bySla(a, b) : 0) || (a.updatedAt < b.updatedAt ? 1 : -1));
+    const chips = [['open', 'Open'], ['mine', 'Mine'], ['unassigned', 'Not assigned'], ['attention', 'Need attention'], ['client', 'Waiting for practice'], ['dev', 'With development'], ['resolved', 'Resolved'], ['ai', '🤖 AI assisted'], ['all', 'All']];
     return `<div class="sd-filter">${chips.map(([k, l]) => `<button class="sd-chip ${f === k ? 'on' : ''}" data-act="sd-f" data-f="${k}">${l} <span>${s.tickets.filter((t) => { const o = A.ui.sdF; A.ui.sdF = k; const r = keep(t); A.ui.sdF = o; return r; }).length}</span></button>`).join('')}<input type="search" placeholder="Search ticket, practice or person" value="${esc(A.ui.sdQ || '')}" data-input="sd-q" aria-label="Search tickets"></div>
+      <div class="sd-sort"><label class="tiny">Sort by <select data-change="sd-sort" aria-label="Sort tickets">${[['urgent', 'Most urgent first'], ['ref', 'Ticket number'], ['created', 'Date created'], ['updated', 'Last changed']].map(([k, l]) => `<option value="${k}" ${so === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>${so === 'urgent' ? '' : `<button class="sd-chip sm" data-act="sd-sortdir" title="Change the order">${dir < 0 ? (so === 'ref' ? '↓ Highest number first' : '↓ Newest first') : (so === 'ref' ? '↑ Lowest number first' : '↑ Oldest first')}</button>`}<span class="tiny muted">${L.length} ticket${L.length === 1 ? '' : 's'}</span></div>
       <div class="card sd-list">${list(L) || '<div class="empty">No tickets here.</div>'}</div>`; };
+  H['change:sd-sort'] = (el) => { A.ui.sdSort = el.value; if (!A.ui.sdDir) A.ui.sdDir = 'desc'; A.render(); }; H['sd-sortdir'] = () => { A.ui.sdDir = A.ui.sdDir === 'asc' ? 'desc' : 'asc'; A.render(); };
 
   const ticketView = (t) => { ['thread', 'time', 'calls', 'tags'].forEach((k) => { if (!Array.isArray(t[k])) t[k] = []; }); const s = S(); const cl = client(t.dsId) || {}; const x = sla(t); const m = me(); const tot = t.time.reduce((a, b) => a + b.mins, 0); const fb = t.dev && t.dev.fbId && (PL().s.feedback || []).find((r) => r.id === t.dev.fbId);
-    const msg = (e) => { const who = e.from === 'staff' ? sname(e.by) : e.from === 'client' ? (e.by || 'Practice') : 'Prac360'; return `<div class="sd-msg ${e.from} ${e.internal ? 'internal' : ''} ${e.kind}">${e.from === 'staff' ? av(e.by, 'sm') : e.from === 'client' ? `<span class="sd-av cl">${esc(ini(who))}</span>` : '<span class="sd-av sys">⚙</span>'}<div class="grow"><div class="tiny"><b>${esc(who)}</b> ${e.internal ? '<span class="badge warn">Internal note — the practice does not see this</span>' : e.kind === 'call' ? '<span class="badge info">📞 Phone call</span>' : ''} · ${fdt(e.at)}</div><div class="sd-txt">${esc(e.text).replace(/\n/g, '<br>')}</div></div></div>`; };
+    const msg = (e) => { const who = e.from === 'staff' ? sname(e.by) : e.from === 'client' ? (e.by || 'Practice') : 'Prac360'; return `<div class="sd-msg ${e.ai ? 'ai' : ''} ${e.from} ${e.internal ? 'internal' : ''} ${e.kind}">${e.from === 'staff' ? av(e.by, 'sm') : e.from === 'client' ? `<span class="sd-av cl">${esc(ini(who))}</span>` : '<span class="sd-av sys">⚙</span>'}<div class="grow"><div class="tiny"><b>${esc(who)}</b> ${e.ai ? '<span class="badge sd-aib">🤖 AI support</span> ' : ''}${e.internal ? '<span class="badge warn">Internal note — the practice does not see this</span>' : e.kind === 'call' ? '<span class="badge info">📞 Phone call</span>' : ''} · ${fdt(e.at)}</div><div class="sd-txt">${esc(e.text).replace(/\n/g, '<br>')}</div></div></div>`; };
     const mode = A.ui.sdMode || 'reply';
     return `<div class="sd-crumb"><button class="linkish" data-act="sd-tab" data-t="${A.ui.sdTab || 'tickets'}">← Back</button> · <b>${esc(t.ref)}</b></div>
       <div class="sd-tv"><div class="sd-tv-main"><div class="card"><div class="row between" style="gap:10px;flex-wrap:wrap"><div><h2 style="margin:0">${esc(t.subject)}</h2><div class="tiny muted">${esc(t.practice)} · ${esc((t.contact || {}).name || '')} · logged ${fdt(t.createdAt)} by ${esc(t.channel)}</div></div><div class="row" style="gap:6px">${badge(t.status, ST)}${slaB(t)}</div></div></div>
@@ -19304,7 +19335,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
           <textarea id="sd-text" rows="4" placeholder="${mode === 'reply' ? `Write to ${esc(((t.contact || {}).name || 'the practice').split(' ')[0])} — they see this in their Client support portal` : mode === 'note' ? 'Only the support team sees internal notes' : 'What was discussed on the call'}"></textarea>
           <div class="row between" style="gap:8px;flex-wrap:wrap"><div class="row" style="gap:6px;align-items:center"><span class="tiny">Time spent</span>${[5, 10, 15, 30].map((n) => `<button class="sd-chip sm" data-act="sd-tpre" data-n="${n}">${n} min</button>`).join('')}<input id="sd-mins" type="number" min="0" max="600" placeholder="min" style="width:70px" aria-label="Minutes"></div>
           <div class="row" style="gap:6px">${mode === 'reply' ? `<select id="sd-after" aria-label="Status after sending"><option value="open">Keep in progress</option><option value="client">Waiting for the practice</option><option value="resolved">Mark as resolved</option></select>` : ''}<button class="btn primary" data-act="sd-send" data-id="${t.id}">${mode === 'reply' ? 'Send' : mode === 'note' ? 'Save note' : 'Log call'}</button></div></div></div>` : `<div class="card tiny muted">This ticket is closed${t.csat ? ` · the practice rated it ${'★'.repeat(t.csat)}` : ''}. <button class="btn sm" data-act="sd-reopen" data-id="${t.id}">Reopen</button></div>`}</div>
-      <aside class="sd-tv-side"><div class="card"><h4>Details</h4>
+      <aside class="sd-tv-side">${A.supportAISide ? A.supportAISide(t) : ''}<div class="card"><h4>Details</h4>
           <label class="f"><span>Status</span><select data-change="sd-set" data-k="status" data-id="${t.id}">${Object.entries(ST).map(([k, [l]]) => `<option value="${k}" ${t.status === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
           <label class="f"><span>Consultant</span><select data-change="sd-set" data-k="assignee" data-id="${t.id}"><option value="">— not assigned —</option>${s.staff.map((x) => `<option value="${x.id}" ${t.assignee === x.id ? 'selected' : ''}>${esc(x.name)}${away(x.id) ? ' (on leave)' : ''} · ${load(x.id)} open</option>`).join('')}</select></label>
           <label class="f"><span>Priority</span><select data-change="sd-set" data-k="priority" data-id="${t.id}">${Object.entries(PRI).map(([k, [l, , d]]) => `<option value="${k}" ${t.priority === k ? 'selected' : ''}>${k} ${l} — ${d}</option>`).join('')}</select></label>
@@ -19455,24 +19486,25 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const seenMap = () => { const s = PL().s; s.supportSeen = s.supportSeen || {}; return s.supportSeen; }; const unread = (t) => { const at = seenMap()[t.id] || ''; return (t.thread || []).some((m) => m.from === 'staff' && !m.internal && m.kind !== 'note' && String(m.at) > at); };
   A.supportMarkSeenAll = () => { const m = seenMap(); if (Object.keys(m).length) return; const t = new Date().toISOString(); mine().forEach((x) => { m[x.id] = t; }); m._init = t; };
   A.supportAwaiting = () => { try { return mine().filter((t) => unread(t) || t.status === 'client').length; } catch (e) { return 0; } };
-  const STAGES = (t) => { const L = [['Received', true], ['A consultant is helping you', !!t.assignee]]; if (t.dev || t.status === 'dev') L.push(['With our developers', true]); L.push(['Solved', ['resolved', 'closed'].includes(t.status)]); return L; };
+  const STAGES = (t) => { const L = [['Received', true], ['We are helping you', !!t.assignee || !!(t.ai && t.ai.state !== 'queued')]]; if (t.dev || t.status === 'dev') L.push(['With our developers', true]); L.push(['Solved', ['resolved', 'closed'].includes(t.status)]); return L; };
   const friendly = (t) => { const s = S(); const who = staff(t.assignee); const x = sla(t); const lim = s.sla[t.priority];
     if (['resolved', 'closed'].includes(t.status)) return `✅ Solved ${t.resolvedAt ? ago(t.resolvedAt) : ''}${who ? ' by ' + esc(who.name.split(' ')[0]) : ''}.`;
-    if (t.status === 'client') return `💬 ${who ? esc(who.name.split(' ')[0]) : 'We'} asked you a question — please reply below so we can carry on.`;
+    if (t.status === 'client') return t.ai && t.ai.state === 'waiting' ? '💬 We sent you the steps to sort this out — please let us know below if it worked.' : `💬 ${who ? esc(who.name.split(' ')[0]) : 'We'} asked you a question — please reply below so we can carry on.`;
+    if (t.ai && t.ai.state === 'queued') return '👋 Prac360 Support has your request and is looking into it now.';
     if (t.status === 'dev') return `🛠 Our developers are working on this. ${who ? esc(who.name.split(' ')[0]) + ' keeps an eye on it and will update you.' : ''}`;
     if (who) return `👋 <b>${esc(who.name)}</b> is helping you${t.firstResponseAt ? ` — first reply came ${dur((new Date(t.firstResponseAt) - new Date(t.createdAt)) / MIN)} after you logged it` : ''}.`;
     return `👋 Our team has your request and will reply within ${dur(lim.first)}${x.due ? ' (by ' + new Date(x.due).toTimeString().slice(0, 5) + ')' : ''}.`; };
   P.support = (params) => { if (!myDs()) return '<div class="card">Open a practice first.</div>'; const id = params && params[0]; const s = S(); if (id) { const t = mine().find((x) => x.id === id); if (t) { if (unread(t)) { seenMap()[t.id] = new Date().toISOString(); save(); } return portalTicket(t); } }
-    const L = mine(); const open = L.filter((t) => OPEN.includes(t.status)), done = L.filter((t) => !OPEN.includes(t.status)); const cl = S().clients.find((c) => (c.pkey || pk(c.name)) === myKey()) || {};
+    const so = A.ui.csSort || 'updated'; const num = (t) => parseInt(String(t.ref || '').replace(/\D/g, ''), 10) || 0; const L = mine().slice().sort(so === 'ref' ? (a, b) => num(b) - num(a) : (a, b) => (String(a[so === 'created' ? 'createdAt' : 'updatedAt']) < String(b[so === 'created' ? 'createdAt' : 'updatedAt']) ? 1 : -1)); const open = L.filter((t) => OPEN.includes(t.status)), done = L.filter((t) => !OPEN.includes(t.status)); const cl = S().clients.find((c) => (c.pkey || pk(c.name)) === myKey()) || {};
     const card = (t) => `<a class="cs-tk ${unread(t) ? 'new' : ''}" href="#/support/${t.id}"><div class="row between" style="gap:8px"><b>${esc(t.subject)}</b><span class="badge ${ST[t.status][1]}">${t.status === 'open' || t.status === 'new' ? 'Being handled' : esc(ST[t.status][0])}</span></div><div class="tiny muted">${esc(t.ref)} · ${esc(t.category)} · logged ${fdt(t.createdAt)} by ${esc((t.contact || {}).name || 'your practice')}</div>
       <div class="cs-steps">${STAGES(t).map(([l, on]) => `<span class="${on ? 'on' : ''}">${esc(l)}</span>`).join('')}</div><div class="cs-who">${t.assignee ? av(t.assignee, 'sm') : ''}<span>${friendly(t)}</span>${unread(t) ? '<b class="cs-newb">New reply</b>' : ''}</div></a>`;
     return `<div class="page-head"><div><h1>🎧 Client support</h1><div class="muted">Your practice’s support requests — everyone in ${esc((A.dsEntry.dataset || {}).name || 'your practice')} can see them and add to them.</div></div></div>
       <div class="cs-help"><div><h3 style="margin:0">Need help now?</h3><p class="tiny" style="margin:2px 0 0">Monday to Friday 07:00–18:00, Saturday 08:00–13:00. Urgent after-hours line for practices that cannot work.</p></div><a class="btn" href="tel:${tel(SUPPORT_NO)}">📞 Call support ${esc(SUPPORT_NO)}</a><button class="btn" data-act="cs-callback">☎ Ask us to call you</button><button class="btn primary" data-act="cs-new">＋ Log a request</button></div>
       ${cl.manager ? `<div class="cs-mgr">${av(cl.manager)}<div><b>${esc(sname(cl.manager))}</b> is your account manager.<div class="tiny muted">For anything bigger — training, new modules or how things are going.</div></div></div>` : ''}
-      <h2>Open requests <span class="tiny muted">${open.length}</span></h2>${open.map(card).join('') || '<div class="empty">No open requests — all good. 🎉</div>'}
+      <div class="row between cs-sorthd"><h2>Open requests <span class="tiny muted">${open.length}</span></h2><label class="tiny">Sort by <select data-change="cs-sort" aria-label="Sort requests">${[['updated', 'Last changed'], ['created', 'Date logged'], ['ref', 'Request number']].map(([k, l]) => `<option value="${k}" ${so === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label></div>${open.map(card).join('') || '<div class="empty">No open requests — all good. 🎉</div>'}
       ${done.length ? `<details class="cs-done"><summary>Solved and closed <span class="tiny muted">${done.length}</span></summary>${done.map(card).join('')}</details>` : ''}`; };
-  const portalTicket = (t) => { const pub = t.thread.filter((e) => !e.internal && e.kind !== 'assign' && e.kind !== 'note');
-    const msg = (e) => { const who = e.from === 'staff' ? sname(e.by) : e.from === 'client' ? (e.by || 'You') : 'Prac360 support'; return `<div class="cs-msg ${e.from}">${e.from === 'staff' ? av(e.by, 'sm') : e.from === 'client' ? `<span class="sd-av cl">${esc(ini(who))}</span>` : '<span class="sd-av sys">🎧</span>'}<div><div class="tiny"><b>${esc(who)}</b> · ${fdt(e.at)}${e.kind === 'call' ? ' · 📞 phone call' : ''}</div><div>${esc(e.kind === 'dev' ? 'We passed this on to our developers. We will let you know as soon as it is fixed.' : e.text).replace(/\n/g, '<br>')}</div></div></div>`; };
+  const portalTicket = (t) => { const pub = t.thread.filter((e) => !e.internal && e.kind !== 'assign' && e.kind !== 'note'); const acts = (e) => (e.actions && e.actions.length ? `<div class="cs-acts">${e.actions.map((a) => a.guide ? `<button class="btn sm" data-act="guide-start" data-id="${esc(a.guide)}">▶ ${esc(a.label || 'Show me how')}</button>` : a.link ? `<a class="btn sm ghost" href="${esc(a.link)}">${esc(a.label || 'Open')} →</a>` : '').join('')}</div>` : '');
+    const msg = (e) => { const who = e.from === 'staff' ? sname(e.by) : e.from === 'client' ? (e.by || 'You') : 'Prac360 support'; return `<div class="cs-msg ${e.from}">${e.from === 'staff' ? av(e.by, 'sm') : e.from === 'client' ? `<span class="sd-av cl">${esc(ini(who))}</span>` : '<span class="sd-av sys">🎧</span>'}<div><div class="tiny"><b>${esc(who)}</b> · ${fdt(e.at)}${e.kind === 'call' ? ' · 📞 phone call' : ''}</div><div>${esc(e.kind === 'dev' ? 'We passed this on to our developers. We will let you know as soon as it is fixed.' : e.text).replace(/\n/g, '<br>')}</div>${acts(e)}</div></div>`; };
     const solved = ['resolved', 'closed'].includes(t.status);
     return `<div class="page-head"><div><div class="crumbs no-crumb"><a href="#/support">Client support</a> › ${esc(t.ref)}</div><h1>${esc(t.subject)}</h1><div class="muted">${esc(t.category)} · logged ${fdt(t.createdAt)}</div></div></div>
       <div class="card"><div class="cs-steps big">${STAGES(t).map(([l, on]) => `<span class="${on ? 'on' : ''}">${esc(l)}</span>`).join('')}</div><div class="cs-who">${t.assignee ? av(t.assignee) : ''}<span>${friendly(t)}</span></div></div>
@@ -19491,10 +19523,11 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     if (cb) { S().calls.push({ id: 'cl_cb' + now().toString(36), dir: 'in', number: v.ph || '', name: ct.name, practice: t.practice, dsId: t.dsId, staffId: null, at: iso(), secs: 0, status: 'missed', ticketId: t.id, callback: true }); save(); }
     A.go('#/support/' + t.id); A.toast(`${t.ref} logged — ${t.assignee ? sname(t.assignee).split(' ')[0] + ' is helping you' : 'a consultant will reply soon'}.`); };
   H['cs-reply'] = (el) => { const t = S().tickets.find((x) => x.id === el.dataset.id); const txt = ((document.getElementById('cs-text') || {}).value || '').trim(); if (!t || !txt) return A.toast('Write a message first.', 'error'); if (/\b\d{13}\b/.test(txt)) return A.toast('Please remove the ID number — we do not need it.', 'error');
-    t.thread.push({ at: iso(), from: 'client', by: (A.user || {}).name || 'Practice', text: txt, kind: 'message' }); if (t.status === 'client') t.status = 'open'; t.updatedAt = iso(); t.unreadStaff = true; save(); A.render(); A.toast('Sent.'); };
-  H['cs-solved'] = (el) => { const t = S().tickets.find((x) => x.id === el.dataset.id); t.thread.push({ at: iso(), from: 'client', by: (A.user || {}).name || 'Practice', text: 'This is sorted now — thank you.', kind: 'message' }); t.status = 'resolved'; t.resolvedAt = iso(); t.updatedAt = iso(); save(); A.render(); };
-  H['cs-rate'] = (el) => { const t = S().tickets.find((x) => x.id === el.dataset.id); t.csat = +el.dataset.n; t.status = 'closed'; t.thread.push({ at: iso(), from: 'system', text: `The practice rated this ${t.csat}/5.`, kind: 'assign' }); save(); A.render(); A.toast('Thank you for the rating!'); };
-  H['cs-reopen'] = (el) => { const t = S().tickets.find((x) => x.id === el.dataset.id); t.status = 'open'; t.resolvedAt = null; t.csat = null; t.thread.push({ at: iso(), from: 'client', by: (A.user || {}).name || 'Practice', text: 'It is not fixed yet — reopening.', kind: 'message' }); t.unreadStaff = true; save(); A.render(); };
+    t.thread.push({ at: iso(), from: 'client', by: (A.user || {}).name || 'Practice', text: txt, kind: 'message' }); if (t.status === 'client') t.status = 'open'; t.updatedAt = iso(); t.unreadStaff = true; save(); if (A.supportAIOnClient) A.supportAIOnClient(t, 'reply', txt); A.render(); A.toast('Sent.'); };
+  H['change:cs-sort'] = (el) => { A.ui.csSort = el.value; A.render(); };
+  H['cs-solved'] = (el) => { const t = S().tickets.find((x) => x.id === el.dataset.id); t.thread.push({ at: iso(), from: 'client', by: (A.user || {}).name || 'Practice', text: 'This is sorted now — thank you.', kind: 'message' }); t.status = 'resolved'; t.resolvedAt = iso(); t.updatedAt = iso(); if (A.supportAIOnClient) A.supportAIOnClient(t, 'solved'); save(); A.render(); };
+  H['cs-rate'] = (el) => { const t = S().tickets.find((x) => x.id === el.dataset.id); t.csat = +el.dataset.n; t.status = 'closed'; if (A.supportAIOnClient) A.supportAIOnClient(t, 'rated'); t.thread.push({ at: iso(), from: 'system', text: `The practice rated this ${t.csat}/5.`, kind: 'assign' }); save(); A.render(); A.toast('Thank you for the rating!'); };
+  H['cs-reopen'] = (el) => { const t = S().tickets.find((x) => x.id === el.dataset.id); t.status = 'open'; t.resolvedAt = null; t.csat = null; t.thread.push({ at: iso(), from: 'client', by: (A.user || {}).name || 'Practice', text: 'It is not fixed yet — reopening.', kind: 'message' }); t.unreadStaff = true; if (A.supportAIOnClient) A.supportAIOnClient(t, 'reopen'); save(); A.render(); };
   if (A.PAGE_PERMS) delete A.PAGE_PERMS.support; // every practice user may see their practice's support requests if (A.SCREEN_NAMES) A.SCREEN_NAMES.support = 'Client support';
   // the menu under the user's name: Client support (with a count of replies waiting)
   const _hdr = A.acctHeader; if (_hdr) A.acctHeader = function () { const html = _hdr.apply(this, arguments); if (!html || !myDs() || html.indexOf('href="#/support"') >= 0) return html; const n = A.supportAwaiting(); const link = `<a href="#/support" class="am-support">🎧 Client support${n ? ` <b class="am-cnt">${n}</b>` : ''}</a>`;
@@ -19591,6 +19624,283 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
 })();
 
 
+/* ===== ui-support-ai.js ===== */
+/* Prac360 Support — AI support assistant ("Auto support") + the practice's "support needs your reply" popup.
+ *
+ * How it works (support team view):
+ *  1. A practice logs a request in Client support. Unless it must go to a person straight away (critical, phone/call-back,
+ *     a category the desk keeps for people, or risky words: security, money, missing data, clinical advice, a system
+ *     fault, an unhappy practice, or someone asking for a person) the assistant takes it.
+ *  2. It reads the request, matches it to Prac360's own help (the Training Academy topics, "Show me how" guides and the
+ *     claim-rejection rules) and checks the practice's own data where that helps (e.g. rejected claims, stock alerts).
+ *  3. Before anything is sent it runs a quality check: understood the request, answer comes only from Prac360's own help,
+ *     the screens/guides exist, safe for a medical practice (no clinical advice, no patient details or ID numbers, no
+ *     promises about money), plain language, matches the ticket's category, not repeating something that did not work.
+ *     Any failure or doubt → hand over to a consultant with a summary. It never signs, submits or approves anything.
+ *  4. The practice gets a normal, friendly reply from "Prac360 Support" with steps and "Show me how" buttons and is asked
+ *     whether it worked. "It is sorted now" → solved. Still not right → one more try (setting) → then a consultant.
+ *     If the practice asks whether they are talking to a person, it answers honestly and hands over.
+ *  5. Every step is a touchpoint on the ticket. The desk shows which tickets the assistant handled, the quality checks,
+ *     hand-over reasons, a low-rating review flag, and AI KPIs.
+ * In this demo the assistant runs in the practice's browser (it can read that practice's data) and, if a request is left
+ * waiting, in a support-desk browser. When hosted it can use a language model on the server with the same checks. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, esc = A.esc; const PL = () => window.PL; const E = window.PE;
+  if (!A.supportData || !A.supportX) return;
+  const S = () => A.supportData(); const X = () => A.supportX();
+  const now = () => Date.now(); const iso = (t) => new Date(t == null ? now() : t).toISOString(); const MIN = 60000, DAY = 86400000;
+  const save = () => { try { PL().save(); } catch (e) { /* ignore */ } };
+  const KB = () => A.KB || []; const kbt = (id) => KB().find((k) => k.id === id);
+  const OPTS = () => { const s = S(); s.opts = s.opts || {}; s.opts.ai = Object.assign({ on: true, level: 'normal', max: 2, delay: 20, human: ['Hardware and printing', 'Training request'] }, s.opts.ai || {}); return s.opts.ai; };
+  const LEVEL = { cautious: 0.72, normal: 0.58 };
+  const first = (t) => (String(((t.contact || {}).name) || '').replace(/^(Dr|Sr|Prof|Mr|Mrs|Ms)\.?\s+/i, '').split(/\s+/)[0]) || 'there';
+  const mineKey = () => (A.supportMyKey ? A.supportMyKey() : '') || '';
+  const isMine = (t) => !!A.dsEntry && (t.pkey || A.supportPkey(t.practice)) === mineKey();
+  const isDesk = () => /^#(console|admin)/.test(location.hash) && !A.dsEntry;
+  const log = (t, step, text, ok) => { t.ai.log = t.ai.log || []; t.ai.log.push({ at: iso(), step, text: text || '', ok: ok === undefined ? null : ok }); t.ai.at = iso(); };
+
+  // ---------------------------------------------------------------- reading a request
+  const STOP = new Set('the a an and or of to in on for with is are was were be been it this that i we our my me you your can cant cannot how do does did not no yes please help need want when what why where which who there here have has had from at by as so if but just get got still also into about any some all its im ive dont doesnt didnt wont would could should will one'.split(' '));
+  const SYN = { rejected: 'rejection reject', declined: 'rejection rejected', password: 'login sign', mic: 'microphone scribe', microphone: 'scribe listening', yesterday: 'date day', backdate: 'date', print: 'pdf printer', scheme: 'medical aid', aid: 'scheme medical', remittance: 'era payment', staff: 'user team member', receptionist: 'user team member', otp: 'two-step verification', listen: 'scribe listening', hear: 'scribe listening' };
+  const tok = (s) => { const w = String(s || '').toLowerCase().replace(/[’']/g, '').match(/[a-z0-9-]+/g) || []; const out = []; w.forEach((x) => { if (x.length < 3 || STOP.has(x)) return; out.push(x.replace(/(ing|ed|es|s)$/, (m) => (x.length > 5 ? '' : m))); if (SYN[x]) SYN[x].split(' ').forEach((y) => out.push(y)); }); return out; };
+  const has = (text, phrase) => new RegExp('(^|[^a-z])' + phrase.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '', 'i').test(text);
+  const scoreTopic = (k, text, toks) => { let s = 0; (k.keys || []).forEach((key) => { if (key && has(text, key)) s += key.includes(' ') ? 3 : 2; });
+    const tt = new Set(tok(k.title)); const seen = new Set(); toks.forEach((w) => { if (tt.has(w) && !seen.has(w)) { s += 1.2; seen.add(w); } });
+    const body = new Set(tok((k.steps || []).join(' ') + ' ' + (k.body || ''))); let b = 0; new Set(toks).forEach((w) => { if (body.has(w)) b += 0.25; }); return s + Math.min(2, b); };
+  const conf = (s) => 1 - Math.exp(-s / 3.5);
+
+  // Requests a person must handle (checked on every message from the practice)
+  const RISK = [
+    [/\b(hack(ed)?|breach|stolen|someone else (logged|signed)|suspicious|virus|ransom|phishing)\b/i, 'Possible security problem'],
+    [/\b(refund|overcharg\w*|debit order|cancel (our|my|the) (subscription|contract|account)|price increase|invoice from prac360|prac360 invoice|billing dispute)\b/i, 'About the practice’s Prac360 account or money'],
+    [/\b(lost|deleted|missing|disappeared|gone)\b.{0,30}\b(data|patients?|notes?|records?|claims?|invoices?|files?)\b|\b(data|records?|notes?|patients?)\b.{0,20}\b(lost|deleted|missing|disappeared|gone)\b/i, 'Data may be missing'],
+    [/\b(dose|dosage|mg\/kg|should (i|we) (prescribe|give|treat)|what (medicine|treatment) (should|to)|diagnos(e|is) (for|of) (a|my|the|this) patient|drug interaction)\b/i, 'Asks for clinical advice — support may not give it'],
+    [/\b(error message|crash(es|ed)?|blank screen|white screen|won'?t (load|open)|not loading|frozen|freez\w*|stuck on|bug|keeps? (logging|signing) (me )?out|exception)\b/i, 'Looks like a system fault — needs investigating'],
+    [/\b(unacceptable|complain\w*|lawyer|legal action|attorney|furious|disgusted|worst|third time|again and again|still not (fixed|sorted))\b/i, 'The practice sounds unhappy'],
+    [/\b(speak|talk) to (a|an|someone|somebody|a real|your)\b|real person|\bhuman\b|call me|phone me|ring me|call (me )?back/i, 'Asked for a person or a call'],
+  ];
+  const BOTQ = /\b(are you|is this|am i (talking|chatting|speaking) (to|with))\b.{0,24}\b(bot|robot|ai|a person|human|real|automated|machine|computer)\b/i;
+  const POS = /\b(worked|works now|working now|sorted|fixed|solved|resolved|perfect|that helped|all good|got it|thank(s| you))\b/i;
+  const NEG = /\b(not|didn'?t|doesn'?t|isn'?t|still|no luck|same (problem|thing|error)|nope|but)\b|n't\b/i;
+  const risk = (text) => { for (const [re, why] of RISK) if (re.test(text)) return why; return null; };
+
+  // Known questions → the help topics to use, plus a look at the practice's own data
+  const rejInsight = () => { try { const db = A.db; if (!db || !db.claims) return null; const rej = db.claims.filter((c) => c.versions && c.versions[0] && c.versions[0].response && c.versions[0].response.status === 'rejected');
+      if (!rej.length) return { text: 'We checked your practice and there are no rejected claims right now — they may already have been corrected and resubmitted.' };
+      const by = {}; rej.forEach((c) => { const k = c.versions[0].response.code || '?'; by[k] = (by[k] || 0) + 1; }); const top = Object.entries(by).sort((a, b) => b[1] - a[1])[0]; const h = (E.REJECTION_HELP || {})[top[0]];
+      if (!h) return { text: `We checked your practice: ${rej.length} claim${rej.length === 1 ? ' is' : 's are'} rejected at the moment.` };
+      return { text: `We checked your practice: ${rej.length} claim${rej.length === 1 ? ' is' : 's are'} rejected at the moment. The most common reason is “${h.title}” (${top[0]}, ${top[1]} claim${top[1] === 1 ? '' : 's'}): ${h.why}`, steps: h.steps.concat(['Open Claims and use the Rejected filter to see each claim and its reason.']), src: 'Claim rejection rule ' + top[0], title: 'fix it' }; } catch (e) { return null; } };
+  const stockInsight = () => { try { const db = A.db; if (!db || !E.stockAlerts) return null; const a = E.stockAlerts(db); if (!a.length) return { text: 'We checked your stock and there are no low, out-of-stock or expired items right now.' };
+      const n = (ty) => a.filter((x) => x.type === ty).length; const parts = [['Out of stock', 'out of stock'], ['Low stock', 'low'], ['Expired', 'expired']].filter(([k]) => n(k)).map(([k, l]) => `${n(k)} ${l}`);
+      return { text: `We checked your stock: ${parts.join(', ') || a.length + ' alerts'}. You will find them at the top of the Stock screen.` }; } catch (e) { return null; } };
+  const BOOK = [
+    { id: 'rejected', re: /reject|declin(ed|es)|bounced|claims? (are|were|keep) (being )?(returned|refused)/i, topics: ['rejected', 'claimfix'], insight: rejInsight, link: ['#/claims', 'Open Claims'] },
+    { id: 'linedate', re: /yesterday|previous day|last (week|friday|monday|tuesday|wednesday|thursday|saturday)|back ?date|date of service|wrong date|another day|other day/i, topics: ['billtx', 'billingreview'], link: ['#/billing', 'Open Billing'] },
+    { id: 'login', re: /password|log ?in|sign ?in|locked out|two-step|\botp\b|verification code|authenticator/i, topics: ['login', 'myaccount'] },
+    { id: 'adduser', re: /(add|new|create|set up)\b.{0,25}\b(user|staff|team member|receptionist|doctor|login)|give .{0,20}access/i, topics: ['invite', 'usercharges'] },
+    { id: 'scribe', re: /scribe|listening|microphone|\bmic\b|(doesn'?t|does not|not) hear|dictat/i, topics: ['scribe', 'assistsupport'] },
+    { id: 'time', re: /wrong time|time is wrong|hours? (behind|ahead|out)|time ?zone|clock/i, topics: ['timezone'] },
+    { id: 'statement', re: /statement/i, topics: ['statement', 'bulkstatements'] },
+    { id: 'remit', re: /remittance|\bera\b|payment advice|allocat/i, topics: ['remittance', 'allocate'] },
+    { id: 'stock', re: /\bstock\b|expir|reorder|nappi/i, topics: ['stockcat', 'reorder', 'writeoff'], insight: stockInsight, link: ['#/stock', 'Open Stock'] },
+    { id: 'icd', re: /icd|diagnosis code/i, topics: ['icd'] },
+    { id: 'modifier', re: /modifier/i, topics: ['billtx'] },
+    { id: 'offline', re: /load ?shedding|no internet|offline|power (cut|failure)/i, topics: ['offline'] },
+    { id: 'auth', re: /authori[sz]ation|auth(orisation)? number|pre-?auth/i, topics: ['authno', 'h-auth'] },
+    { id: 'pmb', re: /\bpmb\b|prescribed minimum/i, topics: ['pmb'] },
+    { id: 'consent', re: /consent|popia|share (the )?(clinical|file)/i, topics: ['consent', 'shared'] },
+    { id: 'book', re: /appointment|diary|\bbook(ing)?\b/i, topics: ['book', 'apptedit'] },
+    { id: 'register', re: /register (a )?(new )?patient|new patient|add (a )?patient/i, topics: ['register'] },
+    { id: 'submit', re: /switch ?on|claims? (are )?(not )?(going|sent|sending|reach)|submit (the )?claims?/i, topics: ['submitclaims', 'switchon'] },
+  ];
+  // the area of Prac360 a help topic belongs to, to check it fits the ticket's category
+  const AREA = (id) => /bill|claim|reject|remit|payment|alloc|statement|icd|pmb|tariff|medprax|switch|private|auth|credit|liab|vat|contract|resubmit|age|pricelist|modifier/.test(id) ? 'billing' : /consult|script|sick|scribe|allergy|meds|vitals|results|recall|motivation|clinical|onc|^h-|admit|addendum|patientfile|aisummary|cleanup|dictate/.test(id) ? 'clinical' : /stock|receive|writeoff|reorder/.test(id) ? 'stock' : /login|invite|roles|block|myaccount|signature|fpsign|esign|presence|lastactive/.test(id) ? 'users' : 'general';
+  const CATAREA = { 'Billing and claims': ['billing'], 'Claims and EDI': ['billing'], 'Medical aid rules': ['billing'], 'Reports and statements': ['billing', 'general'], 'AI Scribe and Assist': ['clinical', 'general'], 'Consultations and clinical': ['clinical', 'general'], Oncology: ['clinical'], 'Hospital and wards': ['clinical', 'billing'], 'Login, users and security': ['users'], 'Stock and dispensing': ['stock'] };
+
+  const analyse = (t, extra, used) => { const text = `${t.subject || ''}. ${(t.thread.find((m) => m.from === 'client') || {}).text || ''} ${extra || ''}`; const toks = tok(text); const pb = BOOK.find((b) => b.re.test(text));
+    const scored = KB().map((k) => ({ k, s: scoreTopic(k, text.toLowerCase(), toks) + (pb && pb.topics.includes(k.id) ? 5 - pb.topics.indexOf(k.id) : 0) })).filter((x) => x.s > 0 && !(used || []).includes(x.k.id) && (x.k.steps || []).length).sort((a, b) => b.s - a.s);
+    const top = scored[0]; if (!top) return { text, pb, top: null, c: 0 };
+    let c = conf(top.s); const second = scored[1]; if (!pb && second && second.s > top.s * 0.9 && AREA(second.k.id) !== AREA(top.k.id)) c -= 0.12; return { text, pb, top: top.k, also: second && second.k, c: Math.max(0, Math.min(0.97, c)), score: top.s }; };
+
+  // ---------------------------------------------------------------- writing the answer
+  const dayPart = () => { const h = +new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Johannesburg', hour: '2-digit', hourCycle: 'h23' }).format(new Date()); return h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening'; };
+  const pick = (arr, seed) => arr[Math.abs([...String(seed)].reduce((a, c) => a + c.charCodeAt(0), 0)) % arr.length];
+  const lc = (s) => s.charAt(0).toLowerCase() + s.slice(1);
+  const compose = (t, an, followup) => { const k = an.top; const ins = !followup && an.pb && an.pb.insight ? an.pb.insight() : null; const steps = (ins && ins.steps) || (k.steps || []).slice(0, 6);
+    const VERB = /^(fix|bill|book|register|check|print|import|take|write|record|send|add|move|change|allocate|reorder|receive|run|set|switch|sign|share|use|load|admit|discharge|show|open|save|search|customise|see|choose|connect|practise|export|block|create|get|talk|go|email|accept|review|read|chart|upload|dictate|find|resubmit|follow|turn|give|correct|edit|cancel|reset|close)\b/i;
+    const howTo = ins && ins.title ? 'Here is how to fix it:' : VERB.test(k.title) ? `Here is how to ${lc(k.title)}:` : `Here is how “${k.title.replace(/\?$/, '')}” works in Prac360:`;
+    const L = [pick([`Hi ${first(t)},`, `Hello ${first(t)},`, `Good ${dayPart()} ${first(t)},`], t.id + (followup ? 'f' : '')), '',
+      followup ? 'Thanks for trying that and for letting us know. Let’s try it this way:' : pick(['Thanks for getting in touch.', 'Thank you for your message.', 'Thanks for letting us know.'], t.ref)];
+    if (ins && ins.text) L.push('', ins.text); L.push('', howTo, ...steps.map((x, i) => `${i + 1}. ${x}`));
+    const acts = []; if (A.GUIDES && A.GUIDES[k.id]) acts.push({ guide: k.id, label: 'Show me how in Prac360' }); const link = (an.pb && an.pb.link) || (k.link ? [k.link, 'Open the screen'] : null); if (link) acts.push({ link: link[0], label: link[1] });
+    if (acts.some((a) => a.guide)) L.push('', 'The “Show me how” button below walks you through it on your own screen, one click at a time.');
+    L.push('', 'Please give it a try and let us know here if that sorted it out — press “It is sorted now”, or reply if something is still not right and we will carry on from there.', '', 'Kind regards,', 'Prac360 Support');
+    return { text: L.join('\n'), actions: acts, steps, sources: [k.id].concat(ins && ins.src ? [ins.src] : []), topic: k }; };
+
+  // ---------------------------------------------------------------- the quality check before anything is sent
+  const quality = (t, an, out) => { const o = OPTS(); const need = LEVEL[o.level] || LEVEL.normal; const R = [];
+    R.push({ c: 'Understood the request', ok: an.c >= need, d: `${Math.round(an.c * 100)}% sure it is about “${an.top.title}” (needs ${Math.round(need * 100)}%)` });
+    const kbSteps = new Set((an.top.steps || []).map(String)); const ins = out.sources.length > 1;
+    R.push({ c: 'Only uses Prac360’s own help — no guessing', ok: out.steps.every((x) => kbSteps.has(String(x)) || ins), d: `From: ${out.sources.map((x) => (kbt(x) ? 'help topic “' + kbt(x).title + '”' : x)).join(' + ')}` });
+    const linksOk = out.actions.every((a) => (a.guide ? !!(A.GUIDES || {})[a.guide] : a.link ? !!A.P[(a.link.match(/^#\/([a-z]+)/) || [])[1]] : true));
+    R.push({ c: 'Screens and guides it points to exist', ok: linksOk, d: out.actions.map((a) => a.guide ? 'Show me: ' + a.guide : a.link).join(', ') || 'none' });
+    const unsafe = /\b(\d{13})\b|\bdose\b|\bdosage\b|\bmg\b|\bprescribe\b|\bdiagnos(e|is) (is|for)\b|\bSAMA\b|\bguarantee\b|\brefund\b|\bwe will pay\b/i.test(out.text);
+    R.push({ c: 'Safe for a medical practice', ok: !unsafe, d: unsafe ? 'Contains clinical advice, an ID number, SAMA codes or a money promise' : 'No clinical advice, patient details, ID numbers or money promises' });
+    R.push({ c: 'Plain language, not too long', ok: out.steps.length <= 8 && out.text.length <= 1800, d: `${out.steps.length} steps, ${out.text.length} characters` });
+    const ca = CATAREA[t.category]; const area = AREA(an.top.id);
+    R.push({ c: 'Fits the ticket’s category', ok: !ca || ca.includes(area) || (an.pb && an.c >= 0.8), d: `${t.category} ↔ ${area}` });
+    R.push({ c: 'Not repeating something that did not work', ok: !(t.ai.used || []).includes(an.top.id), d: (t.ai.used || []).length ? 'Earlier: ' + t.ai.used.join(', ') : 'First answer' });
+    return R; };
+
+  // ---------------------------------------------------------------- hand-over to a consultant
+  const handoff = (t, why, tell) => { const ai = t.ai; ai.state = 'handed'; ai.reason = why; log(t, 'Handed to a consultant', why, false);
+    const clientMsgs = t.thread.filter((m) => m.from === 'client').map((m) => '• ' + String(m.text).slice(0, 200)).join('\n');
+    t.thread.push({ at: iso(), from: 'staff', by: 'ai', ai: true, internal: true, kind: 'note', text: `AI hand-over — please take this one.\nWhy: ${why}\nWhat the practice said:\n${clientMsgs}\n${ai.replies ? `AI replied ${ai.replies} time${ai.replies === 1 ? '' : 's'} using: ${(ai.used || []).map((x) => (kbt(x) || {}).title || x).join('; ')}.` : 'AI did not reply to the practice.'}${ai.best ? `\nClosest help topic: ${ai.best}` : ''}` });
+    if (t.status === 'client') t.status = 'open'; let who = null; if (!t.assignee && A.supportAutoAssign) { try { who = A.supportAutoAssign(t, 'AI handed over: ' + why); } catch (e) { /* desk will assign */ } } else if (t.assignee) who = X().staff(t.assignee);
+    if (tell) { t.thread.push({ at: iso(now() + 1000), from: 'staff', by: 'ai', ai: true, kind: 'reply', text: `Thanks, ${first(t)}. ${who ? who.name.split(' ')[0] + ' from our support team' : 'One of our support consultants'} will take this further with you and reply ${t.priority === 'P1' || t.priority === 'P2' ? 'shortly' : 'as soon as possible'}.\n\nKind regards,\nPrac360 Support` }); }
+    t.updatedAt = iso(); };
+
+  // ---------------------------------------------------------------- the assistant's turns
+  A.supportAIWants = (t) => { const o = OPTS(); if (!o.on || t.channel !== 'portal' || t.fromStaff) return false; const text = `${t.subject} ${t.desc || ''}`;
+    t.ai = { state: 'queued', dueAt: iso(now() + (o.delay || 20) * 1000), replies: 0, used: [], log: [], at: iso() }; log(t, 'Request received', 'Checking whether the assistant may help');
+    const why = t.priority === 'P1' ? 'Critical — the practice cannot work' : o.human.includes(t.category) ? `“${t.category}” requests always go to a person (setting)` : risk(text) || (BOTQ.test(text) ? 'Asked whether support is a person' : null);
+    if (why) { t.ai.state = 'handed'; t.ai.reason = why; log(t, 'Sent straight to a consultant', why, false); return false; } return true; };
+  const run = (t) => { const ai = t.ai; if (!ai || ai.state !== 'queued') return; const extra = t.thread.filter((m) => m.from === 'client').slice(1).map((m) => m.text).join(' ');
+    log(t, 'Read the request', ai.replies ? 'Read the practice’s reply' : 'Subject, description and category');
+    const lastClient = (t.thread.filter((m) => m.from === 'client').slice(-1)[0] || {}).text || ''; const why = risk(ai.replies ? lastClient : `${t.subject} ${lastClient}`);
+    if (why) { handoff(t, why, ai.replies > 0); return; }
+    const an = analyse(t, extra, ai.used); if (!an.top) { handoff(t, 'No matching Prac360 help found — not sure how to help', ai.replies > 0); return; }
+    ai.best = an.top.title; ai.conf = Math.round(an.c * 100); log(t, 'Found Prac360 help', `“${an.top.title}”${an.pb ? ' + practice check (' + an.pb.id + ')' : ''} — ${ai.conf}% sure`);
+    const out = compose(t, an, ai.replies > 0); const qa = quality(t, an, out); ai.qa = qa; const bad = qa.filter((q) => !q.ok);
+    log(t, 'Quality check', bad.length ? 'Failed: ' + bad.map((q) => q.c).join('; ') : 'All 7 checks passed', !bad.length);
+    if (bad.length) { handoff(t, 'Not sure enough to answer — ' + bad.map((q) => lc(q.c)).join(', '), ai.replies > 0); return; }
+    t.thread.push({ at: iso(), from: 'staff', by: 'ai', ai: true, kind: 'reply', text: out.text, actions: out.actions }); ai.replies += 1; ai.used.push(an.top.id); ai.sources = out.sources; ai.state = 'waiting';
+    t.status = 'client'; if (!t.firstResponseAt) t.firstResponseAt = iso(); t.updatedAt = iso(); log(t, 'Answer sent to the practice', `${out.steps.length} steps${out.actions.length ? ' + ' + out.actions.map((a) => (a.guide ? '“Show me how”' : 'screen link')).join(' + ') : ''}`, true); };
+  A.supportAIOnClient = (t, kind, txt) => { const ai = t.ai; if (!ai) return; const o = OPTS();
+    if (kind === 'rated') { log(t, 'Practice rated the help', `${t.csat}/5`, t.csat >= 4); if (ai.state === 'resolved' && t.csat <= 3) { ai.review = true; log(t, 'Flagged for review', 'Low rating on an answer from the assistant — a consultant should check it', false); } return; }
+    if (kind === 'solved') { if (['waiting', 'queued'].includes(ai.state)) { ai.state = 'resolved'; ai.outcome = 'solved'; log(t, 'Solved by the assistant', 'The practice pressed “It is sorted now”', true); } return; }
+    if (kind === 'reopen') { if (ai.state === 'resolved') { ai.review = true; handoff(t, 'The practice reopened it — the answer did not fix it', true); } return; }
+    if (kind !== 'reply' || !['waiting', 'queued'].includes(ai.state)) return; log(t, 'Practice replied', String(txt || '').slice(0, 120));
+    if (BOTQ.test(txt)) { t.thread.push({ at: iso(), from: 'staff', by: 'ai', ai: true, kind: 'reply', text: `Good question, ${first(t)}. Our first replies are prepared by Prac360’s automated support assistant, which works from Prac360’s own help guides. I have passed your request to a support consultant, who will continue with you personally.\n\nKind regards,\nPrac360 Support` }); handoff(t, 'Asked whether support is a person — answered honestly', false); return; }
+    const why = risk(txt); if (why) { handoff(t, why, true); return; }
+    if (POS.test(txt) && !NEG.test(txt)) { t.thread.push({ at: iso(), from: 'staff', by: 'ai', ai: true, kind: 'reply', text: `That’s great news, ${first(t)} — glad it is sorted. If anything else comes up, just log a request here.\n\nKind regards,\nPrac360 Support` }); t.status = 'resolved'; t.resolvedAt = iso(); ai.state = 'resolved'; ai.outcome = 'solved'; log(t, 'Solved by the assistant', 'The practice confirmed it worked', true); return; }
+    if (ai.replies >= (o.max || 2)) { handoff(t, `Still not solved after ${ai.replies} answer${ai.replies === 1 ? '' : 's'} from the assistant`, true); return; }
+    ai.state = 'queued'; ai.dueAt = iso(now() + Math.max(8, (o.delay || 20) / 2) * 1000); t.status = 'open'; log(t, 'Working on a follow-up answer', ''); };
+
+  // a consultant replying or taking the ticket takes it over from the assistant
+  const takeOver = (t, why) => { if (t && t.ai && ['queued', 'waiting'].includes(t.ai.state)) { t.ai.state = 'handed'; t.ai.reason = why; log(t, 'Consultant took over', why, null); } };
+  ['sd-send', 'sd-take'].forEach((k) => { const f = H[k]; if (f) H[k] = function (el) { const t = X().tk(el && el.dataset && el.dataset.id); const was = t && t.thread.length; const r = f.apply(this, arguments); if (t && (k === 'sd-take' || t.thread.length > was)) { takeOver(t, `${X().me().name} ${k === 'sd-take' ? 'took the ticket' : 'replied'}`); save(); } return r; }; });
+  H['sd-ai-take'] = (el) => { const t = X().tk(el.dataset.id); if (!t) return; t.assignee = X().me().id; if (t.status === 'new' || t.status === 'client') t.status = 'open'; takeOver(t, X().me().name + ' took over from the assistant'); t.updatedAt = iso(); save(); A.render(); };
+  H['sd-ai-reviewed'] = (el) => { const t = X().tk(el.dataset.id); if (!t || !t.ai) return; t.ai.review = false; log(t, 'Answer reviewed', 'Checked by ' + X().me().name, true); t.updatedAt = iso(); save(); A.render(); };
+
+  const due = (t) => { const d = t.ai.dueAt; return typeof d === 'number' ? d : d ? new Date(d).getTime() : 0; };
+  // the loop: answer queued requests (the practice's own browser; a desk browser picks up anything left waiting 2 minutes)
+  setInterval(() => { try { if (document.hidden) return; const s = PL().s && PL().s.support; if (!s) return; let n = 0;
+    s.tickets.forEach((t) => { if (t.ai && t.ai.state === 'queued' && now() >= due(t) && (isMine(t) || (isDesk() && now() - due(t) > 2 * MIN))) { run(t); n++; }
+      if (isDesk() && t.ai && t.ai.state === 'handed' && !t.assignee && X().OPEN.includes(t.status) && A.supportAutoAssign) { try { if (A.supportAutoAssign(t, 'AI handed over: ' + (t.ai.reason || ''))) n++; } catch (e) { /* ignore */ } } });
+    if (n) { save(); const ae = document.activeElement; if (!(ae && /^(TEXTAREA|INPUT)$/.test(ae.tagName) && ae.value) && !document.querySelector('#modal .modal')) A.render(); } } catch (e) { /* ignore */ } }, 3000);
+
+  // ---------------------------------------------------------------- support desk: what the team sees
+  const STL = { queued: ['🤖 AI working on it', 'info'], waiting: ['🤖 AI answered', 'info'], resolved: ['🤖 Solved by AI', 'good'], handed: ['🤖→👤 Handed to a person', 'warn'] };
+  A.supportAIBadge = (t) => { const x = STL[t.ai.state] || STL.handed; return `<span class="badge sd-aib ${x[1]}" title="${esc(t.ai.reason || '')}">${x[0]}${t.ai.review ? ' · review' : ''}</span>`; };
+  const ICON = { client: '🏥', staff: '👤', ai: '🤖', system: '⚙', call: '📞', note: '🔒' };
+  const touches = (t) => { const L = []; (t.thread || []).forEach((m) => { if (m.kind === 'assign' && m.from === 'system') { L.push({ at: m.at, i: '⚙', w: 'System', d: m.text }); return; }
+      L.push({ at: m.at, i: m.ai ? '🤖' : m.kind === 'call' ? '📞' : m.internal ? '🔒' : ICON[m.from] || '•', w: m.ai ? 'AI support' : m.from === 'client' ? (m.by || 'Practice') : m.from === 'staff' ? X().sname(m.by) : 'Prac360', d: (m.internal ? 'Internal note: ' : m.from === 'client' ? 'Message: ' : m.kind === 'call' ? 'Call: ' : 'Reply: ') + String(m.text).split('\n').filter(Boolean).slice(0, 2).join(' ').slice(0, 110) }); });
+    ((t.ai && t.ai.log) || []).forEach((l) => L.push({ at: l.at, i: l.ok === false ? '⚠' : l.ok ? '✓' : '🤖', w: 'AI · ' + l.step, d: l.text, ai: true }));
+    (t.calls || []).forEach((cid) => { const c = (S().calls || []).find((y) => y.id === cid); if (c) L.push({ at: c.at, i: '📞', w: c.dir === 'in' ? 'Call in' : 'Call out', d: `${Math.round((c.secs || 0) / 60)} min · ${X().sname(c.staffId)}` }); });
+    return L.sort((a, b) => (String(a.at) < String(b.at) ? -1 : 1)); };
+  A.supportTouches = touches;
+  A.supportAISide = (t) => { const T = touches(t); const ai = t.ai; let h = '';
+    if (ai) { const x = STL[ai.state] || STL.handed; h += `<div class="card sd-aicard"><h4>🤖 AI support <span class="badge ${x[1]}">${x[0].replace(/^🤖(→👤)? /, '')}</span></h4>
+      ${ai.reason ? `<p class="tiny"><b>${ai.state === 'handed' ? 'Why a person' : 'Note'}:</b> ${esc(ai.reason)}</p>` : ''}${ai.conf != null ? `<p class="tiny">Closest help: <b>${esc(ai.best || '')}</b> · ${ai.conf}% sure · ${ai.replies || 0} answer${ai.replies === 1 ? '' : 's'} sent</p>` : ''}
+      ${ai.qa ? `<details class="sd-qa" ${ai.state === 'handed' ? 'open' : ''}><summary class="tiny">Quality check — ${ai.qa.filter((q) => q.ok).length}/${ai.qa.length} passed</summary>${ai.qa.map((q) => `<div class="tiny ${q.ok ? 'ok' : 'bad'}">${q.ok ? '✓' : '✗'} <b>${esc(q.c)}</b><br><span class="muted">${esc(q.d)}</span></div>`).join('')}</details>` : ''}
+      ${ai.review ? `<div class="sd-note tiny">⚠ The practice was not happy with an answer from the assistant — please check it. <button class="btn sm" data-act="sd-ai-reviewed" data-id="${t.id}">Mark as reviewed</button></div>` : ''}
+      ${['queued', 'waiting'].includes(ai.state) ? `<button class="btn sm" data-act="sd-ai-take" data-id="${t.id}">✋ Take over from the assistant</button><p class="tiny muted" style="margin:4px 0 0">Replying to the practice also takes it over.</p>` : ''}</div>`; }
+    h += `<div class="card sd-touch"><h4>Touchpoints <span class="tiny muted">${T.length}</span></h4><ol>${T.map((x) => `<li class="${x.ai ? 'ai' : ''}"><span class="i">${x.i}</span><div><b class="tiny">${esc(x.w)}</b> <span class="tiny muted">${X().fdt(x.at)}</span><div class="tiny">${esc(x.d)}</div></div></li>`).join('')}</ol></div>`; return h; };
+
+  const stats = (days) => { const s = S(); const from = now() - (days || 7) * DAY; const T = s.tickets.filter((t) => new Date(t.createdAt).getTime() > from); const ai = T.filter((t) => t.ai);
+    const took = ai.filter((t) => t.ai.replies > 0 || t.ai.state === 'resolved'); const solved = ai.filter((t) => t.ai.state === 'resolved'); const handed = ai.filter((t) => t.ai.state === 'handed');
+    const fr = took.filter((t) => t.firstResponseAt).map((t) => (new Date(t.firstResponseAt) - new Date(t.createdAt)) / MIN); const why = {}; handed.forEach((t) => { const k = String(t.ai.reason || 'Other').split(' — ')[0]; why[k] = (why[k] || 0) + 1; });
+    const touchN = T.reduce((a, t) => a + touches(t).length, 0); const cs = solved.filter((t) => t.csat).map((t) => t.csat);
+    return { T, ai, took, solved, handed, why, fr: fr.length ? fr.reduce((a, b) => a + b, 0) / fr.length : null, touchN, csat: cs.length ? (cs.reduce((a, b) => a + b, 0) / cs.length).toFixed(1) : '—', review: s.tickets.filter((t) => t.ai && t.ai.review).length, rate: took.length ? Math.round((solved.length / took.length) * 100) : 0 }; };
+  const V = X().V;
+  const ov = V.overview; V.overview = function () { const h = ov.apply(this, arguments); const st = stats(7); const strip = `<div class="card sd-aistrip"><div class="sd-aih"><b>🤖 AI support · last 7 days</b><button class="btn sm ghost" data-act="sd-tab" data-t="tickets" data-f="ai">See AI tickets →</button></div><div class="sd-aig">
+      <div><span class="n">${st.took.length}</span><span class="tiny">answered by the assistant</span></div><div><span class="n good">${st.solved.length}</span><span class="tiny">solved without a consultant${st.took.length ? ` (${st.rate}%)` : ''}</span></div>
+      <div><span class="n warn">${st.handed.length}</span><span class="tiny">handed to a person</span></div><div><span class="n">${st.fr == null ? '—' : X().dur(st.fr)}</span><span class="tiny">average first answer</span></div>
+      <div><span class="n ${st.review ? 'warn' : ''}">${st.review}</span><span class="tiny">answers to review</span></div></div></div>`;
+    const i = h.indexOf('</div>', h.indexOf('class="sd-kpis"')); return i > 0 ? h.slice(0, i + 6) + strip + h.slice(i + 6) : strip + h; };
+  const rp = V.reports; V.reports = function () { const h = rp.apply(this, arguments); const st = stats(30); const why = Object.entries(st.why).sort((a, b) => b[1] - a[1]);
+    return h + `<div class="card"><h3 style="margin-top:0">🤖 AI support — last 30 days</h3><table class="t"><tbody>
+      <tr><td>Requests logged in Client support</td><td><b>${st.T.filter((t) => t.channel === 'portal').length}</b></td></tr><tr><td>Answered by the assistant</td><td><b>${st.took.length}</b></td></tr>
+      <tr><td>Solved without a consultant</td><td><b>${st.solved.length}</b> (${st.rate}% of those answered)</td></tr><tr><td>Handed to a consultant</td><td><b>${st.handed.length}</b></td></tr>
+      <tr><td>Average time to the first answer</td><td><b>${st.fr == null ? '—' : X().dur(st.fr)}</b></td></tr><tr><td>Average rating of answers solved by the assistant</td><td><b>${st.csat}</b></td></tr>
+      <tr><td>All support touchpoints (messages, calls, AI steps, changes)</td><td><b>${st.touchN}</b> · ${st.T.length ? (st.touchN / st.T.length).toFixed(1) : 0} per ticket</td></tr></tbody></table>
+      ${why.length ? `<h4>Why tickets went to a person</h4>${why.map(([k, n]) => `<div class="sd-row2"><span>${esc(k)}</span><b>${n}</b></div>`).join('')}` : ''}</div>`; };
+  const au = V.automation; V.automation = function () { const h = au.apply(this, arguments); const o = OPTS(); const C = X().CATS;
+    return `<div class="card sd-aiset"><h3 style="margin-top:0">🤖 AI support assistant</h3><p class="tiny">Answers practices’ requests from Prac360’s own help and the practice’s own data, checks every answer before it is sent, and hands anything risky or uncertain to a consultant with a summary. Practices see friendly replies from “Prac360 Support”; if someone asks whether they are talking to a person, it says so honestly and hands over.</p>
+      <form id="sd-aif" class="grid g2" style="gap:8px"><label class="f"><span>Assistant</span><select name="on"><option value="1" ${o.on ? 'selected' : ''}>On — answers requests first</option><option value="" ${o.on ? '' : 'selected'}>Off — every request goes to a consultant</option></select></label>
+      <label class="f"><span>How sure must it be?</span><select name="level"><option value="normal" ${o.level === 'normal' ? 'selected' : ''}>Normal</option><option value="cautious" ${o.level === 'cautious' ? 'selected' : ''}>Cautious — hands over more often</option></select></label>
+      <label class="f"><span>Answers before handing over</span><select name="max">${[1, 2, 3].map((n) => `<option ${o.max === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+      <label class="f"><span>Reply after (seconds)</span><input name="delay" type="number" min="5" max="600" value="${o.delay}"></label>
+      <div class="f" style="grid-column:1/-1"><span>Always a person for these categories</span><div class="sd-ext">${C.map((c) => `<label class="tiny"><input type="checkbox" name="h_${C.indexOf(c)}" ${o.human.includes(c) ? 'checked' : ''}> ${esc(c)}</label>`).join('')}</div></div></form>
+      <p class="tiny muted">Always a person, whatever the setting: critical requests, phone and call-back requests, security, money or the practice’s Prac360 account, missing data, clinical advice, system faults, unhappy practices and anyone asking for a person.</p><button class="btn primary sm" data-act="sd-ai-save">Save</button></div>` + h; };
+  H['sd-ai-save'] = () => { const f = document.getElementById('sd-aif'); if (!f) return; const o = OPTS(); o.on = !!f.on.value; o.level = f.level.value; o.max = +f.max.value; o.delay = Math.max(5, Math.min(600, +f.delay.value || 20)); o.human = X().CATS.filter((c, i) => f['h_' + i] && f['h_' + i].checked); save(); A.toast('AI support settings saved.'); A.render(); };
+
+  // ---------------------------------------------------------------- practice: "support needs your reply" popup
+  const muteKey = () => 'p360-sd-mute:' + String((A.user && (A.user.email || A.user.id)) || 'me').toLowerCase();
+  A.sdMuteKey = () => muteKey();
+  const mutedUntil = () => { try { return +localStorage.getItem(muteKey()) || 0; } catch (e) { return 0; } };
+  const later = (A.sdPopLater = A.sdPopLater || { until: 0, ids: '' });
+  const waiting = () => { if (!A.dsEntry || !A.supportMyKey) return []; const k = A.supportMyKey(); return S().tickets.filter((t) => t.status === 'client' && (t.pkey || A.supportPkey(t.practice)) === k).sort((a, b) => (String(a.updatedAt) < String(b.updatedAt) ? 1 : -1)); };
+  A.supportWaiting = waiting;
+  const lastFromSupport = (t) => { const m = (t.thread || []).filter((x) => x.from === 'staff' && !x.internal && x.kind !== 'note').slice(-1)[0]; return m ? String(m.text).split('\n').filter((l) => l && !/^(hi|hello|good (morning|afternoon|evening))\b/i.test(l)).join(' ').slice(0, 130) : ''; };
+  const busy = () => { const h = location.hash; if (!A.dsEntry || !A.user || /^#\/(consult|welcome|patientapp)/.test(h) || /^#(signin|admin|console)/.test(h)) return true; if (document.querySelector('#modal .modal')) return true; const ae = document.activeElement; return !!(ae && /^(TEXTAREA|INPUT|SELECT)$/.test(ae.tagName) && ae.value); };
+  const closePop = () => { const p = document.getElementById('sd-pop'); if (p) p.remove(); };
+  const showPop = (L) => { closePop(); const d = document.createElement('div'); d.id = 'sd-pop'; d.className = 'sdp-back'; d.setAttribute('role', 'alertdialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-labelledby', 'sdp-h');
+    d.innerHTML = `<div class="sdp"><div class="sdp-top"><span class="sdp-ic" aria-hidden="true">🎧</span><div><span class="sdp-tag">PRAC360 SUPPORT</span><h2 id="sdp-h">${L.length === 1 ? 'Support is waiting for your reply' : `Support is waiting for your reply on ${L.length} requests`}</h2><p>We need a quick answer from your practice so we can finish helping you.</p></div></div>
+      <div class="sdp-list">${L.slice(0, 3).map((t) => `<div class="sdp-tk"><div><b>${esc(t.subject)}</b><span class="tiny">${esc(t.ref)} · logged by ${esc((t.contact || {}).name || 'your practice')}</span>${lastFromSupport(t) ? `<q>${esc(lastFromSupport(t))}…</q>` : ''}</div><button class="btn primary" data-act="sdp-open" data-id="${t.id}">Reply now</button></div>`).join('')}${L.length > 3 ? `<p class="tiny">and ${L.length - 3} more in Client support.</p>` : ''}</div>
+      <div class="sdp-foot"><label class="sdp-mute"><input type="checkbox" id="sdp-mute"> Mute support reminders for 2 hours</label><div class="row" style="gap:6px"><button class="btn" data-act="sdp-later">Remind me later</button><button class="btn" data-act="sdp-all">Open Client support</button></div></div></div>`;
+    document.body.appendChild(d); setTimeout(() => { const b = d.querySelector('.sdp-tk .btn'); if (b) b.focus(); }, 50); };
+  const applyMute = () => { const c = document.getElementById('sdp-mute'); if (c && c.checked) { try { localStorage.setItem(muteKey(), String(now() + 2 * 3600000)); } catch (e) { /* ignore */ } A.toast('Support reminders muted for 2 hours. You will still see them in Client support.'); } };
+  const ids = (L) => L.map((t) => t.id + (t.updatedAt || '')).join(',');
+  H['sdp-open'] = (el) => { applyMute(); later.until = now() + 10 * MIN; later.ids = ids(waiting()); closePop(); A.go('#/support/' + el.dataset.id); };
+  H['sdp-all'] = () => { applyMute(); later.until = now() + 10 * MIN; later.ids = ids(waiting()); closePop(); A.go('#/support'); };
+  H['sdp-later'] = () => { applyMute(); later.until = now() + 15 * MIN; later.ids = ids(waiting()); closePop(); };
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && document.getElementById('sd-pop')) H['sdp-later'](); });
+  const check = () => { try { if (document.hidden || window.P360_NO_SUPPORT_POP) return; const L = waiting(); const open = document.getElementById('sd-pop');
+      if (!L.length || now() < mutedUntil()) { if (open) closePop(); return; } const onIt = (location.hash.match(/^#\/support\/(.+)$/) || [])[1]; const L2 = L.filter((t) => t.id !== onIt); if (!L2.length) { if (open) closePop(); return; }
+      if (open) return; const fresh = ids(L2) !== later.ids && L2.some((t) => !later.ids.includes(t.id + (t.updatedAt || ''))); if (now() < later.until && !fresh) return; if (busy()) return; showPop(L2); } catch (e) { /* ignore */ } };
+  setInterval(check, 5000); window.addEventListener('hashchange', () => { closePop(); setTimeout(check, 1500); });
+  A.supportPopCheck = check;
+
+  // ---------------------------------------------------------------- demo examples of the assistant at work (fixed ids, so testers share one copy)
+  const seedAI = () => { if (!PL() || !PL().s) return; const s = S(); if (!s || s.aiSeeded) return; const ds = ((PL().s && PL().s.datasets) || []); const d = ds.find((x) => /jacaranda/i.test(x.name)) || ds[0]; if (!d) return; s.aiSeeded = true;
+    const pkey = A.supportPkey(d.name); const cl = (s.clients || []).find((c) => (c.pkey || A.supportPkey(c.name)) === pkey) || {}; const ct = (cl.contacts || [])[0] || { name: 'Thandi Mokoena', role: 'Practice manager', phone: '', email: '' };
+    const mk = (id, ref, ago, o) => { if (s.tickets.some((t) => t.id === id)) return; const at = (m) => iso(now() - ago * MIN + m * MIN); const t = Object.assign({ id, ref, createdAt: at(0), updatedAt: at(0), status: 'new', assignee: null, firstResponseAt: null, resolvedAt: null, time: [], calls: [], tags: [], csat: null, flagged: false, thread: [], channel: 'portal', practice: d.name, dsId: d.id, pkey, orgId: cl.orgId, contact: ct }, o.t); t.thread.push({ at: at(0), from: 'client', by: ct.name, text: o.ask, kind: 'message' }); t.ai = { state: 'queued', replies: 0, used: [], log: [], at: at(0) }; t.local = true;
+      t.ai.log.push({ at: at(0), step: 'Request received', text: 'Checking whether the assistant may help', ok: null }); o.go(t, at); s.tickets.push(t); };
+    mk('tk_ai1', 'T-10901', 3 * 1440 + 200, { t: { subject: 'How do I bill a consultation from yesterday?', category: 'Billing and claims', priority: 'P4' }, ask: 'Dr Naidoo saw a patient late yesterday and we forgot to bill it. How do I bill it for yesterday’s date?',
+      go: (t, at) => { t.ai.log.push({ at: at(0.4), step: 'Found Prac360 help', text: '“Billing transactions, ICD-10 per code and modifiers” + practice check (linedate) — 91% sure', ok: null }, { at: at(0.4), step: 'Quality check', text: 'All 7 checks passed', ok: true }, { at: at(0.5), step: 'Answer sent to the practice', text: '4 steps + screen link', ok: true });
+        t.thread.push({ at: at(0.5), from: 'staff', by: 'ai', ai: true, kind: 'reply', text: `Good afternoon ${first(t)},\n\nThanks for getting in touch.\n\nHere is how to bill for another day:\n1. Open the consultation and press Bill (or open Billing and choose the patient).\n2. At the top, change the Date of service to yesterday — the transaction lines move with it.\n3. Each transaction line also has its own Date, so you can change a single line if needed.\n4. Check the codes and submit as usual.\n\nPlease give it a try and let us know here if that sorted it out — press “It is sorted now”, or reply if something is still not right and we will carry on from there.\n\nKind regards,\nPrac360 Support`, actions: [{ link: '#/billing', label: 'Open Billing' }] });
+        t.thread.push({ at: at(25), from: 'client', by: t.contact.name, text: 'That worked, thank you!', kind: 'message' }, { at: at(25.5), from: 'staff', by: 'ai', ai: true, kind: 'reply', text: `That’s great news, ${first(t)} — glad it is sorted. If anything else comes up, just log a request here.\n\nKind regards,\nPrac360 Support` });
+        Object.assign(t.ai, { state: 'resolved', outcome: 'solved', replies: 1, used: ['billtx'], conf: 91, best: 'Billing transactions, ICD-10 per code and modifiers', qa: [{ c: 'Understood the request', ok: true, d: '91% sure' }, { c: 'Only uses Prac360’s own help — no guessing', ok: true, d: 'From: help topic “Billing transactions, ICD-10 per code and modifiers”' }, { c: 'Screens and guides it points to exist', ok: true, d: '#/billing' }, { c: 'Safe for a medical practice', ok: true, d: 'No clinical advice, patient details, ID numbers or money promises' }, { c: 'Plain language, not too long', ok: true, d: '4 steps' }, { c: 'Fits the ticket’s category', ok: true, d: 'Billing and claims ↔ billing' }, { c: 'Not repeating something that did not work', ok: true, d: 'First answer' }] });
+        t.ai.log.push({ at: at(25), step: 'Practice replied', text: 'That worked, thank you!', ok: null }, { at: at(25.5), step: 'Solved by the assistant', text: 'The practice confirmed it worked', ok: true }, { at: at(60), step: 'Practice rated the help', text: '5/5', ok: true });
+        Object.assign(t, { status: 'closed', csat: 5, firstResponseAt: at(0.5), resolvedAt: at(25.5), updatedAt: at(60) }); t.thread.push({ at: at(60), from: 'system', text: 'The practice rated this 5/5.', kind: 'assign' }); } });
+    mk('tk_ai2', 'T-10902', 95, { t: { subject: 'Discovery claims keep getting rejected', category: 'Claims and EDI', priority: 'P3' }, ask: 'A few of our medical aid claims were rejected this week. What do we need to fix?',
+      go: (t, at) => { const ins = rejInsight(); const hh = (E.REJECTION_HELP || {}).M05; const steps = (ins && ins.steps) || (hh ? hh.steps : ['Open Claims and use the Rejected filter.', 'Open each claim to see the reason and the steps to fix it.', 'Correct and resubmit.']);
+        t.ai.log.push({ at: at(0.3), step: 'Read the request', text: 'Subject, description and category', ok: null }, { at: at(0.4), step: 'Found Prac360 help', text: '“Fix a rejected claim” + practice check (rejected) — 88% sure', ok: null }, { at: at(0.4), step: 'Quality check', text: 'All 7 checks passed', ok: true }, { at: at(0.5), step: 'Answer sent to the practice', text: `${steps.length} steps + “Show me how” + screen link`, ok: true });
+        t.thread.push({ at: at(0.5), from: 'staff', by: 'ai', ai: true, kind: 'reply', text: `Good morning ${first(t)},\n\nThanks for letting us know.\n\n${(ins && ins.text) || 'Rejected claims show their reason on the Claims screen.'}\n\nHere is how to fix it:\n${steps.map((x, i) => `${i + 1}. ${x}`).join('\n')}\n\nPlease give it a try and let us know here if that sorted it out — press “It is sorted now”, or reply if something is still not right and we will carry on from there.\n\nKind regards,\nPrac360 Support`, actions: [].concat(A.GUIDES && A.GUIDES.rejected ? [{ guide: 'rejected', label: 'Show me how in Prac360' }] : [], [{ link: '#/claims', label: 'Open Claims' }]) });
+        Object.assign(t.ai, { state: 'waiting', replies: 1, used: ['rejected'], conf: 88, best: 'Fix a rejected claim', sources: ['rejected'], qa: [{ c: 'Understood the request', ok: true, d: '88% sure it is about “Fix a rejected claim”' }, { c: 'Only uses Prac360’s own help — no guessing', ok: true, d: 'From: help topic “Fix a rejected claim” + claim rejection rules' }, { c: 'Screens and guides it points to exist', ok: true, d: '#/claims' }, { c: 'Safe for a medical practice', ok: true, d: 'No clinical advice, patient details, ID numbers or money promises' }, { c: 'Plain language, not too long', ok: true, d: steps.length + ' steps' }, { c: 'Fits the ticket’s category', ok: true, d: 'Claims and EDI ↔ billing' }, { c: 'Not repeating something that did not work', ok: true, d: 'First answer' }] });
+        Object.assign(t, { status: 'client', firstResponseAt: at(0.5), updatedAt: at(0.5) }); } });
+    mk('tk_ai3', 'T-10903', 300, { t: { subject: 'Blank screen when printing statements', category: 'Reports and statements', priority: 'P3' }, ask: 'When we print statements we get a blank screen. Can someone have a look?',
+      go: (t, at) => { t.ai.log.push({ at: at(0), step: 'Sent straight to a consultant', text: 'Looks like a system fault — needs investigating', ok: false }); Object.assign(t.ai, { state: 'handed', reason: 'Looks like a system fault — needs investigating' });
+        const who = (s.staff || []).find((x) => (x.skills || []).includes('billing') && !x.manager) || (s.staff || [])[0]; if (who) { t.assignee = who.id; t.status = 'open'; t.thread.push({ at: at(0.2), from: 'system', text: `Assigned to ${who.name} automatically (AI handed over: system fault).`, kind: 'assign' }); }
+        t.thread.push({ at: at(0.2), from: 'staff', by: 'ai', ai: true, internal: true, kind: 'note', text: 'AI hand-over — please take this one.\nWhy: Looks like a system fault — needs investigating\nWhat the practice said:\n• When we print statements we get a blank screen. Can someone have a look?\nAI did not reply to the practice.' }); } });
+    save(); };
+  setTimeout(() => { try { seedAI(); } catch (e) { /* ignore */ } }, 800); A.supportSeedAI = seedAI;
+})();
+
+
 /* ===== ui-v059l.js ===== */
 /* Prac360 v0.59 — What's new + help: Client support portal (practices). The Support desk itself is for the Prac360 team
  * and is explained by its training video in the support console and the Admin tool (not in the Training Academy). */
@@ -19637,6 +19947,28 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   if (sc && sc.lessons && !sc.lessons.some((l) => l.t === 'South African time')) sc.lessons.push({ t: 'South African time', body: 'Every time and date in Prac360 is South African time (SAST). If a time ever looks wrong, first check your computer clock.', guide: '' });
   if (sc && sc.quiz && !sc.quiz.some((q) => /South African time/.test(q.q))) sc.quiz.push({ q: 'Which time does Prac360 show on appointments and notes?', o: ['International (UTC) time', 'South African time (SAST)', 'It depends on the medical aid'], a: 1 });
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => x[0] === 'Getting around') || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /South African time/.test(x[0]))) g[1].push(['Time and date — South African time', 'timezone']); }
+})();
+
+
+/* ===== ui-v062l.js ===== */
+/* Prac360 v0.62 — What's new + help: support reminder popup (mute 2 hours), faster answers with "Show me how", sorting requests.
+   The support team's AI assistant is explained inside the Support desk (Automation tab) — not in the practice-facing help. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id); const add = (k, x) => { if (k && k.steps && !k.steps.includes(x)) k.steps.push(x); };
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.62')) A.RELEASES.unshift({ v: '0.62', date: '2026-11-24', title: 'Support reminders, faster answers and sorting', items: [
+    { type: 'new', area: 'general', title: 'A reminder when support needs your reply', text: 'When Prac360 Support is waiting for an answer from your practice, everyone at the practice gets a reminder with a “Reply now” button. Busy? Tick “Mute support reminders for 2 hours” — after 2 hours it reminds you again. It does not pop up during a consultation or while you are typing.', link: '#/support' },
+    { type: 'improved', area: 'general', title: 'Faster answers from Prac360 Support', text: 'Many requests now get an answer within minutes, with clear steps and a “Show me how” button that walks you through it on your own screen. Press “It is sorted now” when it is fixed, or reply and we carry on helping.', link: '#/support' },
+    { type: 'new', area: 'general', title: 'Sort your support requests', text: 'In Client support, sort your requests by last changed, date logged or request number.', link: '#/support' }] });
+  const cs = kb('clientsupport');
+  add(cs, 'When support is waiting for your reply you get a reminder with “Reply now”. Tick “Mute support reminders for 2 hours” if you are busy — it reminds you again after 2 hours.');
+  add(cs, 'Replies can include a “Show me how” button: it walks you through the fix on your own screen, one click at a time.');
+  add(cs, 'Use “Sort by” to list requests by last changed, date logged or request number.');
+  if (cs && cs.keys) ['reminder', 'mute', 'popup', 'waiting for reply', 'sort tickets'].forEach((k) => { if (!cs.keys.includes(k)) cs.keys.push(k); });
+  const C = A.COURSES || []; const sc = C.find((c) => c.id === 'start');
+  if (sc && sc.lessons && !sc.lessons.some((l) => l.t === 'Support reminders')) sc.lessons.push({ t: 'Support reminders', body: 'When Prac360 Support needs an answer from your practice, a reminder pops up for everyone. Press “Reply now”, or tick “Mute for 2 hours” if you are busy.', guide: '' });
+  if (sc && sc.quiz && !sc.quiz.some((q) => /Mute support reminders/.test(q.q))) sc.quiz.push({ q: 'You tick “Mute support reminders for 2 hours”. What happens?', o: ['You never see support reminders again', 'The reminder comes back after 2 hours if support still needs your reply', 'The support request is closed'], a: 1 });
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => x[0] === 'Getting around') || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /Support reminders/.test(x[0]))) g[1].push(['Support reminders, mute and sorting requests', 'clientsupport']); }
 })();
 
 

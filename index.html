@@ -2799,6 +2799,23 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .ma-allp summary{cursor:pointer}
 .mp-head h2{font-size:1.2rem}.mp-tbl td{vertical-align:top}.mp-disc{opacity:.7}
 .mp-tbl td.mono{white-space:nowrap}
+/* v0.71 — Patients by account; default consultation view */
+.pt2-tools{padding:12px 14px}.pt2-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}.pt2-row input[type=search]{flex:1;min-width:260px}
+.pt2-accs{display:flex;flex-direction:column;gap:10px}
+.pt2-acc{padding:0;overflow:hidden}.pt2-ah{display:grid;grid-template-columns:minmax(260px,1.4fr) minmax(220px,1fr) minmax(170px,auto);gap:14px;align-items:center;padding:12px 16px;background:var(--surface-2,#f8fafc);border-bottom:1px solid var(--line,#e5e7eb)}
+@media (max-width:900px){.pt2-ah{grid-template-columns:1fr}}
+.pt2-hn{font-size:1.05rem;margin-top:2px}.pt2-hn a{color:inherit;text-decoration:none}.pt2-hn a:hover{text-decoration:underline}
+.badge.pt2-mm{background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe;font-weight:600}
+.pt2-bal{text-align:right;display:flex;flex-direction:column;gap:2px}.pt2-bal b{font-size:1.05rem}.pt2-bal.owes b{color:#b91c1c}.pt2-bal.credit b{color:#047857}
+@media (max-width:900px){.pt2-bal{text-align:left}}
+.pt2-mem{margin:0}.pt2-mem td{padding:8px 12px;vertical-align:middle;border-top:1px solid var(--line,#eef0f3)}.pt2-mem tr:first-child td{border-top:0}
+.pt2-dep{width:46px}.pt2-code{display:inline-grid;place-items:center;min-width:30px;height:24px;border-radius:7px;background:var(--surface-2,#f1f5f9);border:1px solid var(--line,#e2e8f0);font:600 .8rem/1 ui-monospace,monospace}
+.pt2-who{display:flex;align-items:center;gap:10px}.pt2-av{flex:0 0 auto;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#e0e7ff;color:#3730a3;font-weight:700;font-size:.85rem}
+.pt2-who a{color:inherit;text-decoration:none}.pt2-who a:hover{text-decoration:underline}
+.pt2-dim{opacity:.5}.pt2-af{padding:6px 12px 10px;border-top:1px solid var(--line,#eef0f3)}
+.pt2-flat td{vertical-align:middle}.pt2-nums{margin-top:2px}
+.cx-def{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;padding:4px 10px;border:1px solid var(--line,#e5e7eb);border-radius:999px;background:var(--surface,#fff);cursor:pointer;white-space:nowrap}
+.cx-def input{width:16px;height:16px;margin:0}.cx-def:has(input:checked){border-color:#16a34a;background:#f0fdf4;color:#14532d}
 </style>
 </head>
 <body>
@@ -6556,6 +6573,89 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
       <div class="card"><h2>Help articles</h2>${A.KB.filter((k) => !k.dental || A.isDental()).map((k) => `<div class="small" style="margin-bottom:4px"><a href="#" data-act="chip" data-q="${esc(k.title)}">${esc(k.title)}</a></div>`).join('')}</div></div>`; };
   H['change:slice'] = (el) => { db().settings.sliceDone = Object.assign(db().settings.sliceDone || {}, { [el.dataset.i]: el.checked }); A.save(); };
   H['slice-go'] = (el) => { if (el.dataset.u && el.dataset.u !== A.user.id) { A.user = E.user(db(), el.dataset.u); try { localStorage.setItem('practiceos-sa-demo-v1-user', A.user.id); } catch (e) { /* noop */ } A.toast('Switched to ' + A.user.name + '.'); } A.go(el.dataset.href); };
+})();
+
+
+/* ===== ui-patients2.js ===== */
+/* Prac360 — Patients list (v0.71): built around accounts, the way medical billing works.
+ *  • An account belongs to the main member (the medical aid's principal member, or the person paying privately). The main
+ *    member is responsible for the account; dependants are patients on that account (dependant codes 01, 02 …).
+ *  • Every account has an account number and every patient a file number — given automatically and never re-used.
+ *    Account number: practice initials + 5 digits (e.g. JFP00012). File number: F + 5 digits (e.g. F00034).
+ *  • Two views: "By account" (default) — each account with its main member, medical aid, plan, member number and balance,
+ *    and every patient on it — and "All patients A–Z".
+ *  • Search by name, ID number, file number, account number or medical aid member number. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, E = window.PE, esc = A.esc; if (!P.patients) return;
+  const db = () => A.db; const M = (n) => E.money(n);
+  const msOf = (pid) => db().memberships.find((m) => m.patientId === pid && m.status !== 'inactive');
+  const holderOf = (p) => (p.mainMemberId && E.patient(db(), p.mainMemberId) ? p.mainMemberId : p.id);
+  const pfx = (d) => { const n = String((d.practice && d.practice.name) || 'Practice').replace(/\(.*?\)/g, '').split(/[\s—–-]+/).filter((w) => /^[A-Za-z]/.test(w) && !/^(and|the|of|demo)$/i.test(w)); return (n.slice(0, 3).map((w) => w[0]).join('') || 'PRC').toUpperCase().padEnd(3, 'X'); };
+  // give every account and every patient a number (once; numbers are never re-used)
+  const ensure = (d) => { if (!d || !d.patients) return false; d.settings = d.settings || {}; const N = (d.settings.numbering = d.settings.numbering || { acc: 0, file: 0 }); if (!N.pfx) N.pfx = pfx(d); let ch = false;
+    const L = d.patients.slice().sort((a, b) => String(a.createdAt || '').localeCompare(String(b.createdAt || '')) || String(a.id).localeCompare(String(b.id)));
+    L.forEach((p) => { if (!p.fileNo) { N.file += 1; p.fileNo = 'F' + String(N.file).padStart(5, '0'); ch = true; } });
+    L.forEach((p) => { if (holderOf(p) === p.id && !p.accountNo) { N.acc += 1; p.accountNo = N.pfx + String(N.acc).padStart(5, '0'); ch = true; } });
+    return ch; };
+  A.ptNumbers = (d) => { if (ensure(d || db())) { try { A.save(); } catch (e) { /* ignore */ } } };
+  A.accountNo = (pid) => { const p = E.patient(db(), pid); if (!p) return ''; const h = E.patient(db(), holderOf(p)); return (h && h.accountNo) || ''; };
+  A.fileNo = (pid) => { const p = E.patient(db(), pid); return (p && p.fileNo) || ''; };
+  const depOf = (p) => { const m = msOf(p.id); return m ? m.depCode : holderOf(p) === p.id ? '00' : ''; };
+  const aidLine = (holder) => { const m = msOf(holder.id); if (!m) return { aid: 'Private — pays the account', plan: '', no: '' }; const o = E.option(db(), m.optionId) || {}; return { aid: String(o.schemeName || '').replace(/ Medical (Scheme|Fund)$/, ''), plan: o.name || '', no: m.memberNo || '' }; };
+  const ini = (p) => esc((p.firstName[0] || '') + (p.lastName[0] || ''));
+
+  P.patients = (function (orig) { return function (params) { if (params && params[0] === 'new') return orig.apply(this, arguments);
+    const d = db(); A.ptNumbers(d); const td = E.today(d); const view = A.ui.ptView || 'accounts'; const q = (A.ui.pq || '').toLowerCase().trim(); const pf = A.ui.pf || 'all'; const fin = A.can('accounts.read');
+    const todayAp = (pid) => d.appointments.find((a) => a.patientId === pid && String(a.start).slice(0, 10) === td && a.status !== 'cancelled');
+    const inOnc = (pid) => !!(A.oncOn && A.oncOn() && ((d.onc || {}).cases || []).some((c) => c.patientId === pid && c.phase !== 'discharged'));
+    const inHosp = (pid) => !!(A.hospOn && A.hospOn() && ((d.hosp || {}).admissions || []).some((a) => a.patientId === pid && a.status === 'admitted'));
+    const bal = {}; const balOf = (hid) => (bal[hid] != null ? bal[hid] : (bal[hid] = fin ? E.accountBalance(d, hid) : 0));
+    const lastVisit = {}; d.encounters.forEach((e) => { if (!lastVisit[e.patientId] || e.date > lastVisit[e.patientId]) lastVisit[e.patientId] = e.date; });
+    const FILT = [['all', 'All', () => true], ['today', 'Booked today', (p) => !!todayAp(p.id)], ['private', 'Private (no medical aid)', (p) => !msOf(holderOf(p))]]
+      .concat(fin ? [['owes', 'Account owes money', (p) => balOf(holderOf(p)) > 0.004]] : [], A.oncOn && A.oncOn() ? [['onc', 'Oncology', (p) => inOnc(p.id)]] : [], A.hospOn && A.hospOn() ? [['hosp', 'In hospital', (p) => inHosp(p.id)]] : []);
+    const fx = (FILT.find((f) => f[0] === pf) || FILT[0])[2];
+    const hay = (p) => { const h = E.patient(d, holderOf(p)) || p; const m = msOf(p.id) || msOf(h.id) || {}; return `${p.firstName} ${p.lastName} ${p.lastName}, ${p.firstName} ${p.idNumber} ${p.fileNo} ${h.accountNo} ${m.memberNo || ''} ${h.firstName} ${h.lastName}`.toLowerCase(); };
+    const base = d.patients.filter((p) => !p.deceased || pf === 'all').filter((p) => !q || q.split(/\s+/).every((w) => hay(p).includes(w)));
+    const shown = base.filter(fx);
+    const ST = { booked: 'Booked', arrived: 'Waiting', waiting: 'Waiting', 'in-consult': 'In consultation', inconsult: 'In consultation', done: 'Seen', completed: 'Seen', 'no-show': 'No-show' };
+    const todayB = (p) => { const ap = todayAp(p.id); return ap ? `<span class="badge info" title="Today">${String(ap.start).slice(11, 16)} · ${ST[ap.status] || 'Booked'}</span>` : ''; };
+    const flags = (p) => `${inOnc(p.id) ? '<span class="badge info">Oncology</span>' : ''}${inHosp(p.id) ? '<span class="badge warn">In hospital</span>' : ''}${p.deceased ? '<span class="badge">Deceased</span>' : ''}`;
+    const acts = (p) => `${A.can('diary') ? `<button class="btn sm" data-act="book" data-pid="${p.id}" title="Book an appointment">Book</button>` : ''}${A.can('clinical.write') && !p.deceased ? `<button class="btn sm" data-act="start-consult" data-pid="${p.id}" title="Start a consultation">Consult</button>` : ''}`;
+    const fdl = (s) => (s ? A.fd(s) : '—');
+    const head = `<div class="page-head"><div><h1>Patients</h1><div class="muted">Patients are grouped by account: the main member is responsible for the account; dependants are patients on it.</div></div><div class="actions">${A.can('patients.write') ? '<a class="btn primary" href="#/patients/new">New patient</a>' : ''}</div></div>`;
+    const tools = `<div class="card pt2-tools"><div class="pt2-row"><input id="pq" type="search" placeholder="Search name, ID number, file no., account no. or member no." value="${esc(A.ui.pq || '')}" data-input="pq" aria-label="Search patients">
+        <div class="seg" role="group" aria-label="View"><button class="${view === 'accounts' ? 'on' : ''}" data-act="pt-view" data-v="accounts">By account</button><button class="${view === 'all' ? 'on' : ''}" data-act="pt-view" data-v="all">All patients A–Z</button></div></div>
+      <div class="pt-chips" role="group" aria-label="Show">${FILT.map(([k, l, f]) => `<button class="chip ${k === pf ? 'on' : ''}" data-act="pt-filter" data-f="${k}">${l} <strong>${base.filter(f).length}</strong></button>`).join('')}</div></div>`;
+    let body = '';
+    if (view === 'all') {
+      const rows = shown.slice().sort((a, b) => (a.lastName + a.firstName).localeCompare(b.lastName + b.firstName)); const lim = A.ui.ptLim || 150;
+      body = `<div class="card"><div class="tbl-wrap"><table class="t pt2-flat"><thead><tr><th>Patient</th><th>File no.</th><th>Account</th><th>Medical aid</th><th>Today</th><th>Last visit</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody>
+        ${rows.slice(0, lim).map((p) => { const h = E.patient(d, holderOf(p)) || p; const al = aidLine(h); const dep = depOf(p); return `<tr class="click" data-act="open-patient" data-id="${p.id}"><td><div class="pt2-who"><span class="pt2-av">${ini(p)}</span><div><a href="#/patient/${p.id}"><b>${esc(p.lastName)}, ${esc(p.firstName)}</b></a><div class="tiny muted">${A.age(p)} y · ${p.sex === 'F' ? 'F' : 'M'} ${flags(p)}</div></div></div></td>
+          <td class="mono">${esc(p.fileNo)}</td><td><span class="mono">${esc(h.accountNo)}</span><div class="tiny muted">${h.id === p.id ? 'Main member' : 'Dependant of ' + esc(h.firstName + ' ' + h.lastName)}${dep ? ' · ' + esc(dep) : ''}</div></td><td>${esc(al.aid)}<div class="tiny muted">${esc(al.plan)}</div></td><td>${todayB(p) || '—'}</td><td>${fdl(lastVisit[p.id])}</td><td class="pt-acts">${acts(p)}</td></tr>`; }).join('')}</tbody></table></div>
+        ${rows.length > lim ? `<button class="btn sm" data-act="pt-more">Show more (${rows.length - lim} more)</button>` : ''}${rows.length ? '' : '<div class="empty">No patients match.</div>'}</div>`;
+    } else {
+      const acc = {}; shown.forEach((p) => { const h = holderOf(p); (acc[h] = acc[h] || []).push(p); });
+      const ids = Object.keys(acc).sort((a, b) => { const x = E.patient(d, a), y = E.patient(d, b); return (x.lastName + x.firstName).localeCompare(y.lastName + y.firstName); }); const lim = A.ui.ptLim || 80;
+      body = `<div class="pt2-accs">${ids.slice(0, lim).map((hid) => { const h = E.patient(d, hid); const al = aidLine(h); const all = d.patients.filter((p) => holderOf(p) === hid).sort((a, b) => (a.id === hid ? -1 : b.id === hid ? 1 : String(depOf(a)).localeCompare(String(depOf(b))))); const b = balOf(hid);
+        return `<section class="card pt2-acc" aria-label="Account ${esc(h.accountNo)}"><header class="pt2-ah"><div class="pt2-an"><div class="tiny muted">Account <span class="mono">${esc(h.accountNo)}</span></div><div class="pt2-hn"><a href="#/patient/${h.id}"><b>${esc(h.firstName + ' ' + h.lastName)}</b></a> <span class="badge pt2-mm" title="The main member is responsible for paying this account">Main member · responsible for the account</span></div></div>
+          <div class="pt2-aid"><div><b>${esc(al.aid)}</b>${al.plan ? ` · ${esc(al.plan)}` : ''}</div>${al.no ? `<div class="tiny muted">Member no. <span class="mono">${esc(al.no)}</span></div>` : '<div class="tiny muted">No medical aid on file</div>'}</div>
+          ${fin ? `<div class="pt2-bal ${b > 0.004 ? 'owes' : b < -0.004 ? 'credit' : ''}"><div class="tiny muted">Account balance</div><b>${b > 0.004 ? M(b) : b < -0.004 ? M(-b) + ' credit' : 'Up to date'}</b>${A.can('accounts.read') ? `<a class="tiny" href="#/patient/${h.id}/account">Statement and payments →</a>` : ''}</div>` : ''}</header>
+          <table class="t pt2-mem"><tbody>${all.map((p) => { const dep = depOf(p); const vis = shown.includes(p); return `<tr class="click ${vis ? '' : 'pt2-dim'}" data-act="open-patient" data-id="${p.id}"><td class="pt2-dep">${dep ? `<span class="pt2-code" title="Dependant code">${esc(dep)}</span>` : ''}</td><td><div class="pt2-who"><span class="pt2-av">${ini(p)}</span><div><a href="#/patient/${p.id}"><b>${esc(p.firstName)} ${esc(p.lastName)}</b></a><div class="tiny muted">${p.id === hid ? 'Main member' : 'Dependant'} · ${A.age(p)} y · ${p.sex === 'F' ? 'Female' : 'Male'} ${flags(p)}</div></div></div></td>
+            <td class="tiny"><span class="muted">File</span> <span class="mono">${esc(p.fileNo)}</span></td><td>${todayB(p)}</td><td class="tiny"><span class="muted">Last visit</span> ${fdl(lastVisit[p.id])}</td><td class="pt-acts">${acts(p)}</td></tr>`; }).join('')}</tbody></table>
+          ${A.can('patients.write') ? `<div class="pt2-af"><button class="btn sm ghost" data-act="pt-add-dep" data-id="${hid}">＋ Add a dependant to this account</button></div>` : ''}</section>`; }).join('')}
+        ${ids.length > lim ? `<button class="btn sm" data-act="pt-more">Show more accounts (${ids.length - lim} more)</button>` : ''}${ids.length ? '' : '<div class="card empty">No patients match.</div>'}</div>`;
+    }
+    return head + tools + body; }; })(P.patients);
+  H['pt-view'] = (el) => { A.ui.ptView = el.dataset.v; A.ui.ptLim = 0; A.render(); };
+  H['pt-more'] = () => { A.ui.ptLim = (A.ui.ptLim || (A.ui.ptView === 'all' ? 150 : 80)) * 2; A.render(); };
+  // add a dependant: open New patient with the main member already chosen
+  H['pt-add-dep'] = (el) => { A.ui.regMain = el.dataset.id; A.go('#/patients/new'); };
+  const _r = A.render; A.render = function () { const r = _r.apply(this, arguments); try { if (location.hash === '#/patients/new' && A.ui.regMain) { const s = document.querySelector('#rf [name=mainMemberId]'); if (s) { s.value = A.ui.regMain; const h = E.patient(db(), A.ui.regMain); const m = msOf(A.ui.regMain); const f = document.getElementById('rf'); if (f && h) { if (f.lastName && !f.lastName.value) f.lastName.value = h.lastName; if (m) { if (f.memberNo && !f.memberNo.value) f.memberNo.value = m.memberNo; if (f.optionId) f.optionId.value = m.optionId; if (f.depCode && f.depCode.value === '00') f.depCode.value = String(db().memberships.filter((x) => x.memberNo === m.memberNo).length).padStart(2, '0'); } } s.dispatchEvent(new Event('change', { bubbles: true })); } A.ui.regMain = null; } else if (!/^#\/patients\/new/.test(location.hash)) A.ui.regMain = null; } catch (e) { /* ignore */ } return r; };
+  // the patient file shows the file and account numbers
+  const _pt = P.patient; if (_pt) P.patient = function (params) { const h = _pt.apply(this, arguments); try { const p = E.patient(db(), params[0]); if (!p) return h; A.ptNumbers(db()); const hd = E.patient(db(), holderOf(p)) || p;
+      const chip = `<div class="meta pt2-nums">File no. <b class="mono">${esc(p.fileNo)}</b> · Account <b class="mono">${esc(hd.accountNo)}</b>${hd.id === p.id ? ' (main member — responsible)' : ` (main member: <a href="#/patient/${hd.id}">${esc(hd.firstName + ' ' + hd.lastName)}</a>)`}</div>`;
+      return h.replace(/(<div class="pbar">[\s\S]*?<div class="name">[\s\S]*?<\/div>[\s\S]*?<div class="meta">[\s\S]*?<\/div><div class="meta">[\s\S]*?<\/div>)/, `$1${chip}`); } catch (e) { return h; } };
 })();
 
 
@@ -16853,7 +16953,7 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
       <details class="cx-gl-d"><summary class="cx-gl">${meds.length} medicine${meds.length === 1 ? '' : 's'}</summary><div class="cx-gl-pop">${meds.map((m) => esc(((E.medicine(d, m.medicineId) || {}).name || '') + (m.dose ? ' — ' + m.dose : ''))).join('<br>') || 'None recorded'}</div></details>
       <details class="cx-gl-d"><summary class="cx-gl">${probs.length} condition${probs.length === 1 ? '' : 's'}</summary><div class="cx-gl-pop">${probs.map((x) => esc(A.icdLabel(x.code))).join('<br>') || 'None recorded'}</div></details>
       ${prev ? `<span class="cx-gl">Last visit ${fd(prev.date)}</span>` : '<span class="cx-gl">First visit</span>'}<a class="cx-gl link" href="#/patient/${p.id}">Patient file →</a></div>`; };
-  const viewSwitch = (e, which) => `<div class="cx-switch" role="group" aria-label="Consultation view"><a href="#/consult/${e.id}/classic" class="${which === 'classic' ? 'on' : ''}" ${which === 'classic' ? 'aria-current="page"' : ''}>Classic</a><a href="#/consult/${e.id}" class="${which === 'ai' ? 'on' : ''}" ${which === 'ai' ? 'aria-current="page"' : ''}>✦ AI Scribe</a></div>`;
+  const viewSwitch = (e, which) => `<div class="cx-switch" role="group" aria-label="Consultation view"><a href="#/consult/${e.id}/classic" class="${which === 'classic' ? 'on' : ''}" ${which === 'classic' ? 'aria-current="page"' : ''}>Classic</a><a href="#/consult/${e.id}/ai" class="${which === 'ai' ? 'on' : ''}" ${which === 'ai' ? 'aria-current="page"' : ''}>✦ AI Scribe</a></div>${A.cxDefaultToggle ? A.cxDefaultToggle(which) : ''}`;
   A.cxViewSwitch = viewSwitch;
   const card = (c, id, title, body, opts) => secWrap(c, id, title, body, opts);
   const rows = (c, list, ed) => list.map(([k, l, kind]) => fieldRow(c, k, l, kind, ed)).join('');
@@ -20632,6 +20732,39 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   if (bc && bc.quiz && !bc.quiz.some((q) => /Medprax/.test(q.q))) bc.quiz.push({ q: 'How do you bill a medicine that is not yet in your stock list?', o: ['You cannot', 'Type its name or NAPPI code in Add a transaction and press Enter', 'Phone Medprax'], a: 1 });
   if (bc && bc.lessons && !bc.lessons.some((l) => l.t === 'Medical aids at a glance')) bc.lessons.push({ t: 'Medical aids at a glance', body: 'Medical aids → Overview shows how many patients are on each medical aid, how much you claimed and were paid, and which medical aid pays best and fastest.', guide: '' });
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /billing/i.test(x[0])) || A.FUNCTIONS[0]; if (g) { if (!g[1].some((x) => /Medprax catalogue/.test(x[0]))) g[1].push(['Medprax catalogue: bill any medicine or material', 'medprax']); if (!g[1].some((x) => /Medical aids overview/.test(x[0]))) g[1].push(['Medical aids overview, plans and payment arrangements', 'schemes']); } }
+})();
+
+
+/* ===== ui-v071.js ===== */
+/* Prac360 v0.71 — each doctor chooses which consultation view opens by default: Classic or AI Scribe.
+ * A tick box next to the Classic | AI Scribe switch in both views: "Open my consultations in this view". Saved with the user's
+ * account (works on every computer they sign in on). Opening a consultation from anywhere (diary, patient list, patient file,
+ * Today) follows the choice; the switch still moves between the two views at any time. Dental practices keep their own view. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, PL = () => window.PL; if (!P.consult) return;
+  const acct = () => { try { return PL().current && PL().current(); } catch (e) { return null; } };
+  const key = () => 'p360-cx-view:' + ((A.user && A.user.id) || 'me');
+  A.cxDefault = () => { const a = acct(); const v = (a && a.prefs && a.prefs.cxView) || (() => { try { return localStorage.getItem(key()); } catch (e) { return null; } })(); return v === 'classic' ? 'classic' : 'ai'; };
+  const setDefault = (v) => { const a = acct(); if (a) { a.prefs = a.prefs || {}; a.prefs.cxView = v; try { PL().save(); } catch (e) { /* ignore */ } } try { localStorage.setItem(key(), v); } catch (e) { /* ignore */ } };
+  const NAME = { classic: 'Classic', ai: 'AI Scribe' };
+  A.cxDefaultToggle = (which) => { const on = A.cxDefault() === which; return `<label class="cx-def" title="When ticked, every consultation you open starts in the ${NAME[which]} view. You can still switch views at any time."><input type="checkbox" data-change="cx-def" data-v="${which}" ${on ? 'checked' : ''}> <span>Open my consultations in <b>${NAME[which]}</b></span></label>`; };
+  H['change:cx-def'] = (el) => { const v = el.checked ? el.dataset.v : (el.dataset.v === 'classic' ? 'ai' : 'classic'); setDefault(v); A.toast(`Your consultations will now open in ${NAME[v]}. You can switch views at any time.`); A.render(); };
+  // #/consult/<id> (no view chosen) opens the user's default view
+  const _c = P.consult; P.consult = function (params) { const dental = A.isDental && A.isDental();
+    if (params && params[0] && !params[1] && !dental && A.cxDefault() === 'classic') { try { history.replaceState(null, '', '#/consult/' + params[0] + '/classic'); } catch (e) { /* ignore */ } return _c.call(this, [params[0], 'classic']); }
+    return _c.apply(this, arguments); };
+  // put the choice under My account → Display and language as well
+  const KB = A.KB || []; const k = KB.find((x) => x.id === 'consult') || KB.find((x) => x.id === 'scribe');
+  if (k && k.steps && !k.steps.some((s) => /Open my consultations in/.test(s))) k.steps.push('Prefer Classic or AI Scribe? In either view, tick “Open my consultations in …” next to the Classic | AI Scribe switch. Every consultation you open then starts in that view.');
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.71')) A.RELEASES.unshift({ v: '0.71', date: '2026-11-24', title: 'Patients by account, and your own default consultation view', items: [
+    { type: 'improved', area: 'clinical', title: 'Patients are grouped by account', text: 'The Patients list now shows each account with its main member (responsible for the account), medical aid, plan, member number and balance, and every patient on it with their dependant code. Every account has an account number and every patient a file number. Search by name, ID, file number, account number or member number, or switch to “All patients A–Z”. “Add a dependant to this account” fills in the main member and medical aid for you.', link: '#/patients' },
+    { type: 'new', area: 'clinical', title: 'Choose your default consultation view', text: 'Some doctors prefer Classic, some AI Scribe. Next to the Classic | AI Scribe switch, tick “Open my consultations in …” — every consultation you open then starts in that view. It is saved for you, on every computer.', link: '#/today' }] });
+  const pt = KB.find((x) => x.id === 'patients') || KB.find((x) => x.id === 'register'); if (pt && pt.steps) ['The Patients list is grouped by account: the main member is responsible for the account; dependants are patients on it (dependant codes 01, 02 …).', 'Every account has an account number (e.g. JFP00012) and every patient a file number (e.g. F00034). Search by either.', 'Use “Add a dependant to this account” to register a family member — the main member and medical aid are filled in.'].forEach((s) => { if (!pt.steps.includes(s)) pt.steps.push(s); });
+  const C = A.COURSES || []; const st = C.find((c) => c.id === 'front') || C.find((c) => c.id === 'start');
+  if (st && st.quiz && !st.quiz.some((q) => /responsible for the account/.test(q.q))) st.quiz.push({ q: 'A child is a dependant on her father’s medical aid. Who is responsible for the account?', o: ['The child', 'The father — the main member', 'The medical aid only'], a: 1 });
+  const cl = C.find((c) => c.id === 'clinical'); if (cl && cl.quiz && !cl.quiz.some((q) => /default consultation view/.test(q.q))) cl.quiz.push({ q: 'How do you make Classic your default consultation view?', o: ['Ask the practice manager', 'Tick “Open my consultations in Classic” next to the view switch', 'It cannot be changed'], a: 1 });
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /clinical|consult/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /default consultation view/.test(x[0]))) g[1].push(['Default consultation view (Classic or AI Scribe)', k ? k.id : 'scribe']); const f = A.FUNCTIONS.find((x) => /front|patient|reception/i.test(x[0])) || A.FUNCTIONS[0]; if (f && !f[1].some((x) => /Patients by account/.test(x[0]))) f[1].push(['Patients by account: account and file numbers', pt ? pt.id : 'register']); }
 })();
 
 

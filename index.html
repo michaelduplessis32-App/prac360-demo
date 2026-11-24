@@ -2837,6 +2837,24 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .cx-ribbon .cx-switch{margin:0}
 @media (max-width:760px){.cx-rib-h{display:none}}
 .cx-rib-r span{white-space:nowrap}.cx-rib-r select{width:auto;min-width:140px}
+/* v0.74 — Assist avatar picture (replaces the drawn robot) */
+#p360-robot .rb-bot{width:118px}#p360-robot .rb-img{display:block;width:118px;height:auto;max-height:150px;object-fit:contain;user-select:none;pointer-events:none}
+#p360-robot.hop .rb-img{animation:rbAvHop .9s ease}#p360-robot.wave .rb-img{animation:rbAvTilt 1.2s ease-in-out 2;transform-origin:50% 90%}
+@keyframes rbAvHop{0%,100%{transform:translateY(0)}40%{transform:translateY(-12px)}}@keyframes rbAvTilt{0%,100%{transform:rotate(0)}30%{transform:rotate(-4deg)}70%{transform:rotate(4deg)}}
+@media (prefers-reduced-motion:reduce){#p360-robot .rb-img{animation:none!important}}
+@media (max-width:640px){#p360-robot .rb-bot,#p360-robot .rb-img{width:90px}}
+/* Support console → Customisation */
+.cu-now{display:flex;gap:18px;align-items:center;margin:16px 0;padding:14px;border-radius:14px;background:linear-gradient(135deg,#eef4ff,#f8fafc);border:1px solid var(--line,#e2e8f0)}
+.cu-stage{position:relative;width:150px;height:160px;flex:none;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;border-radius:12px;background:#fff}
+.cu-stage img{width:120px;max-height:140px;object-fit:contain;margin-bottom:26px}.cu-pill{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:#2563eb;color:#fff;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;box-shadow:0 2px 6px rgba(37,99,235,.35)}
+.cu-nm{font-size:18px}
+.cu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.cu-tile{border:1px solid var(--line,#e2e8f0);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;background:#fff}
+.cu-tile.on{border-color:#16a34a;box-shadow:0 0 0 2px rgba(22,163,74,.25)}
+.cu-img{height:130px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-radius:8px}.cu-img img{max-width:100%;max-height:122px;object-fit:contain}
+.cu-tn{display:flex;flex-direction:column}.cu-ta{display:flex;gap:6px;align-items:center;justify-content:space-between;margin-top:auto}
+.cu-mk{display:flex;gap:16px;flex-wrap:wrap}.cu-mk-prev{width:180px;height:210px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-radius:12px}.cu-mk-prev img{max-width:170px;max-height:200px}.cu-mk-f{flex:1;min-width:220px}
+.linkish{background:none;border:0;padding:0;color:#2563eb;cursor:pointer;text-decoration:underline}
 </style>
 </head>
 <body>
@@ -7654,7 +7672,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
       <div class="row between" style="margin-top:8px"><span class="badge ${EXTERNAL[e.via] ? 'warn' : 'info'}">${EXTERNAL[e.via] ? 'as ' + EXTERNAL[e.via] : e.via === 'org' ? 'administrator' : E.roleLabel ? (e.role || 'team member') : ''}</span><button class="btn sm primary" data-act="open-ds" data-id="${e.dataset.id}">Open</button></div></div>`).join('')}</div>` : '<div class="empty">No practices yet.</div>';
   A.renderConsole = () => {
     const acc = PL.current(); const kind = PL.kindOf(acc); const home = PL.homeOrg(acc); const access = PL.accessFor(acc);
-    const own = access.filter((e) => e.via !== 'support'); const list = { platform: [['desk', 'Support desk'], ['practices', 'Practices'], ...(own.length ? [['mine', 'My practices']] : []), ['requests', 'Login requests'], ['live', 'Live support'], ['notices', 'Messages to practices'], ['tariffs', 'Tariff service'], ['approvals', 'Approvals'], ['accounts', 'Accounts'], ['security', 'Security log'], ['account', 'My account']], dealer: [['practices', 'My clients'], ['team', 'Team'], ['account', 'My account']], bureau: [['practices', 'Client practices'], ['team', 'Team'], ['account', 'My account']] }[kind] || [['practices', 'My practices'], ...(home && PL.isAdminOf(acc, home.id) && home.type === 'group' ? [['team', 'Branches and team']] : []), ['account', 'My account']];
+    const own = access.filter((e) => e.via !== 'support'); const list = { platform: [['desk', 'Support desk'], ['practices', 'Practices'], ...(own.length ? [['mine', 'My practices']] : []), ['requests', 'Login requests'], ['live', 'Live support'], ['notices', 'Messages to practices'], ['tariffs', 'Tariff service'], ['custom', 'Customisation'], ['approvals', 'Approvals'], ['accounts', 'Accounts'], ['security', 'Security log'], ['account', 'My account']], dealer: [['practices', 'My clients'], ['team', 'Team'], ['account', 'My account']], bureau: [['practices', 'Client practices'], ['team', 'Team'], ['account', 'My account']] }[kind] || [['practices', 'My practices'], ...(home && PL.isAdminOf(acc, home.id) && home.type === 'group' ? [['team', 'Branches and team']] : []), ['account', 'My account']];
     let tab = A.ui.consoleTab || 'practices'; if (!list.some(([k]) => k === tab)) tab = list[0][0];
     const title = kind === 'platform' ? 'Support console' : kind === 'dealer' ? `Dealer console — ${home.name}` : kind === 'bureau' ? `Bureau console — ${home.name}` : home ? home.name : 'My practices';
     let body = `<div class="page-head"><div><h1>${esc(title)}</h1><div class="muted">Signed in as ${esc(acc.name)} · ${esc(acc.email)}</div></div>${kind === 'platform' && A.adminRole && A.adminRole(acc) ? '<a class="btn primary" href="#admin">Open Admin tool</a>' : ''}</div>`;
@@ -16035,6 +16053,98 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
 (function () { const A = window.APP; if (!A.RELEASES) return; const r = A.RELEASES.find((x) => x.v === '0.33'); if (r && !r.items.some((i) => i.title === 'One Training Academy')) r.items.unshift({ type: 'improved', area: 'help', title: 'One Training Academy', text: 'Your courses, help topics and the A–Z list now live together in the Training Academy, with three tabs: My courses, Help and how-to, and All functions A–Z. A "Show me" walkthrough started there brings you back to the same spot, and finishing one ticks off the matching lesson in My courses.', link: '#/learn' }); })();
 
 
+/* ===== ui-custom.js ===== */
+/* Prac360 — Support console → Customisation (v0.74).
+ * Things the Prac360 support team switches on or changes to keep Prac360 feeling fresh. First item: the Assist avatar —
+ * the helper that rises from behind the Assist button for every practice.
+ *  • Seven ready-made avatars (General, Spring, Summer, Autumn, Winter, Christmas, Diwali).
+ *  • Upload a picture (a plain black or white background can be made transparent), or create one with the avatar maker.
+ *  • Add or remove avatars; exactly one is always in use (the last one cannot be removed; removing the one in use picks another).
+ *  • The avatar in use is shared with every practice (through the demo's shared sheet; when hosted, the Prac360 server). */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, esc = A.esc, PL = () => window.PL;
+  const BUILT = [['general', 'General'], ['spring', 'Spring'], ['summer', 'Summer'], ['fall', 'Autumn'], ['winter', 'Winter'], ['christmas', 'Christmas'], ['diwali', 'Diwali']].map(([id, name]) => ({ id, name, src: `media/avatars/${id}.webp?v=1`, kind: 'builtin' }));
+  const lib = () => { const s = PL().s; s.custom = s.custom || {}; const c = s.custom; if (!Array.isArray(c.avatars)) c.avatars = BUILT.map((x) => Object.assign({}, x)); if (!c.avatars.length) c.avatars = [Object.assign({}, BUILT[0])]; if (!c.avatars.some((x) => x.id === c.active)) c.active = c.avatars[0].id; return c; };
+  const shared = () => { try { const s = A.supportData && A.supportData(); return s && s.avatar; } catch (e) { return null; } };
+  const save = () => { try { PL().save(); } catch (e) { /* ignore */ } };
+  // the avatar to show: the shared one (set by support) if there is one, otherwise this computer's choice
+  A.avatarNow = () => { const sh = shared(); if (sh && sh.src) return sh; const c = lib(); return c.avatars.find((x) => x.id === c.active) || c.avatars[0]; };
+  A.avatarSrc = () => (A.avatarNow() || {}).src || BUILT[0].src;
+  A.avatarRefresh = () => { document.querySelectorAll('#p360-robot .rb-img').forEach((i) => { const s = A.avatarSrc(); if (i.getAttribute('src') !== s) i.setAttribute('src', s); }); };
+  const publish = (av) => { try { const s = A.supportData(); s.avatar = { id: av.id, name: av.name, src: av.src, kind: av.kind, at: new Date().toISOString() }; } catch (e) { /* ignore */ } save(); A.avatarRefresh(); };
+  const use = (id, quiet) => { const c = lib(); const av = c.avatars.find((x) => x.id === id); if (!av) return; c.active = id; publish(av); if (!quiet) A.toast(`“${av.name}” is now the Assist avatar for every practice.`); };
+
+  // ---------------------------------------------------------------- upload: resize, optional transparent background
+  const loadImg = (src) => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+  const prepare = async (file, clear) => { const url = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); }); const img = await loadImg(url);
+    let side = 320; let out = '';
+    for (let k = 0; k < 6; k++) { const sc = Math.min(1, side / Math.max(img.width, img.height)); const w = Math.max(1, Math.round(img.width * sc)), h = Math.max(1, Math.round(img.height * sc)); const cv = document.createElement('canvas'); cv.width = w; cv.height = h; const g = cv.getContext('2d'); g.drawImage(img, 0, 0, w, h);
+      if (clear) { const d = g.getImageData(0, 0, w, h); const p = d.data; const c0 = [p[0], p[1], p[2]]; const near = (i) => Math.abs(p[i] - c0[0]) + Math.abs(p[i + 1] - c0[1]) + Math.abs(p[i + 2] - c0[2]) < 70; const seen = new Uint8Array(w * h); const q = [];
+        for (let x = 0; x < w; x++) { q.push(x, (h - 1) * w + x); } for (let y = 0; y < h; y++) { q.push(y * w, y * w + w - 1); }
+        while (q.length) { const n = q.pop(); if (seen[n]) continue; seen[n] = 1; const i = n * 4; if (!near(i)) continue; p[i + 3] = 0; const x = n % w, y = (n / w) | 0; if (x > 0) q.push(n - 1); if (x < w - 1) q.push(n + 1); if (y > 0) q.push(n - w); if (y < h - 1) q.push(n + w); }
+        g.putImageData(d, 0, 0); }
+      out = cv.toDataURL('image/webp', 0.82); if (!/^data:image\/webp/.test(out)) out = cv.toDataURL('image/png');
+      if (out.length <= 42000) break; side = Math.round(side * 0.82); }
+    return out; };
+
+  // ---------------------------------------------------------------- the avatar maker (an original, friendly helper drawing)
+  const COL = { blue: ['#38bdf8', '#1d4ed8'], green: ['#4ade80', '#15803d'], orange: ['#fb923c', '#c2410c'], purple: ['#c084fc', '#7e22ce'], red: ['#f87171', '#b91c1c'], teal: ['#2dd4bf', '#0f766e'], gold: ['#facc15', '#a16207'] };
+  const HATS = { none: 'Nothing', flower: 'A flower', santa: 'Christmas hat', beanie: 'Winter beanie', sun: 'Sun hat', party: 'Party hat', cap: 'Graduation cap' };
+  const FACES = { smile: 'Smiling', happy: 'Happy eyes', wink: 'Wink' };
+  const HOLD = { tablet: 'A tablet', clipboard: 'A clipboard', heart: 'A heart', none: 'Nothing' };
+  const makeSvg = (o) => { const [glow, deep] = COL[o.color] || COL.blue;
+    const eyes = o.face === 'wink' ? `<path d="M76 84 q9 -9 18 0" stroke="${glow}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M108 82 h18" stroke="${glow}" stroke-width="5" stroke-linecap="round"/>` : o.face === 'happy' ? `<path d="M75 86 q10 -12 20 0" stroke="${glow}" stroke-width="5.5" fill="none" stroke-linecap="round"/><path d="M107 86 q10 -12 20 0" stroke="${glow}" stroke-width="5.5" fill="none" stroke-linecap="round"/>` : `<ellipse cx="85" cy="82" rx="7" ry="9" fill="${glow}"/><ellipse cx="117" cy="82" rx="7" ry="9" fill="${glow}"/>`;
+    const mouth = `<path d="M88 100 q13 10 26 0" stroke="${glow}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+    const hat = { none: '', flower: `<g transform="translate(52 30)">${[0, 72, 144, 216, 288].map((r) => `<ellipse cx="0" cy="-11" rx="8" ry="12" fill="${glow}" transform="rotate(${r})" opacity=".95"/>`).join('')}<circle r="6" fill="#fde047"/><path d="M8 10 q14 2 20 14" stroke="#16a34a" stroke-width="4" fill="none"/></g>`,
+      santa: `<path d="M48 52 q20 -52 66 -40 q26 8 40 40 z" fill="#dc2626"/><path d="M108 14 q34 -8 44 26" stroke="#dc2626" stroke-width="12" fill="none" stroke-linecap="round"/><circle cx="152" cy="42" r="10" fill="#fff"/><rect x="42" y="46" width="118" height="16" rx="8" fill="#fff"/>`,
+      beanie: `<path d="M46 58 q2 -50 55 -50 q53 0 55 50 z" fill="${deep}"/><g fill="#fff" opacity=".85"><circle cx="70" cy="38" r="3"/><circle cx="100" cy="30" r="3"/><circle cx="130" cy="38" r="3"/></g><rect x="42" y="50" width="118" height="14" rx="7" fill="${glow}"/><circle cx="101" cy="6" r="10" fill="${glow}"/>`,
+      sun: `<ellipse cx="101" cy="46" rx="86" ry="18" fill="#e9c98f"/><path d="M60 46 q4 -40 41 -40 q37 0 41 40 z" fill="#f1d7a5"/><rect x="60" y="36" width="82" height="8" fill="${deep}"/><circle cx="66" cy="34" r="7" fill="${glow}"/>`,
+      party: `<path d="M70 44 l31 -46 l31 46 z" fill="${glow}"/><path d="M80 30 l42 0 M86 20 l30 0" stroke="#fff" stroke-width="4" opacity=".8"/><circle cx="101" cy="-2" r="7" fill="#fde047"/>`,
+      cap: `<path d="M40 30 l61 -20 l61 20 l-61 20 z" fill="#1f2937"/><rect x="72" y="34" width="58" height="18" rx="4" fill="#1f2937"/><path d="M152 33 v26" stroke="${glow}" stroke-width="3"/><circle cx="152" cy="61" r="5" fill="${glow}"/>` }[o.hat] || '';
+    const hold = { none: '', tablet: `<g transform="rotate(-12 58 196)"><rect x="24" y="160" width="62" height="78" rx="8" fill="#334155"/><rect x="30" y="166" width="50" height="62" rx="4" fill="#1e293b"/><path d="M40 214 v-10 M50 214 v-18 M60 214 v-14 M70 214 v-24" stroke="${glow}" stroke-width="5" stroke-linecap="round"/></g>`,
+      clipboard: `<g transform="rotate(-10 58 196)"><rect x="26" y="160" width="60" height="78" rx="6" fill="#b45309"/><rect x="32" y="168" width="48" height="64" rx="3" fill="#fff"/><rect x="46" y="154" width="20" height="12" rx="3" fill="#94a3b8"/><path d="M40 184 h32 M40 196 h32 M40 208 h22" stroke="${deep}" stroke-width="4"/></g>`,
+      heart: `<path d="M56 214 c-26 -18 -30 -36 -14 -44 c8 -4 14 0 14 6 c0 -6 6 -10 14 -6 c16 8 12 26 -14 44 z" fill="${glow}"/>` }[o.hold] || '';
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -10 204 250"><defs><radialGradient id="h" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#fff"/><stop offset=".65" stop-color="#e5e9f0"/><stop offset="1" stop-color="#b6c0cc"/></radialGradient><linearGradient id="c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#dfe5ec"/></linearGradient></defs>
+      <path d="M30 240 q0 -76 71 -82 q71 6 71 82 z" fill="url(#c)" stroke="#c7d0da" stroke-width="2"/><path d="M84 158 l17 34 l17 -34" fill="${deep}"/><path d="M101 162 l-6 12 l6 40 l6 -40 z" fill="${glow}"/><path d="M70 164 l31 70 M132 164 l-31 70" stroke="#c7d0da" stroke-width="2"/>
+      <path d="M150 190 q26 -8 34 -36" stroke="#e5e9f0" stroke-width="20" stroke-linecap="round" fill="none"/><circle cx="184" cy="150" r="12" fill="#f1f5f9" stroke="#c7d0da" stroke-width="2"/>
+      <rect x="92" y="138" width="18" height="22" rx="6" fill="#475569"/>
+      <ellipse cx="101" cy="86" rx="60" ry="56" fill="url(#h)" stroke="#b6c0cc" stroke-width="2"/><rect x="62" y="60" width="78" height="56" rx="26" fill="#0b1020"/>${eyes}${mouth}
+      <path d="M40 86 q0 -66 61 -66 q61 0 61 66" stroke="#334155" stroke-width="7" fill="none"/><rect x="31" y="70" width="18" height="34" rx="9" fill="#475569"/><rect x="153" y="70" width="18" height="34" rx="9" fill="#475569"/><rect x="35" y="76" width="10" height="22" rx="5" fill="none" stroke="${glow}" stroke-width="3"/><rect x="157" y="76" width="10" height="22" rx="5" fill="none" stroke="${glow}" stroke-width="3"/><path d="M44 102 q6 20 30 18" stroke="#334155" stroke-width="4" fill="none"/><circle cx="76" cy="120" r="5" fill="#334155"/>
+      ${hat}${hold}</svg>`; };
+  const svgUrl = (svg) => 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.replace(/\s{2,}/g, ' '));
+
+  // ---------------------------------------------------------------- the console section
+  const page = () => { const c = lib(); const now = A.avatarNow(); const act = c.active;
+    return `<div class="page-head"><div><h1>Customisation</h1><div class="muted">Keep Prac360 feeling fresh — changes here show for every practice.</div></div></div>
+      <div class="card cu-card"><div class="row between" style="gap:12px;flex-wrap:wrap;align-items:flex-start"><div><h2 style="margin:0">Assist avatar</h2><p class="small muted" style="margin:4px 0 0">The helper that rises from behind the Assist button. One avatar is always in use.</p></div>
+        <div class="row" style="gap:8px"><label class="btn"><input type="file" accept="image/png,image/jpeg,image/webp" data-change="cu-upload" hidden>⬆ Upload a picture</label><button class="btn primary" data-act="cu-make">✨ Create an avatar</button></div></div>
+        <div class="cu-now"><div class="cu-stage"><img src="${esc(now.src)}" alt="${esc(now.name)} avatar"><span class="cu-pill">✦ Assist</span></div><div><div class="tiny muted">In use for every practice</div><b class="cu-nm">${esc(now.name)}</b><p class="small muted" style="margin:4px 0 0">It rises from behind the Assist button every couple of minutes and asks whether the user needs help. Users can switch it off for themselves in Assist.</p></div></div>
+        <div class="cu-grid">${c.avatars.map((a) => `<div class="cu-tile ${a.id === act ? 'on' : ''}"><div class="cu-img"><img src="${esc(a.src)}" alt="${esc(a.name)}" loading="lazy"></div><div class="cu-tn"><b>${esc(a.name)}</b><span class="tiny muted">${a.kind === 'builtin' ? 'Ready-made' : a.kind === 'made' ? 'Created here' : 'Uploaded'}</span></div>
+          <div class="cu-ta">${a.id === act ? '<span class="badge good">✓ In use</span>' : `<button class="btn sm primary" data-act="cu-use" data-id="${esc(a.id)}">Use this</button>`}<button class="btn sm ghost" data-act="cu-del" data-id="${esc(a.id)}" ${c.avatars.length <= 1 ? 'disabled title="One avatar must always remain"' : 'title="Remove this avatar"'}>Remove</button></div></div>`).join('')}</div>
+        ${c.avatars.length < BUILT.length || BUILT.some((b) => !c.avatars.some((x) => x.id === b.id)) ? `<p class="tiny" style="margin:10px 0 0"><button class="linkish" data-act="cu-restore">Add the ready-made avatars back</button></p>` : ''}
+        <p class="tiny muted" style="margin:10px 0 0">Tip: a picture with a plain black or white background works best — Prac360 can make the background transparent. In the demo, the avatar in use is shared with practices through the shared sheet; uploaded pictures are kept on this computer.</p></div>`; };
+  if (A.CONSOLE) A.CONSOLE.custom = page;
+  H['cu-use'] = (el) => { use(el.dataset.id); A.render(); };
+  H['cu-del'] = (el) => { const c = lib(); if (c.avatars.length <= 1) return A.toast('One avatar must always remain.', 'error'); const av = c.avatars.find((x) => x.id === el.dataset.id); if (!av) return;
+    A.modal('Remove this avatar?', `<p>Remove <b>${esc(av.name)}</b> from the list?${av.id === c.active ? ' It is in use now, so the next avatar in the list will be used instead.' : ''}</p>`, `<button class="btn" data-act="modal-close">Cancel</button><button class="btn danger" data-act="cu-del-go" data-id="${esc(av.id)}">Remove</button>`); };
+  H['cu-del-go'] = (el) => { const c = lib(); if (c.avatars.length <= 1) return; const was = c.active === el.dataset.id; c.avatars = c.avatars.filter((x) => x.id !== el.dataset.id); A.closeModal(); if (was) use(c.avatars[0].id, true); save(); A.toast(was ? `Removed. “${c.avatars[0].name}” is now in use.` : 'Removed.'); A.render(); };
+  H['cu-restore'] = () => { const c = lib(); BUILT.forEach((b) => { if (!c.avatars.some((x) => x.id === b.id)) c.avatars.push(Object.assign({}, b)); }); save(); A.render(); };
+  H['change:cu-upload'] = (el) => { const f = el.files && el.files[0]; el.value = ''; if (!f) return; if (!/^image\//.test(f.type) || f.size > 6e6) return A.toast('Choose a PNG, JPG or WebP picture smaller than 6 MB.', 'error');
+    A.ui.cuFile = f; const base = f.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').slice(0, 40);
+    A.modal('Upload an avatar', `<label class="f"><span>Name</span><input id="cu-n" value="${esc(base.charAt(0).toUpperCase() + base.slice(1))}" maxlength="40" data-noclean></label><label class="check"><input type="checkbox" id="cu-clear" checked> Make a plain background transparent (black or white)</label><label class="check"><input type="checkbox" id="cu-now" checked> Use it now for every practice</label>`, `<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="cu-up-go">Add avatar</button>`); };
+  H['cu-up-go'] = async () => { const f = A.ui.cuFile; if (!f) return; const name = (document.getElementById('cu-n').value || 'My avatar').trim(); const clear = document.getElementById('cu-clear').checked, now = document.getElementById('cu-now').checked;
+    try { const src = await prepare(f, clear); const c = lib(); const av = { id: 'av_' + Date.now().toString(36), name, src, kind: 'upload' }; c.avatars.push(av); A.closeModal(); if (now) use(av.id, true); save(); A.toast(`“${name}” added${now ? ' and in use' : ''}.`); A.render(); } catch (e) { A.toast('That picture could not be read — try another file.', 'error'); } };
+  // avatar maker
+  const makerForm = () => { const o = A.ui.cuMake = A.ui.cuMake || { color: 'blue', hat: 'none', face: 'happy', hold: 'tablet', name: '' }; const sel = (k, map) => `<label class="f"><span>${{ color: 'Colour', hat: 'On its head', face: 'Face', hold: 'Holding' }[k]}</span><select data-change="cu-mk" data-k="${k}">${Object.entries(map).map(([v, l]) => `<option value="${v}" ${o[k] === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>`;
+    return `<div class="cu-mk"><div class="cu-mk-prev" id="cu-mk-prev"><img src="${svgUrl(makeSvg(o))}" alt="Preview"></div><div class="cu-mk-f">${sel('color', Object.fromEntries(Object.keys(COL).map((k) => [k, k.charAt(0).toUpperCase() + k.slice(1)])))}${sel('hat', HATS)}${sel('face', FACES)}${sel('hold', HOLD)}<label class="f"><span>Name</span><input id="cu-mk-n" value="${esc(o.name)}" placeholder="e.g. Heritage Day" maxlength="40" data-noclean></label><label class="check"><input type="checkbox" id="cu-mk-now" checked> Use it now for every practice</label></div></div>`; };
+  H['cu-make'] = () => A.modal('Create an avatar', makerForm(), `<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="cu-mk-go">Add avatar</button>`);
+  H['change:cu-mk'] = (el) => { const o = A.ui.cuMake; o[el.dataset.k] = el.value; const n = document.getElementById('cu-mk-n'); if (n) o.name = n.value; const p = document.querySelector('#cu-mk-prev img'); if (p) p.src = svgUrl(makeSvg(o)); };
+  H['cu-mk-go'] = () => { const o = A.ui.cuMake; const name = (document.getElementById('cu-mk-n').value || '').trim() || `${o.color.charAt(0).toUpperCase() + o.color.slice(1)} helper`; const now = document.getElementById('cu-mk-now').checked; const c = lib(); const av = { id: 'av_' + Date.now().toString(36), name, src: svgUrl(makeSvg(o)), kind: 'made' }; c.avatars.push(av); A.closeModal(); if (now) use(av.id, true); save(); A.ui.cuMake = null; A.toast(`“${name}” added${now ? ' and in use' : ''}.`); A.render(); };
+  A.avatarMakeSvg = makeSvg;
+})();
+
+
 /* ===== ui-robot.js ===== */
 /* Prac360 — "Robbie" the helper robot.
  * Every 2 minutes a small robot rises from behind the Assist button, waves (it stays right there) and says
@@ -16094,7 +16204,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
 
   const el = () => { let r = document.getElementById('p360-robot'); if (r) return r;
     r = document.createElement('div'); r.id = 'p360-robot'; r.setAttribute('aria-hidden', 'true');
-    r.innerHTML = `<div class="rb-mover"><button class="rb-bot" data-act="robot-talk" aria-label="Talk to Assist" title="Talk to Assist">${SVG}</button>
+    r.innerHTML = `<div class="rb-mover"><button class="rb-bot" data-act="robot-talk" aria-label="Talk to Assist" title="Talk to Assist"><img class="rb-img" src="${(A.avatarSrc && A.avatarSrc()) || 'media/avatars/general.webp?v=1'}" alt="" draggable="false"></button>
       <div class="rb-bubble" role="status"><button class="rb-say" data-act="robot-talk"><strong></strong><span>Click me to start talking</span></button><button class="rb-x" data-act="robot-hide" aria-label="Hide the helper robot for now" title="Not now">×</button></div></div>`;
     document.body.appendChild(r); return r; };
 
@@ -16116,7 +16226,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     at(3200, () => cls(['hop'], ['wave']));
     at(4400, () => cls(['wave'], ['hop']));
     at(6800, () => cls([], ['wave'])); };
-  const show = () => { if (!on() || busy() || !pill()) return; const box = el(); if (!place()) return;
+  const show = () => { if (!on() || busy() || !pill()) return; const box = el(); if (!place()) return; if (A.avatarRefresh) A.avatarRefresh();
     box.querySelector('.rb-say strong').textContent = LINES[n++ % LINES.length];
     box.removeAttribute('aria-hidden'); box.classList.add('up'); last = Date.now(); dance(box);
     clearTimeout(hideT); hideT = setTimeout(hide, STAY); };
@@ -19776,7 +19886,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const A = window.APP, H = A.H, esc = A.esc; const PL = () => window.PL;
   if (!A.supportData || !A.hubInfo) return;
   const S = () => A.supportData(); const pk = A.supportPkey; const save = () => { try { PL().save(); } catch (e) { /* ignore */ } };
-  const DOCS = ['staff', 'clients', 'calls', 'leave', 'rules', 'opts', 'sla', 'cx', 'activity'];
+  const DOCS = ['staff', 'clients', 'calls', 'leave', 'rules', 'opts', 'sla', 'cx', 'activity', 'avatar'];
   const hub = () => (A.hubInfo() || {}).url; const key = () => (A.hubInfo() || {}).key || '';
   const ST = (A.sdSync = A.sdSync || { last: {}, lastDoc: {}, first: true, firstDoc: true, ok: null, at: null, err: '', busy: false, mineAt: null });
   const isDesk = () => /^#(console|admin)/.test(location.hash) && !!(PL().current && PL().current() && !A.dsEntry);
@@ -19809,7 +19919,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     const s = S(); const had = r.tickets.length; let n = adoptDocs(r.docs || {}); n += adoptTickets(r.tickets || [], 'desk'); ST.ok = true; ST.err = ''; ST.at = new Date().toISOString(); ST.empty = !had; return n; };
   const pullMine = async () => { const k = A.supportMyKey && A.supportMyKey(); if (!k) return 0; const r = await get({ action: 'sd_mine', practice: k }); if (r && r.ok && !Array.isArray(r.tickets)) { ST.ok = false; ST.err = 'old'; return 0; } if (!r || !r.ok) { ST.ok = false; return 0; }
     const s = S(); (r.staff || []).forEach((x) => { if (!s.staff.some((y) => y.id === x.id)) s.staff.push(Object.assign({ skills: [], ext: '', status: 'available' }, x)); });
-    if (r.manager) { const c = s.clients.find((x) => (x.pkey || pk(x.name)) === k); if (c) c.manager = r.manager; } if (r.sla) s.sla = r.sla; if (Array.isArray(r.known)) s.known = r.known;
+    if (r.manager) { const c = s.clients.find((x) => (x.pkey || pk(x.name)) === k); if (c) c.manager = r.manager; } if (r.sla) s.sla = r.sla; if (Array.isArray(r.known)) s.known = r.known; if (r.avatar && r.avatar.src && (!s.avatar || s.avatar.at !== r.avatar.at)) { s.avatar = r.avatar; if (A.avatarRefresh) A.avatarRefresh(); }
     const firstTime = ST.first; const n = adoptTickets(r.tickets || [], 'practice'); if (firstTime && A.supportMarkSeenAll) A.supportMarkSeenAll(); ST.ok = true; ST.at = new Date().toISOString(); ST.mineAt = ST.at; return n; };
 
   // ---------------------------------------------------------------- push (anything that changed since the last sync)
@@ -20810,6 +20920,24 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const A = window.APP;
   if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.73')) A.RELEASES.unshift({ v: '0.73', date: '2026-11-24', title: 'One consultation ribbon', items: [
     { type: 'improved', area: 'clinical', title: 'Classic and AI Scribe look the same at the top', text: 'Both consultation views now have the same ribbon at the top: View (Classic | ✦ AI Scribe) on the left, and “Start my consultations in” on the right — choose AI Scribe or Classic once, and every consultation you open starts there.', link: '#/today' }] });
+})();
+
+
+/* ===== ui-v074l.js ===== */
+/* Prac360 v0.74 — What's new + help: Support console → Customisation; the Assist avatar replaces the drawn robot. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.74')) A.RELEASES.unshift({ v: '0.74', date: '2026-11-24', title: 'A new Assist avatar, chosen by Prac360 support', items: [
+    { type: 'improved', area: 'help', title: 'A new helper behind the Assist button', text: 'The drawn robot is replaced by a friendly Assist avatar in a white coat. It still rises from behind the Assist button every couple of minutes and asks if you need help — click it to start talking to Assist. Prac360 support changes the avatar with the seasons (Spring, Summer, Autumn, Winter, Christmas, Diwali and more), so it may look different from time to time.', link: '#/today' },
+    { type: 'new', area: 'support', title: 'Support console → Customisation', text: 'For the Prac360 support team: choose the Assist avatar every practice sees, upload a picture (a plain background can be made transparent) or create one with the avatar maker, and add or remove avatars. One avatar is always in use.' }] });
+  const r = kb('helperrobot'); if (r) { r.title = 'The Assist avatar (helper)'; r.keys = Array.from(new Set((r.keys || []).concat(['avatar', 'assist avatar', 'christmas robot', 'helper picture', 'change avatar']))); r.steps = ['Every couple of minutes a friendly Assist avatar rises from behind the Assist button and asks if you need help — it stays right behind the button.', 'Click the avatar or its speech bubble to start talking to Assist. Click × to send it away for now.', 'It never appears while you are talking to Assist, during a walkthrough, while a popup is open or while AI Scribe is listening.', 'Switch it off (or on) with the helper button at the top of Assist, next to the speaker button. Your choice is saved for you only.', 'The avatar is chosen by Prac360 support and changes with the seasons — practices cannot change the picture themselves.']; }
+  if (!kb('customisation')) KB.push({ id: 'customisation', title: 'Customisation (Prac360 support only)', keys: ['customisation', 'customization', 'avatar', 'upload avatar', 'create avatar', 'remove avatar', 'seasonal avatar'], screens: ['console'], link: '#console/custom',
+    steps: ['Support console → Customisation. The top shows the Assist avatar every practice sees now.', 'Use this: pick any avatar in the list. It is shared with every practice straight away (in the demo, through the shared sheet).', 'Upload a picture: PNG, JPG or WebP. Tick “Make a plain background transparent” for a picture on a black or white background.', 'Create an avatar: choose a colour, something on its head (Christmas hat, beanie, flower…), a face and what it holds, give it a name and Add avatar.', 'Remove takes an avatar off the list. One avatar must always remain; if you remove the one in use, the next one is used. “Add the ready-made avatars back” restores the seven seasonal ones.'] });
+  const C = A.COURSES || []; const ac = C.find((c) => c.id === 'assist');
+  if (ac && ac.lessons && !ac.lessons.some((l) => /Assist avatar/.test(l.t))) ac.lessons.push({ t: 'The Assist avatar', body: 'The helper that rises from behind the Assist button is the Assist avatar. Click it to talk to Assist, or switch it off at the top of Assist. Prac360 support changes the picture with the seasons.', guide: '' });
+  if (ac && ac.quiz && !ac.quiz.some((q) => /avatar/.test(q.q))) ac.quiz.push({ q: 'Who chooses the Assist avatar picture?', o: ['Each user', 'Prac360 support, in Customisation', 'The medical aid'], a: 1 });
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /getting around/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /Assist avatar/.test(x[0]))) g[1].push(['Assist avatar (helper behind the Assist button)', 'helperrobot']); }
 })();
 
 

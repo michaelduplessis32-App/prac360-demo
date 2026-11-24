@@ -14359,7 +14359,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     if (kind !== 'platform') return;
     // Support console: same layout as the Admin tool — full-height sidebar with brand, sections, appearance and who is signed in
     const main = con.querySelector('.console-main'); const nav = main && main.querySelector(':scope > nav.tabs'); if (!main || !nav) return;
-    const ICON = { practices: '🏥', mine: '⭐', requests: '📝', live: '🖥', notices: '📣', tariffs: '💲', approvals: '✅', billing: '🧾', accounts: '👤', security: '🔒', account: '⚙' };
+    const ICON = { desk: '🎧', custom: '🎨', practices: '🏥', mine: '⭐', requests: '📝', live: '🖥', notices: '📣', tariffs: '💲', approvals: '✅', billing: '🧾', accounts: '👤', security: '🔒', account: '⚙' };
     const links = [...nav.querySelectorAll('a')].map((a) => { a.removeAttribute('class'); const on = a.dataset.t === (A.ui.consoleTab || 'practices'); a.className = on ? 'on' : ''; a.insertAdjacentHTML('afterbegin', `<span aria-hidden="true">${ICON[a.dataset.t] || '•'}</span>`); return a.outerHTML; }).join(''); nav.remove();
     const mode = con.querySelector('.top .con-mode'); const modeHtml = mode ? mode.outerHTML : ''; const assets = window.CP_ASSETS || {};
     const adm = main.querySelector('.page-head a[href="#admin"]'); if (adm) adm.remove();

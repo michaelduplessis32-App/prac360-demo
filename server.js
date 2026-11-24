@@ -18,6 +18,7 @@
  *   node server.js              → http://<this-computer>:8360
  *   PORT, HOST, DATA_DIR, FORCE_HTTPS=1, SESSION_HOURS (default 12) can be set as environment variables. */
 'use strict';
+process.env.TZ = process.env.TZ || 'Africa/Johannesburg'; // South African time (SAST, UTC+2) for logs and dates
 const http = require('http'), https = require('https'), fs = require('fs'), path = require('path'), os = require('os'), crypto = require('crypto');
 const PORT = +(process.env.PORT || 8360); const HOST = process.env.HOST || '0.0.0.0';
 const ROOT = __dirname; const PUB = fs.existsSync(path.join(ROOT, 'public', 'index.html')) ? path.join(ROOT, 'public') : ROOT;

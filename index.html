@@ -2872,6 +2872,9 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .tx-sug-d{font-weight:600}.tx-sug-w{flex:1;min-width:160px}.tx-sug-b{display:inline-flex;gap:4px;margin-left:auto}
 .tx-sug-done{background:#f0fdf4;border-color:#bbf7d0;color:#166534;font-size:.88rem}
 [data-theme=dark] .tx-sug,[data-theme=dusk] .tx-sug{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.35)}
+/* v0.78 — language */
+.auth-lang{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px}.auth-lang select{width:auto;padding:4px 8px;font-size:.88rem}
+html.i18n-wait #root{visibility:hidden}
 </style>
 </head>
 <body>
@@ -4719,7 +4722,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
     af: { messages: 'Interne boodskappe', feedback: 'Meld ’n probleem of idee', oncology: 'Onkologie', hospital: 'Hospitaal en sale', whatsnew: 'Wat is nuut', dentalops: 'Tandheelkundige bedrywighede', followup: 'Opvolgbestuurder', clinical: 'Kliniese paneelbord', today: 'Tuisblad', diary: 'Dagboek', patients: 'Pasiënte', billing: 'Rekeningnasien', claims: 'Eise', payments: 'Betalings en rekeninge', stock: 'Voorraad', reports: 'Verslae', schemes: 'Mediese fondse', settings: 'Praktykopstelling', learn: 'Opleidingsakademie', ask: 'Vra Prac360', search: 'Soek pasiënte, kodes, voorraad, bladsye…', save: 'Stoor', cancel: 'Kanselleer', signed_in: 'Aangemeld as' },
     zu: { messages: 'Imilayezo yangaphakathi', feedback: 'Bika inkinga noma umbono', oncology: 'Oncology', hospital: 'Isibhedlela namawodi', whatsnew: 'Okusha', clinical: 'Ideshibhodi yezempilo', today: 'Ikhasi lasekhaya', diary: 'Idayari', patients: 'Iziguli', billing: 'Ukubuyekezwa kwe-akhawunti', claims: 'Izimangalo', payments: 'Izinkokhelo', stock: 'Isitokwe', reports: 'Imibiko', schemes: 'Izinhlelo zezokwelapha', settings: 'Ukusetha', learn: 'Isikhungo sokuqeqesha', ask: 'Buza i-Prac360', search: 'Sesha…', save: 'Londoloza', cancel: 'Khansela', signed_in: 'Ungene njengo' },
   };
-  const t = A.t = (k) => (STR[A.db && A.db.settings.language] || STR.en)[k] || STR.en[k] || k;
+  const t = A.t = (k) => STR.en[k] || k; // the page is written in English; ui-i18n.js translates it for each user
 
   // ---------- helpers ----------
   const esc = A.esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -7400,7 +7403,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
       <label class="f"><span>Password</span><input name="pw" type="password" autocomplete="current-password" required data-noclean data-nodictate></label>
       <button class="btn primary block" type="submit">Sign in</button>
       <div class="row between small"><a href="#forgot">Forgot password?</a><a href="#register"><strong>Register your practice</strong></a></div></form>
-      <div class="auth-req"><a href="#accept">Have an invitation code?</a></div><div class="auth-alt"><span>Prac360 staff?</span><div class="auth-staff"><a class="btn block" href="#admin" data-act="adm-to" data-to="console"><span aria-hidden="true">🎧</span> Support console</a><a class="btn block" href="#admin" data-act="adm-to" data-to="admin"><span aria-hidden="true">🛡</span> Admin tool</a></div></div>`);
+      <div class="auth-req"><a href="#accept">Have an invitation code?</a></div><div class="auth-lang"><span aria-hidden="true">🌐</span>${A.langPicker ? A.langPicker('') : ''}</div><div class="auth-alt"><span>Prac360 staff?</span><div class="auth-staff"><a class="btn block" href="#admin" data-act="adm-to" data-to="console"><span aria-hidden="true">🎧</span> Support console</a><a class="btn block" href="#admin" data-act="adm-to" data-to="admin"><span aria-hidden="true">🛡</span> Admin tool</a></div></div>`);
     document.getElementById('si').addEventListener('submit', async (e) => { e.preventDefault(); const f = e.target; err(''); busy(f, true, 'Checking…');
       const r = await PL.signIn(f.email.value, f.pw.value); busy(f, false, 'Sign in'); f.pw.value = '';
       if (!r.ok) { if (r.needVerify) { A.ui.auth = { step: 'verify', accId: r.acc.id }; PL.sendCode(r.acc, 'verify'); return A.renderAuth(); } return err(r.msg); }
@@ -9587,7 +9590,7 @@ Notes
         <div class="am-me">${A.avatar(u, 52, false)}<div><strong>${esc(u.name)}</strong><div class="tiny muted">${esc(acc.email)}</div><div class="am-ph"><label class="linkish" for="photo-in">${u.photo ? 'Change photo' : 'Add a photo'}</label>${u.photo ? ' · <button class="linkish" data-act="photo-remove">Remove</button>' : ''}<input type="file" id="photo-in" accept="image/png,image/jpeg,image/webp" hidden data-change="photo-in"></div></div></div>
         <div class="am-sec"><div class="am-lab">Status</div><div class="pp-opts">${(s === 'away' ? ['available', 'away', 'dnd'] : ['available', 'dnd']).map((k) => `<button ${k === 'away' ? 'data-auto="1"' : ''} class="${(s === k || (s === 'consult' && k === 'available')) ? 'on' : ''}" data-act="my-status-m" data-v="${k}"><i class="sdot ${ST[k].c}"></i>${ST[k].t}</button>`).join('')}</div></div>
         <div class="am-sec"><div class="am-lab">Appearance</div><div class="seg am-seg" role="group" aria-label="Appearance">${MODES.map(([k, t, i]) => `<button class="${pref === k ? 'on' : ''}" data-act="set-mode" data-v="${k}" aria-pressed="${pref === k}"><span aria-hidden="true">${i}</span> ${t}</button>`).join('')}</div><div class="tiny muted" style="margin-top:4px">Dusk is softer than Day and lighter than Night.</div></div>
-        <div class="am-sec am-two"><label><span class="am-lab">Language</span><select data-change="lang-m" aria-label="Language"><option value="en">English</option><option value="af" ${lang === 'af' ? 'selected' : ''}>Afrikaans</option><option value="zu" ${lang === 'zu' ? 'selected' : ''}>isiZulu (partial)</option></select></label>
+        <div class="am-sec am-two"><label><span class="am-lab">Language</span>${A.langPicker ? A.langPicker('', 'lang-m') : ''}</label>
           <div><span class="am-lab">Screen</span><button class="btn sm" data-act="fullscreen-m">${A.isFull() ? '⤡ Exit full screen' : '⤢ Full screen'}</button></div></div>
         ${A.dsEntry && A.dsEntry.dataset.sample && !u.external && users ? `<div class="am-sec"><label><span class="am-lab">View as <small>(sample practice only)</small></span><select data-change="user" aria-label="View as (demo)">${users}</select></label></div>` : ''}
         <div class="am-links">${n > 1 || ['platform', 'dealer', 'bureau'].includes(kind) ? `<button data-act="to-console">${['platform', 'dealer', 'bureau'].includes(kind) ? ({ platform: '🛠 Support console', dealer: '🛠 Dealer console', bureau: '🛠 Bureau console' })[kind] : '🏥 Switch practice'}</button>` : ''}
@@ -21078,6 +21081,24 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
 })();
 
 
+/* ===== ui-v078l.js ===== */
+/* Prac360 v0.78 — What's new + help: the whole system in your own language (per user). */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.78')) A.RELEASES.unshift({ v: '0.78', date: '2026-11-24', title: 'Use Prac360 in your own language', items: [
+    { type: 'new', area: 'general', title: 'The whole system in English, Afrikaans, isiZulu, isiXhosa or Sepedi', text: 'Each person now chooses their own language under your name (top right) → Language, or on the sign-in screen. Every screen changes: menus, tabs, buttons, fields, messages, pop-ups, help and reports. English stays the default. Your choice is saved with your user, so the person next to you can work in a different language.', link: '#/today' },
+    { type: 'improved', area: 'general', title: 'Reports and letters print in your language', text: 'Reports, letters and other printouts come out in the language you chose. Statements, claims sent to the medical aids, invoices, authorisations and remittances always stay in English, because medical aids and patients’ accounts need them that way.', link: '#/reports' },
+    { type: 'improved', area: 'general', title: 'What stays in English', text: 'Patient names and details, codes, ICD-10 and tariff descriptions, medicine names and brand names stay as they were captured. Translations are new: tell us through Report a problem or idea if a word reads wrong.', link: '#/support' }] });
+  const steps = ['Click your name at the top right.', 'Choose Language and pick English, Afrikaans, isiZulu, isiXhosa or Sepedi.', 'Prac360 reloads and every screen is in your language. Only your own user changes.', 'Statements, claims, invoices, authorisations and remittances always print in English.', 'Patient details, codes, ICD-10 and tariff descriptions stay as captured.'];
+  if (!kb('language')) KB.push({ id: 'language', title: 'Use Prac360 in your own language', keys: ['language', 'afrikaans', 'isizulu', 'zulu', 'isixhosa', 'xhosa', 'sepedi', 'northern sotho', 'change language', 'taal', 'translate'], screens: ['today', 'signin'], link: '#/today', steps });
+  const C = A.COURSES || []; const gc = C.find((c) => /getting|start|basics/i.test(c.id + ' ' + (c.t || c.title || ''))) || C[0];
+  if (gc && gc.lessons && !gc.lessons.some((l) => /own language/i.test(l.t))) gc.lessons.push({ t: 'Work in your own language', body: steps.join(' '), guide: '' });
+  if (gc && gc.quiz && !gc.quiz.some((q) => /print in English/.test(q.q))) gc.quiz.push({ q: 'Which documents always print in English, whatever language you choose?', o: ['All reports', 'Statements and claims sent to the medical aids', 'Nothing, everything is translated'], a: 1 });
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /getting around/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /language/i.test(x[0]))) g[1].push(['Your language (English, Afrikaans, isiZulu, isiXhosa, Sepedi)', 'language']); }
+})();
+
+
 /* ===== req-map.js ===== */
 /* generated by tools/gen-req.js — do not edit */
 window.P360_REQ = {"ao":{"name":"Name is required."},"aon":{"name":"Name and licence holder are required.","lhName":"Name and licence holder are required.","lhEmail":"Enter a valid email."},"adn":{"name":"Give a name and a 7-digit practice number.","no":"Give a name and a 7-digit practice number."},"agr":{"acc":"Choose the person."},"au":{"email":"Enter a valid email."},"trk":{"why":"Please give a reason (at least 5 characters)."},"aun":{"name":"Give a full name and a valid email.","email":"Give a full name and a valid email.","why":"Please give a reason (at least 5 characters).","reg":"?Doctors, dentists and nurses need their HPCSA / registration number."},"apv":{"heard":"Fill in both words.","means":"Fill in both words."},"breq":{"detail":"?Please say what you need."},"brp":{"amt":"Enter the amount."},"bcn":{"amt":"Enter the amount."},"ctf":{"pa":"Choose a payment arrangement from the list."},"cm":{"replyTo":"Reply-to must be a valid email address."},"ctt":{"name":"Give the contract a name.","def":"The default arrangement is not in the list."},"pcf":{"scheme":"Choose a medical aid from the list."},"la":{"name":"Name needed."},"dv":{"name":"Name the device."},"ix":{"why":"Give the reason for the exposure."},"fa":{"title":"Say what needs to happen."},"ha":{"pid":"Choose the patient.","bed":"?Choose a free bed.","auth":"?This practice requires an authorisation number before admission (Practice setup → Hospital)."},"hv":{"bed":"Choose a bed."},"hm":{"bed":"Choose the new bed.","why":"?Give the clinical reason for ICU or high care."},"hz":{"no":"Type the authorisation number."},"hn":{"text":"Write the note first."},"ht":{"sig":"Say how to take the medicine."},"hw":{"name":"Give the ward a name."},"lrf":{"name":"Give a name and a valid email.","email":"Give a name and a valid email.","reg":"?Doctors, dentists and nurses need their registration number.","setpw":"?Type the password you want to give them."},"lm":{"why":"Please give a reason."},"lb":{"why":"Please give a reason."},"oma":{"c":"Choose a patient."},"omd":{"d":"Write the decision."},"org":{"name":"Give a name and at least one medicine.","drugs":"Give a name and at least one medicine.","ref":"Give the protocol reference."},"olb":{"t":"Give the test and value.","v":"Give the test and value."},"ost":{"ev":"Record the evidence (which reports)."},"oiv":{"t":"Name the test."},"oir":{"r":"Write the result."},"opl":{"name":"?Choose a regimen or describe the treatment."},"opc":{"why":"Give the reason."},"ocm":{"why":"Give the reason (it counts as a delay if later)."},"ohd":{"why":"Give the reason."},"ohdd":{"why":"Record your reasoning."},"olr":{"ok":"Tick the confirmation, or put the cycle on hold."},"oph":{"a":"?Tick all three checks."},"oas":{"chk":"Choose the second checker (a different person).","id":"?Confirm identity and observations."},"otx":{"t":"Name the adverse event."},"ort":{"site":"Give the site."},"ofu":{"w":"Say what the follow-up is."},"ont":{"t":"Write the note."},"oas2":{"ref":"?Enter the authorisation number."},"ocs":{"onc":"Choose who prescribed / is the treating oncologist.","hpi":"Write the presenting history.","pend":"?Choose the ICD-10 diagnosis, or tick \"Diagnosis not confirmed yet\"."},"rf":{"firstName":"First name, surname and date of birth are needed.","lastName":"First name, surname and date of birth are needed.","dob":"First name, surname and date of birth are needed.","memberNo":"?Add the membership number, or choose Private.","label":"Give the role a name."},"ams":{"memberNo":"Membership number is needed."},"rcv":{"batchNo":"Batch, expiry and quantity are needed.","expiry":"Batch, expiry and quantity are needed.","qty":"Batch, expiry and quantity are needed."},"ua":{"name":"Name needed.","reg":"?Roles that treat patients need an HPCSA or SANC number."},"prid":{"dob":"Give the date of birth — a passport is matched with the date of birth."},"prf":{"dob":"Give the date of birth — passports are matched with it."},"pri":{"ok":"Tick that the patient is in your care."},"shrf":{"ok":"Tick the confirmation once the patient agreed.","name":"Give the name of the person consenting.","rel":"?Give their relationship to the patient."},"sg":{"cur":"Enter your current PIN to make changes.","pin":"?Choose a PIN."},"sdrs":{"t":"Write the solution for the practice."},"sdlv":{"from":"Check the dates.","to":"Check the dates."},"sdnt":{"sub":"Add a subject and the problem.","d":"Add a subject and the problem."},"csnt":{"sub":"?Please remove the ID number — we do not need it.","d":"?Please remove the ID number — we do not need it."},"tsa":{"code":"Code and name are needed.","name":"Code and name are needed."},"tsp":{"name":"Plan name is needed."},"tsq":{"name":"Code and name are needed."},"tsr":{"code":"Code, amount and date are needed.","from":"Code, amount and date are needed."},"tsc":{"code":"Code and description are needed.","desc":"Code and description are needed."},"tsm":{"code":"Code and name are needed.","name":"Code and name are needed."},"msgf":{"title":"Please give the message a subject.","body":"Please write the message."},"chf":{"why":"?Please say why the date is changing."},"nt":{"title":"Please give a title and a message.","body":"Please give a title and a message."}};
@@ -21163,6 +21184,87 @@ window.P360_REQ = {"ao":{"name":"Name is required."},"aon":{"name":"Name and lic
     if (b.org && !s.orgs.some((o) => o.id === b.org.id && o.name)) { s.orgs = s.orgs.filter((o) => o.id !== b.org.id); s.orgs.push(b.org); }
     if (b.dataset && !s.datasets.some((d) => d.id === b.dataset.id)) s.datasets.push(b.dataset); return b.invite; } catch (e) { return null; } };
   A.secureServer = true;
+})();
+
+
+/* ===== ui-i18n.js ===== */
+/* Prac360 v0.78 — the whole system in the user's language.
+ * Languages: English (default), Afrikaans, isiZulu, isiXhosa, Sepedi. The choice is saved per user (their account), not per practice.
+ * How it works: every screen is written in English; this layer translates what is shown — menus, tabs, headings, field labels,
+ * buttons, placeholders, tooltips, tables, messages, pop-ups and printed reports — from a dictionary per language
+ * (media/i18n-<lang>.js, loaded only when needed). Numbers and amounts inside a sentence are kept.
+ * Never translated: patient data and anything typed by users, codes (ICD-10, tariff, NAPPI), and the documents that go to
+ * medical aids and patients' accounts — statements, claims, invoices and authorisation requests print in English. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H;
+  const LANGS = [['en', 'English'], ['af', 'Afrikaans'], ['zu', 'isiZulu'], ['xh', 'isiXhosa'], ['nso', 'Sepedi']];
+  const HTML_LANG = { en: 'en-ZA', af: 'af', zu: 'zu', xh: 'xh', nso: 'nso' };
+  A.LANGS = LANGS;
+  const acct = () => { try { return window.PL && PL.current && PL.current(); } catch (e) { return null; } };
+  const LK = 'p360.lang';
+  A.langNow = () => { const a = acct(); const v = (a && a.prefs && a.prefs.lang) || (() => { try { return localStorage.getItem(LK); } catch (e) { return null; } })() || 'en'; return LANGS.some((l) => l[0] === v) ? v : 'en'; };
+  A.setLang = (v) => { if (!LANGS.some((l) => l[0] === v)) v = 'en'; const a = acct(); if (a) { a.prefs = a.prefs || {}; a.prefs.lang = v; try { PL.save(); } catch (e) { /* ignore */ } } try { localStorage.setItem(LK, v); } catch (e) { /* ignore */ } location.reload(); };
+  A.langPicker = (cls, ch) => { const cur = A.langNow(); return `<select class="${cls || ''}" data-change="${ch || 'lang-pick'}" aria-label="Language" data-noi18n>${LANGS.map(([k, n]) => `<option value="${k}" ${k === cur ? 'selected' : ''}>${n}</option>`).join('')}</select>`; };
+  H['change:lang-pick'] = (el) => A.setLang(el.value);
+  H['change:lang'] = (el) => A.setLang(el.value);
+  H['change:lang-m'] = (el) => A.setLang(el.value);
+
+  // ------------------------------------------------------------------ dictionary
+  let lang = 'en'; let D = null; const NUM = /R\s?\d[\d\s ]*(?:[.,]\d{2})?|\d+(?:[.,:/]\d+)*/g;
+  const pat = new Map(); // "Billing clerk: {0} of {1} in Diary" → translation
+  const sentSplit = /(?<=[.!?])\s+(?=[A-Z“"(])/;
+  const lookup = (s) => { if (!D) return null; let r = D[s]; if (r != null) return r;
+    if (/\d/.test(s)) { const nums = []; const k = s.replace(NUM, (m) => { nums.push(m); return `{${nums.length - 1}}`; }); r = D[k]; if (r != null) return r.replace(/\{(\d+)\}/g, (m, i) => (nums[+i] != null ? nums[+i] : m)); }
+    return null; };
+  const SEPS = [' · ', ' — ', ' – ', ' | ', ' → ', ': '];
+  // a few phrases wrap a name or a value: "Back to {*}", "Status of {*}" … (keys with {*} in the dictionary)
+  let WILD = null; const wild = (s) => { if (!WILD) { WILD = Object.keys(D || {}).filter((k) => k.includes('{*}')).map((k) => [new RegExp('^' + k.replace(/[.*+?^$()|[\]\\]/g, '\\$&').replace(/\\\{\\\*\\\}|\{\\\*\}|\{\*\}/g, '(.+?)') + '$'), D[k]]); }
+    for (const [re, t] of WILD) { const m = s.match(re); if (m) { let i = 1; return t.replace(/\{\*\}/g, () => { const v = m[i++]; const tv = lookup(v); return tv != null ? tv : v; }); } } return null; };
+  const core = /^((?:[A-D]\.\s)?[^\p{L}]*?)([\p{L}“"(][\s\S]*?)([\s:·.…!?*,;)]*)$/u;
+  const tr = (raw) => { const s = raw.replace(/\s+/g, ' ').trim(); if (!s || !/\p{L}{2}/u.test(s)) return null; let r = lookup(s); if (r != null) return r;
+    const m = s.match(core); if (m && (m[1] || m[3])) { const c = lookup(m[2]); if (c != null) return m[1] + c + m[3]; const c2 = lookup(m[2] + m[3]); if (c2 != null) return m[1] + c2; }
+    for (const sep of SEPS) { if (s.indexOf(sep) > 0) { const ps = s.split(sep); let hit = 0; const out = ps.map((x) => { const t = x.trim() ? tr(x) : null; if (t != null) { hit++; return t; } return x; }); if (hit) return out.join(sep); return null; } }
+    const w = wild(s); if (w != null) return w;
+    if (s.length > 60) { const parts = s.split(sentSplit); if (parts.length > 1) { let hit = 0; const out = parts.map((x) => { const t = tr(x); if (t != null) { hit++; return t; } return x; }); return hit ? out.join(' ') : null; } }
+    if (window.__i18nMiss) window.__i18nMiss.add(m && m[2] && (m[1] || m[3]) ? m[2] : s); return null; };
+  A.tr = (s) => { if (lang === 'en') return s; const r = tr(String(s)); return r == null ? s : r; };
+
+  // ------------------------------------------------------------------ apply to the page
+  const orig = new WeakMap(); const done = new WeakMap(); const ATTRS = ['placeholder', 'title', 'aria-label', 'alt'];
+  const skipEl = (el) => { for (let e = el; e && e !== document.body; e = e.parentElement) { if (e.nodeType !== 1) continue; if (e.hasAttribute('data-noi18n') || e.isContentEditable) return true; const t = e.tagName; if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEXTAREA' || t === 'CODE' || t === 'KBD' || t === 'PRE') return true; if (e.classList && (e.classList.contains('mono') || e.classList.contains('code') || e.classList.contains('noi18n'))) return true; } return false; };
+  const doText = (n) => { const v = n.nodeValue; if (!v || done.get(n) === v) return; const t = tr(v); if (t == null) return; const lead = v.match(/^\s*/)[0], tail = v.match(/\s*$/)[0]; const nv = lead + t + tail; orig.set(n, v); done.set(n, nv); if (nv !== v) n.nodeValue = nv; };
+  const doAttrs = (el) => { for (const a of ATTRS) { const v = el.getAttribute(a); if (!v || el.getAttribute('data-i18n-' + a) === v) continue; const t = tr(v); if (t != null && t !== v) { el.setAttribute('data-i18o-' + a, v); el.setAttribute(a, t); el.setAttribute('data-i18n-' + a, t); } }
+    if (el.tagName === 'INPUT' && /^(button|submit|reset)$/.test(el.type) && el.value && el.dataset.i18nv !== el.value) { const t = tr(el.value); if (t != null) { el.value = t; el.dataset.i18nv = t; } } };
+  const walk = (root) => { if (lang === 'en' || !D || !root) return; if (root.nodeType === 3) { if (root.parentElement && !skipEl(root.parentElement)) doText(root); return; } if (root.nodeType !== 1 || skipEl(root)) return;
+    if (root.matches && root.matches('[placeholder],[title],[aria-label],[alt],input')) doAttrs(root); root.querySelectorAll('[placeholder],[title],[aria-label],[alt],input[type=button],input[type=submit]').forEach((el) => { if (!skipEl(el)) doAttrs(el); });
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: (n) => (n.parentElement && !skipEl(n.parentElement) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT) }); let n; const list = []; while ((n = w.nextNode())) list.push(n); list.forEach(doText); };
+  A.i18nApply = walk;
+  // put the English back (for documents that must print in English), and translate again afterwards
+  A.i18nRevert = (root) => { if (!root) return; const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { const o = orig.get(n); if (o != null && done.get(n) === n.nodeValue) { done.set(n, o); n.nodeValue = o; } }
+    root.querySelectorAll('*').forEach((el) => ATTRS.forEach((a) => { const o = el.getAttribute('data-i18o-' + a); if (o != null) { el.setAttribute(a, o); el.setAttribute('data-i18n-' + a, o); } })); };
+  A.i18nEnglish = (fn) => { const m = document.getElementById('main') || document.body; A.i18nRevert(m); stop(); try { return fn(); } finally { start(); setTimeout(() => { m.querySelectorAll('[data-i18n-title],[data-i18n-placeholder],[data-i18n-aria-label],[data-i18n-alt]').forEach((el) => ATTRS.forEach((a) => el.removeAttribute('data-i18n-' + a))); const w = document.createTreeWalker(m, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) done.delete(n); walk(m); }, 0); } };
+  let mo = null; let queue = new Set(); let sched = false; let hold = 0;
+  const englishSheet = (n) => n && n.nodeType === 1 && n.classList && n.classList.contains('pdf-sheet') && Date.now() - hold < 30000;
+  const flush = () => { sched = false; const q = queue; queue = new Set(); q.forEach((n) => { if (englishSheet(n)) { n.setAttribute('data-noi18n', ''); return; } if (n.isConnected) walk(n); }); if (document.title && lang !== 'en') { const t = tr(document.title); if (t && t !== document.title) document.title = t; } };
+  const start = () => { if (mo || lang === 'en') return; mo = new MutationObserver((ms) => { for (const m of ms) { if (m.type === 'childList') m.addedNodes.forEach((n) => queue.add(n)); else if (m.type === 'characterData') { if (done.get(m.target) !== m.target.nodeValue) queue.add(m.target); } else if (m.type === 'attributes') queue.add(m.target); } if (!sched) { sched = true; Promise.resolve().then(flush); } });
+    mo.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTRS }); };
+  const stop = () => { if (mo) { mo.takeRecords(); mo.disconnect(); mo = null; } };
+
+  // ------------------------------------------------------------------ load the language and start
+  const load = (l) => new Promise((res) => { window.__i18n = window.__i18n || {}; if (window.__i18n[l]) return res(window.__i18n[l]); const s = document.createElement('script'); s.src = `media/i18n-${l}.js?v=${(A.appVersion && A.appVersion()) || '1'}`; s.onload = () => res(window.__i18n[l] || {}); s.onerror = () => res({}); document.head.appendChild(s); });
+  const boot = async () => { lang = A.langNow(); document.documentElement.lang = HTML_LANG[lang] || 'en';
+    if (lang === 'en') return; document.documentElement.classList.add('i18n-wait'); D = await load(lang); document.documentElement.classList.remove('i18n-wait'); walk(document.body); start(); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+  // a different user signs in on this computer → their language
+  let lastAcc = null; setInterval(() => { const a = acct(); const id = a ? a.id : null; if (id === lastAcc) return; const first = lastAcc === null; lastAcc = id; if (first) return; if (A.langNow() !== lang) location.reload(); }, 1500);
+
+  // ------------------------------------------------------------------ documents that stay in English
+  const ENGLISH_DOC = /statement|claim|invoice|authori[sz]ation|remittance|credit note|receipt/i;
+  const _pd = A.printDoc; if (_pd) A.printDoc = function (title) { if (lang !== 'en' && ENGLISH_DOC.test(String(title || ''))) hold = Date.now(); return _pd.apply(this, arguments); };
+  // the Print button on statement / claim pages prints the English text
+  const _print = H.print; if (_print) H.print = function () { const h = (location.hash || '').toLowerCase(); const t = ((document.querySelector('#main h1') || {}).textContent || ''); const tO = (() => { const n = document.querySelector('#main h1'); if (!n) return t; const w = document.createTreeWalker(n, NodeFilter.SHOW_TEXT); let x, o = ''; while ((x = w.nextNode())) o += orig.has(x) ? orig.get(x) : x.nodeValue; return o; })();
+    if (lang !== 'en' && (/#\/(statement|claims|remit)/.test(h) || ENGLISH_DOC.test(tO))) { hold = Date.now(); const args = arguments; return A.i18nEnglish(() => _print.apply(this, args)); } return _print.apply(this, arguments); };
 })();
 
 ;(function(){ try { if (window.APP) { window.APP.boot().then(() => { if (window.APP.db && window.APP.db.settings.largeText) document.body.classList.add('large'); }).catch((e) => { document.getElementById('root').innerHTML = '<p style="padding:24px">Could not start: ' + e.message + '</p>'; console.error(e); }); } } catch (e) { document.getElementById('root').innerHTML = '<p style="padding:24px">Could not start: ' + e.message + '</p>'; console.error(e); } })();

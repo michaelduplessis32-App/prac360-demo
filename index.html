@@ -2744,7 +2744,7 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .sd-aicard{border-top:3px solid #6366f1}.sd-aicard h4{display:flex;align-items:center;gap:8px;justify-content:space-between}
 .sd-qa div{padding:4px 0;border-bottom:1px dashed var(--line,#e5e7eb)}.sd-qa .ok b{color:#047857}.sd-qa .bad b{color:#b91c1c}
 .sd-touch ol{list-style:none;margin:0;padding:0;max-height:340px;overflow:auto}.sd-touch li{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--line,#eef0f3)}.sd-touch li .i{width:20px;text-align:center}.sd-touch li.ai{background:linear-gradient(90deg,rgba(99,102,241,.06),transparent)}
-.sd-aistrip{margin-top:12px;border-left:4px solid #6366f1}.sd-aih{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.sd-aig{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.sd-aig>div{display:flex;flex-direction:column}.sd-aig .n{font-size:1.4rem;font-weight:800}.sd-aig .n.good{color:#047857}.sd-aig .n.warn{color:#c2410c}
+.sd-aistrip{margin-top:12px;border-left:4px solid #6366f1}.sd-aih{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.sd-aig{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}.sd-aig>div{display:flex;flex-direction:column}.sd-aig .n{font-size:1.4rem;font-weight:800}.sd-aig .n.good{color:#047857}.sd-aig .n.warn{color:#c2410c}
 @media (max-width:900px){.sd-aig{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .sd-aiset{border-left:4px solid #6366f1;margin-bottom:12px}
 .cs-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.cs-sorthd{align-items:center;gap:10px;flex-wrap:wrap}.cs-sorthd select{margin-left:6px}
@@ -2764,6 +2764,18 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 @media (prefers-reduced-motion:reduce){.sdp,.sdp-ic,.sdp-back{animation:none}}
 .sd-live{border-top:3px solid #16a34a}.sd-live h4{display:flex;align-items:center;gap:8px}.sd-livedot{width:10px;height:10px;border-radius:50%;background:#94a3b8;display:inline-block}.sd-livedot.on{background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:sdpPulse 1.8s infinite}
 .sd-liveu{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line,#eef0f3)}.sd-liveu:last-of-type{border-bottom:0}.sd-liveu .btn{white-space:nowrap}
+/* v0.64 — add transaction: a roomy, easy-to-read Date box (its own column next to Qty) */
+.tx-add-grid{grid-template-columns:minmax(220px,2fr) 190px 90px minmax(220px,2fr) minmax(200px,2fr)}
+#tx-add [name=ld]{width:100%;min-width:170px;font-size:1.02rem;font-weight:600;padding:9px 10px;letter-spacing:.02em}
+@media (max-width:1300px){.tx-add-grid{grid-template-columns:minmax(220px,2fr) 190px 90px}}
+@media (max-width:760px){.tx-add-grid{grid-template-columns:1fr 1fr}}
+/* panels that refresh themselves */
+.p360-fresh{animation:p360Fresh 1.2s ease}
+@keyframes p360Fresh{0%{box-shadow:0 0 0 3px rgba(34,197,94,.55)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.p360-upd{font-size:.72rem;color:#15803d;font-weight:600;margin-left:8px;white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.p360-fresh{animation:none}}
+.badge.sd-dupb{background:#f1f5f9;color:#334155;border:1px solid #cbd5e1}.badge.sd-dupb.warn{background:#fffbeb;color:#92400e;border-color:#fde68a}
+.sd-dupcard{border-top:3px solid #f59e0b}.cs-dup{border-left:4px solid #14b8a6}
 </style>
 </head>
 <body>
@@ -19316,12 +19328,12 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
       ${missed.length ? `<div class="card"><h3 style="margin-top:0">📞 Missed calls</h3>${missed.map((c) => `<div class="sd-row2"><span>${esc(c.practice || c.number)} · ${ago(c.at)}</span><button class="btn sm" data-act="sd-dial" data-n="${esc(c.number)}" data-cid="${c.id}">Call back</button></div>`).join('')}</div>` : ''}
       <div class="card"><h3 style="margin-top:0">Recent activity</h3>${s.activity.slice(0, 6).map((a) => `<div class="tiny sd-act">${ago(a.at)} · <b>${esc(sname(a.by))}</b> ${esc(a.text)}</div>`).join('') || '<p class="tiny muted">Activity shows here as the team works.</p>'}</div>`; };
   const bySla = (a, b) => { const o = { late: 0, risk: 1, ok: 2, pause: 3 }; return (o[sla(a).cls] - o[sla(b).cls]) || a.priority.localeCompare(b.priority); };
-  const list = (arr, compact) => arr.map((t) => `<button class="sd-tk ${compact ? 'c' : ''}" data-act="sd-open" data-id="${t.id}"><span class="sd-pri ${PRI[t.priority][1]}" title="${PRI[t.priority][0]}">${t.priority}</span><span class="grow"><b>${esc(t.ref)}</b> ${esc(t.subject)}<span class="tiny muted">${esc(t.practice)} · ${esc(t.category)} · ${ago(t.updatedAt)}</span></span>${t.ai ? A.supportAIBadge(t) : ''}${compact ? '' : badge(t.status, ST)}${slaB(t)}${t.assignee ? av(t.assignee, 'sm') : '<span class="badge warn">Not assigned</span>'}</button>`).join('');
+  const list = (arr, compact) => arr.map((t) => `<button class="sd-tk ${compact ? 'c' : ''}" data-act="sd-open" data-id="${t.id}"><span class="sd-pri ${PRI[t.priority][1]}" title="${PRI[t.priority][0]}">${t.priority}</span><span class="grow"><b>${esc(t.ref)}</b> ${esc(t.subject)}<span class="tiny muted">${esc(t.practice)} · ${esc(t.category)} · ${ago(t.updatedAt)}</span></span>${A.supportDupBadge ? A.supportDupBadge(t) : ''}${t.ai ? A.supportAIBadge(t) : ''}${compact ? '' : badge(t.status, ST)}${slaB(t)}${t.assignee ? av(t.assignee, 'sm') : '<span class="badge warn">Not assigned</span>'}</button>`).join('');
   V.tickets = () => { const s = S(); const f = A.ui.sdF || 'open', q = (A.ui.sdQ || '').toLowerCase(); const m = me();
-    const keep = (t) => (f === 'open' ? OPEN.includes(t.status) : f === 'mine' ? t.assignee === m.id && OPEN.includes(t.status) : f === 'unassigned' ? !t.assignee && OPEN.includes(t.status) : f === 'attention' ? OPEN.includes(t.status) && ['late', 'risk'].includes(sla(t).cls) : f === 'all' ? true : f === 'ai' ? !!t.ai : t.status === f) && (!q || `${t.ref} ${t.subject} ${t.practice} ${t.category} ${(t.contact || {}).name}`.toLowerCase().includes(q));
+    const keep = (t) => (f === 'open' ? OPEN.includes(t.status) : f === 'mine' ? t.assignee === m.id && OPEN.includes(t.status) : f === 'unassigned' ? !t.assignee && OPEN.includes(t.status) : f === 'attention' ? OPEN.includes(t.status) && ['late', 'risk'].includes(sla(t).cls) : f === 'all' ? true : f === 'ai' ? !!t.ai : f === 'dups' ? !!(t.dupOf || t.dupMaybe || (t.dev && t.dev.linked)) : t.status === f) && (!q || `${t.ref} ${t.subject} ${t.practice} ${t.category} ${(t.contact || {}).name}`.toLowerCase().includes(q));
     const so = A.ui.sdSort || 'urgent', dir = A.ui.sdDir === 'asc' ? 1 : -1; const num = (t) => parseInt(String(t.ref || '').replace(/\D/g, ''), 10) || 0;
     const L = s.tickets.filter(keep).sort(so === 'ref' ? (a, b) => dir * (num(a) - num(b)) : so === 'created' ? (a, b) => dir * (String(a.createdAt) < String(b.createdAt) ? -1 : String(a.createdAt) > String(b.createdAt) ? 1 : 0) : so === 'updated' ? (a, b) => dir * (String(a.updatedAt) < String(b.updatedAt) ? -1 : String(a.updatedAt) > String(b.updatedAt) ? 1 : 0) : (a, b) => (OPEN.includes(a.status) && OPEN.includes(b.status) ? bySla(a, b) : 0) || (a.updatedAt < b.updatedAt ? 1 : -1));
-    const chips = [['open', 'Open'], ['mine', 'Mine'], ['unassigned', 'Not assigned'], ['attention', 'Need attention'], ['client', 'Waiting for practice'], ['dev', 'With development'], ['resolved', 'Resolved'], ['ai', '🤖 AI assisted'], ['all', 'All']];
+    const chips = [['open', 'Open'], ['mine', 'Mine'], ['unassigned', 'Not assigned'], ['attention', 'Need attention'], ['client', 'Waiting for practice'], ['dev', 'With development'], ['resolved', 'Resolved'], ['ai', '🤖 AI assisted'], ['dups', '⧉ Repeats'], ['all', 'All']];
     return `<div class="sd-filter">${chips.map(([k, l]) => `<button class="sd-chip ${f === k ? 'on' : ''}" data-act="sd-f" data-f="${k}">${l} <span>${s.tickets.filter((t) => { const o = A.ui.sdF; A.ui.sdF = k; const r = keep(t); A.ui.sdF = o; return r; }).length}</span></button>`).join('')}<input type="search" placeholder="Search ticket, practice or person" value="${esc(A.ui.sdQ || '')}" data-input="sd-q" aria-label="Search tickets"></div>
       <div class="sd-sort"><label class="tiny">Sort by <select data-change="sd-sort" aria-label="Sort tickets">${[['urgent', 'Most urgent first'], ['ref', 'Ticket number'], ['created', 'Date created'], ['updated', 'Last changed']].map(([k, l]) => `<option value="${k}" ${so === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>${so === 'urgent' ? '' : `<button class="sd-chip sm" data-act="sd-sortdir" title="Change the order">${dir < 0 ? (so === 'ref' ? '↓ Highest number first' : '↓ Newest first') : (so === 'ref' ? '↑ Lowest number first' : '↑ Oldest first')}</button>`}<span class="tiny muted">${L.length} ticket${L.length === 1 ? '' : 's'}</span></div>
       <div class="card sd-list">${list(L) || '<div class="empty">No tickets here.</div>'}</div>`; };
@@ -19337,7 +19349,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
           <textarea id="sd-text" rows="4" placeholder="${mode === 'reply' ? `Write to ${esc(((t.contact || {}).name || 'the practice').split(' ')[0])} — they see this in their Client support portal` : mode === 'note' ? 'Only the support team sees internal notes' : 'What was discussed on the call'}"></textarea>
           <div class="row between" style="gap:8px;flex-wrap:wrap"><div class="row" style="gap:6px;align-items:center"><span class="tiny">Time spent</span>${[5, 10, 15, 30].map((n) => `<button class="sd-chip sm" data-act="sd-tpre" data-n="${n}">${n} min</button>`).join('')}<input id="sd-mins" type="number" min="0" max="600" placeholder="min" style="width:70px" aria-label="Minutes"></div>
           <div class="row" style="gap:6px">${mode === 'reply' ? `<select id="sd-after" aria-label="Status after sending"><option value="open">Keep in progress</option><option value="client">Waiting for the practice</option><option value="resolved">Mark as resolved</option></select>` : ''}<button class="btn primary" data-act="sd-send" data-id="${t.id}">${mode === 'reply' ? 'Send' : mode === 'note' ? 'Save note' : 'Log call'}</button></div></div></div>` : `<div class="card tiny muted">This ticket is closed${t.csat ? ` · the practice rated it ${'★'.repeat(t.csat)}` : ''}. <button class="btn sm" data-act="sd-reopen" data-id="${t.id}">Reopen</button></div>`}</div>
-      <aside class="sd-tv-side">${A.supportLiveCard ? A.supportLiveCard(t) : ''}${A.supportAISide ? A.supportAISide(t) : ''}<div class="card"><h4>Details</h4>
+      <aside class="sd-tv-side">${A.supportLiveCard ? A.supportLiveCard(t) : ''}${A.supportDupCard ? A.supportDupCard(t) : ''}${A.supportAISide ? A.supportAISide(t) : ''}<div class="card"><h4>Details</h4>
           <label class="f"><span>Status</span><select data-change="sd-set" data-k="status" data-id="${t.id}">${Object.entries(ST).map(([k, [l]]) => `<option value="${k}" ${t.status === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
           <label class="f"><span>Consultant</span><select data-change="sd-set" data-k="assignee" data-id="${t.id}"><option value="">— not assigned —</option>${s.staff.map((x) => `<option value="${x.id}" ${t.assignee === x.id ? 'selected' : ''}>${esc(x.name)}${away(x.id) ? ' (on leave)' : ''} · ${load(x.id)} open</option>`).join('')}</select></label>
           <label class="f"><span>Priority</span><select data-change="sd-set" data-k="priority" data-id="${t.id}">${Object.entries(PRI).map(([k, [l, , d]]) => `<option value="${k}" ${t.priority === k ? 'selected' : ''}>${k} ${l} — ${d}</option>`).join('')}</select></label>
@@ -19493,12 +19505,13 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     if (['resolved', 'closed'].includes(t.status)) return `✅ Solved ${t.resolvedAt ? ago(t.resolvedAt) : ''}${who ? ' by ' + esc(who.name.split(' ')[0]) : ''}.`;
     if (t.status === 'client') return t.ai && t.ai.state === 'waiting' ? '💬 We sent you the steps to sort this out — please let us know below if it worked.' : `💬 ${who ? esc(who.name.split(' ')[0]) : 'We'} asked you a question — please reply below so we can carry on.`;
     if (t.ai && t.ai.state === 'queued') return '👋 Prac360 Support has your request and is looking into it now.';
+    if (t.dupOf) return `⧉ Combined with ${esc(t.dupOf.ref)} — you will get all updates there.`;
     if (t.status === 'dev') return `🛠 Our developers are working on this. ${who ? esc(who.name.split(' ')[0]) + ' keeps an eye on it and will update you.' : ''}`;
     if (who) return `👋 <b>${esc(who.name)}</b> is helping you${t.firstResponseAt ? ` — first reply came ${dur((new Date(t.firstResponseAt) - new Date(t.createdAt)) / MIN)} after you logged it` : ''}.`;
     return `👋 Our team has your request and will reply within ${dur(lim.first)}${x.due ? ' (by ' + new Date(x.due).toTimeString().slice(0, 5) + ')' : ''}.`; };
   P.support = (params) => { if (!myDs()) return '<div class="card">Open a practice first.</div>'; const id = params && params[0]; const s = S(); if (id) { const t = mine().find((x) => x.id === id); if (t) { if (unread(t)) { seenMap()[t.id] = new Date().toISOString(); save(); } return portalTicket(t); } }
     const so = A.ui.csSort || 'updated'; const num = (t) => parseInt(String(t.ref || '').replace(/\D/g, ''), 10) || 0; const L = mine().slice().sort(so === 'ref' ? (a, b) => num(b) - num(a) : (a, b) => (String(a[so === 'created' ? 'createdAt' : 'updatedAt']) < String(b[so === 'created' ? 'createdAt' : 'updatedAt']) ? 1 : -1)); const open = L.filter((t) => OPEN.includes(t.status)), done = L.filter((t) => !OPEN.includes(t.status)); const cl = S().clients.find((c) => (c.pkey || pk(c.name)) === myKey()) || {};
-    const card = (t) => `<a class="cs-tk ${unread(t) ? 'new' : ''}" href="#/support/${t.id}"><div class="row between" style="gap:8px"><b>${esc(t.subject)}</b><span class="badge ${ST[t.status][1]}">${t.status === 'open' || t.status === 'new' ? 'Being handled' : esc(ST[t.status][0])}</span></div><div class="tiny muted">${esc(t.ref)} · ${esc(t.category)} · logged ${fdt(t.createdAt)} by ${esc((t.contact || {}).name || 'your practice')}</div>
+    const card = (t) => `<a class="cs-tk ${unread(t) ? 'new' : ''}" href="#/support/${t.id}"><div class="row between" style="gap:8px"><b>${esc(t.subject)}</b><span class="badge ${t.dupOf ? '' : ST[t.status][1]}">${t.dupOf ? 'Combined with ' + esc(t.dupOf.ref) : t.status === 'open' || t.status === 'new' ? 'Being handled' : t.status === 'dev' && t.dev && t.dev.linked ? 'Known problem — being fixed' : esc(ST[t.status][0])}</span></div><div class="tiny muted">${esc(t.ref)} · ${esc(t.category)} · logged ${fdt(t.createdAt)} by ${esc((t.contact || {}).name || 'your practice')}</div>
       <div class="cs-steps">${STAGES(t).map(([l, on]) => `<span class="${on ? 'on' : ''}">${esc(l)}</span>`).join('')}</div><div class="cs-who">${t.assignee ? av(t.assignee, 'sm') : ''}<span>${friendly(t)}</span>${unread(t) ? '<b class="cs-newb">New reply</b>' : ''}</div></a>`;
     return `<div class="page-head"><div><h1>🎧 Client support</h1><div class="muted">Your practice’s support requests — everyone in ${esc((A.dsEntry.dataset || {}).name || 'your practice')} can see them and add to them.</div></div></div>
       <div class="cs-help"><div><h3 style="margin:0">Need help now?</h3><p class="tiny" style="margin:2px 0 0">Monday to Friday 07:00–18:00, Saturday 08:00–13:00. Urgent after-hours line for practices that cannot work.</p></div><a class="btn" href="tel:${tel(SUPPORT_NO)}">📞 Call support ${esc(SUPPORT_NO)}</a><button class="btn" data-act="cs-callback">☎ Ask us to call you</button><button class="btn primary" data-act="cs-new">＋ Log a request</button></div>
@@ -19511,7 +19524,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     return `<div class="page-head"><div><div class="crumbs no-crumb"><a href="#/support">Client support</a> › ${esc(t.ref)}</div><h1>${esc(t.subject)}</h1><div class="muted">${esc(t.category)} · logged ${fdt(t.createdAt)}</div></div></div>
       <div class="card"><div class="cs-steps big">${STAGES(t).map(([l, on]) => `<span class="${on ? 'on' : ''}">${esc(l)}</span>`).join('')}</div><div class="cs-who">${t.assignee ? av(t.assignee) : ''}<span>${friendly(t)}</span></div></div>
       <div class="card cs-thread">${pub.map(msg).join('')}</div>
-      ${solved ? `<div class="card"><h3 style="margin-top:0">How did we do?</h3>${t.csat ? `<p>You rated this ${'★'.repeat(t.csat)}${'☆'.repeat(5 - t.csat)} — thank you!</p>` : `<div class="cs-rate">${[1, 2, 3, 4, 5].map((n) => `<button data-act="cs-rate" data-id="${t.id}" data-n="${n}" aria-label="${n} out of 5">${['😞', '🙁', '😐', '🙂', '😃'][n - 1]}</button>`).join('')}</div>`}<button class="btn sm" data-act="cs-reopen" data-id="${t.id}">It is not fixed — reopen</button></div>`
+      ${t.dupOf ? `<div class="card cs-dup"><p style="margin:0">This request was combined with <b>${esc(t.dupOf.ref)}</b>, so all updates come there.</p><a class="btn sm primary" href="#/support/${esc(t.dupOf.id)}" style="margin-top:8px">Open ${esc(t.dupOf.ref)} →</a></div>` : solved ? `<div class="card"><h3 style="margin-top:0">How did we do?</h3>${t.csat ? `<p>You rated this ${'★'.repeat(t.csat)}${'☆'.repeat(5 - t.csat)} — thank you!</p>` : `<div class="cs-rate">${[1, 2, 3, 4, 5].map((n) => `<button data-act="cs-rate" data-id="${t.id}" data-n="${n}" aria-label="${n} out of 5">${['😞', '🙁', '😐', '🙂', '😃'][n - 1]}</button>`).join('')}</div>`}<button class="btn sm" data-act="cs-reopen" data-id="${t.id}">It is not fixed — reopen</button></div>`
         : `<div class="card"><label class="f"><span>Add a message for ${t.assignee ? esc(sname(t.assignee).split(' ')[0]) : 'support'}</span><textarea id="cs-text" rows="3" data-noclean placeholder="Answer a question, add detail, or let us know it is sorted"></textarea></label><div class="row" style="gap:6px;justify-content:flex-end"><button class="btn" data-act="cs-solved" data-id="${t.id}">✓ It is sorted now</button><button class="btn primary" data-act="cs-reply" data-id="${t.id}">Send</button></div></div>`}`; };
   const contactMe = () => { const u = A.user || {}; return { name: u.name || 'Practice user', role: (u.roleLabel || u.role || ''), phone: '', email: u.email || '' }; };
   H['cs-new'] = (el) => { const cb = el && el.dataset && el.dataset.cb; A.modal(cb ? 'Ask us to call you' : 'Log a support request', `<form id="csnt" class="grid g2">${cb ? '' : `<label class="f" style="grid-column:1/-1"><span>In a few words, what do you need help with?</span><input name="sub" placeholder="e.g. Claims to Discovery are rejected" data-noclean></label>`}
@@ -19584,7 +19597,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     const s = S(); const had = r.tickets.length; let n = adoptDocs(r.docs || {}); n += adoptTickets(r.tickets || [], 'desk'); ST.ok = true; ST.err = ''; ST.at = new Date().toISOString(); ST.empty = !had; return n; };
   const pullMine = async () => { const k = A.supportMyKey && A.supportMyKey(); if (!k) return 0; const r = await get({ action: 'sd_mine', practice: k }); if (r && r.ok && !Array.isArray(r.tickets)) { ST.ok = false; ST.err = 'old'; return 0; } if (!r || !r.ok) { ST.ok = false; return 0; }
     const s = S(); (r.staff || []).forEach((x) => { if (!s.staff.some((y) => y.id === x.id)) s.staff.push(Object.assign({ skills: [], ext: '', status: 'available' }, x)); });
-    if (r.manager) { const c = s.clients.find((x) => (x.pkey || pk(x.name)) === k); if (c) c.manager = r.manager; } if (r.sla) s.sla = r.sla;
+    if (r.manager) { const c = s.clients.find((x) => (x.pkey || pk(x.name)) === k); if (c) c.manager = r.manager; } if (r.sla) s.sla = r.sla; if (Array.isArray(r.known)) s.known = r.known;
     const firstTime = ST.first; const n = adoptTickets(r.tickets || [], 'practice'); if (firstTime && A.supportMarkSeenAll) A.supportMarkSeenAll(); ST.ok = true; ST.at = new Date().toISOString(); ST.mineAt = ST.at; return n; };
 
   // ---------------------------------------------------------------- push (anything that changed since the last sync)
@@ -19763,13 +19776,71 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     if (tell) { t.thread.push({ at: iso(now() + 1000), from: 'staff', by: 'ai', ai: true, kind: 'reply', text: `Thanks, ${first(t)}. ${who ? who.name.split(' ')[0] + ' from our support team' : 'One of our support consultants'} will take this further with you and reply ${t.priority === 'P1' || t.priority === 'P2' ? 'shortly' : 'as soon as possible'}.\n\nKind regards,\nPrac360 Support` }); }
     t.updatedAt = iso(); };
 
+  // ---------------------------------------------------------------- repeat requests: duplicates, asked before, known development issues
+  const OPENS = ['new', 'open', 'client', 'dev'];
+  const firstMsg = (t) => ((t.thread || []).find((m) => m.from === 'client') || {}).text || t.desc || '';
+  const words = (t) => new Set(tok(`${t.subject || ''} ${firstMsg(t)}`).filter((w) => !SYN[w]));
+  const subj = (t) => new Set(tok(t.subject || '').filter((w) => !SYN[w]));
+  const jac = (a, b) => { if (!a.size || !b.size) return 0; let n = 0; a.forEach((w) => { if (b.has(w)) n++; }); return n / (a.size + b.size - n); };
+  const simil = (a, b) => Math.min(1, 0.55 * jac(subj(a), subj(b)) + 0.45 * jac(words(a), words(b)) + (a.category && a.category === b.category ? 0.12 : 0));
+  A.supportSimil = simil;
+  const fbOf = (t) => { const d = t && t.dev; if (!d || !d.fbId) return null; return ((PL().s && PL().s.feedback) || []).find((r) => r.id === d.fbId) || null; };
+  const DEVST = { new: 'has been received by our developers', review: 'is being looked at by our developers', info: 'is with our developers', planned: 'is planned by our developers', progress: 'is being fixed by our developers right now', done: 'has been fixed', declined: 'is with our developers' };
+  const devSt = (t) => { const fb = fbOf(t); return (fb && fb.status) || (t.dev && t.dev.status) || 'new'; };
+  const fdate = (s) => new Date(s).toLocaleDateString('en-ZA', { day: 'numeric', month: 'long' });
+  const resolutionOf = (o) => { const R = (o.thread || []).filter((m) => m.from === 'staff' && !m.internal && m.kind !== 'note' && m.kind !== 'dev' && String(m.text).length > 60 && !/glad it is sorted|is now sorted — please let us know|will take this further/i.test(m.text)); const m = R.sort((a, b) => String(b.text).length - String(a.text).length)[0]; if (!m) return null;
+    const out = String(m.text).split('\n').map((l) => l.trim().replace(/^(hi|hello|good (morning|afternoon|evening))\b[^,!.]*[,!.]\s*/i, '')).filter((l) => l && !/^(kind regards|prac360 support|thanks for|thank you for|please give it a try|the “show me how”|shall i stay)/i.test(l)).slice(0, 8).join('\n').replace(/\s*Shall I stay[^?]*\?\s*$/i, '').trim(); return out.length > 25 ? out : null; };
+  // the best earlier match for a ticket: same practice (duplicate or asked before), or any practice for a known development issue
+  A.supportMatch = (t) => { const s = S(); const pk0 = t.pkey || A.supportPkey(t.practice); const at = String(t.createdAt || iso()); let best = null;
+    const consider = (o, kind, sc) => { if (!best || sc > best.score) best = { o, kind, score: sc }; };
+    s.tickets.forEach((o) => { if (o.id === t.id || o.dupOf || String(o.createdAt) > at) return; if ((t.dupNo || []).includes(o.id)) return; const sc = simil(t, o); if (sc < 0.45) return; const same = (o.pkey || A.supportPkey(o.practice)) === pk0;
+      if (same && OPENS.includes(o.status) && !(o.status === 'dev' && o.dev && o.dev.linked)) consider(o, 'dup', sc);
+      else if (o.status === 'dev' && !(o.dev && o.dev.linked) && sc >= 0.5) consider(o, 'dev', sc - (same ? 0 : 0.02));
+      else if (same && ['resolved', 'closed'].includes(o.status) && sc >= 0.5) consider(o, 'before', sc - 0.03); });
+    (s.known || []).forEach((k) => { if (k.id === t.id || s.tickets.some((o) => o.id === k.id)) return; const sc = simil(t, k); if (sc >= 0.5) consider(Object.assign({ status: 'dev' }, k), 'dev', sc - 0.02); });
+    return best; };
+  // combine a duplicate into the ticket the practice already has
+  const mergeInto = (d, o, byAi) => { const by = byAi ? 'ai' : X().me().id; const fm = firstMsg(d);
+    o.thread.push({ at: iso(), from: 'client', by: (d.contact || {}).name || 'Practice', kind: 'message', text: `(Also logged as ${d.ref}) ${fm}`.slice(0, 1200) }); if (o.status === 'client') o.status = 'open'; o.unreadStaff = true; o.updatedAt = iso();
+    const where = o.status === 'dev' ? `it ${DEVST[devSt(o)] || 'is with our developers'}` : ['resolved', 'closed'].includes(o.status) ? 'we marked it as solved recently — if it is back, we will pick it up again there' : o.assignee && o.assignee !== 'ai' ? `${X().sname(o.assignee).split(' ')[0]} from our team is working on it` : 'we are already working on it';
+    if (['resolved', 'closed'].includes(o.status)) { o.status = 'open'; o.resolvedAt = null; o.csat = null; }
+    d.thread.push({ at: iso(now() + 500), from: 'staff', by, ai: !!byAi, kind: 'reply', actions: [{ link: '#/support/' + o.id, label: 'Open ' + o.ref }], text: `Hi ${first(d)},\n\nThanks for letting us know. This is the same as ${o.ref} (“${o.subject}”), logged on ${fdate(o.createdAt)}, and ${where}.\n\nTo keep everything in one place we have added your message to ${o.ref} — you will get all updates there, so there is nothing else you need to do.\n\nKind regards,\n${byAi ? 'Prac360 Support' : X().sname(by)}` });
+    d.dupOf = { id: o.id, ref: o.ref }; d.dupMaybe = null; d.status = 'resolved'; d.resolvedAt = iso(); d.updatedAt = iso(); if (!d.firstResponseAt) d.firstResponseAt = iso();
+    d.ai = d.ai || { state: 'queued', replies: 0, used: [], log: [] }; d.ai.state = 'resolved'; d.ai.outcome = 'duplicate'; log(d, byAi ? 'Duplicate combined' : 'Combined by ' + X().me().name, `Same as ${o.ref} — message added there`, true);
+    if (o.ai) log(o, 'Duplicate combined', `${d.ref} added to this ticket`, null); };
+  A.supportMerge = mergeInto;
+  // link to a problem our developers already have
+  const linkDev = (t, o) => { const st = devSt(o); t.dev = { linked: o.id, ref: (o.dev || {}).ref || '', fbId: (o.dev || {}).fbId || null, status: st, at: iso() }; t.status = 'dev'; t.updatedAt = iso(); if (!t.firstResponseAt) t.firstResponseAt = iso();
+    const fb = fbOf(t); const fixed = st === 'done';
+    t.thread.push({ at: iso(), from: 'staff', by: 'ai', ai: true, kind: 'reply', text: fixed ? `Hi ${first(t)},\n\nThanks for letting us know. This problem was reported before and ${fb && fb.implemented ? 'was fixed in Prac360 version ' + fb.implemented.version : 'has been fixed'}. Please press Ctrl+Shift+R once to load the newest version, then try again.\n\nIf you still see it, just reply here and we will pick it up straight away.\n\nKind regards,\nPrac360 Support`
+      : `Hi ${first(t)},\n\nThanks for letting us know — this is a known problem and it ${DEVST[st] || 'is with our developers'}. We have linked your request to it, so you do not need to do anything else: we will let you know here as soon as it is fixed.\n\nIf it stops you from working, reply here or call us and a consultant will help you with a way around it.\n\nKind regards,\nPrac360 Support` });
+    t.ai.state = fixed ? 'waiting' : 'devwait'; if (fixed) t.status = 'client'; t.ai.replies += 1; log(t, 'Linked to a known development issue', `${o.ref || ''}${t.dev.ref ? ' · ' + t.dev.ref : ''} — ${st}`, true); };
+  // asked before and solved: share what solved it then
+  const fromBefore = (t, o) => { const fb = fbOf(o); let body;
+    if (fb && fb.status === 'done') body = `You asked us about this on ${fdate(o.createdAt)} (${o.ref}). It was fixed${fb.implemented ? ' in Prac360 version ' + fb.implemented.version : ''}. Please press Ctrl+Shift+R once to load the newest version, then try again.`;
+    else { const r = resolutionOf(o); if (!r) return false; body = `You asked us about this on ${fdate(o.createdAt)} (${o.ref}). This is what sorted it out then:\n\n${r}`; }
+    const text = `Hi ${first(t)},\n\nThanks for getting in touch. ${body}\n\nPlease give it a try and let us know here if that sorted it out — press “It is sorted now”, or reply if something is still not right and we will carry on from there.\n\nKind regards,\nPrac360 Support`;
+    if (/\b\d{13}\b|\bdose\b|\bdosage\b|\bSAMA\b/i.test(text) || text.length > 2200) return false;
+    t.thread.push({ at: iso(), from: 'staff', by: 'ai', ai: true, kind: 'reply', text, actions: [{ link: '#/support/' + o.id, label: 'See ' + o.ref }] }); t.ai.replies += 1; t.ai.used.push('prev:' + o.id); t.ai.state = 'waiting'; t.status = 'client'; t.updatedAt = iso(); if (!t.firstResponseAt) t.firstResponseAt = iso();
+    t.ai.qa = [{ c: 'Same practice asked this before', ok: true, d: `${o.ref} — match ${Math.round(simil(t, o) * 100)}%` }, { c: 'Answer is what support gave last time', ok: true, d: fb && fb.status === 'done' ? 'Fixed by development' : 'Earlier solution from the support team' }, { c: 'Safe for a medical practice', ok: true, d: 'No clinical advice, ID numbers or SAMA codes' }];
+    log(t, 'Answered from an earlier request', `${o.ref} (${fdate(o.createdAt)})`, true); return true; };
+  // returns true when the repeat request was dealt with
+  const repeat = (t) => { const m = A.supportMatch(t); if (!m) return false; t.ai.match = { id: m.o.id, ref: m.o.ref, kind: m.kind, score: Math.round(m.score * 100) };
+    if (m.kind === 'dup' && m.score >= 0.62) { mergeInto(t, m.o, true); return true; }
+    if (m.kind === 'dup') { t.dupMaybe = { id: m.o.id, ref: m.o.ref, score: Math.round(m.score * 100) }; log(t, 'Possible duplicate', `${m.o.ref} — ${Math.round(m.score * 100)}% alike; a consultant can combine them`, null); return false; }
+    if (m.kind === 'dev') { linkDev(t, m.o); return true; }
+    if (m.kind === 'before') return fromBefore(t, m.o);
+    return false; };
+  const FAULT = 'Looks like a system fault — needs investigating';
   // ---------------------------------------------------------------- the assistant's turns
   A.supportAIWants = (t) => { const o = OPTS(); if (!o.on || t.channel !== 'portal' || t.fromStaff) return false; const text = `${t.subject} ${t.desc || ''}`;
     t.ai = { state: 'queued', dueAt: iso(now() + (o.delay || 20) * 1000), replies: 0, used: [], log: [], at: iso() }; log(t, 'Request received', 'Checking whether the assistant may help');
-    const why = t.priority === 'P1' ? 'Critical — the practice cannot work' : o.human.includes(t.category) ? `“${t.category}” requests always go to a person (setting)` : risk(text) || (BOTQ.test(text) ? 'Asked whether support is a person' : null);
+    let why = t.priority === 'P1' ? 'Critical — the practice cannot work' : o.human.includes(t.category) ? `“${t.category}” requests always go to a person (setting)` : risk(text) || (BOTQ.test(text) ? 'Asked whether support is a person' : null);
+    if (why === FAULT) { const m = A.supportMatch(t); if (m && (m.kind === 'dev' || (m.kind === 'dup' && m.score >= 0.62))) { why = null; log(t, 'Known problem', `Looks like ${m.o.ref} — the assistant will link it`); } }
     if (why) { t.ai.state = 'handed'; t.ai.reason = why; log(t, 'Sent straight to a consultant', why, false); return false; } return true; };
   const run = (t) => { const ai = t.ai; if (!ai || ai.state !== 'queued') return; const extra = t.thread.filter((m) => m.from === 'client').slice(1).map((m) => m.text).join(' ');
     log(t, 'Read the request', ai.replies ? 'Read the practice’s reply' : 'Subject, description and category');
+    if (!ai.replies && !ai.repeatDone) { ai.repeatDone = true; const w0 = risk(`${t.subject} ${firstMsg(t)}`); if ((!w0 || w0 === FAULT) && repeat(t)) return; }
     const lastClient = (t.thread.filter((m) => m.from === 'client').slice(-1)[0] || {}).text || ''; const why = risk(ai.replies ? lastClient : `${t.subject} ${lastClient}`);
     if (why) { handoff(t, why, ai.replies > 0); return; }
     const an = analyse(t, extra, ai.used); if (!an.top) { handoff(t, 'No matching Prac360 help found — not sure how to help', ai.replies > 0); return; }
@@ -19804,7 +19875,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     if (n) { save(); const ae = document.activeElement; if (!(ae && /^(TEXTAREA|INPUT)$/.test(ae.tagName) && ae.value) && !document.querySelector('#modal .modal')) A.render(); } } catch (e) { /* ignore */ } }, 3000);
 
   // ---------------------------------------------------------------- support desk: what the team sees
-  const STL = { queued: ['🤖 AI working on it', 'info'], waiting: ['🤖 AI answered', 'info'], resolved: ['🤖 Solved by AI', 'good'], handed: ['🤖→👤 Handed to a person', 'warn'] };
+  const STL = { queued: ['🤖 AI working on it', 'info'], waiting: ['🤖 AI answered', 'info'], resolved: ['🤖 Solved by AI', 'good'], handed: ['🤖→👤 Handed to a person', 'warn'], devwait: ['🤖 Linked to development', 'info'] };
   A.supportAIBadge = (t) => { const x = STL[t.ai.state] || STL.handed; return `<span class="badge sd-aib ${x[1]}" title="${esc(t.ai.reason || '')}">${x[0]}${t.ai.review ? ' · review' : ''}</span>`; };
   const ICON = { client: '🏥', staff: '👤', ai: '🤖', system: '⚙', call: '📞', note: '🔒' };
   const touches = (t) => { const L = []; (t.thread || []).forEach((m) => { if (m.kind === 'assign' && m.from === 'system') { L.push({ at: m.at, i: '⚙', w: 'System', d: m.text }); return; }
@@ -19822,21 +19893,22 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     h += `<div class="card sd-touch"><h4>Touchpoints <span class="tiny muted">${T.length}</span></h4><ol>${T.map((x) => `<li class="${x.ai ? 'ai' : ''}"><span class="i">${x.i}</span><div><b class="tiny">${esc(x.w)}</b> <span class="tiny muted">${X().fdt(x.at)}</span><div class="tiny">${esc(x.d)}</div></div></li>`).join('')}</ol></div>`; return h; };
 
   const stats = (days) => { const s = S(); const from = now() - (days || 7) * DAY; const T = s.tickets.filter((t) => new Date(t.createdAt).getTime() > from); const ai = T.filter((t) => t.ai);
-    const took = ai.filter((t) => t.ai.replies > 0 || t.ai.state === 'resolved'); const solved = ai.filter((t) => t.ai.state === 'resolved'); const handed = ai.filter((t) => t.ai.state === 'handed');
+    const took = ai.filter((t) => t.ai.replies > 0 || t.ai.state === 'resolved' || t.ai.state === 'devwait'); const solved = ai.filter((t) => t.ai.state === 'resolved'); const handed = ai.filter((t) => t.ai.state === 'handed');
     const fr = took.filter((t) => t.firstResponseAt).map((t) => (new Date(t.firstResponseAt) - new Date(t.createdAt)) / MIN); const why = {}; handed.forEach((t) => { const k = String(t.ai.reason || 'Other').split(' — ')[0]; why[k] = (why[k] || 0) + 1; });
     const touchN = T.reduce((a, t) => a + touches(t).length, 0); const cs = solved.filter((t) => t.csat).map((t) => t.csat);
-    return { T, ai, took, solved, handed, why, fr: fr.length ? fr.reduce((a, b) => a + b, 0) / fr.length : null, touchN, csat: cs.length ? (cs.reduce((a, b) => a + b, 0) / cs.length).toFixed(1) : '—', review: s.tickets.filter((t) => t.ai && t.ai.review).length, rate: took.length ? Math.round((solved.length / took.length) * 100) : 0 }; };
+    return { T, ai, took, solved, handed, why, fr: fr.length ? fr.reduce((a, b) => a + b, 0) / fr.length : null, touchN, csat: cs.length ? (cs.reduce((a, b) => a + b, 0) / cs.length).toFixed(1) : '—', review: s.tickets.filter((t) => t.ai && t.ai.review).length, dupN: T.filter((t) => t.dupOf).length, devN: T.filter((t) => t.dev && t.dev.linked).length, beforeN: T.filter((t) => t.ai && (t.ai.used || []).some((u) => /^prev:/.test(u))).length, rate: took.length ? Math.round((solved.length / took.length) * 100) : 0 }; };
   const V = X().V;
   const ov = V.overview; V.overview = function () { const h = ov.apply(this, arguments); const st = stats(7); const strip = `<div class="card sd-aistrip"><div class="sd-aih"><b>🤖 AI support · last 7 days</b><button class="btn sm ghost" data-act="sd-tab" data-t="tickets" data-f="ai">See AI tickets →</button></div><div class="sd-aig">
       <div><span class="n">${st.took.length}</span><span class="tiny">answered by the assistant</span></div><div><span class="n good">${st.solved.length}</span><span class="tiny">solved without a consultant${st.took.length ? ` (${st.rate}%)` : ''}</span></div>
       <div><span class="n warn">${st.handed.length}</span><span class="tiny">handed to a person</span></div><div><span class="n">${st.fr == null ? '—' : X().dur(st.fr)}</span><span class="tiny">average first answer</span></div>
-      <div><span class="n ${st.review ? 'warn' : ''}">${st.review}</span><span class="tiny">answers to review</span></div></div></div>`;
+      <div><span class="n ${st.review ? 'warn' : ''}">${st.review}</span><span class="tiny">answers to review</span></div><div><span class="n good">${st.dupN + st.devN + st.beforeN}</span><span class="tiny">repeat requests handled (duplicates, known issues, asked before)</span></div></div></div>`;
     const i = h.indexOf('</div>', h.indexOf('class="sd-kpis"')); return i > 0 ? h.slice(0, i + 6) + strip + h.slice(i + 6) : strip + h; };
   const rp = V.reports; V.reports = function () { const h = rp.apply(this, arguments); const st = stats(30); const why = Object.entries(st.why).sort((a, b) => b[1] - a[1]);
     return h + `<div class="card"><h3 style="margin-top:0">🤖 AI support — last 30 days</h3><table class="t"><tbody>
       <tr><td>Requests logged in Client support</td><td><b>${st.T.filter((t) => t.channel === 'portal').length}</b></td></tr><tr><td>Answered by the assistant</td><td><b>${st.took.length}</b></td></tr>
       <tr><td>Solved without a consultant</td><td><b>${st.solved.length}</b> (${st.rate}% of those answered)</td></tr><tr><td>Handed to a consultant</td><td><b>${st.handed.length}</b></td></tr>
       <tr><td>Average time to the first answer</td><td><b>${st.fr == null ? '—' : X().dur(st.fr)}</b></td></tr><tr><td>Average rating of answers solved by the assistant</td><td><b>${st.csat}</b></td></tr>
+      <tr><td>Duplicates combined automatically</td><td><b>${st.dupN}</b></td></tr><tr><td>Linked to a known development issue</td><td><b>${st.devN}</b></td></tr><tr><td>Answered from the practice’s earlier request</td><td><b>${st.beforeN}</b></td></tr>
       <tr><td>All support touchpoints (messages, calls, AI steps, changes)</td><td><b>${st.touchN}</b> · ${st.T.length ? (st.touchN / st.T.length).toFixed(1) : 0} per ticket</td></tr></tbody></table>
       ${why.length ? `<h4>Why tickets went to a person</h4>${why.map(([k, n]) => `<div class="sd-row2"><span>${esc(k)}</span><b>${n}</b></div>`).join('')}` : ''}</div>`; };
   const au = V.automation; V.automation = function () { const h = au.apply(this, arguments); const o = OPTS(); const C = X().CATS;
@@ -19926,6 +19998,45 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   setInterval(() => { try { const c = document.querySelector('.sd-live[data-tk]'); if (!c) return; const t = X().tk(c.dataset.tk); if (!t) return; const d = document.createElement('div'); d.innerHTML = A.supportLiveCard(t); const n = d.firstElementChild; if (!n) { c.remove(); return; } if (n.innerHTML !== c.innerHTML) c.replaceWith(n); } catch (e) { /* ignore */ } }, 4000);
 })();
 
+/* v0.64 — repeat requests on the desk: possible duplicates (one-click combine), development progress sent to practices automatically. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, esc = A.esc; const PL = () => window.PL;
+  if (!A.supportX || !A.supportMatch) return;
+  const X = () => A.supportX(); const S = () => A.supportData(); const iso = (t) => new Date(t == null ? Date.now() : t).toISOString();
+  const isDesk = () => /^#(console|admin)/.test(location.hash) && !A.dsEntry;
+  const log = (t, step, text, ok) => { t.ai = t.ai || { state: 'handed', replies: 0, used: [], log: [] }; t.ai.log = t.ai.log || []; t.ai.log.push({ at: iso(), step, text: text || '', ok: ok === undefined ? null : ok }); t.ai.at = iso(); };
+  const first = (t) => (String(((t.contact || {}).name) || '').replace(/^(Dr|Sr|Prof|Mr|Mrs|Ms)\.?\s+/i, '').split(/\s+/)[0]) || 'there';
+  const fbById = (id) => ((PL().s && PL().s.feedback) || []).find((r) => r.id === id);
+  const UPD = { planned: 'Our developers have planned the fix for this.', progress: 'Our developers are fixing this right now.' };
+  // development progress → the practice is told automatically (no consultant needed); "fixed" asks the practice to check
+  const devTick = () => { const s = S(); let n = 0;
+    s.tickets.forEach((t) => { if (!t.dev || !t.dev.fbId || !['dev', 'client', 'open'].includes(t.status)) return; const fb = fbById(t.dev.fbId); if (!fb) return; const was = t.dev.status;
+      if (was === undefined) { t.dev.status = fb.status; n++; return; } if (fb.status === was) return; t.dev.status = fb.status; t.updatedAt = iso(); n++;
+      if (UPD[fb.status] && t.status === 'dev') { t.thread.push({ at: iso(), from: 'staff', by: 'ai', ai: true, kind: 'reply', text: `Hi ${first(t)},\n\nA quick update on ${t.ref}: ${UPD[fb.status]} We will let you know as soon as it is ready — there is nothing you need to do.\n\nKind regards,\nPrac360 Support` }); log(t, 'Development update sent', fb.status, true); }
+      else if (fb.status === 'done') { t.thread.push({ at: iso(), from: 'staff', by: 'ai', ai: true, kind: 'reply', text: `Hi ${first(t)},\n\nGood news — ${t.ref} has been fixed${fb.implemented ? ' in Prac360 version ' + fb.implemented.version : ''}. Please press Ctrl+Shift+R once to load the newest version and try again.\n\nLet us know here if it all works — press “It is sorted now” — or reply if you still see the problem.\n\nKind regards,\nPrac360 Support` });
+        t.status = 'client'; t.ai = t.ai || { replies: 0, used: [], log: [] }; t.ai.state = 'waiting'; t.ai.replies = (t.ai.replies || 0) + 1; log(t, 'Told the practice it is fixed', fb.implemented ? 'v' + fb.implemented.version : 'done', true); }
+      else if (fb.status === 'declined') { t.flagged = 'Development will not go ahead — please explain to the practice'; t.status = 'open'; log(t, 'Needs a consultant', 'Development decided not to go ahead — a person should explain', false); } });
+    return n; };
+  // possible duplicates for tickets the assistant did not see (phone, call-back, critical, logged by staff)
+  const dupScan = () => { const s = S(); let n = 0; s.tickets.forEach((t) => { if (t.dupOf || !X().OPEN.includes(t.status)) return; const m = A.supportMatch(t); const want = m && m.kind === 'dup' ? { id: m.o.id, ref: m.o.ref, score: Math.round(m.score * 100) } : null;
+      if (JSON.stringify(want) !== JSON.stringify(t.dupMaybe || null)) { t.dupMaybe = want; n++; } }); return n; };
+  setInterval(() => { try { if (!isDesk() || document.hidden || !PL().s || !PL().s.support) return; const n = devTick() + dupScan(); if (n) { X().save(); const ae = document.activeElement; if (!(ae && /^(TEXTAREA|INPUT)$/.test(ae.tagName) && ae.value) && !document.querySelector('#modal .modal')) A.render(); } } catch (e) { /* ignore */ } }, 5000);
+  A.supportDevTick = devTick; A.supportDupScan = dupScan;
+  // desk: badge, card and one-click actions
+  A.supportDupBadge = (t) => (t.dupOf ? `<span class="badge sd-dupb" title="Combined">⧉ Duplicate of ${esc(t.dupOf.ref)}</span>` : t.dupMaybe ? `<span class="badge sd-dupb warn" title="${t.dupMaybe.score}% alike">⧉ Possible duplicate of ${esc(t.dupMaybe.ref)}</span>` : (t.dev && t.dev.linked ? '<span class="badge sd-dupb" title="Linked to a known development issue">🔗 Known issue</span>' : ''));
+  A.supportDupCard = (t) => { const s = S(); const also = s.tickets.filter((o) => o.dupOf && o.dupOf.id === t.id); const linked = s.tickets.filter((o) => o.dev && o.dev.linked === t.id); const root = t.dev && t.dev.linked && X().tk(t.dev.linked);
+    if (!t.dupOf && !t.dupMaybe && !also.length && !linked.length && !root) return '';
+    return `<div class="card sd-dupcard"><h4>⧉ Repeat requests</h4>
+      ${t.dupOf ? `<p class="tiny">Combined into <button class="linkish" data-act="sd-open" data-id="${esc(t.dupOf.id)}">${esc(t.dupOf.ref)}</button> — the practice was told and follows that ticket. Nothing to do here.</p>` : ''}
+      ${t.dupMaybe ? `<p class="tiny">Looks like <button class="linkish" data-act="sd-open" data-id="${esc(t.dupMaybe.id)}">${esc(t.dupMaybe.ref)}</button> (${t.dupMaybe.score}% alike, same practice).</p><div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn sm primary" data-act="sd-dup-merge" data-id="${t.id}" data-into="${esc(t.dupMaybe.id)}">Combine into ${esc(t.dupMaybe.ref)}</button><button class="btn sm" data-act="sd-dup-no" data-id="${t.id}">Not a duplicate</button></div><p class="tiny muted" style="margin:4px 0 0">Combining tells the practice, adds its message to ${esc(t.dupMaybe.ref)} and closes this one.</p>` : ''}
+      ${root ? `<p class="tiny">🔗 Linked to known issue <button class="linkish" data-act="sd-open" data-id="${esc(root.id)}">${esc(root.ref)}</button>${t.dev.ref ? ' · ' + esc(t.dev.ref) : ''}. The practice gets development updates automatically.</p>` : ''}
+      ${also.length ? `<p class="tiny"><b>Also logged as:</b> ${also.map((o) => `<button class="linkish" data-act="sd-open" data-id="${o.id}">${esc(o.ref)}</button>`).join(', ')}</p>` : ''}
+      ${linked.length ? `<p class="tiny"><b>Other practices with this problem:</b> ${linked.length} (${linked.map((o) => esc(o.ref)).join(', ')}) — they are updated automatically when development moves it on.</p>` : ''}</div>`; };
+  H['sd-dup-merge'] = (el) => { const d = X().tk(el.dataset.id), o = X().tk(el.dataset.into); if (!d || !o) return; A.supportMerge(d, o, false); X().save(); A.toast(`${d.ref} combined into ${o.ref} — the practice was told.`); A.ui.sdTicket = o.id; A.render(); };
+  H['sd-dup-no'] = (el) => { const t = X().tk(el.dataset.id); if (!t || !t.dupMaybe) return; t.dupNo = (t.dupNo || []).concat(t.dupMaybe.id); log(t, 'Not a duplicate', `${t.dupMaybe.ref} — checked by ${X().me().name}`, null); t.dupMaybe = null; t.updatedAt = iso(); X().save(); A.render(); };
+})();
+
 
 /* ===== ui-v059l.js ===== */
 /* Prac360 v0.59 — What's new + help: Client support portal (practices). The Support desk itself is for the Prac360 team
@@ -20010,6 +20121,54 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const C = A.COURSES || []; const sc = C.find((c) => c.id === 'start');
   if (sc && sc.quiz && !sc.quiz.some((q) => /join your screen/.test(q.q))) sc.quiz.push({ q: 'Support asks to join your screen about your open request. What happens?', o: ['They join straight away', 'You see who is asking and why, and you choose Allow or Decline', 'Your request is closed'], a: 1 });
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => x[0] === 'Getting around') || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /Support joins your screen/.test(x[0]))) g[1].push(['Support joins your screen (you allow it)', 'livesupport']); }
+})();
+
+
+/* ===== ui-v064.js ===== */
+/* Prac360 v0.64 — Capture transactions: the SAMA Billing Coach and "Checks before claiming" always match the transactions.
+ * They follow every change straight away — a quantity while it is being typed, a line added, changed or removed, a date,
+ * an ICD-10 code or modifier, the medical aid plan — and also changes made elsewhere (another user, AI Scribe, another tab).
+ * Only the two panels (and the guide totals) are redrawn, so what you are typing is never disturbed. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, E = window.PE; if (!P.billing) return;
+  const db = () => A.db; const encId = () => (location.hash.match(/^#\/billing\/([^/?]+)/) || [])[1];
+  const invOf = (id) => { const enc = id && db().encounters.find((e) => e.id === id); return enc && db().invoices.find((i) => i.id === enc.invoiceId); };
+  const sig = (inv) => { if (!inv) return ''; const enc = db().encounters.find((e) => e.id === inv.encounterId) || {}; try { return JSON.stringify([inv.status, inv.date, inv.fundingRoute, inv.pricing, inv.ack, inv.authNo, inv.lines.map((l) => [l.id, l.code, l.qty, l.icd, l.mods, l.refs, l.date, l.excluded, l.amount]), enc.diagnoses, enc.durationMin, (db().stockMoves || []).length]); } catch (e) { return String(Math.random()); } };
+  let last = { id: null, s: '' };
+  const PANELS = ['.coach-card', '.cf-card', '.txg-sum'];
+  A.billPanelsRefresh = (flash) => { const id = encId(); if (!id) return false; let html; try { html = P.billing([id]); } catch (e) { return false; } const tmp = document.createElement('div'); tmp.innerHTML = html; let n = 0; const ae = document.activeElement;
+    PANELS.forEach((sel) => { const cur = document.querySelector(sel), nu = tmp.querySelector(sel); if (!cur || !nu || (ae && cur.contains(ae))) return; if (cur.innerHTML === nu.innerHTML) return; const ex = cur.querySelector('#explain-out'); if (ex && ex.innerHTML && nu.querySelector('#explain-out') && sel !== '.cf-card') nu.querySelector('#explain-out').innerHTML = ex.innerHTML;
+      if (flash && sel !== '.txg-sum') { nu.classList.add('p360-fresh'); const h2 = nu.querySelector('h2'); if (h2 && !h2.querySelector('.p360-upd')) h2.insertAdjacentHTML('beforeend', '<span class="p360-upd">✓ updated</span>'); }
+      cur.replaceWith(nu); n++; });
+    last = { id, s: sig(invOf(id)) }; return n > 0; };
+  // a quantity counts while it is typed (not only when you leave the box)
+  let qt = null; document.addEventListener('input', (e) => { const el = e.target; if (!el || !el.matches || !el.matches('[data-change=line-qty]') || !encId()) return; clearTimeout(qt);
+    qt = setTimeout(() => { const inv = invOf(encId()); if (!inv || inv.status !== 'draft') return; const l = inv.lines.find((x) => x.id === el.dataset.id); const q = Math.max(1, Math.floor(+el.value || 0)); if (!l || !el.value || l.qty === q) return; l.qty = q; try { E.priceLine(db(), l); } catch (x) { /* ignore */ } try { A.save(); } catch (x) { /* ignore */ } A.billPanelsRefresh(true); }, 450); }, true);
+  // anything else that changed the bill — here or elsewhere — is picked up within a second
+  setInterval(() => { try { const id = encId(); if (!id || document.hidden) return; const inv = invOf(id); if (!inv) return; const s = sig(inv);
+    if (last.id !== id) { last = { id, s }; return; } if (s !== last.s) A.billPanelsRefresh(true); } catch (e) { /* ignore */ } }, 900);
+  window.addEventListener('hashchange', () => { last = { id: null, s: '' }; });
+  // every full redraw of the page counts as "up to date"
+  const _r = A.render; if (_r) A.render = function () { const r = _r.apply(this, arguments); try { const id = encId(); if (id) last = { id, s: sig(invOf(id)) }; } catch (e) { /* ignore */ } return r; };
+})();
+
+
+/* ===== ui-v064l.js ===== */
+/* Prac360 v0.64 — What's new + help: billing checks follow every change; roomier Date box; repeat support requests handled for you. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id); const add = (k, x) => { if (k && k.steps && !k.steps.includes(x)) k.steps.push(x); };
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.64')) A.RELEASES.unshift({ v: '0.64', date: '2026-11-24', title: 'Billing checks that keep up with you, and smarter support', items: [
+    { type: 'improved', area: 'billing', title: 'The SAMA Billing Coach and “Checks before claiming” always match your transactions', text: 'Both update by themselves the moment you add, change or remove a transaction — even while you are still typing a quantity, and when someone else changes the bill. A short “✓ updated” shows when a suggestion changed.', link: '#/billing' },
+    { type: 'improved', area: 'billing', title: 'Easier-to-read Date when adding a transaction', text: 'The Date box next to Qty is bigger, so you can clearly see the date you chose.', link: '#/billing' },
+    { type: 'improved', area: 'general', title: 'Repeat support requests are handled for you', text: 'Logged the same problem twice? We combine the requests and keep you updated on one. If the problem is already with our developers, your request is linked to it and you get progress updates automatically — including when it is fixed. Asked something before? You get the answer that solved it last time straight away.', link: '#/support' }] });
+  add(kb('billtx'), 'The SAMA Billing Coach and “Checks before claiming” update by themselves after every change — no need to refresh the page.');
+  add(kb('claimfix'), 'The checks update by themselves whenever a transaction is added, changed or removed (a short “✓ updated” shows when something changed).');
+  add(kb('clientsupport'), 'Logged the same problem twice? We combine them and you follow one request. A problem already with our developers is linked, and you get updates automatically.');
+  const C = A.COURSES || []; const bc = C.find((c) => c.id === 'billing');
+  if (bc && bc.quiz && !bc.quiz.some((q) => /Billing Coach update/.test(q.q))) bc.quiz.push({ q: 'You change the quantity on a transaction. When does the SAMA Billing Coach update?', o: ['Only after you reload the page', 'Straight away, by itself', 'The next day'], a: 1 });
+  if (bc && bc.lessons && !bc.lessons.some((l) => l.t === 'Checks that keep up')) bc.lessons.push({ t: 'Checks that keep up', body: 'The SAMA Billing Coach and “Checks before claiming” follow every change you make to the transactions, so their suggestions are always about the bill as it is now.', guide: '' });
 })();
 
 

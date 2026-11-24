@@ -18736,7 +18736,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   new MutationObserver(() => addLogin()).observe(document.documentElement, { childList: true, subtree: true });
 
   // What's new: a showcase card at the top
-  const _wn = P.whatsnew; if (_wn) P.whatsnew = (...a) => { const h = _wn(...a); const card = `<div class="card dvid-card"><div class="row between" style="flex-wrap:wrap;gap:6px"><div><h2 style="margin:0">🎬 See Prac360 in action</h2><p class="small muted" style="margin:2px 0 0">Two demo videos with a voice-over — show them to a practice that is interested, or watch them yourself.</p></div></div>${thumbs()}</div>`; const k = h.indexOf('</div></div>', h.indexOf('class="page-head"')); return k > 0 ? h.slice(0, k + 12) + card + h.slice(k + 12) : card + h; };
+  // (v0.68) the demo videos are no longer shown on What's new — they stay on the sign-in screen
 })();
 
 
@@ -20261,6 +20261,18 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.67')) A.RELEASES.unshift({ v: '0.67', date: '2026-11-24', title: 'Patient file: Account is now Billing', items: [
     { type: 'improved', area: 'billing', title: 'The Account tab is now called Billing', text: 'In the patient file, the tab with transactions, Add billing, payments and the statement is now called Billing. Everything on it is the same.', link: '#/patients' }] });
   const k = (A.KB || []).find((x) => x.id === 'patientfile'); if (k && k.steps && !k.steps.some((s) => /Billing tab/.test(s))) k.steps.push('Billing tab (was called Account): transactions, Add billing, payments and the statement.');
+})();
+
+
+/* ===== ui-v068l.js ===== */
+/* Prac360 v0.68 — What's new no longer shows the two demo videos (they remain on the sign-in screen). */
+(function () {
+  'use strict';
+  const A = window.APP;
+  if (A.GUIDES) delete A.GUIDES.demovideo;
+  (A.KB || []).forEach((k) => { if (k.steps) k.steps = k.steps.map((s) => s.replace(' or at the top of What’s new', '')); if (k.guide === 'demovideo') delete k.guide; });
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.68')) A.RELEASES.unshift({ v: '0.68', date: '2026-11-24', title: 'A tidier What’s new', items: [
+    { type: 'improved', area: 'help', title: 'What’s new shows only what changed', text: 'The two demo videos are no longer at the top of What’s new. You can still watch them from the sign-in screen (“New to Prac360? Watch the demo”).', link: '#/whatsnew' }] });
 })();
 
 

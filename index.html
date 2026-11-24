@@ -2734,6 +2734,7 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .cs-rate{display:flex;gap:8px;margin-bottom:10px}.cs-rate button{font-size:1.8rem;border:1px solid var(--line,#e5e7eb);background:var(--surface,#fff);border-radius:12px;padding:4px 10px;cursor:pointer}.cs-rate button:hover{transform:scale(1.1)}
 .cs-done summary{cursor:pointer;font-weight:700;margin:12px 0}
 .am-support{font-weight:600}
+.vmd-min{margin-right:4px}
 </style>
 </head>
 <body>
@@ -14335,7 +14336,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   // a small window in the corner that stays while you work; it is the only sign that Assist is listening
   const view = () => `<div class="vm vm-dock" id="vm" role="region" aria-label="Talking to Assist">
     <div class="vmd-top"><button class="vm-orb" data-act="vm-orb" aria-label="Interrupt, or say you are done"><span class="vm-b b1"></span><span class="vm-b b2"></span><span class="vm-b b3"></span></button>
-      <div class="vmd-txt"><div class="vmd-title">Talking to Assist</div><div class="vm-state" id="vm-state" aria-live="polite"></div></div><button class="vmd-gear" data-act="vm-set" id="vm-gear" aria-label="Voice settings" aria-expanded="false" title="Voice settings"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></svg></button></div>
+      <div class="vmd-txt"><div class="vmd-title">Talking to Assist</div><div class="vm-state" id="vm-state" aria-live="polite"></div></div><button class="vmd-gear vmd-min" data-act="talk-show" id="vm-minbtn" aria-label="Minimise Talk — keep talking with a small circle" title="Minimise"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg></button><button class="vmd-gear" data-act="vm-set" id="vm-gear" aria-label="Voice settings" aria-expanded="false" title="Voice settings"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></svg></button></div>
     <div class="vmd-set" id="vm-setp" hidden></div>
     <div class="vm-cap" id="vm-cap"></div>
     <div class="vm-hint" id="vm-hint"></div>
@@ -18708,7 +18709,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     const o = document.getElementById('talk-orb'); if (!on) { if (o) o.remove(); showConvo = false; return; }
     const panel = document.querySelector('.as-panel'); const panelOpen = !!(panel && panel.getBoundingClientRect().width > 0 && getComputedStyle(panel).display !== 'none' && getComputedStyle(panel).visibility !== 'hidden');
     const root = document.getElementById('vm-root');
-    if (showConvo || panelOpen) { if (o) o.style.display = 'none'; if (showConvo && root && !root.querySelector('#vm-min')) root.insertAdjacentHTML('beforeend', '<button id="vm-min" class="btn sm" data-act="talk-show" title="Minimise — keep talking with a small circle">▾ Minimise</button>'); return; }
+    if (showConvo || panelOpen) { if (o) o.style.display = 'none';  return; }
     if (o) o.style.display = '';
     const el = orb(); const ph = v.muted ? 'muted' : v.needTap ? 'tap' : (v.phase || 'idle'); el.className = 'to-' + ph + (showConvo ? ' to-showing' : ''); const lab = el.querySelector('.to-lab'); if (lab && lab.textContent !== LAB[ph]) lab.textContent = LAB[ph] || '';
     const pill = document.querySelector('.as-pill'); const pr = pill && pill.getBoundingClientRect(); if (!pr || !pr.width) { el.style.right = '24px'; el.style.bottom = '24px'; } else if (pill) { const r = pr; el.style.right = Math.round(window.innerWidth - r.left + 10) + 'px'; el.style.bottom = Math.round(window.innerHeight - r.bottom + (r.height - 46) / 2) + 'px'; } };
@@ -19086,10 +19087,10 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     { type: 'improved', area: 'clinical', title: 'AI Scribe keeps listening and talks to you', text: 'When AI Scribe pauses it says so out loud (“AI Scribe paused”), and “AI Scribe is listening again” when it resumes — so you know without looking. If it hears nothing for a minute it asks: “Are you still there? AI Scribe is still listening.” It keeps listening through short breaks on its own.', link: '#/today' },
     { type: 'improved', area: 'clinical', title: 'Always at least one ICD-10 suggestion', text: 'AI Scribe, the classic consultation and billing now always suggest at least one ICD-10 code from what was captured — the same suggestion everywhere. You still choose and confirm the code.', link: '#/today' },
     { type: 'improved', area: 'billing', title: 'Capture transactions: clear, simple — and back-dating', text: 'The billing screen is now “Capture transactions”: who you are billing, the patient’s allergies and account, three plain steps (add, fix what is flagged, submit) and a running total. The Date of service is right at the top — change it when you bill for an earlier day (future dates are blocked).', link: '#/billing' },
-    { type: 'fixed', area: 'general', title: 'Talk: the glowing circle no longer covers Assist', text: 'The circle only shows while Talk is minimised. When the conversation or the Assist window is open, it hides; press ▾ Minimise to go back to the small circle.', link: '#/today', guide: 'talk' }] });
+    { type: 'fixed', area: 'general', title: 'Talk: the glowing circle no longer covers Assist', text: 'The circle only shows while Talk is minimised. When the conversation or the Assist window is open, it hides; press the — (minimise) icon at the top of the Talk card to go back to the small circle.', link: '#/today', guide: 'talk' }] });
   const sc = kb('aiscribe'); add(sc, 'Everything said is taken as the doctor’s words — there is no list to manage. Speak naturally; AI Scribe fills the right fields and corrects misheard numbers, units and medicine names.'); add(sc, 'If AI Scribe pauses it says so out loud. After a minute of silence it asks “Are you still there? AI Scribe is still listening.”'); add(sc, 'There is always at least one ICD-10 suggestion under Diagnosis — click it to use it, or search for another.');
   const bt = kb('billingreview') || kb('billtx'); add(bt, 'The blue box at the top shows who you are billing and the Date of service. Billing for yesterday or earlier? Change the date there before submitting.');
-  add(kb('talk'), 'The small glowing circle shows only while Talk is minimised. Open the conversation with ⤢; go back to the circle with ▾ Minimise.');
+  add(kb('talk'), 'The small glowing circle shows only while Talk is minimised. Open the conversation with ⤢; go back to the circle with the — (minimise) icon at the top of the Talk card.');
   const C = A.COURSES || []; const ai = C.find((c) => c.id === 'aiscribe');
   if (ai) { if (!ai.lessons.some((l) => l.t === 'Just talk')) ai.lessons.splice(1, 0, { t: 'Just talk', body: 'AI Scribe takes everything it hears as your words and fills in the form as you go — history, vital signs, examination, diagnosis with ICD-10, medicines and follow-up. Say numbers naturally (“BP one twenty over eighty”); it writes 120/80. If it pauses it tells you out loud, and after a minute of silence it asks if you are still there.', guide: '' });
     if (ai.quiz && !ai.quiz.some((q) => /still there/.test(q.q))) ai.quiz.push({ q: 'AI Scribe hears nothing for a minute. What happens?', o: ['It deletes the note', 'It asks out loud “Are you still there? AI Scribe is still listening.”', 'It signs the note'], a: 1 }); }

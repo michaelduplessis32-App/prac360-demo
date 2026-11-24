@@ -2830,6 +2830,13 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .pt3-t .pt2-who>div{white-space:nowrap}.pt3-t .pt2-who .tiny{white-space:normal}
 .pt3-dc .linkish{text-decoration:none;margin-left:6px;color:var(--brand,#2563eb);font-weight:600}.pt3-dc .linkish:hover{text-decoration:underline}
 .pt3-t td:nth-child(2){min-width:210px}
+/* v0.73 — one consultation ribbon, identical in Classic and AI Scribe */
+.cx-ribbon{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 12px;padding:8px 12px;border:1px solid var(--line,#e5e7eb);border-radius:14px;background:var(--surface,#fff);box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.cx-rib-l{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.cx-rib-t{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted,#64748b)}
+.cx-rib-r{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;color:var(--muted,#475569);margin:0}.cx-rib-r select{padding:5px 8px;border-radius:9px;font-weight:600;color:var(--text,#0f172a)}
+.cx-ribbon .cx-switch{margin:0}
+@media (max-width:760px){.cx-rib-h{display:none}}
+.cx-rib-r span{white-space:nowrap}.cx-rib-r select{width:auto;min-width:140px}
 </style>
 </head>
 <body>
@@ -5879,7 +5886,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
     const checklist = [['Note written', !!(enc.subjective && enc.assessment)], ['Diagnosis', (enc.diagnoses || []).length > 0], ['Time recorded', enc.durationMin > 0], ['Injury cause coded', !hasInjury || hasExt], ['Results reviewed', !db().documents.some((d) => d.patientId === p.id && !d.acknowledged)]];
     const alg = db().allergies.filter((x) => x.patientId === p.id); const meds = db().meds.filter((m) => m.patientId === p.id && m.active);
     const ta = (f, label, ph) => `<label class="f"><span>${label}</span><textarea id="soap-${f}" data-input="soap" data-f="${f}" ${editable ? '' : 'readonly'} placeholder="${esc(ph)}">${esc(enc[f] || '')}</textarea></label>`;
-    return `<div class="page-head"><div><div class="crumbs no-crumb"><a href="#/patient/${p.id}">${esc(p.firstName + ' ' + p.lastName)}</a> › Consultation ${fd(enc.date)}</div><h1>Consultation</h1></div><div class="actions">${enc.status === 'signed' ? `<span class="badge good">Signed ${esc(A.ft(enc.signedAt))} by ${esc(A.uname(enc.signedBy))}</span>` : '<span class="badge warn">Draft — autosaves</span>'}</div></div>
+    return `<div class="page-head"><div><div class="crumbs no-crumb"><a href="#/patient/${p.id}">${esc(p.firstName + ' ' + p.lastName)}</a> › Consultation ${fd(enc.date)}</div><h1>Consultation</h1></div><div class="actions">${enc.status === 'signed' ? `<span class="badge good">Signed ${esc(A.ft(enc.signedAt))} by ${esc(A.uname(enc.signedBy))}</span>` : '<span class="badge warn">Draft — saves as you go</span>'}</div></div>
       ${A.patientBar(p)}
       <div class="split"><div>
         ${editable ? `<div class="card"><div class="row between"><h2>Quick notes → draft note</h2><span class="badge ${A.caps.sample && aiConsent ? 'ai' : ''}">${A.caps.sample && aiConsent ? 'AI scribe available' : aiConsent ? 'Rule-based drafting (AI not available)' : 'No AI consent — rule-based drafting'}</span></div>
@@ -16962,7 +16969,8 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
       <details class="cx-gl-d"><summary class="cx-gl">${meds.length} medicine${meds.length === 1 ? '' : 's'}</summary><div class="cx-gl-pop">${meds.map((m) => esc(((E.medicine(d, m.medicineId) || {}).name || '') + (m.dose ? ' — ' + m.dose : ''))).join('<br>') || 'None recorded'}</div></details>
       <details class="cx-gl-d"><summary class="cx-gl">${probs.length} condition${probs.length === 1 ? '' : 's'}</summary><div class="cx-gl-pop">${probs.map((x) => esc(A.icdLabel(x.code))).join('<br>') || 'None recorded'}</div></details>
       ${prev ? `<span class="cx-gl">Last visit ${fd(prev.date)}</span>` : '<span class="cx-gl">First visit</span>'}<a class="cx-gl link" href="#/patient/${p.id}">Patient file →</a></div>`; };
-  const viewSwitch = (e, which) => `<div class="cx-switch" role="group" aria-label="Consultation view"><a href="#/consult/${e.id}/classic" class="${which === 'classic' ? 'on' : ''}" ${which === 'classic' ? 'aria-current="page"' : ''}>Classic</a><a href="#/consult/${e.id}/ai" class="${which === 'ai' ? 'on' : ''}" ${which === 'ai' ? 'aria-current="page"' : ''}>✦ AI Scribe</a></div>${A.cxDefaultToggle ? A.cxDefaultToggle(which) : ''}`;
+  const ribbon = (e, which) => `<div class="cx-ribbon" role="region" aria-label="Consultation view"><div class="cx-rib-l"><span class="cx-rib-t">View</span>${viewSwitch(e, which, true)}<span class="cx-rib-h tiny muted">${which === 'classic' ? 'You type the note yourself.' : 'Prac360 listens and fills in the note for you.'}</span></div>${A.cxDefaultPicker ? A.cxDefaultPicker() : ''}</div>`;
+  const viewSwitch = (e, which, bare) => `<div class="cx-switch" role="group" aria-label="Consultation view"><a href="#/consult/${e.id}/classic" class="${which === 'classic' ? 'on' : ''}" ${which === 'classic' ? 'aria-current="page"' : ''}>Classic</a><a href="#/consult/${e.id}/ai" class="${which === 'ai' ? 'on' : ''}" ${which === 'ai' ? 'aria-current="page"' : ''}>✦ AI Scribe</a></div>`;
   A.cxViewSwitch = viewSwitch;
   const card = (c, id, title, body, opts) => secWrap(c, id, title, body, opts);
   const rows = (c, list, ed) => list.map(([k, l, kind]) => fieldRow(c, k, l, kind, ed)).join('');
@@ -17003,7 +17011,7 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
       ${card(c, 's-sum', 'Note summary (SOAP)', ['soap.s', 'soap.o', 'soap.a', 'soap.p'].some((k) => has(c, k)) ? [['soap.s', 'Subjective'], ['soap.o', 'Objective'], ['soap.a', 'Assessment'], ['soap.p', 'Plan']].map(([k, l]) => fieldRow(c, k, l, 'area', ed)).join('') : '<p class="cx-empty">Written for you from the sections above when you finish. You can edit it.</p>', { tools: ed ? '<button class="btn sm" data-act="cx-rebuild">↻ Rebuild</button>' : '' })}
       <div class="cx-allfields"><button class="btn sm ghost" data-act="cx-layout" data-v="full">Show every field (detailed form)</button></div></div>`;
     return `<div class="page-head cx-head"><div><div class="crumbs no-crumb"><a href="#/patient/${p.id}">${esc(p.firstName + ' ' + p.lastName)}</a> › Consultation ${fd(e.date)}</div><h1>Consultation</h1></div>
-        <div class="actions">${viewSwitch(e, 'ai')}${e.status === 'signed' ? '' : '<span class="badge warn" id="cx-save">Draft — saves as you go</span>'}${scribeBtn(e)}</div></div>
+        <div class="actions">${e.status === 'signed' ? '' : '<span class="badge warn" id="cx-save">Draft — saves as you go</span>'}${scribeBtn(e)}</div></div>
       ${A.patientBar(p)}
       <div class="cx-ws simple">${main}<aside class="cx-side" id="cx-side" aria-label="AI Scribe">${sideInner(e)}</aside></div>
       <div class="actionbar cx-bar" role="region" aria-label="Finish consultation"><div class="cx-bar-l">${c.versions.length ? `<span class="tiny muted">Version ${c.versions.length}</span>` : ''}</div>
@@ -17024,7 +17032,7 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
       ${ed && addable.length ? `<div class="cx-add cx-add-panel"><select id="cx-panel-sel" aria-label="Add a section">${addable.map((id) => `<option value="${id}">${esc(PANELS[id].t)}</option>`).join('')}</select><button class="btn sm" data-act="cx-panel-add">+ Add section</button></div>` : ''}</div>`;
     return `<div class="page-head cx-head"><div><div class="crumbs no-crumb"><a href="#/patient/${p.id}">${esc(p.firstName + ' ' + p.lastName)}</a> › Consultation ${fd(e.date)}</div><h1>Consultation</h1></div>
         <div class="actions"><label class="cx-tpl"><span class="tiny">Form</span><select data-change="cx-tpl" ${ed ? '' : 'disabled'} aria-label="Consultation form">${Object.entries(TPL).map(([id, t]) => `<option value="${id}" ${id === c.template ? 'selected' : ''}>${esc(t.n)}</option>`).join('')}</select></label>
-        ${e.status === 'signed' ? '' : '<span class="badge warn" id="cx-save">Draft — saves as you go</span>'}${scribeBtn(e)}${viewSwitch(e, 'ai')}<button class="btn sm ghost" data-act="cx-layout" data-v="simple">Simple view</button></div></div>
+        ${e.status === 'signed' ? '' : '<span class="badge warn" id="cx-save">Draft — saves as you go</span>'}${scribeBtn(e)}<button class="btn sm ghost" data-act="cx-layout" data-v="simple">Simple view</button></div></div>
       ${A.patientBar(p)}
       <div class="cx-ws ${pr.side ? '' : 'no-side'}">${leftPanel(e, p)}${main}<aside class="cx-side" id="cx-side" aria-label="AI Scribe">${sideInner(e)}</aside>${pr.side ? '' : '<button class="cx-side-open" data-act="cx-side-toggle" aria-label="Show the AI Scribe panel">⟨ AI Scribe</button>'}</div>
       <div class="actionbar cx-bar" role="region" aria-label="Finish consultation"><div class="cx-bar-l">${c.versions.length ? `<span class="tiny muted">Version ${c.versions.length}</span>` : ''}</div>
@@ -17060,12 +17068,12 @@ ${segs.map((s) => `${s.id} [${s.spk}]: ${s.text}`).join('\n')}`;
   // ---------------------------------------------------------------- page
   const prevConsult = P.consult;
   P.consult = function (params) { const e = encById(params[0]); if (!e) return prevConsult.apply(this, arguments);
-    if (params[1] === 'classic' || (A.isDental && A.isDental())) { const html = prevConsult.call(this, [params[0]]); return params[1] === 'classic' && !(A.isDental && A.isDental()) ? `<div class="cx-classic-bar"><span class="tiny muted">Classic view — type the note yourself.</span>${viewSwitch(e, 'classic')}</div>` + html : html; }
+    if (params[1] === 'classic' || (A.isDental && A.isDental())) { const html = prevConsult.call(this, [params[0]]); return params[1] === 'classic' && !(A.isDental && A.isDental()) ? ribbon(e, 'classic') + html : html; }
     if (!A.can('clinical.read')) return '<div class="card">Clinical notes are not available for your role.</div>';
     sweepRetention(); const p = E.patient(db(), e.patientId); const c = cxOf(e);
     if (L.encId === e.id && c.scribe.state === 'listening' && !(A.dictation && A.dictation.engineName && A.dictation.engineName())) { /* engine lost after reload */ }
     if (c.scribe.state === 'listening' && L.encId !== e.id) { c.scribe.state = 'paused'; c.scribe.why = 'Paused — the page was reloaded. Press Resume to carry on.'; }
-    return params[1] === 'review' ? reviewView(e, p) : workspace(e, p); };
+    return ribbon(e, 'ai') + (params[1] === 'review' ? reviewView(e, p) : workspace(e, p)); };
 
   // ---------------------------------------------------------------- live painting without disturbing typing
   const paintSide = (e) => { const el = document.getElementById('cx-side'); if (!el) return; const tr = document.getElementById('cx-tr'); const atBottom = !tr || tr.scrollTop + tr.clientHeight >= tr.scrollHeight - 30; const typing = el.contains(document.activeElement) && /INPUT|SELECT/.test(document.activeElement.tagName);
@@ -20757,6 +20765,9 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   A.cxDefault = () => { const a = acct(); const v = (a && a.prefs && a.prefs.cxView) || (() => { try { return localStorage.getItem(key()); } catch (e) { return null; } })(); return v === 'classic' ? 'classic' : 'ai'; };
   const setDefault = (v) => { const a = acct(); if (a) { a.prefs = a.prefs || {}; a.prefs.cxView = v; try { PL().save(); } catch (e) { /* ignore */ } } try { localStorage.setItem(key(), v); } catch (e) { /* ignore */ } };
   const NAME = { classic: 'Classic', ai: 'AI Scribe' };
+  // the same control in both views: which view consultations start in (for this user)
+  A.cxDefaultPicker = () => { const v = A.cxDefault(); return `<label class="cx-rib-r" title="The view every consultation you open starts in. You can still switch views at any time."><span>Start my consultations in</span><select data-change="cx-def-pick" aria-label="Start my consultations in"><option value="ai" ${v === 'ai' ? 'selected' : ''}>✦ AI Scribe</option><option value="classic" ${v === 'classic' ? 'selected' : ''}>Classic</option></select></label>`; };
+  H['change:cx-def-pick'] = (el) => { const v = el.value === 'classic' ? 'classic' : 'ai'; setDefault(v); A.toast(`Your consultations will now start in ${NAME[v]}. You can still switch views at any time.`); };
   A.cxDefaultToggle = (which) => { const on = A.cxDefault() === which; return `<label class="cx-def" title="When ticked, every consultation you open starts in the ${NAME[which]} view. You can still switch views at any time."><input type="checkbox" data-change="cx-def" data-v="${which}" ${on ? 'checked' : ''}> <span>Open my consultations in <b>${NAME[which]}</b></span></label>`; };
   H['change:cx-def'] = (el) => { const v = el.checked ? el.dataset.v : (el.dataset.v === 'classic' ? 'ai' : 'classic'); setDefault(v); A.toast(`Your consultations will now open in ${NAME[v]}. You can switch views at any time.`); A.render(); };
   // #/consult/<id> (no view chosen) opens the user's default view
@@ -20765,16 +20776,19 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     return _c.apply(this, arguments); };
   // put the choice under My account → Display and language as well
   const KB = A.KB || []; const k = KB.find((x) => x.id === 'consult') || KB.find((x) => x.id === 'scribe');
-  if (k && k.steps && !k.steps.some((s) => /Open my consultations in/.test(s))) k.steps.push('Prefer Classic or AI Scribe? In either view, tick “Open my consultations in …” next to the Classic | AI Scribe switch. Every consultation you open then starts in that view.');
+  if (k && k.steps && !k.steps.some((s) => /Open my consultations in/.test(s))) k.steps.push('Prefer Classic or AI Scribe? At the top of any consultation, choose “Start my consultations in: AI Scribe / Classic”. Every consultation you open then starts in that view; the View switch still changes it at any time.');
   if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.71')) A.RELEASES.unshift({ v: '0.71', date: '2026-11-24', title: 'Patients by account, and your own default consultation view', items: [
     { type: 'improved', area: 'clinical', title: 'Patients are grouped by account', text: 'Every account has an account number and every patient a file number. The main member is responsible for the account; dependants are patients on it with their dependant code. Search by name, ID, file number, account number or member number. “＋ Dependant” fills in the main member and medical aid for you.', link: '#/patients' },
-    { type: 'new', area: 'clinical', title: 'Choose your default consultation view', text: 'Some doctors prefer Classic, some AI Scribe. Next to the Classic | AI Scribe switch, tick “Open my consultations in …” — every consultation you open then starts in that view. It is saved for you, on every computer.', link: '#/today' }] });
+    { type: 'new', area: 'clinical', title: 'Choose your default consultation view', text: 'Some doctors prefer Classic, some AI Scribe. At the top of any consultation, choose “Start my consultations in: AI Scribe or Classic” — every consultation you open then starts in that view. It is saved for you, on every computer.', link: '#/today' }] });
   const pt = KB.find((x) => x.id === 'patients') || KB.find((x) => x.id === 'register'); if (pt && pt.steps) ['Every account has an account number (e.g. JFP00012) and every patient a file number (e.g. F00034). Search by either.'].forEach((s) => { if (!pt.steps.includes(s)) pt.steps.push(s); });
   const C = A.COURSES || []; const st = C.find((c) => c.id === 'front') || C.find((c) => c.id === 'start');
   if (st && st.quiz && !st.quiz.some((q) => /responsible for the account/.test(q.q))) st.quiz.push({ q: 'A child is a dependant on her father’s medical aid. Who is responsible for the account?', o: ['The child', 'The father — the main member', 'The medical aid only'], a: 1 });
-  const cl = C.find((c) => c.id === 'clinical'); if (cl && cl.quiz && !cl.quiz.some((q) => /default consultation view/.test(q.q))) cl.quiz.push({ q: 'How do you make Classic your default consultation view?', o: ['Ask the practice manager', 'Tick “Open my consultations in Classic” next to the view switch', 'It cannot be changed'], a: 1 });
+  const cl = C.find((c) => c.id === 'clinical'); if (cl && cl.quiz && !cl.quiz.some((q) => /default consultation view/.test(q.q))) cl.quiz.push({ q: 'How do you make Classic your default consultation view?', o: ['Ask the practice manager', 'At the top of a consultation, choose “Start my consultations in: Classic”', 'It cannot be changed'], a: 1 });
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /clinical|consult/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /default consultation view/.test(x[0]))) g[1].push(['Default consultation view (Classic or AI Scribe)', k ? k.id : 'scribe']); const f = A.FUNCTIONS.find((x) => /front|patient|reception/i.test(x[0])) || A.FUNCTIONS[0]; if (f && !f[1].some((x) => /Patients by account/.test(x[0]))) f[1].push(['Patients by account: account and file numbers', pt ? pt.id : 'register']); }
 })();
+/* v0.73 — switching between Classic and AI Scribe is not a screen to go back to: "‹ Back" skips the other view of the same consultation */
+(function () { const A = window.APP; const bt = A.backTarget; if (!bt) return; const base = (h) => String(h || '').replace(/\/(classic|ai)$/, '');
+  A.backTarget = () => { const st = A.ui.back || []; if (/^#\/consult\//.test(location.hash)) { for (let i = st.length - 1; i >= 0; i--) if (base(st[i]) !== base(location.hash)) return st[i]; } return bt(); }; })();
 
 
 /* ===== ui-v072l.js ===== */
@@ -20786,6 +20800,16 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     { type: 'improved', area: 'clinical', title: 'One line per account — tick to include dependants', text: 'The Patients list now shows one line per main member: account number, medical aid and plan, member number, how many dependants, the account balance, today and the last visit. Tick “Include dependants” to show each account’s dependants underneath. Searching for a dependant shows them under their main member.', link: '#/patients' }] });
   const pt = KB.find((x) => x.id === 'patients') || KB.find((x) => x.id === 'register');
   if (pt && pt.steps) { pt.steps = pt.steps.filter((s) => !/grouped by account|Add a dependant to this account/.test(s)); ['The Patients list shows one line per account (main member) — the main member is responsible for the account. Tick “Include dependants” to see the patients on each account.', 'Use “＋ Dependant” on a main member’s line to register a family member — the main member and medical aid are filled in.'].forEach((s) => { if (!pt.steps.includes(s)) pt.steps.push(s); }); }
+})();
+
+
+/* ===== ui-v073l.js ===== */
+/* Prac360 v0.73 — What's new: one consultation ribbon for Classic and AI Scribe, with a clear default-view choice. */
+(function () {
+  'use strict';
+  const A = window.APP;
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.73')) A.RELEASES.unshift({ v: '0.73', date: '2026-11-24', title: 'One consultation ribbon', items: [
+    { type: 'improved', area: 'clinical', title: 'Classic and AI Scribe look the same at the top', text: 'Both consultation views now have the same ribbon at the top: View (Classic | ✦ AI Scribe) on the left, and “Start my consultations in” on the right — choose AI Scribe or Classic once, and every consultation you open starts there.', link: '#/today' }] });
 })();
 
 

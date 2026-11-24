@@ -16078,12 +16078,12 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   'use strict';
   const A = window.APP, H = A.H, esc = A.esc, PL = () => window.PL;
   const BUILT = [['general', 'General'], ['spring', 'Spring'], ['summer', 'Summer'], ['fall', 'Autumn'], ['winter', 'Winter'], ['christmas', 'Christmas'], ['diwali', 'Diwali']].map(([id, name]) => ({ id, name, src: `media/avatars/${id}.webp?v=1`, kind: 'builtin' }));
-  const lib = () => { const s = PL().s; s.custom = s.custom || {}; const c = s.custom; if (!Array.isArray(c.avatars)) c.avatars = BUILT.map((x) => Object.assign({}, x)); if (!c.avatars.length) c.avatars = [Object.assign({}, BUILT[0])]; if (!c.avatars.some((x) => x.id === c.active)) c.active = c.avatars[0].id; return c; };
+  const lib = () => { const s = PL().s; s.custom = s.custom || {}; const c = s.custom; if (!Array.isArray(c.avatars)) c.avatars = BUILT.map((x) => Object.assign({}, x)); if (!c.avatars.length) c.avatars = [Object.assign({}, BUILT[0])]; if (!c.dflt2) { c.dflt2 = 1; if (c.avatars.some((x) => x.id === 'christmas')) c.active = 'christmas'; } if (!c.avatars.some((x) => x.id === c.active)) c.active = (c.avatars.find((x) => x.id === 'christmas') || c.avatars[0]).id; return c; };
   const shared = () => { try { const s = A.supportData && A.supportData(); return s && s.avatar; } catch (e) { return null; } };
   const save = () => { try { PL().save(); } catch (e) { /* ignore */ } };
   // the avatar to show: the shared one (set by support) if there is one, otherwise this computer's choice
   A.avatarNow = () => { const sh = shared(); if (sh && sh.src) return sh; const c = lib(); return c.avatars.find((x) => x.id === c.active) || c.avatars[0]; };
-  A.avatarSrc = () => (A.avatarNow() || {}).src || BUILT[0].src;
+  A.avatarSrc = () => (A.avatarNow() || {}).src || 'media/avatars/christmas.webp?v=1';
   A.avatarRefresh = () => { document.querySelectorAll('#p360-robot .rb-img').forEach((i) => { const s = A.avatarSrc(); if (i.getAttribute('src') !== s) i.setAttribute('src', s); }); };
   const publish = (av) => { try { const s = A.supportData(); s.avatar = { id: av.id, name: av.name, src: av.src, kind: av.kind, at: new Date().toISOString() }; } catch (e) { /* ignore */ } save(); A.avatarRefresh(); };
   const use = (id, quiet) => { const c = lib(); const av = c.avatars.find((x) => x.id === id); if (!av) return; c.active = id; publish(av); if (!quiet) A.toast(`“${av.name}” is now the Assist avatar for every practice.`); };
@@ -16217,7 +16217,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
 
   const el = () => { let r = document.getElementById('p360-robot'); if (r) return r;
     r = document.createElement('div'); r.id = 'p360-robot'; r.setAttribute('aria-hidden', 'true');
-    r.innerHTML = `<div class="rb-mover"><button class="rb-bot" data-act="robot-talk" aria-label="Talk to Assist" title="Talk to Assist"><img class="rb-img" src="${(A.avatarSrc && A.avatarSrc()) || 'media/avatars/general.webp?v=1'}" alt="" draggable="false"></button>
+    r.innerHTML = `<div class="rb-mover"><button class="rb-bot" data-act="robot-talk" aria-label="Talk to Assist" title="Talk to Assist"><img class="rb-img" src="${(A.avatarSrc && A.avatarSrc()) || 'media/avatars/christmas.webp?v=1'}" alt="" draggable="false"></button>
       <div class="rb-bubble" role="status"><button class="rb-say" data-act="robot-talk"><strong></strong><span>Click me to start talking</span></button><button class="rb-x" data-act="robot-hide" aria-label="Hide the helper robot for now" title="Not now">×</button></div></div>`;
     document.body.appendChild(r); return r; };
 
@@ -20945,7 +20945,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   'use strict';
   const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
   if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.74')) A.RELEASES.unshift({ v: '0.74', date: '2026-11-24', title: 'A new Assist avatar, chosen by Prac360 support', items: [
-    { type: 'improved', area: 'help', title: 'A new helper behind the Assist button', text: 'The drawn robot is replaced by a friendly Assist avatar in a white coat. It still rises from behind the Assist button every couple of minutes and asks if you need help — click it to start talking to Assist. Prac360 support changes the avatar with the seasons (Spring, Summer, Autumn, Winter, Christmas, Diwali and more), so it may look different from time to time.', link: '#/today' },
+    { type: 'improved', area: 'help', title: 'A new helper behind the Assist button', text: 'The drawn robot is replaced by a friendly Assist avatar in a white coat. It still rises from behind the Assist button every couple of minutes and asks if you need help — click it to start talking to Assist. Prac360 support changes the avatar with the seasons (Spring, Summer, Autumn, Winter, Christmas, Diwali and more), so it may look different from time to time. For the festive season it wears its Christmas outfit.', link: '#/today' },
     { type: 'new', area: 'support', title: 'Support console → Customisation', text: 'For the Prac360 support team: choose the Assist avatar every practice sees, upload a picture (a plain background can be made transparent) or create one with the avatar maker, and add or remove avatars. One avatar is always in use.' }] });
   const r = kb('helperrobot'); if (r) { r.title = 'The Assist avatar (helper)'; r.keys = Array.from(new Set((r.keys || []).concat(['avatar', 'assist avatar', 'christmas robot', 'helper picture', 'change avatar']))); r.steps = ['Every couple of minutes a friendly Assist avatar rises from behind the Assist button and asks if you need help — it stays right behind the button.', 'Click the avatar or its speech bubble to start talking to Assist. Click × to send it away for now.', 'It never appears while you are talking to Assist, during a walkthrough, while a popup is open or while AI Scribe is listening.', 'Switch it off (or on) with the helper button at the top of Assist, next to the speaker button. Your choice is saved for you only.', 'The avatar is chosen by Prac360 support and changes with the seasons — practices cannot change the picture themselves.']; }
   if (!kb('customisation')) KB.push({ id: 'customisation', title: 'Customisation (Prac360 support only)', keys: ['customisation', 'customization', 'avatar', 'upload avatar', 'create avatar', 'remove avatar', 'seasonal avatar'], screens: ['console'], link: '#console/custom',

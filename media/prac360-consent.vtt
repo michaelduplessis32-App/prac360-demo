@@ -1,137 +1,149 @@
 WEBVTT
 
-00:00:00.726 --> 00:00:02.477
+00:00:00.721 --> 00:00:02.447
 Meet the Prac360 patient app.
 
-00:00:02.477 --> 00:00:11.834
+00:00:02.447 --> 00:00:11.677
 Patients register with their ID number, link their smart watch, ring or home devices, see all their records, and decide exactly what their doctors can see.
 
-00:00:13.727 --> 00:00:17.707
+00:00:13.742 --> 00:00:17.539
 At the practice, reception opens the sharing window on David's file.
 
-00:00:17.707 --> 00:00:24.789
+00:00:17.539 --> 00:00:24.294
 Next to the consent video there is a button that opens the patient app, so reception can show David exactly how it works.
 
-00:00:25.726 --> 00:00:28.580
+00:00:25.743 --> 00:00:28.575
 This is the app, as David sees it on his phone.
 
-00:00:28.580 --> 00:00:30.159
+00:00:28.575 --> 00:00:30.141
 He taps Create my account.
 
-00:00:32.726 --> 00:00:35.145
+00:00:32.742 --> 00:00:35.212
 He types his South African ID number.
 
-00:00:35.145 --> 00:00:41.685
+00:00:35.212 --> 00:00:41.887
 The app checks it, finds his records at every Prac360 practice, and he agrees to the privacy notice.
 
-00:00:43.010 --> 00:00:47.377
+00:00:43.197 --> 00:00:47.434
 To keep it safe, a code goes to the cell number his practice has on file.
 
-00:00:47.377 --> 00:00:50.369
+00:00:47.434 --> 00:00:50.335
 He enters the code, then creates a five digit PIN.
 
-00:00:53.011 --> 00:00:53.519
+00:00:53.197 --> 00:00:53.722
 He's in.
 
-00:00:53.519 --> 00:00:58.788
+00:00:53.722 --> 00:00:59.161
 Fingerprint login is one switch away, and the app asks if he wears a watch or ring.
 
-00:00:58.788 --> 00:01:00.565
+00:00:59.161 --> 00:01:00.996
 He does, so he links it now.
 
-00:01:02.014 --> 00:01:05.135
+00:01:02.201 --> 00:01:05.322
 He picks his ring, and chooses what it may send to the app.
 
-00:01:05.135 --> 00:01:08.362
+00:01:05.322 --> 00:01:08.549
 Then he approves the connection on the ring maker's own page.
 
-00:01:12.014 --> 00:01:14.524
+00:01:12.201 --> 00:01:14.709
 Six months of history comes in at once:
 
-00:01:14.524 --> 00:01:17.614
+00:01:14.709 --> 00:01:17.795
 sleep, steps, heart rate, blood oxygen and more.
 
-00:01:17.614 --> 00:01:21.670
+00:01:17.795 --> 00:01:21.845
 From now on, new readings sync automatically in the background.
 
-00:01:22.371 --> 00:01:25.494
+00:01:22.545 --> 00:01:25.692
 He also links his home blood pressure monitor, the same way.
 
-00:01:31.372 --> 00:01:32.689
+00:01:31.546 --> 00:01:32.885
 Now the important part:
 
-00:01:32.689 --> 00:01:34.921
+00:01:32.885 --> 00:01:35.155
 David decides what his doctors can see.
 
-00:01:34.921 --> 00:01:39.043
+00:01:35.155 --> 00:01:39.346
 He switches on wearable sharing, and keeps his skin temperature private.
 
-00:01:39.043 --> 00:01:41.618
+00:01:39.346 --> 00:01:41.966
 He can also choose how much history to share.
 
-00:01:44.373 --> 00:01:46.600
+00:01:44.545 --> 00:01:46.791
 His medical records work the same way.
 
-00:01:46.600 --> 00:01:50.936
+00:01:46.791 --> 00:01:51.165
 He gives consent, and then switches off anything he wants to keep private.
 
-00:01:50.936 --> 00:01:52.694
+00:01:51.165 --> 00:01:52.939
 Here, his letters and reports.
 
-00:01:52.694 --> 00:01:54.979
+00:01:52.939 --> 00:01:55.244
 Accounts and payments are never shared.
 
-00:01:58.375 --> 00:02:03.760
+00:01:58.545 --> 00:02:03.800
 On the Health tab, David sees his devices, when each one last synced, and every reading.
 
-00:02:03.760 --> 00:02:06.024
+00:02:03.800 --> 00:02:06.009
 Each one is marked shared or private.
 
-00:02:08.377 --> 00:02:13.230
+00:02:08.546 --> 00:02:13.411
 Tap any reading for the detail, explained in plain words, with its own share switch.
 
-00:02:15.377 --> 00:02:18.127
+00:02:15.555 --> 00:02:20.065
+David can also type in readings himself, like his weight from the bathroom scale.
+
+00:02:20.065 --> 00:02:22.403
+He chooses to share them with his doctors.
+
+00:02:24.555 --> 00:02:27.305
 Back at the practice, David's file has a new tab:
 
-00:02:18.127 --> 00:02:19.081
+00:02:27.305 --> 00:02:28.259
 Patient wearable.
 
-00:02:19.081 --> 00:02:24.243
+00:02:28.259 --> 00:02:33.421
 It is clearly marked as coming from the patient's own devices, not measured by the practice.
 
-00:02:26.380 --> 00:02:32.545
+00:02:35.555 --> 00:02:41.488
 The doctor sees the linked devices and when they last synced, what David shares, and what he chose to keep private.
 
-00:02:34.399 --> 00:02:40.321
+00:02:43.558 --> 00:02:49.711
 Anything worth a look is pointed out in plain words, like low daily activity or high home blood pressure.
 
-00:02:40.321 --> 00:02:43.592
+00:02:49.711 --> 00:02:53.111
 It is never a diagnosis, just a prompt for a conversation.
 
-00:02:44.399 --> 00:02:49.240
+00:02:53.810 --> 00:02:58.988
 And every reading is there, as a simple chart, for the last week, month or three months.
 
-00:02:51.400 --> 00:02:52.671
+00:03:00.812 --> 00:03:06.547
+The doctor can choose any dates, and open any reading in a bigger window, with the numbers and every value.
+
+00:03:10.812 --> 00:03:16.687
+Readings David typed in himself are shown separately, and the doctor can add one to his file with one click.
+
+00:03:18.814 --> 00:03:20.132
 David stays in control.
 
-00:02:52.671 --> 00:02:57.644
+00:03:20.132 --> 00:03:25.290
 Every time someone at a practice looks, he sees it in the app, and he gets a notification.
 
-00:03:00.400 --> 00:03:06.182
+00:03:27.814 --> 00:03:33.317
 He can also book any doctor in the Prac360 network, and his doctor already has his shared file.
 
-00:03:08.404 --> 00:03:11.047
+00:03:35.816 --> 00:03:38.522
 And he can switch anything off at any time:
 
-00:03:11.047 --> 00:03:13.813
+00:03:38.522 --> 00:03:41.354
 one kind of data, one device, or all sharing.
 
-00:03:13.813 --> 00:03:15.227
+00:03:41.354 --> 00:03:42.801
 It stops straight away.
 
-00:03:16.406 --> 00:03:17.881
+00:03:43.817 --> 00:03:45.479
 The Prac360 patient app:
 
-00:03:17.881 --> 00:03:23.660
+00:03:45.479 --> 00:03:51.989
 the patient's own health data, shared with their doctors only when, and only how, they choose.
 

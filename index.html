@@ -3054,6 +3054,24 @@ html[data-theme=dark] .wr-flag.warn{background:rgba(245,158,11,.12)}html[data-th
 .wa-how ol{padding-left:20px;line-height:1.55}.wa-tpl{border:1px solid var(--line,#e5e7eb);border-radius:10px;padding:8px 10px;margin:8px 0}.wa-tpl pre{white-space:pre-wrap;font-size:.82rem;margin:6px 0 0;background:var(--surface-2,#f8fafc);padding:8px;border-radius:8px}
 .wa-bubble{background:#dcf8c6;color:#111;border-radius:12px 12px 12px 2px;padding:10px 12px;font-size:.9rem;margin-bottom:10px;max-width:440px;box-shadow:0 1px 1px rgba(0,0,0,.1)}
 @media (max-width:820px){.wa-modes{grid-template-columns:1fr}}
+/* v0.85 script pad */
+.rx2-pt{background:var(--surface-2,#f8fafc);border-radius:10px;padding:8px 12px;margin-bottom:8px}.rx2-prev{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.rx2-find{position:relative}.rx2-res{display:flex;flex-direction:column;border:1px solid var(--line,#e5e7eb);border-radius:10px;max-height:300px;overflow:auto;background:var(--surface,#fff)}.rx2-res:empty{display:none}.rx2-res button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;background:none;border:0;border-bottom:1px solid var(--line,#f1f5f9);padding:7px 10px;cursor:pointer;color:inherit}.rx2-res button:hover{background:var(--surface-2,#f1f5f9)}.rx2-res span{font-size:.76rem;color:var(--muted,#64748b)}
+.rx2-ed{margin:10px 0;border:1.5px solid #bfdbfe;border-radius:12px;padding:10px 12px}.rx2-quick{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
+.rx2-items h3{margin:12px 0 6px}.rx2-it{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;border-bottom:1px solid var(--line,#eef0f3);padding:8px 0}
+.rx-sheet .rx-h{display:flex;gap:12px;align-items:center}.rx-sheet .rx-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:.9rem}.rx-sheet .rx-rx{font-size:2rem;font-weight:700;margin:6px 0}.rx-sheet .rx-list li{margin:8px 0}
+.rx-cta{margin-top:12px}
+/* v0.85 wearable bigger view and patient readings */
+.wr-h{margin:16px 0 8px}.wr-big{padding:2px 8px;line-height:1}.tr-big{padding:2px 8px;line-height:1;margin-right:6px}
+.wrb-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}.wrb-stats div{background:var(--surface-2,#f8fafc);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column}.wrb-stats span{font-size:.75rem;color:var(--muted,#64748b)}.wrb-stats b{font-size:1.05rem}
+.wrb-chart{border:1px solid var(--line,#e5e7eb);border-radius:12px;padding:10px;margin-bottom:10px;overflow-x:auto}.wrb-chart .wr-svg{height:300px}.wrb-chart svg{max-width:100%;height:auto}
+@media (max-width:700px){.wrb-stats{grid-template-columns:repeat(2,1fr)}}
+.p2-types{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}.p2-types button{display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px solid #dbe3f0;background:#fff;border-radius:12px;padding:8px 2px;font-size:20px;cursor:pointer;color:#0f172a}.p2-types button span{font-size:.66rem;line-height:1.1;text-align:center}.p2-types button.on{border-color:var(--p2b);background:#eef2ff}
+.p2-two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.p2-f select{border:1.5px solid #cbd5e1;border-radius:12px;padding:11px;font-size:1rem;background:#fff;color:#0f172a}
+.p2-x{margin-left:auto;background:none;border:0;color:#94a3b8;cursor:pointer;font-size:.9rem}.p2-sm{display:block;font-size:.72rem;color:#64748b;font-weight:400}.p2-rowb span{display:flex;flex-direction:column;text-align:left}
+.p2-shb{font-style:normal;font-size:.7rem;border-radius:999px;padding:1px 8px}.p2-shb.sh{background:#dcfce7;color:#166534}.p2-shb.pr{background:#f1f5f9;color:#475569}
+.wr-axw{display:flex;gap:8px}.wr-yax{display:flex;flex-direction:column;justify-content:space-between;font-size:.72rem;color:var(--muted,#64748b);text-align:right;min-width:44px;padding-bottom:18px}.wr-plot{flex:1;min-width:0}
+.wr-leg{font-size:.76rem;color:var(--muted,#64748b);margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.wr-leg i{display:inline-block;width:18px;height:0;border-top:2px solid #2563eb;margin-left:8px}.wr-leg i.l2{border-top:2px dashed #94a3b8}.wr-leg i.l3{border-top:2px dashed #f59e0b}.wr-leg i.b1,.wr-leg i.b2{height:10px;border:0;background:#60a5fa;width:10px;border-radius:2px}.wr-leg i.b2{background:#1d4ed8}
 </style>
 </head>
 <body>
@@ -6095,7 +6113,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
         <label class="f"><span>Main member <small>(for dependants — the account goes to them)</small></span><select name="mainMemberId"><option value="">The patient is the main member</option>${db().patients.filter((p) => !p.mainMemberId).map((p) => `<option value="${p.id}">${esc(p.firstName + ' ' + p.lastName)}</option>`).join('')}</select></label></div>
       <h2 style="margin-top:10px">Consent</h2>
       <label class="check"><input type="checkbox" name="c_popia" checked> Patient received and acknowledged the POPIA processing notice</label>
-      <label class="check"><input type="checkbox" name="c_sms"> Patient agrees to SMS appointment reminders</label><label class="check"><input type="checkbox" name="c_wa"> Patient agrees to WhatsApp messages (appointment reminders, patient-app invite)</label>
+      <label class="check"><input type="checkbox" name="c_sms"> Patient agrees to SMS appointment reminders</label><label class="check"><input type="checkbox" name="c_wa"> Patient agrees to WhatsApp messages (appointment reminders, patient-app invite, statements)</label>
       <label class="check"><input type="checkbox" name="c_ai"> Patient agrees to AI-assisted note drafting (clinician always reviews)</label>
       <div class="row" style="margin-top:12px"><button class="btn primary" type="submit">Save patient</button><a class="btn" href="#/patients">Cancel</a><span class="tiny">Duplicate check runs on save (name + date of birth, ID number).</span></div></form>`;
   H['input:rf-id'] = (el) => { const v = el.value.replace(/\s/g, ''); const msg = document.getElementById('rf-id-msg'); if (v.length < 13) { msg.textContent = ''; return; }
@@ -7071,6 +7089,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
   const sigOf = (u) => u.sig || {};
   A.signReady = (u) => !!(sigOf(u).img && sigOf(u).pinHash);
   A.signPinCheck = (u, pin) => checkPin(u, pin);
+  A.checkPin = (u, pin) => checkPin(u, pin); A.sigOf = (u) => sigOf(u);
   const checkPin = async (u, pin) => {
     const s = sigOf(u); const now = Date.now();
     if (s.lockedUntil && s.lockedUntil > now) return { ok: false, msg: `Signing is locked for ${Math.ceil((s.lockedUntil - now) / 60000)} more minute(s) after too many wrong PINs.` };
@@ -21958,6 +21977,8 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     { k: 'bp', ic: '🩺', t: 'Blood pressure', u: 'mmHg', d: 'Readings from your home blood-pressure monitor.' },
     { k: 'weight', ic: '⚖️', t: 'Weight', u: 'kg', d: 'Readings from your smart scale.' }];
   const TY = Object.fromEntries(TYPES.map((x) => [x.k, x]));
+  // readings the patient types in themselves (v0.85)
+  Object.assign(TY, { height: { k: 'height', ic: '📏', t: 'Height', u: 'cm', d: 'Your height.' }, glucose: { k: 'glucose', ic: '🩸', t: 'Blood glucose', u: 'mmol/L', d: 'Blood sugar from a finger-prick meter.' }, mtemp: { k: 'mtemp', ic: '🌡️', t: 'Body temperature', u: '°C', d: 'Temperature from a thermometer.' }, pulse: { k: 'pulse', ic: '💓', t: 'Pulse', u: 'bpm', d: 'Heartbeats per minute at rest.' }, mspo2: { k: 'mspo2', ic: '🫁', t: 'Oxygen (finger clip)', u: '%', d: 'Oxygen from a finger-clip oximeter.' }, waist: { k: 'waist', ic: '📐', t: 'Waist', u: 'cm', d: 'Around your waist at the belly button.' } });
   const W8 = ['steps', 'active', 'sleep', 'rhr', 'hr', 'hrv', 'spo2', 'temp', 'resp'];
   // device makers (names only — no logos). Connections are simulated in the demo.
   const BRANDS = [
@@ -22047,7 +22068,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const _ext = A.extendPatientTabs; A.extendPatientTabs = function (p, tabs) { const r = _ext ? _ext.apply(this, arguments) : tabs; const T = r || tabs; if (A.can('clinical.read') && !T.some((x) => x[0] === 'wearable')) { const i = T.findIndex((t) => t[0] === 'trends'); T.splice(i < 0 ? 1 : i + 1, 0, ['wearable', '⌚ Patient wearable', true]); } return T; };
   A.PTX = A.PTX || {};
   const PER = [['7', '7 days'], ['30', '30 days'], ['90', '90 days'], ['365', '12 months']];
-  const fmt = (type, v) => { if (v == null) return '—'; switch (type) { case 'steps': return Math.round(v).toLocaleString('en-ZA'); case 'sleep': { const h = Math.floor(v), m = Math.round((v - h) * 60); return `${h}h ${String(m).padStart(2, '0')}m`; } case 'spo2': return v.toFixed(1) + '%'; case 'temp': return (v > 0 ? '+' : '') + v.toFixed(1) + ' °C'; case 'weight': return v.toFixed(1) + ' kg'; case 'resp': return v.toFixed(1); default: return String(Math.round(v)); } };
+  const fmt = (type, v) => { if (v == null) return '—'; switch (type) { case 'steps': return Math.round(v).toLocaleString('en-ZA'); case 'sleep': { const h = Math.floor(v), m = Math.round((v - h) * 60); return `${h}h ${String(m).padStart(2, '0')}m`; } case 'spo2': return v.toFixed(1) + '%'; case 'temp': return (v > 0 ? '+' : '') + v.toFixed(1) + ' °C'; case 'weight': return v.toFixed(1) + ' kg'; case 'resp': return v.toFixed(1); case 'glucose': return (+v).toFixed(1) + ' mmol/L'; case 'mtemp': return (+v).toFixed(1) + ' °C'; case 'height': case 'waist': return Math.round(v) + ' cm'; case 'mspo2': return Math.round(v) + '%'; case 'pulse': return Math.round(v) + ' bpm'; default: return String(Math.round(v)); } };
   const val = (type, v) => (type === 'sleep' ? v.h : type === 'spo2' ? v.avg : type === 'hr' ? v.avg : type === 'bp' ? v.sys : v);
   A.WEAR.fmt = fmt; A.WEAR.val = val;
   // a small SVG chart: bars for counts, a line for the rest (hover shows the day and value)
@@ -22059,7 +22080,10 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     else { const line = (f, cls) => `<polyline class="${cls}" points="${S.map((x, i) => X(i).toFixed(1) + ',' + Y(f(x)).toFixed(1)).join(' ')}"/>`; if (type === 'bp') g += line((x) => x.v.sys, 'wr-l') + line((x) => x.v.dia, 'wr-l2'); else if (type === 'spo2') g += line((x) => x.v.min, 'wr-l2') + line((x) => x.v.avg, 'wr-l'); else g += line((x) => val(type, x.v), 'wr-l');
       if (type === 'spo2') g += `<line class="wr-ref" x1="0" x2="${Wd}" y1="${Y(90)}" y2="${Y(90)}"/>`; if (type === 'bp') g += `<line class="wr-ref" x1="0" x2="${Wd}" y1="${Y(135)}" y2="${Y(135)}"/>`; if (type === 'temp') g += `<line class="wr-ref" x1="0" x2="${Wd}" y1="${Y(0)}" y2="${Y(0)}"/>`;
       if (S.length <= 120) S.forEach((x, i) => { g += `<circle class="wr-pt" cx="${X(i).toFixed(1)}" cy="${Y(type === 'bp' ? x.v.sys : val(type, x.v)).toFixed(1)}" r="${S.length > 40 ? 6 : 8}"><title>${esc(tip(x))}</title></circle>`; }); }
-    return `<svg class="wr-svg" viewBox="0 0 ${Wd} ${Ht}" preserveAspectRatio="none" role="img" aria-label="${esc(TY[type].t)} chart">${g}</svg><div class="wr-ax"><span>${A.fd(S[0].date)}</span><span>${A.fd(S[S.length - 1].date)}</span></div>`; };
+    const svg = `<svg class="wr-svg" viewBox="0 0 ${Wd} ${Ht}" preserveAspectRatio="none" role="img" aria-label="${esc(TY[type].t)} chart">${g}</svg>`; const ax = `<div class="wr-ax"><span>${A.fd(S[0].date)}</span>${opt.axis && S.length > 2 ? `<span>${A.fd(S[Math.floor(S.length / 2)].date)}</span>` : ''}<span>${A.fd(S[S.length - 1].date)}</span></div>`;
+    if (!opt.axis) return svg + ax; const yv = (v) => (type === 'sleep' ? fmt('sleep', v) : Math.abs(hi - lo) < 10 ? (Math.round(v * 10) / 10).toString() : Math.round(v).toLocaleString('en-ZA'));
+    const leg = { spo2: '<i class="l1"></i>average <i class="l2"></i>lowest <i class="l3"></i>90%', bp: '<i class="l1"></i>top (systolic) <i class="l2"></i>bottom (diastolic) <i class="l3"></i>135 home target', sleep: '<i class="b1"></i>total sleep <i class="b2"></i>deep sleep', temp: '<i class="l1"></i>change from normal <i class="l3"></i>normal' }[type];
+    return `<div class="wr-axw"><div class="wr-yax"><span>${yv(hi - (hi - lo) * pad / Ht)}</span><span>${yv((hi + lo) / 2)}</span><span>${yv(lo)}</span></div><div class="wr-plot">${svg}${ax}</div></div>${leg ? `<div class="wr-leg">${leg}</div>` : ''}`; };
   A.WEAR.chart = chart;
   const summary = (type, S) => { if (!S.length) return { main: '—', sub: '' }; const v = S.map((x) => val(type, x.v)); const a = avg(v);
     if (type === 'bp') return { main: `${Math.round(avg(S.map((x) => x.v.sys)))}/${Math.round(avg(S.map((x) => x.v.dia)))}`, sub: `average of ${S.length} reading${S.length === 1 ? '' : 's'} · last ${S[S.length - 1].v.sys}/${S[S.length - 1].v.dia}` };
@@ -22069,6 +22093,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     if (type === 'hr') return { main: Math.round(a) + ' bpm', sub: `average · highest ${Math.max(...S.map((x) => x.v.max))}` };
     return { main: fmt(type, a) + (['rhr', 'hrv', 'active', 'resp'].includes(type) ? ' ' + TY[type].u : ''), sub: 'average a day' }; };
   A.WEAR.summary = summary;
+  A.WEAR.logView = (p, k) => logView(p, k); A.WEAR.avg = avg;
   const logView = (p, k) => { const w = W(k); const ds = A.shrDsId ? A.shrDsId() : 'local'; const last = w.views.find((v) => v.by === A.user.name && v.ds === ds); if (last && Date.now() - Date.parse(last.at) < 30 * 60000) return; w.views.unshift({ at: iso(now()), by: A.user.name, role: E.roleLabel ? E.roleLabel(A.user.role) : A.user.role, practice: (db().practice || {}).name, ds }); w.views = w.views.slice(0, 200); try { E.audit(db(), A.user, 'wearable-view', 'patient', p.id, p.id, 'Viewed the patient’s wearable data'); } catch (e) { /* ignore */ } save(); };
   A.PTX.wearable = (p) => { seedDemo(); const k = keyOf(p); const a = acc(k); const w = k ? W(k) : null; const open = `<button class="btn" data-act="pa-open" data-pid="${p.id}">📱 Open the patient app</button>`;
     const src = `<div class="wr-src"><span class="wr-src-i">⌚</span><div><strong>From the patient’s own devices</strong><span>Shared by ${esc(p.firstName)} in the Prac360 patient app. Measured by the patient’s watch, ring or home devices — not measured or checked by the practice. For awareness only, not a diagnosis.</span></div></div>`;
@@ -22096,6 +22121,99 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const _pb = A.patientBar; A.patientBar = function (p, extra) { let x = extra || ''; try { const k = keyOf(p); const a = acc(k); if (a && A.can('clinical.read')) { const w = W(k); const devs = w.devices.filter((d) => !d.removed); if (devs.length && w.share.on) { const ls = devs.map((d) => lastSync(k, d)).sort().pop(); x += `<a class="badge wr-pb" href="#/patient/${p.id}/wearable" title="Wearable data shared by the patient">⌚ Wearable · synced ${esc(ago(ls))}</a>`; } else x += '<span class="badge" title="Uses the Prac360 patient app">📱 Patient app</span>'; } } catch (e) { /* ignore */ } return _pb.call(this, p, x); };
   A.wearSeed = seedDemo;
   window.addEventListener('hashchange', () => { try { seedDemo(); } catch (e) { /* ignore */ } });
+})();
+
+
+/* ===== ui-wear2.js ===== */
+/* Prac360 v0.85 — Patient wearable, part 2.
+ * • Readings the patient types in themselves in the patient app (weight, height, blood pressure, blood glucose,
+ *   temperature, pulse, oxygen, waist). The patient chooses whether to share them. In Prac360 they show on the
+ *   ⌚ Patient wearable tab under "📝 Added by the patient", and the doctor can copy one into the patient's vitals
+ *   (then it is also on Trends & graphs, marked "Patient app").
+ * • The date selector on the wearable tab has 📅 Custom dates (From – To), like the Medical aids section.
+ * • Any reading opens in a bigger window (⤢) with a large chart, the numbers (average, lowest, highest, latest)
+ *   and every value in a table — on the wearable tab and on Trends & graphs. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, E = window.PE, esc = A.esc; const db = () => A.db; const WR = () => A.WEAR; if (!A.WEAR) return;
+  const MT = [['weight', 'Weight'], ['bp', 'BP'], ['glucose', 'Glucose'], ['pulse', 'Pulse'], ['mtemp', 'Temp'], ['mspo2', 'SpO2'], ['height', 'Height'], ['waist', 'Waist']]; // patient type → Prac360 vital
+  const VMAP = Object.fromEntries(MT);
+  A.VITALS.Glucose = A.VITALS.Glucose || { label: 'Blood glucose', unit: 'mmol/L', lo: 4, hi: 7.8, note: 'Fasting 4.0–7.0 mmol/L' }; A.VITALS.Waist = A.VITALS.Waist || { label: 'Waist', unit: 'cm' };
+  const mine = (k) => { const w = WR().W(k); w.mine = w.mine || []; return w.mine; };
+  const mineOn = (k) => !!WR().W(k).share.mineOn;
+  WR().mine = mine; WR().MT = MT;
+  // patient readings as a chart series: [{date, v}] (several on one day stay separate points)
+  const mSeries = (k, t, from, to) => mine(k).filter((x) => x.type === t && x.at.slice(0, 10) >= from && x.at.slice(0, 10) <= to).sort((a, b) => a.at.localeCompare(b.at)).map((x) => ({ date: x.at.slice(0, 10), at: x.at, v: x.v, id: x.id, note: x.note, ctx: x.ctx }));
+  WR().mSeries = mSeries;
+  const range = () => { const t = WR().today(); const p = A.ui.wrPer || '30'; if (p === 'custom') { const f = A.ui.wrFrom || WR().addD(t, -29), to = A.ui.wrTo || t; return { p, from: f <= to ? f : to, to: to >= f ? to : f }; } return { p, from: WR().addD(t, -(+p - 1)), to: t }; };
+  WR().range = range;
+  const PER = [['7', '7 days'], ['30', '30 days'], ['90', '90 days'], ['365', '12 months'], ['custom', '📅 Custom dates']];
+  const perBar = (where) => { const r = range(); return `<div class="row" style="gap:10px;flex-wrap:wrap;align-items:center"><div class="seg ma-period" role="group" aria-label="Period">${PER.map(([v, l]) => `<button class="${r.p === v ? 'on' : ''}" data-act="wr-per" data-v="${v}" data-w="${where || ''}">${l}</button>`).join('')}</div>${r.p === 'custom' ? `<span class="ma-range"><label>From <input type="date" value="${r.from}" max="${WR().today()}" data-change="wr-from" data-w="${where || ''}"></label><label>To <input type="date" value="${r.to}" max="${WR().today()}" data-change="wr-to" data-w="${where || ''}"></label></span>` : ''}</div>`; };
+  const reopen = (el) => { if (el && el.dataset.w === 'big' && A.ui.wrBig) H['wr-big']({ dataset: A.ui.wrBig }); else A.render(); };
+  H['wr-per'] = (el) => { A.ui.wrPer = el.dataset.v; if (el.dataset.v === 'custom' && !A.ui.wrFrom) { A.ui.wrFrom = WR().addD(WR().today(), -29); A.ui.wrTo = WR().today(); } reopen(el); };
+  H['change:wr-from'] = (el) => { A.ui.wrFrom = el.value; reopen(el); };
+  H['change:wr-to'] = (el) => { A.ui.wrTo = el.value; reopen(el); };
+  const vText = (t, v) => (t === 'bp' ? `${v.sys}/${v.dia}${v.pulse ? ' · pulse ' + v.pulse : ''} mmHg` : WR().fmt(t, v));
+  const mSummary = (t, S) => { if (!S.length) return { main: '—', sub: '' }; const last = S[S.length - 1]; if (t === 'bp') { const a = WR().avg(S.map((x) => x.v.sys)), b = WR().avg(S.map((x) => x.v.dia)); return { main: `${last.v.sys}/${last.v.dia}`, sub: `latest · average ${Math.round(a)}/${Math.round(b)} · ${S.length} reading${S.length === 1 ? '' : 's'}` }; } return { main: vText(t, last.v), sub: `latest · ${S.length} reading${S.length === 1 ? '' : 's'}` }; };
+  const chartOf = (t, S, o) => (t === 'mspo2' ? WR().chart('spo2', S.map((x) => ({ date: x.date, v: { avg: x.v, min: x.v } })), o) : WR().chart(t, S, o));
+
+  // ---------------------------------------------------------------- the Patient wearable tab (replaces v0.82's)
+  const _old = A.PTX.wearable;
+  A.PTX.wearable = (p) => { if (A.wearSeed) A.wearSeed(); const k = WR().keyOf(p); const a = WR().acc(k); const w = k ? WR().W(k) : null; const devs = w ? w.devices.filter((d) => !d.removed) : []; const mineSh = k && mineOn(k) ? mine(k) : [];
+    if (!a || ((!w.share.on || !devs.length) && !mineSh.length)) return _old(p);
+    WR().logView(p, k); const r = range(); const from = r.from, to = r.to; const types = WR().devTypes(k); const sh = w.share.on ? types.filter((t) => WR().shared(k, t)) : []; const notSh = types.filter((t) => !sh.includes(t)); const F = w.share.on ? WR().flags(k, from, to) : [];
+    const src = `<div class="wr-src"><span class="wr-src-i">⌚</span><div><strong>From the patient’s own devices and readings</strong><span>Shared by ${esc(p.firstName)} in the Prac360 patient app. Measured by the patient’s watch, ring or home devices, or typed in by the patient — not measured or checked by the practice. For awareness only, not a diagnosis.</span></div></div>`;
+    const open = `<button class="btn" data-act="pa-open" data-pid="${p.id}">📱 Open the patient app</button>`;
+    const devRows = devs.map((d) => { const s = WR().status(k, d); const b = WR().BR[d.brand] || {}; return `<div class="wr-dev"><span class="wr-dev-i">${b.ic || '⌚'}</span><div class="wr-dev-t"><strong>${esc(d.name)}</strong><span>${esc(b.via ? 'via ' + b.via : '')} · linked ${A.fd(String(d.linkedAt).slice(0, 10))} · history from ${A.fd(WR().histFrom(d))}</span></div><span class="wr-sync ${s.cls}" title="${esc(s.t)}"><i></i>${esc(s.t)}</span></div>`; }).join('');
+    const card = (t, S, m, kind) => `<div class="wr-card" data-type="${t}"><div class="wr-ch"><span>${WR().TY[t].ic} ${esc(WR().TY[t].t)}</span><span class="row" style="gap:6px"><b>${esc(m.main)}</b><button class="btn sm ghost wr-big" data-act="wr-big" data-pid="${p.id}" data-t="${t}" data-kind="${kind}" title="Open bigger" aria-label="Open ${esc(WR().TY[t].t)} bigger">⤢</button></span></div><div class="wr-cs">${esc(m.sub)}</div>${kind === 'mine' ? chartOf(t, S, { h: 90 }) : WR().chart(t, S, { h: 90 })}</div>`;
+    const devCards = sh.map((t) => { const S = WR().sharedSeries(k, t, from, to); return card(t, S, WR().summary(t, S), 'dev'); }).join('');
+    const mTypes = MT.map((x) => x[0]).filter((t) => mineSh.some((y) => y.type === t));
+    const mCards = mTypes.map((t) => { const S = mSeries(k, t, from, to); return card(t, S, mSummary(t, S), 'mine'); }).join('');
+    const recent = mineSh.filter((x) => x.at.slice(0, 10) >= from && x.at.slice(0, 10) <= to).sort((a2, b) => b.at.localeCompare(a2.at)).slice(0, 12);
+    return `<div class="wr">${src}
+      ${devs.length && w.share.on ? `<div class="wr-top"><div class="card wr-devs"><div class="row between"><h2 style="margin:0">Linked devices</h2><span class="tiny muted">Syncs automatically from the patient’s phone</span></div>${devRows}</div>
+        <div class="card wr-share"><h2 style="margin-top:0">What ${esc(p.firstName)} shares</h2><div class="wr-chips">${sh.map((t) => `<span class="wr-chip on">${WR().TY[t].ic} ${esc(WR().TY[t].t)}</span>`).join('')}${mineSh.length ? '<span class="wr-chip on">📝 Readings they add</span>' : ''}</div>${notSh.length ? `<p class="small" style="margin:10px 0 4px">🔒 <strong>Not shared by the patient:</strong></p><div class="wr-chips">${notSh.map((t) => `<span class="wr-chip off">${esc(WR().TY[t].t)}</span>`).join('')}</div>` : ''}<p class="tiny muted" style="margin-top:10px">${w.share.from === 'all' ? 'All device history is shared.' : 'Shared from ' + A.fd(WR().shareFrom(k)) + '.'} Your view is recorded and the patient can see it in the app.</p></div></div>` : `<div class="card"><p class="small" style="margin:0">${esc(p.firstName)} shares <b>readings they add themselves</b>${devs.length ? ' but keeps their device data private' : ''}. Your view is recorded and the patient can see it in the app.</p></div>`}
+      <div class="row between wr-bar">${perBar()}<div class="row" style="gap:8px"><button class="btn" data-act="wr-pdf" data-pid="${p.id}">Save as PDF</button>${open}</div></div>
+      ${w.share.on && devs.length ? (F.length ? `<div class="card wr-flags"><h3 style="margin-top:0">Worth a look <span class="tiny muted">— from the patient’s device data, not a diagnosis</span></h3>${F.map((f) => `<div class="wr-flag ${f.lvl}"><b>${f.lvl === 'warn' ? '⚠' : 'ℹ'} ${esc(f.t)}</b><span>${esc(f.s)}</span></div>`).join('')}</div>` : `<div class="card wr-flags ok">✓ Nothing stands out from ${A.fd(from)} to ${A.fd(to)} in the shared device data.</div>`) : ''}
+      ${devCards ? `<h3 class="wr-h">⌚ From devices</h3><div class="wr-grid">${devCards}</div>` : ''}
+      ${mineSh.length ? `<h3 class="wr-h">📝 Added by the patient <span class="tiny muted">— typed into the app by ${esc(p.firstName)}</span></h3>${mCards ? `<div class="wr-grid">${mCards}</div>` : '<p class="muted small">No readings added in this period.</p>'}
+        ${recent.length ? `<div class="card"><h3 style="margin-top:0">Latest readings added</h3><table class="t small"><thead><tr><th>When</th><th>Reading</th><th>Value</th><th>Note</th><th></th></tr></thead><tbody>${recent.map((x) => `<tr><td class="nowrap">${A.fd(x.at.slice(0, 10))} ${x.at.slice(11, 16)}</td><td>${WR().TY[x.type].ic} ${esc(WR().TY[x.type].t)}</td><td><b>${esc(vText(x.type, x.v))}</b>${x.ctx ? ` <span class="tiny muted">${esc(x.ctx)}</span>` : ''}</td><td class="small">${esc(x.note || '')}</td><td class="nowrap">${x.copied ? '<span class="badge good">✓ In vitals</span>' : A.can('vitals.write') || A.can('clinical.write') ? `<button class="btn sm" data-act="wr-copy" data-pid="${p.id}" data-id="${x.id}" title="Copy into the patient’s vitals (Trends & graphs)">＋ Add to vitals</button>` : ''}</td></tr>`).join('')}</tbody></table></div>` : ''}` : ''}</div>`; };
+  // copy a patient reading into the practice's vitals (then it is on Trends & graphs, marked as from the patient app)
+  H['wr-copy'] = (el) => { const p = E.patient(db(), el.dataset.pid); const k = WR().keyOf(p); const x = mine(k).find((y) => y.id === el.dataset.id); if (!x || x.copied) return; const type = VMAP[x.type];
+    A.act(() => { db().vitals.push({ id: E.id('v'), patientId: p.id, type, value: x.type === 'bp' ? `${x.v.sys}/${x.v.dia}` : String(x.v), unit: (A.VITALS[type] || {}).unit || '', date: x.at.slice(0, 10), time: x.at.slice(11, 16), by: A.user.id, source: 'Patient app' }); x.copied = { at: new Date().toISOString(), by: A.user.name };
+      E.audit(db(), A.user, 'vital-from-patient-app', 'patient', p.id, p.id, `${WR().TY[x.type].t} ${vText(x.type, x.v)} copied from the patient app`); WR().save(); }, 'Added to the patient’s vitals (Trends & graphs).'); };
+
+  // ---------------------------------------------------------------- ⤢ the bigger view
+  const stats = (vals, t) => { if (!vals.length) return ''; const f = (v) => WR().fmt(t, v); const mn = Math.min(...vals), mx = Math.max(...vals), av = WR().avg(vals); return `<div class="wrb-stats"><div><span>Latest</span><b>${esc(f(vals[vals.length - 1]))}</b></div><div><span>Average</span><b>${esc(f(av))}</b></div><div><span>Lowest</span><b>${esc(f(mn))}</b></div><div><span>Highest</span><b>${esc(f(mx))}</b></div><div><span>Readings</span><b>${vals.length}</b></div></div>`; };
+  H['wr-big'] = (el) => { const d = el.dataset; A.ui.wrBig = { pid: d.pid, t: d.t, kind: d.kind }; const p = E.patient(db(), d.pid); const k = WR().keyOf(p); const t = d.t; const T = WR().TY[t]; const r = range();
+    const S = d.kind === 'mine' ? mSeries(k, t, r.from, r.to) : WR().sharedSeries(k, t, r.from, r.to); const val = (x) => (t === 'bp' ? x.v.sys : WR().val(t, x.v));
+    const big = d.kind === 'mine' ? chartOf(t, S, { w: 960, h: 300, axis: true }) : WR().chart(t, S, { w: 960, h: 300, axis: true });
+    const rows = S.slice().reverse().map((x) => `<tr><td class="nowrap">${A.fd(x.date)}${x.at ? ' ' + x.at.slice(11, 16) : ''}</td><td><b>${esc(d.kind === 'mine' ? vText(t, x.v) : t === 'bp' ? `${x.v.sys}/${x.v.dia} mmHg` : t === 'spo2' ? `${x.v.avg}% (lowest ${x.v.min}%)` : t === 'sleep' ? `${WR().fmt('sleep', x.v.h)} (deep ${WR().fmt('sleep', x.v.deep)}, REM ${WR().fmt('sleep', x.v.rem)})` : t === 'hr' ? `average ${x.v.avg}, highest ${x.v.max} bpm` : WR().fmt(t, x.v) + (['rhr', 'hrv', 'active', 'resp', 'steps'].includes(t) ? ' ' + T.u : ''))}</b>${x.note ? ` <span class="tiny muted">${esc(x.note)}</span>` : ''}</td></tr>`).join('');
+    A.modal(`${T.ic} ${T.t} — ${p.firstName} ${p.lastName}`, `<div class="wrb"><p class="small muted" style="margin-top:0">${esc(T.d)} ${d.kind === 'mine' ? 'Typed in by the patient.' : 'From the patient’s own device.'} Not measured by the practice.</p>${perBar('big')}
+      ${stats(S.map(val), t === 'bp' ? 'rhr' : t)}${t === 'bp' && S.length ? `<p class="small">Average ${Math.round(WR().avg(S.map((x) => x.v.sys)))}/${Math.round(WR().avg(S.map((x) => x.v.dia)))} mmHg — the dashed line marks 135 (home target).</p>` : ''}
+      <div class="wrb-chart">${big}</div><details ${S.length <= 31 ? 'open' : ''}><summary class="small">Every value (${S.length})</summary><div class="tbl-wrap" style="max-height:300px;overflow:auto"><table class="t small"><tbody>${rows || '<tr><td class="muted">No readings in this period.</td></tr>'}</tbody></table></div></details></div>`,
+      '<button class="btn" data-act="modal-close">Close</button>', { wide: true }); };
+
+  // Trends & graphs: every card opens bigger too
+  const _tc = A.trendCard; A.trendCard = function (pid, type, compact) { const h = _tc.apply(this, arguments); if (!h) return h; return h.replace('<div class="trend-r">', `<div class="trend-r"><button class="btn sm ghost tr-big" data-act="trend-big" data-pid="${pid}" data-type="${esc(type)}" title="Open bigger" aria-label="Open ${esc((A.VITALS[type] || {}).label || type)} bigger">⤢</button>`); };
+  H['trend-big'] = (el) => { const pid = el.dataset.pid, type = el.dataset.type; const meta = A.VITALS[type] || { label: type, unit: '' }; const per = A.ui.trPer || 'all'; const t0 = E.today(db());
+    const from = per === 'all' ? '0000' : per === 'custom' ? (A.ui.trFrom || E.addDays(t0, -365)) : E.addDays(t0, -(+per)); const to = per === 'custom' ? (A.ui.trTo || t0) : t0;
+    const pts = db().vitals.filter((v) => v.patientId === pid && v.type === type && v.date >= from && v.date <= to).sort((a, b) => (a.date + (a.time || '') < b.date + (b.time || '') ? -1 : 1));
+    const nums = type === 'BP' ? pts.map((x) => +String(x.value).split('/')[0]) : pts.map((x) => +x.value);
+    const st = nums.length ? `<div class="wrb-stats"><div><span>Latest</span><b>${esc(pts[pts.length - 1].value)} ${esc(meta.unit)}</b></div><div><span>Average</span><b>${type === 'BP' ? Math.round(WR().avg(nums)) + '/' + Math.round(WR().avg(pts.map((x) => +String(x.value).split('/')[1]))) : (Math.round(WR().avg(nums) * 10) / 10)} ${esc(meta.unit)}</b></div><div><span>Lowest</span><b>${type === 'BP' ? Math.min(...nums) + ' sys' : Math.min(...nums)}</b></div><div><span>Highest</span><b>${type === 'BP' ? Math.max(...nums) + ' sys' : Math.max(...nums)}</b></div><div><span>Readings</span><b>${pts.length}</b></div></div>` : '';
+    const seg = [['90', '3 months'], ['365', '12 months'], ['all', 'All'], ['custom', '📅 Custom dates']];
+    A.modal(`${meta.label} — ${A.pname(pid)}`, `<div class="wrb"><p class="small muted" style="margin-top:0">${esc(meta.note || '')}</p><div class="row" style="gap:10px;flex-wrap:wrap;align-items:center"><div class="seg ma-period">${seg.map(([v, l]) => `<button class="${per === v ? 'on' : ''}" data-act="tr-per" data-v="${v}" data-pid="${pid}" data-type="${esc(type)}">${l}</button>`).join('')}</div>${per === 'custom' ? `<span class="ma-range"><label>From <input type="date" value="${from}" data-change="tr-from" data-pid="${pid}" data-type="${esc(type)}"></label><label>To <input type="date" value="${to}" data-change="tr-to" data-pid="${pid}" data-type="${esc(type)}"></label></span>` : ''}</div>
+      ${st}<div class="wrb-chart">${pts.length ? (type === 'BP' ? A.bpChart(pts, { w: 960, h: 320 }) : A.lineChart(pts, meta, { w: 960, h: 320 })) : '<p class="muted">No readings in this period.</p>'}</div>
+      <details ${pts.length <= 31 ? 'open' : ''}><summary class="small">Every reading (${pts.length})</summary><div class="tbl-wrap" style="max-height:300px;overflow:auto"><table class="t small"><thead><tr><th>Date</th><th>Value</th><th>Captured by</th></tr></thead><tbody>${pts.slice().reverse().map((v) => `<tr><td class="nowrap">${A.fd(v.date)}${v.time ? ' ' + esc(v.time) : ''}</td><td><b>${esc(v.value)}</b> ${esc(meta.unit)}</td><td class="small">${v.source === 'Patient app' ? '📱 Patient app' : esc(A.uname(v.by) || '')}</td></tr>`).join('')}</tbody></table></div></details></div>`, '<button class="btn" data-act="modal-close">Close</button>', { wide: true }); };
+  H['tr-per'] = (el) => { A.ui.trPer = el.dataset.v; if (el.dataset.v === 'custom' && !A.ui.trFrom) { A.ui.trFrom = E.addDays(E.today(db()), -180); A.ui.trTo = E.today(db()); } H['trend-big'](el); };
+  H['change:tr-from'] = (el) => { A.ui.trFrom = el.value; H['trend-big'](el); };
+  H['change:tr-to'] = (el) => { A.ui.trTo = el.value; H['trend-big'](el); };
+
+  // demo: Thandiwe already shares a few readings she typed in
+  const seed = () => { try { const p = db().patients.find((x) => x.firstName === 'Thandiwe' && x.lastName === 'Mokoena'); const k = p && WR().keyOf(p); if (!k || !WR().acc(k)) return; const w = WR().W(k); if (w.mineSeeded) return; w.mineSeeded = 1; w.share.mineOn = true; const t = WR().today(); const at = (n, h) => WR().addD(t, -n) + 'T' + h + ':00.000Z';
+      mine(k).push({ id: 'mr1', type: 'weight', v: 78.4, at: at(20, '06:10') }, { id: 'mr2', type: 'weight', v: 77.9, at: at(10, '06:05') }, { id: 'mr3', type: 'weight', v: 77.2, at: at(2, '06:12') }, { id: 'mr4', type: 'glucose', v: 6.4, at: at(6, '05:40'), ctx: 'Fasting' }, { id: 'mr5', type: 'glucose', v: 7.2, at: at(3, '05:45'), ctx: 'Fasting' }, { id: 'mr6', type: 'glucose', v: 9.1, at: at(1, '18:20'), ctx: '2 hours after a meal', note: 'After a big lunch' }, { id: 'mr7', type: 'height', v: 164, at: at(20, '06:00') });
+      WR().save(); } catch (e) { /* ignore */ } };
+  const _s0 = A.wearSeed; A.wearSeed = function () { const r = _s0 ? _s0.apply(this, arguments) : null; seed(); return r; };
 })();
 
 
@@ -22162,6 +22280,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     const views = whoLooked().slice(0, 2);
     return `<div class="p2-hi">Hi ${esc(p.firstName)} 👋</div><div class="p2-date">${new Date().toLocaleDateString('en-ZA', { weekday: 'long', day: 'numeric', month: 'long' })}</div>${today}
       <div class="p2-sh"><button data-pa="tab" data-t="share" class="${c && c.status === 'active' ? 'ok' : 'off'}"><span>📋 Medical records</span><b>${c && c.status === 'active' ? 'Shared' + (ex.length ? ` · ${ex.length} kept private` : '') : 'Not shared'}</b></button><button data-pa="tab" data-t="share" class="${sh.on && D.length ? 'ok' : 'off'}"><span>⌚ Wearable data</span><b>${!D.length ? 'No device' : sh.on ? `Shared · ${shT} of ${types.length}` : 'Not shared'}</b></button></div>
+      <button class="p2-tile" data-pa="add-reading"><b>📝 Add a reading</b><span>Weight, blood pressure, blood sugar, temperature…</span></button>
       <button class="p2-tile" data-pa="tab" data-t="book"><b>📅 ${up ? 'Next appointment' : 'Book a doctor'}</b><span>${up ? `${esc(L().when(up.start))} · ${esc(up.doc)}` : 'Any doctor in the Prac360 network'}</span></button>
       ${views.length ? `<div class="p2-sec"><h4>👀 Recently looked at your information</h4>${views.map((v) => `<div class="p2-row"><b>${esc(v.by)}</b><small>${esc(v.practice)} · ${esc(v.what)} · ${esc(WR().ago(v.at))}</small></div>`).join('')}</div>` : ''}`; };
 
@@ -22170,13 +22289,32 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const devCard = (d) => { const k = key(); const s = WR().status(k, d); const b = WR().BR[d.brand] || {}; const bat = 35 + (WR().hash(d.id) % 60); const syncing = S.syncing === d.id;
     return `<div class="p2-dev"><div class="p2-dev-h"><span class="p2-dev-i">${b.ic || '⌚'}</span><div><b>${esc(d.name)}</b><span class="p2-st ${syncing ? 'busy' : s.cls}"><i></i>${syncing ? 'Syncing…' : esc(s.t)}</span></div>${d.kind === 'scale' || d.kind === 'bp' ? '' : `<span class="p2-bat">🔋 ${bat}%</span>`}</div>
       <div class="p2-dev-a"><button data-pa="sync" data-id="${d.id}" ${d.paused ? 'disabled' : ''}>🔄 Sync now</button><button data-pa="dev" data-id="${d.id}">Settings</button></div></div>`; };
-  const health = () => { const k = key(); const D = devs(); if (S.link) return linkFlow(); if (S.dev) return devSettings(); if (S.metric) return metricView();
-    if (!D.length) return `<div class="p2-h">My health</div><div class="p2-empty"><div class="p2-big">⌚</div><p>Link your watch, ring, smart scale or blood-pressure monitor. Your history comes in once, and new readings sync automatically.</p><button class="p2-btn" data-pa="link-start">Link a device</button></div>`;
+  // ---- readings the patient types in (v0.85)
+  const MTYPES = [['bp', 'Blood pressure'], ['weight', 'Weight'], ['glucose', 'Blood glucose'], ['pulse', 'Pulse'], ['mtemp', 'Temperature'], ['mspo2', 'Oxygen'], ['height', 'Height'], ['waist', 'Waist']];
+  const LIM = { weight: [2, 400], height: [40, 250], glucose: [1, 35], pulse: [30, 220], mtemp: [33, 43], mspo2: [70, 100], waist: [30, 250] };
+  const mineArr = () => (WR().mine ? WR().mine(key()) : []); const mOn = () => !!W().share.mineOn;
+  const mVal = (t, v) => (t === 'bp' ? `${v.sys}/${v.dia}${v.pulse ? ' · ' + v.pulse + ' bpm' : ''}` : WR().fmt(t, v));
+  const mineSec = () => { const M = mineArr(); const types = MTYPES.filter(([t]) => M.some((x) => x.type === t));
+    if (!M.length) return `<div class="p2-card hi"><b>📝 Add your own readings</b><span>Weight, blood pressure, blood sugar, temperature… typed in by you. Share them with your doctors if you want to.</span><button class="p2-btn sm" data-pa="add-reading">＋ Add a reading</button></div>`;
+    return `<div class="p2-sec"><div class="row-b"><h4>📝 Readings I added</h4><em class="p2-shb ${mOn() ? 'sh' : 'pr'}">${mOn() ? '🔗 Shared' : '🔒 Private'}</em></div>${types.map(([t, l]) => { const L2 = M.filter((x) => x.type === t).sort((a2, b2) => a2.at.localeCompare(b2.at)); const last = L2[L2.length - 1]; return `<button class="p2-rowb" data-pa="mlist" data-t="${t}"><span>${WR().TY[t].ic} ${esc(l)}<small class="p2-sm">${L2.length} reading${L2.length === 1 ? '' : 's'} · ${fd(last.at)}</small></span><b>${esc(mVal(t, last.v))} ›</b></button>`; }).join('')}<button class="p2-btn sm ghost" data-pa="add-reading">＋ Add a reading</button></div>`; };
+  const addReading = () => { const st = S.addR; const t = st.type; const now16 = new Date(Date.now() + 2 * 3600e3).toISOString().slice(0, 16); const T = WR().TY[t];
+    const fld = (id, lab, ph, u) => `<label class="p2-f"><span>${lab}${u ? ` <small>(${u})</small>` : ''}</span><input id="${id}" inputmode="decimal" placeholder="${ph}" autocomplete="off"></label>`;
+    return `${back('ar-cancel', 'My health')}<div class="p2-h">Add a reading</div><div class="p2-types">${MTYPES.map(([k2, l]) => `<button class="${k2 === t ? 'on' : ''}" data-pa="ar-type" data-t="${k2}">${WR().TY[k2].ic}<span>${esc(l)}</span></button>`).join('')}</div>
+      <div class="p2-sec">${t === 'bp' ? `<div class="p2-two">${fld('p2-ar-s', 'Top number', 'e.g. 128', 'systolic')}${fld('p2-ar-d', 'Bottom number', 'e.g. 82', 'diastolic')}</div>${fld('p2-ar-p', 'Pulse', 'optional', 'bpm')}` : fld('p2-ar-v', esc(T.t), { weight: 'e.g. 72.5', height: 'e.g. 168', glucose: 'e.g. 5.6', pulse: 'e.g. 70', mtemp: 'e.g. 36.8', mspo2: 'e.g. 97', waist: 'e.g. 88' }[t], T.u)}
+        ${t === 'glucose' ? `<label class="p2-f"><span>When</span><select id="p2-ar-c">${['Fasting', 'Before a meal', '2 hours after a meal', 'Random'].map((x) => `<option>${x}</option>`).join('')}</select></label>` : ''}
+        <label class="p2-f"><span>Date and time</span><input id="p2-ar-at" type="datetime-local" value="${now16}" max="${now16}"></label><label class="p2-f"><span>Note <small>(optional)</small></span><input id="p2-ar-n" maxlength="120" placeholder="e.g. after walking, felt dizzy"></label>
+        ${mOn() ? '<p class="p2-fine left">🔗 Your doctors can see readings you add. Change this under Sharing.</p>' : '<label class="p2-check"><input type="checkbox" id="p2-ar-sh" checked><span>Share my readings with my Prac360 doctors</span></label>'}</div>
+      <button class="p2-btn" data-pa="ar-save">Save reading</button>`; };
+  const mineList = () => { const t = S.mlist; const M = mineArr().filter((x) => x.type === t).sort((a2, b2) => b2.at.localeCompare(a2.at)); const S2 = M.slice().reverse().map((x) => ({ date: x.at.slice(0, 10), v: t === 'mspo2' ? { avg: x.v, min: x.v } : x.v }));
+    return `${back('ml-back', 'My health')}<div class="row-b"><div class="p2-h">${WR().TY[t].ic} ${esc(WR().TY[t].t)}</div><button class="p2-add" data-pa="add-reading" data-t="${t}">＋ Add</button></div><p class="p2-sub">${esc(WR().TY[t].d)} ${mOn() ? '🔗 Shared with your doctors.' : '🔒 Only you can see these.'}</p>
+      ${S2.length > 1 ? `<div class="p2-chart">${WR().chart(t === 'mspo2' ? 'spo2' : t, S2, { w: 320, h: 130 })}</div>` : ''}<div class="p2-sec">${M.map((x) => `<div class="p2-row"><b>${esc(mVal(t, x.v))}</b>${x.ctx ? `<small>${esc(x.ctx)}</small>` : ''}<small>${fd(x.at)} ${x.at.slice(11, 16)}${x.note ? ' · ' + esc(x.note) : ''}${x.copied ? ' · ✓ added to your file by the practice' : ''}</small><button class="p2-x" data-pa="mdel" data-id="${x.id}" aria-label="Delete this reading">✕</button></div>`).join('') || '<div class="p2-none">No readings yet</div>'}</div>`; };
+  const health = () => { const k = key(); const D = devs(); if (S.addR) return addReading(); if (S.mlist) return mineList(); if (S.link) return linkFlow(); if (S.dev) return devSettings(); if (S.metric) return metricView();
+    if (!D.length) return `<div class="row-b"><div class="p2-h">My health</div><button class="p2-add" data-pa="add-reading">＋ Reading</button></div>${mineSec()}<div class="p2-sec"><h4>⌚ Watch, ring or home device</h4><p class="p2-fine left">Link your watch, ring, smart scale or blood-pressure monitor. Your history comes in once, and new readings sync automatically.</p><button class="p2-btn sm" data-pa="link-start">Link a device</button></div>`;
     const per = S.per || '7'; const to = tday(), from = WR().addD(to, -(+per - 1)); const types = WR().devTypes(k);
-    return `<div class="row-b"><div class="p2-h">My health</div><button class="p2-add" data-pa="link-start">＋ Link</button></div>
+    return `<div class="row-b"><div class="p2-h">My health</div><span class="row" style="gap:6px"><button class="p2-add" data-pa="add-reading">＋ Reading</button><button class="p2-add" data-pa="link-start">＋ Link</button></span></div>
       <div class="p2-devs">${D.map(devCard).join('')}</div><p class="p2-fine">New readings sync automatically in the background, about every 15 minutes.</p>
       <div class="p2-seg">${PER.map(([v, l]) => `<button class="${per === v ? 'on' : ''}" data-pa="per" data-v="${v}">${l}</button>`).join('')}</div>
-      ${types.map((t) => { const T = WR().TY[t]; const Sx = WR().series(k, t, from, to); const m = WR().summary(t, Sx); const sh = WR().shared(k, t); return `<button class="p2-met" data-pa="metric" data-t="${t}"><div class="p2-met-h"><span>${T.ic} ${esc(T.t)}</span><em class="${sh ? 'sh' : 'pr'}">${sh ? '🔗 Shared' : '🔒 Private'}</em></div><b>${esc(m.main)}</b><small>${esc(m.sub)}</small>${WR().chart(t, Sx, { w: 300, h: 56 })}</button>`; }).join('')}`; };
+      ${types.map((t) => { const T = WR().TY[t]; const Sx = WR().series(k, t, from, to); const m = WR().summary(t, Sx); const sh = WR().shared(k, t); return `<button class="p2-met" data-pa="metric" data-t="${t}"><div class="p2-met-h"><span>${T.ic} ${esc(T.t)}</span><em class="${sh ? 'sh' : 'pr'}">${sh ? '🔗 Shared' : '🔒 Private'}</em></div><b>${esc(m.main)}</b><small>${esc(m.sub)}</small>${WR().chart(t, Sx, { w: 300, h: 56 })}</button>`; }).join('')}${mineSec()}`; };
   const metricView = () => { const k = key(); const t = S.metric; const T = WR().TY[t]; const per = S.per || '7'; const to = tday(), from = WR().addD(to, -(+per - 1)); const Sx = WR().series(k, t, from, to); const m = WR().summary(t, Sx); const sh = WR().shared(k, t); const w = W();
     return `${back('health-home', 'My health')}<div class="p2-h">${T.ic} ${esc(T.t)}</div><p class="p2-sub">${esc(T.d)}</p><div class="p2-seg">${PER.map(([v, l]) => `<button class="${per === v ? 'on' : ''}" data-pa="per" data-v="${v}">${l}</button>`).join('')}</div>
       <div class="p2-big-n">${esc(m.main)}<small>${esc(m.sub)}</small></div><div class="p2-chart">${WR().chart(t, Sx, { w: 320, h: 150 })}</div>
@@ -22228,7 +22366,8 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
         ${w.share.on ? `<div class="p2-sec"><h4>Which kinds</h4>${types.map((t) => `<div class="p2-tr"><span>${WR().TY[t].ic} ${esc(WR().TY[t].t)}</span>${tg(WR().shared(k, t), 'wtype', `data-t="${t}"`, WR().TY[t].t)}</div>`).join('')}</div>
         <div class="p2-sec"><h4>Share history from</h4>${[['all', 'All my device history'], ['linked', 'Only from when I linked my device'], ['90d', 'Only the last 90 days']].map(([v, l]) => `<label class="p2-radio"><input type="radio" name="p2-from" value="${v}" ${w.share.from === v ? 'checked' : ''} data-pa-in="from"> ${l}</label>`).join('')}</div>` : ''}`;
     const log = whoLooked().slice(0, 8);
-    return `<div class="p2-h">Sharing</div><p class="p2-sub">You decide what your Prac360 doctors can see. Changes work straight away.</p>${recs}${wear}
+    const mineSw = `<div class="p2-sw ${mOn() ? 'on' : ''}"><div><b>📝 Readings I add myself</b><span>${mOn() ? 'Shared with your Prac360 doctors' : 'Only you can see them'} · ${mineArr().length} reading${mineArr().length === 1 ? '' : 's'}</span></div>${tg(mOn(), 'mine-on', '', 'Share readings I add')}</div>`;
+    return `<div class="p2-h">Sharing</div><p class="p2-sub">You decide what your Prac360 doctors can see. Changes work straight away.</p>${recs}${wear}${mineSw}
       <div class="p2-sec"><h4>👀 Who looked</h4>${log.map((v) => `<div class="p2-row"><b>${esc(v.by)}</b><small>${esc(v.practice || '')} · ${esc(v.what)} · ${fd(v.at)}</small></div>`).join('') || '<div class="p2-none">Nobody yet</div>'}</div>`; };
 
   // ================================================================ Settings and notifications
@@ -22273,9 +22412,9 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const R = {};
   R.close = close;
   R.go = (el) => { const to = el.dataset.to; S.metric = null; S.dev = null;
-    if (to === 'sheet-close') { S.sheet = null; } else if (to === 'health-home') { S.tab = 'health'; } else if (to === 'link-cancel') { S.link = null; S.tab = S.link0 || 'health'; } else if (to === 'link-pick') { S.link.step = 'pick'; } else if (to === 'app') { S.scr = 'app'; S.tab = 'home'; } else if (to === 'share-wear') { S.link = null; S.scr = 'app'; S.tab = 'share'; paint(); const e = document.getElementById('p2-wear'); if (e) e.scrollIntoView({ block: 'start' }); return; } else if (to === 'bk-reset') { S.bk = {}; } else S.scr = to;
+    if (to === 'ar-cancel') { S.addR = null; } else if (to === 'ml-back') { S.mlist = null; } else if (to === 'sheet-close') { S.sheet = null; } else if (to === 'health-home') { S.tab = 'health'; } else if (to === 'link-cancel') { S.link = null; S.tab = S.link0 || 'health'; } else if (to === 'link-pick') { S.link.step = 'pick'; } else if (to === 'app') { S.scr = 'app'; S.tab = 'home'; } else if (to === 'share-wear') { S.link = null; S.scr = 'app'; S.tab = 'share'; paint(); const e = document.getElementById('p2-wear'); if (e) e.scrollIntoView({ block: 'start' }); return; } else if (to === 'bk-reset') { S.bk = {}; } else S.scr = to;
     if (S.scr === 'reg1' && !S.reg) S.reg = {}; if (S.scr === 'lock') S.lk = { pin: '' }; paint(); };
-  R.tab = (el) => { S.tab = el.dataset.t; S.metric = null; S.dev = null; S.link = null; if (S.tab === 'book') S.bk = S.bk && S.bk.done ? {} : (S.bk || {}); paint(); };
+  R.tab = (el) => { S.tab = el.dataset.t; S.metric = null; S.dev = null; S.link = null; S.addR = null; S.mlist = null; if (S.tab === 'book') S.bk = S.bk && S.bk.done ? {} : (S.bk || {}); paint(); };
   R.terms = () => { S.sheet = 'terms'; paint(); };
   R['demo-id'] = () => { S.reg = Object.assign(S.reg || {}, { id: pat().idNumber, err: null }); paint(); const i = document.getElementById('p2-id'); if (i) i.dispatchEvent(new Event('input', { bubbles: true })); };
   R['reg1-next'] = () => { const r = S.reg; const id = String((document.getElementById('p2-id') || {}).value || r.id || '').replace(/\D/g, ''); r.id = id; r.terms = !!(document.getElementById('p2-terms') || {}).checked || r.terms; const p = pat();
@@ -22308,6 +22447,18 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   R['link-brand'] = (el) => { S.link = { step: 'types', brand: el.dataset.b }; paint(); };
   R['link-approve'] = () => { const t = [...document.querySelectorAll('.p2-lt:checked')].map((x) => x.value); if (!t.length) return msg('Choose at least one kind of data.'); S.link.types = t; S.link.step = 'approve'; paint(); };
   R['link-allow'] = () => { const st = S.link; st.step = 'import'; st.pct = 0; paint(); const tick = () => { if (!S.link || S.link !== st) return; st.pct = Math.min(100, st.pct + 9 + Math.round(Math.random() * 12)); if (st.pct >= 100) { WR().link(key(), st.brand, st.types); st.step = 'done'; } paint(); if (st.step === 'import') setTimeout(tick, 380); }; setTimeout(tick, 400); };
+  R['add-reading'] = (el) => { S.scr = 'app'; S.tab = 'health'; S.metric = null; S.dev = null; S.link = null; S.mlist = null; S.addR = { type: el.dataset.t || (S.addR || {}).type || 'bp' }; paint(); };
+  R['ar-type'] = (el) => { S.addR.type = el.dataset.t; paint(true); };
+  R['ar-save'] = () => { const t = S.addR.type; const g = (id) => (document.getElementById(id) || {}).value || ''; const num = (x) => +String(x).replace(',', '.'); let v;
+    if (t === 'bp') { const sy = num(g('p2-ar-s')), di = num(g('p2-ar-d')), pu = num(g('p2-ar-p')); if (!(sy >= 60 && sy <= 260 && di >= 30 && di <= 160 && sy > di)) return msg('Check the two numbers — e.g. 128 over 82.'); v = { sys: Math.round(sy), dia: Math.round(di) }; if (pu) { if (!(pu >= 30 && pu <= 220)) return msg('Check the pulse.'); v.pulse = Math.round(pu); } }
+    else { v = num(g('p2-ar-v')); const L2 = LIM[t]; if (!(v >= L2[0] && v <= L2[1])) return msg(`That doesn’t look right — between ${L2[0]} and ${L2[1]} ${WR().TY[t].u}.`); v = Math.round(v * 10) / 10; }
+    const atv = g('p2-ar-at') || new Date(Date.now() + 2 * 3600e3).toISOString().slice(0, 16); const rec = { id: 'mr' + Date.now().toString(36), type: t, v, at: atv + ':00.000Z', note: g('p2-ar-n').trim(), ctx: t === 'glucose' ? g('p2-ar-c') : undefined, added: new Date().toISOString() };
+    const sh = document.getElementById('p2-ar-sh'); if (sh && sh.checked) W().share.mineOn = true; mineArr().push(rec); WR().event(key(), `You added: ${WR().TY[t].t} ${mVal(t, v)}`, '📝'); save(); S.addR = null; S.mlist = t; paint(); msg(W().share.mineOn ? 'Saved — your doctors can see it.' : 'Saved — only you can see it.'); };
+  R['ar-cancel'] = () => { S.addR = null; paint(); };
+  R.mlist = (el) => { S.mlist = el.dataset.t; paint(); };
+  R['ml-back'] = () => { S.mlist = null; paint(); };
+  R.mdel = (el) => { if (S.mdel !== el.dataset.id) { S.mdel = el.dataset.id; msg('Tap ✕ again to delete this reading.'); setTimeout(() => { S.mdel = null; }, 5000); return; } const A2 = mineArr(); const i = A2.findIndex((x) => x.id === el.dataset.id); if (i >= 0) A2.splice(i, 1); S.mdel = null; save(); paint(true); };
+  R['mine-on'] = () => { const w = W(); w.share.mineOn = !w.share.mineOn; WR().event(key(), w.share.mineOn ? 'You shared the readings you add' : 'Readings you add are now private', w.share.mineOn ? '🔗' : '🔒'); save(); paint(true); };
   R['link-done'] = () => { S.link = null; S.tab = 'health'; paint(); };
   R.wtype = (el) => { const w = W(); const t = el.dataset.t; w.share.types[t] = w.share.types[t] === false; WR().event(key(), `${WR().TY[t].t}: ${w.share.types[t] === false ? 'now private' : 'shared with your doctors'}`, w.share.types[t] === false ? '🔒' : '🔗'); save(); paint(true); };
   R['wear-on'] = () => { const w = W(); w.share.on = !w.share.on; w.share.at = new Date().toISOString(); WR().event(key(), w.share.on ? 'You shared your wearable data with your Prac360 doctors' : 'You stopped sharing your wearable data', w.share.on ? '🔗' : '🔒'); try { E.audit(db(), { name: pat().firstName + ' ' + pat().lastName, role: 'patient' }, w.share.on ? 'wearable-share-on' : 'wearable-share-off', 'patient', pat().id, pat().id, w.share.on ? 'The patient shared wearable data in the app' : 'The patient stopped sharing wearable data in the app'); A.save(); } catch (e) { /* ignore */ } save(); paint(true); msg(w.share.on ? 'Wearable sharing is on.' : 'Wearable sharing is off.'); };
@@ -22607,7 +22758,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
 (function () {
   'use strict';
   const A = window.APP, H = A.H, P = A.P, E = window.PE, esc = A.esc; const db = () => A.db;
-  const KINDS = { 'appt-reminder': 'Appointment reminder', 'app-invite': 'Patient app invite' };
+  const KINDS = { 'appt-reminder': 'Appointment reminder', 'app-invite': 'Patient app invite', statement: 'Account statement (PDF)' };
   const CONSENT = 'WhatsApp messages';
   const S = () => { const s = db().settings; s.wa = s.wa || { mode: 'click', hub: '', key: '', autoRemind: true, remindAt: '17:00', testTo: '', appLink: 'https://michaelduplessis32-app.github.io/prac360-demo/#/patientapp', lastAuto: null }; return s.wa; };
   const log = () => { db().waLog = db().waLog || []; return db().waLog; };
@@ -22627,6 +22778,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const longDate = (d) => new Date(d + 'T12:00:00Z').toLocaleDateString('en-ZA', { weekday: 'long', day: 'numeric', month: 'long' });
   const TPL = {
     'appt-reminder': { name: 'appointment_reminder', text: 'Hello {{1}}, this is a reminder of your appointment with {{2}} at {{3}} on {{4}} at {{5}}. To change or cancel it, please call {{6}}.' },
+    statement: { name: 'account_statement', header: 'Document (the statement PDF)', text: 'Hello {{1}}, your account statement from {{2}} is attached. The amount due by you is {{3}}. Please use reference {{4}} when you pay. {{5}} Questions? Call {{6}}.' },
     'app-invite': { name: 'patient_app_invite', text: 'Hello {{1}}, {{2}} invites you to the Prac360 patient app. See your records, link your watch or ring, and choose what you share with your doctors. Get started here: {{3}}' } };
   A.WA_TPL = TPL;
   const fill = (kind, params) => TPL[kind].text.replace(/\{\{(\d)\}\}/g, (m, i) => params[+i - 1] || '');
@@ -22637,15 +22789,15 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const ready = () => { const s = S(); if (s.mode === 'off') return 'WhatsApp is switched off. Switch it on in Practice setup → WhatsApp.'; if (sample() && !num(s.testTo)) return 'This is the sample practice: add your own cell number as the test number in Practice setup → WhatsApp first. Messages go there instead of to the made-up patients.'; if (s.mode === 'auto' && !s.key) return 'Add the WhatsApp key in Practice setup → WhatsApp first.'; return null; };
   A.waReady = ready;
   // Sends one message. In "click to send" mode it must run straight from a click (it opens WhatsApp in a new tab).
-  A.sendWhatsApp = (m) => { if (!KINDS[m.kind]) throw new Error('Only appointment reminders and patient-app invites can be sent on WhatsApp.');
+  A.sendWhatsApp = (m) => { if (!KINDS[m.kind]) throw new Error('Only appointment reminders, patient-app invites and account statements can be sent on WhatsApp.');
     const s = S(); const why = ready(); if (why) throw new Error(why); const p = E.patient(db(), m.patientId); const real = num(m.phone || (p && p.phone));
     const to = sample() ? num(s.testTo) : real; if (!to) throw new Error(`${p ? p.firstName + '’s' : 'The'} cell number doesn’t look right${p && p.phone ? ' (' + p.phone + ')' : ''}. Fix it on the patient file.`);
     let text = fill(m.kind, m.params); if (sample()) text = `[Demo for ${p ? p.firstName + ' ' + p.lastName : 'a patient'}] ` + text;
     const rec = { id: E.id('wa'), at: E.nowIso(db()), by: A.user.id, kind: m.kind, patientId: m.patientId, apptId: m.apptId || null, to: '…' + to.slice(-4), demoTo: sample(), mode: s.mode, status: 'sending', text };
     log().unshift(rec); E.audit(db(), A.user, 'whatsapp-' + m.kind, 'whatsapp', rec.id, m.patientId || null, `${KINDS[m.kind]} by WhatsApp to ${mask(to)}${sample() ? ' (demo: your test number)' : ''}`);
     if (s.mode === 'click') { const w = window.open('https://wa.me/' + to + '?text=' + encodeURIComponent(text), '_blank', 'noopener'); rec.status = w === null ? 'blocked' : 'opened'; A.save(); return Promise.resolve(rec); }
-    A.save(); const params = sample() && p ? [`[Demo] ` + m.params[0]].concat(m.params.slice(1)) : m.params;
-    return fetch(hubUrl(), { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'wa_send', key: s.key, kind: m.kind, to, params, text, ref: rec.id }) })
+    A.save(); const b64 = m.doc ? m.doc.b64 : null; const params = sample() && p ? [`[Demo] ` + m.params[0]].concat(m.params.slice(1)) : m.params;
+    return fetch(hubUrl(), { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'wa_send', key: s.key, kind: m.kind, to, params, text, ref: rec.id, doc: b64 ? { b64, name: m.doc.name } : undefined }) })
       .then((r) => r.json()).then((j) => { rec.status = j.ok ? 'sent' : 'failed'; rec.wamid = j.id || null; rec.error = j.ok ? null : j.say || j.error || 'Not sent'; A.save(); return rec; })
       .catch((e) => { rec.status = 'failed'; rec.error = 'Could not reach the Apps Script: ' + (e.message || e); A.save(); return rec; }); };
   const done = (rec, who) => { if (rec.status === 'sent') A.toast(`WhatsApp sent to ${who}.`); else if (rec.status === 'opened') A.toast(`WhatsApp opened with the message for ${who} — press Send in WhatsApp.`); else if (rec.status === 'blocked') A.toast('Your browser blocked the WhatsApp window. Allow pop-ups for Prac360 and try again.', 'error'); else A.toast(`WhatsApp to ${who} failed: ${rec.error}`, 'error'); if (A.route === 'settings' || document.querySelector('.wa-rem')) A.render(); };
@@ -22695,29 +22847,61 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   H['wa-invite-go'] = (el) => { const p = E.patient(db(), el.dataset.pid); if (!document.getElementById('wa-ok').checked) return A.toast('Tick that the patient agreed to get it on WhatsApp.', 'error'); A.closeModal();
     try { E.audit(db(), A.user, 'patient-app-invite', 'patient', p.id, p.id, 'Invited the patient to the Prac360 patient app by WhatsApp'); A.sendWhatsApp({ kind: 'app-invite', patientId: p.id, params: inviteParams(p) }).then((r) => done(r, p.firstName)); } catch (e) { A.toast(e.message, 'error'); } };
 
+  // ---------------------------------------------------------------- account statements as a PDF (v0.85)
+  const blobB64 = (blob) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
+  const dobPwd = (p) => (p && p.dob ? p.dob.slice(8, 10) + p.dob.slice(5, 7) + p.dob.slice(0, 4) : '');
+  const stmtParams = (p, protect) => { const L = E.accountLiability ? E.accountLiability(db(), p.id) : { patientDue: 0 }; return [p.firstName, practice().name, A.money(L.patientDue || 0), A.payRef ? A.payRef(p) : p.lastName.toUpperCase(), protect ? 'The PDF is protected with your date of birth as DDMMYYYY.' : 'No password is needed to open it.', practice().phone || 'the practice']; };
+  let stmtDoc = null;
+  const stmtModal = async (doc, pid) => { ensure(); const p = E.patient(db(), pid); if (!p) return A.toast('Open the patient’s statement first.', 'error'); stmtDoc = { doc, pid, file: null, protect: true }; const s = S(); const why = ready(); const n = num(p.phone); const canShare = !!(navigator.canShare && navigator.share);
+    A.modal(`WhatsApp the statement to ${p.firstName}`, `<div class="wa-inv"><div class="wa-bubble">📄 <b>Statement-${esc(p.lastName.replace(/[^A-Za-z-]/g, ''))}-${E.today(db())}.pdf</b><br>${esc(fill('statement', stmtParams(p, true)))}</div>
+      <p class="small">To: <strong>${esc(p.phone || 'no cell number')}</strong>${n ? '' : ' <span class="crit-t">— not a valid cell number</span>'}${sample() && n ? `<br><span class="tiny muted">Sample practice: goes to your test number ${esc(mask(num(s.testTo)))} instead.</span>` : ''}</p>
+      <label class="check"><input type="checkbox" id="wa-st-pw" checked ${p.dob ? '' : 'disabled'}> Protect the PDF with ${esc(p.firstName)}’s date of birth (DDMMYYYY)</label>
+      <label class="check"><input type="checkbox" id="wa-ok" ${A.waConsent(p.id) ? 'checked' : ''}> ${esc(p.firstName)} agreed to get statements on WhatsApp</label>
+      ${s.mode === 'click' ? `<p class="tiny muted">${canShare ? 'Click to send: your device’s share window opens with the PDF — choose WhatsApp, then the patient. If WhatsApp isn’t listed, use “Download and open the chat”.' : 'Click to send: the PDF is downloaded and WhatsApp opens the patient’s chat — drag the PDF into the chat (or use 📎) and press Send.'}</p>` : s.mode === 'auto' ? '<p class="tiny muted">Sent automatically with the PDF through WhatsApp Business.</p>' : ''}${why ? `<p class="crit-t small">${esc(why)}</p>` : ''}</div>`,
+      `<button class="btn" data-act="modal-close">Cancel</button>${s.mode === 'click' && canShare ? '<button class="btn" data-act="wa-st-go" data-how="download">Download and open the chat</button>' : ''}<button class="btn primary" data-act="wa-st-go" data-how="${s.mode === 'click' ? (canShare ? 'share' : 'download') : 'auto'}" ${why || !n ? 'disabled' : ''}>💬 ${s.mode === 'click' && canShare ? 'Share the PDF on WhatsApp' : 'Send on WhatsApp'}</button>`);
+    prep(); document.getElementById('wa-st-pw').addEventListener('change', prep); };
+  // the file is made ready as soon as the window opens, so sharing still counts as a click
+  const prep = async () => { const st = stmtDoc; const p = E.patient(db(), st.pid); const pw = (document.getElementById('wa-st-pw') || {}).checked && p.dob; st.protect = !!pw; st.file = null; const blob = pw && A.protectPdf ? await A.protectPdf(st.doc, dobPwd(p)) : st.doc.blob; st.file = new File([blob], `Statement-${p.lastName.replace(/[^A-Za-z-]/g, '')}-${E.today(db())}.pdf`, { type: 'application/pdf' }); };
+  H['wa-st-go'] = (el) => { const st = stmtDoc; if (!st) return; const p = E.patient(db(), st.pid); if (!document.getElementById('wa-ok').checked) return A.toast('Tick that the patient agreed to get statements on WhatsApp.', 'error'); if (!st.file) return A.toast('Preparing the PDF — try again in a second.', 'error');
+    const params = stmtParams(p, st.protect); const how = el.dataset.how; const s = S();
+    if (how === 'auto') { A.closeModal(); A.toast('Sending the statement on WhatsApp…'); blobB64(st.file).then((b64) => { try { return A.sendWhatsApp({ kind: 'statement', patientId: p.id, params, doc: { b64, name: st.file.name } }); } catch (e) { A.toast(e.message, 'error'); return null; } }).then((r) => { if (r) done(r, p.firstName); }); return; }
+    // click to send: the device's share window, or download + open the chat
+    let to; try { const why = ready(); if (why) throw new Error(why); to = sample() ? num(s.testTo) : num(p.phone); if (!to) throw new Error('The cell number doesn’t look right.'); } catch (e) { return A.toast(e.message, 'error'); }
+    let text = fill('statement', params); if (sample()) text = '[Demo] ' + text;
+    const rec = { id: E.id('wa'), at: E.nowIso(db()), by: A.user.id, kind: 'statement', patientId: p.id, to: '…' + to.slice(-4), demoTo: sample(), mode: 'click', status: 'opened', text, file: st.file.name };
+    if (how === 'share') { navigator.share({ files: [st.file], text }).then(() => { rec.status = 'shared'; log().unshift(rec); E.audit(db(), A.user, 'whatsapp-statement', 'whatsapp', rec.id, p.id, `Statement shared (${st.protect ? 'password-protected' : 'no password'})`); A.save(); A.closeModal(); A.toast('Statement shared.'); }).catch((e) => { if (e && e.name !== 'AbortError') A.toast('Sharing didn’t work — use “Download and open the chat”.', 'error'); }); return; }
+    const u = URL.createObjectURL(st.file); const aEl = document.createElement('a'); aEl.href = u; aEl.download = st.file.name; document.body.appendChild(aEl); aEl.click(); aEl.remove(); setTimeout(() => URL.revokeObjectURL(u), 60000);
+    const w = window.open('https://wa.me/' + to + '?text=' + encodeURIComponent(text), '_blank', 'noopener'); rec.status = w === null ? 'blocked' : 'opened'; log().unshift(rec); E.audit(db(), A.user, 'whatsapp-statement', 'whatsapp', rec.id, p.id, `Statement downloaded and WhatsApp opened (${st.protect ? 'password-protected' : 'no password'})`); A.save(); A.closeModal(); if (rec.status === 'blocked') A.toast('Your browser blocked the WhatsApp window. Allow pop-ups for Prac360 and try again.', 'error'); else A.toast(`The statement PDF was downloaded and WhatsApp opened for ${p.firstName} — attach the PDF (📎) and press Send.`); };
+  // "PDF ready" box: a 💬 WhatsApp button for statements; the statement page has its own button too
+  const _pr = A.pdfReady; A.pdfReady = function (doc) { const pid = A.pdfPatient ? A.pdfPatient() : null; const isSt = /statement/i.test(doc.title || '');
+    if (A.ui.waStmtNext && isSt && pid) { A.ui.waStmtNext = null; stmtModal(doc, pid); return; }
+    const r = _pr.apply(this, arguments); if (isSt && pid && S().mode !== 'off') setTimeout(() => { const box = document.querySelector('#pdf-ready .pr-actions'); if (box && !box.querySelector('[data-wa-st]')) { const b = document.createElement('button'); b.className = 'btn'; b.dataset.waSt = '1'; b.textContent = '💬 WhatsApp'; b.addEventListener('click', () => { const bg = document.getElementById('pdf-ready'); if (bg) bg.remove(); stmtModal(doc, pid); }); box.appendChild(b); } }, 0); return r; };
+  const _sp = P.statement; if (_sp) P.statement = function (params) { const h = _sp.apply(this, arguments); if (!db() || S().mode === 'off') return h; return h.replace('<button class="btn primary" data-act="print">', `<button class="btn" data-act="wa-stmt">💬 WhatsApp</button><button class="btn primary" data-act="print">`); };
+  H['wa-stmt'] = () => { A.ui.waStmtNext = Date.now(); const b = document.querySelector('#main [data-act=print]'); if (b) b.click(); setTimeout(() => { if (A.ui.waStmtNext && Date.now() - A.ui.waStmtNext > 20000) A.ui.waStmtNext = null; }, 21000); };
+
   // ---------------------------------------------------------------- Practice setup → WhatsApp
   A.EXTRA_SETTINGS_TABS = A.EXTRA_SETTINGS_TABS || []; if (!A.EXTRA_SETTINGS_TABS.some((x) => x[0] === 'whatsapp')) A.EXTRA_SETTINGS_TABS.push(['whatsapp', 'WhatsApp', 'comms']);
-  const ST = { sending: ['info', 'Sending…'], sent: ['good', 'Sent'], delivered: ['good', 'Delivered'], read: ['good', 'Read'], failed: ['crit', 'Failed'], opened: ['info', 'Opened in WhatsApp'], blocked: ['warn', 'Pop-up blocked'] };
+  const ST = { shared: ['info', 'Shared from this device'], sending: ['info', 'Sending…'], sent: ['good', 'Sent'], delivered: ['good', 'Delivered'], read: ['good', 'Read'], failed: ['crit', 'Failed'], opened: ['info', 'Opened in WhatsApp'], blocked: ['warn', 'Pop-up blocked'] };
   A.SS = A.SS || {}; A.SS.whatsapp = () => { ensure(); const s = S(); const L = log().slice(0, 60); const ping = A.ui.waPing;
     const mode = (k, t, d) => `<label class="wa-mode ${s.mode === k ? 'on' : ''}"><input type="radio" name="wa-mode" value="${k}" ${s.mode === k ? 'checked' : ''} data-change="wa-mode"><span><b>${t}</b><small>${d}</small></span></label>`;
-    return `<div class="wa-set"><div class="card"><h2 style="margin-top:0">💬 WhatsApp</h2><p class="small">Only <b>appointment reminders</b> and the <b>patient-app invite</b> are sent on WhatsApp. Patients must agree to WhatsApp messages (Consents on the patient file).</p>
+    return `<div class="wa-set"><div class="card"><h2 style="margin-top:0">💬 WhatsApp</h2><p class="small">Only <b>appointment reminders</b>, the <b>patient-app invite</b> and <b>account statements (PDF)</b> are sent on WhatsApp. Patients must agree to WhatsApp messages (Consents on the patient file).</p>
       <div class="wa-modes">${mode('off', 'Off', 'No WhatsApp messages.')}${mode('click', 'Click to send', 'Works straight away: Prac360 opens WhatsApp with the message filled in and you press Send. Uses your practice’s own WhatsApp on this computer.')}${mode('auto', 'Automatic — WhatsApp Business', 'Prac360 sends by itself through your Google Sheet’s Apps Script and your WhatsApp Business number. Reminders can go out every day on their own.')}</div>
       ${sample() || s.testTo ? `<div class="wa-safe"><b>🛡 Test number${sample() ? ' (required in the sample practice)' : ''}</b><span>The sample practice’s patients are made up, but their cell numbers could belong to real people. Every WhatsApp from the sample practice goes to this number instead, marked “[Demo]”.</span><label class="f"><span>Your own cell number</span><input id="wa-test" value="${esc(s.testTo || '')}" placeholder="e.g. 082 123 4567" inputmode="tel" data-noclean></label></div>` : ''}
       <label class="f"><span>Patient-app link in the invite</span><input id="wa-link" value="${esc(s.appLink || '')}" data-noclean></label>
       ${s.mode === 'auto' ? `<div class="wa-auto"><h3>Automatic sending</h3><div class="grid g2"><label class="f"><span>Apps Script address</span><input id="wa-hub" value="${esc(s.hub || '')}" placeholder="${esc((window.P360_HUB || {}).url || 'https://script.google.com/macros/s/…/exec')}" data-noclean></label><label class="f"><span>WhatsApp key <small>(the same as WA_KEY in the script)</small></span><input id="wa-key" type="password" value="${esc(s.key || '')}" autocomplete="off" data-noclean></label></div>
         <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" data-act="wa-ping">Check the connection</button>${num(s.testTo) ? '<button class="btn" data-act="wa-test-send">Send a test reminder to my test number</button>' : ''}</div>
-        ${ping ? `<div class="wa-ping ${ping.ok && ping.configured ? 'ok' : 'bad'}">${ping.ok ? (ping.configured ? `✓ Connected. Templates: <code>${esc(ping.remind)}</code> and <code>${esc(ping.invite)}</code> (${esc(ping.lang)}). ${ping.today} of ${ping.max} sent today.${ping.allowed ? ` Test mode: only ${ping.allowed} allowed number${ping.allowed === 1 ? '' : 's'}.` : ''}` : '⚠ The script answers, but WA_TOKEN and WA_PHONE_ID are not set yet.') : '✕ ' + esc(ping.say || ping.error || 'Could not connect')}</div>` : ''}
+        ${ping ? `<div class="wa-ping ${ping.ok && ping.configured ? 'ok' : 'bad'}">${ping.ok ? (ping.configured ? `✓ Connected. Templates: <code>${esc(ping.remind)}</code>, <code>${esc(ping.invite)}</code> and <code>${esc(ping.statement || 'account_statement')}</code> (${esc(ping.lang)}). ${ping.today} of ${ping.max} sent today.${ping.allowed ? ` Test mode: only ${ping.allowed} allowed number${ping.allowed === 1 ? '' : 's'}.` : ''}` : '⚠ The script answers, but WA_TOKEN and WA_PHONE_ID are not set yet.') : '✕ ' + esc(ping.say || ping.error || 'Could not connect')}</div>` : ''}
         <label class="check" style="margin-top:10px"><input type="checkbox" id="wa-autor" ${s.autoRemind ? 'checked' : ''}> Send tomorrow’s reminders automatically every day at <input type="time" id="wa-at" value="${esc(s.remindAt || '17:00')}" style="width:auto;display:inline-block"></label><p class="tiny muted">Runs while Prac360 is open on at least one computer with Diary access.${s.lastAuto ? ` Last run: ${A.fd(s.lastAuto)}.` : ''}</p></div>` : ''}
       <div style="text-align:right"><button class="btn primary" data-act="wa-save">Save</button></div></div>
       ${s.mode === 'auto' ? `<details class="card wa-how" ${ping && ping.ok && ping.configured ? '' : 'open'}><summary><b>How to set up automatic WhatsApp (once, about 30 minutes)</b></summary><ol class="small">
         <li><b>Meta:</b> go to developers.facebook.com → My apps → Create app → Business → add <b>WhatsApp</b>. Link or create your Meta Business account and add your practice’s WhatsApp Business number (a number not already used in the WhatsApp app).</li>
         <li><b>Token:</b> Business settings → Users → System users → add one → Generate token for your app with <code>whatsapp_business_messaging</code> and <code>whatsapp_business_management</code>. Copy the <b>Phone number ID</b> from WhatsApp → API setup.</li>
-        <li><b>Templates:</b> WhatsApp Manager → Message templates → create the two below (category <b>Utility</b>, language English). Wait for “Approved”.</li>
+        <li><b>Templates:</b> WhatsApp Manager → Message templates → create the three below (category <b>Utility</b>, language English; the statement template needs a <b>Document</b> header). Wait for “Approved”.</li>
         <li><b>Script:</b> open your Google Sheet → Extensions → Apps Script → paste the new <code>Code.gs</code>. Project Settings (⚙) → Script properties → add <code>WA_TOKEN</code>, <code>WA_PHONE_ID</code>, <code>WA_KEY</code> (a long password you make up) and, while testing, <code>WA_ALLOWED_TO</code> (your own number, e.g. 27821234567).</li>
         <li>Deploy → Manage deployments → ✏ Edit → Version: <b>New version</b> → Deploy (the address stays the same).</li>
         <li>Here: type the same WA_KEY above, press <b>Check the connection</b>, then <b>Send a test reminder</b>.</li>
         <li><i>Optional</i> — delivery ticks: in Meta → WhatsApp → Configuration set the Callback URL to your Apps Script address, the Verify token to the value of <code>WA_VERIFY</code>, and subscribe to <code>messages</code>.</li></ol>
-        ${Object.entries(TPL).map(([k, t]) => `<div class="wa-tpl"><div class="row between"><b>${esc(KINDS[k])}: <code>${t.name}</code></b><button class="btn sm" data-act="wa-copy" data-k="${k}">Copy text</button></div><pre>${esc(t.text)}</pre></div>`).join('')}
+        ${Object.entries(TPL).map(([k, t]) => `<div class="wa-tpl"><div class="row between"><b>${esc(KINDS[k])}: <code>${t.name}</code>${t.header ? ` <small>· header: ${esc(t.header)}</small>` : ''}</b><button class="btn sm" data-act="wa-copy" data-k="${k}">Copy text</button></div><pre>${esc(t.text)}</pre></div>`).join('')}
         <p class="tiny muted">Never paste the Meta token into Prac360, an email or a chat. It stays in the script.</p></details>` : ''}
       <div class="card"><div class="row between"><h2 style="margin:0">Messages sent</h2>${s.mode === 'auto' && L.some((x) => x.wamid) ? '<button class="btn sm" data-act="wa-refresh">↻ Delivery status</button>' : ''}</div>${L.length ? `<div class="tbl-wrap"><table class="t small"><thead><tr><th>When</th><th>What</th><th>Patient</th><th>To</th><th>How</th><th>Status</th></tr></thead><tbody>${L.map((x) => { const st = ST[x.status] || ['', x.status]; return `<tr><td class="nowrap">${A.fd(x.at.slice(0, 10))} ${x.at.slice(11, 16)}</td><td>${esc(KINDS[x.kind])}</td><td>${x.patientId ? esc(A.pname(x.patientId)) : '—'}</td><td class="mono small">${esc(x.to)}${x.demoTo ? ' <span class="tiny muted">(test)</span>' : ''}</td><td class="small">${x.mode === 'auto' ? 'Automatic' : 'Click to send'}</td><td><span class="badge ${st[0]}">${esc(st[1])}</span>${x.error ? `<div class="tiny crit-t">${esc(x.error)}</div>` : ''}</td></tr>`; }).join('')}</tbody></table></div>` : '<p class="muted small">No WhatsApp messages yet.</p>'}</div></div>`; };
   const keep = () => { const s = S(); const g = (id) => document.getElementById(id); if (g('wa-test')) s.testTo = g('wa-test').value.trim(); if (g('wa-link')) s.appLink = g('wa-link').value.trim(); if (g('wa-hub')) s.hub = g('wa-hub').value.trim(); if (g('wa-key')) s.key = g('wa-key').value.trim(); if (g('wa-autor')) s.autoRemind = g('wa-autor').checked; if (g('wa-at')) s.remindAt = g('wa-at').value || '17:00'; };
@@ -22757,6 +22941,222 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   q(fd, /agreed to SMS but not WhatsApp/i, { q: 'A patient agreed to SMS but not WhatsApp. How do they get their reminder?', o: ['By SMS', 'By WhatsApp anyway', 'They don’t get one'], a: 0 });
   if (A.FUNCTIONS) { const g = (re) => A.FUNCTIONS.find((x) => re.test(x[0])) || A.FUNCTIONS[0]; const put = (re, t, id) => { const G = g(re); if (G && !G[1].some((x) => x[0] === t)) G[1].push([t, id]); };
     put(/diary|appoint|front/i, 'WhatsApp appointment reminders', 'waremind'); put(/patient/i, 'Patient-app invite on WhatsApp', 'wainvite'); put(/setup|practice|general/i, 'Set up WhatsApp', 'wasetup'); }
+})();
+
+
+/* ===== ui-rx.js ===== */
+/* Prac360 v0.85 — Scripts (prescriptions) with any medicine available in South Africa.
+ * Doctors don't need to keep stock: the script pad finds any medicine in the Medprax medicine file (26 000+ SA
+ * products, with NAPPI and schedule), the practice's own list, or a medicine typed exactly as it must appear.
+ * Open it from the consultation (bottom bar), Hospital and wards (Medicines and TTO tabs), Oncology (the case page)
+ * and the patient file. Each line: directions, how many days, quantity, repeats (none for Schedule 6), generic
+ * substitution allowed, chronic (with ICD-10). Signed with the doctor's PIN, then printed or saved as PDF.
+ * Safety: Prac360 recognises the active ingredient of many medicines and then checks allergies, interactions and
+ * duplicates as before. When it can't, the line says "Not checked — check this one yourself".
+ * "Repeat a previous script" copies an earlier script's medicines. Chronic medicines go on the current medication list. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, E = window.PE, esc = A.esc; const db = () => A.db;
+  const fd = (d) => (d ? A.fd(String(d).slice(0, 10)) : '—');
+  const title = (s) => String(s || '').toLowerCase().replace(/\b([a-z])/g, (m) => m.toUpperCase()).replace(/\b(Mg|Ml|Mcg|Iu|G)\b/g, (m) => m.toLowerCase()).replace(/\b(Tab|Cap|Sus|Syr|Inj|Inh|Crm|Oint|Sln|Drp)\b/g, (m) => m.toLowerCase());
+  // well-known SA brand names → the active ingredient Prac360 checks (only ones we are sure of)
+  const BRANDS = { augmentin: 'amoxicillin+clavulanate', amoxil: 'amoxicillin', moxypen: 'amoxicillin', panado: 'paracetamol', brufen: 'ibuprofen', nurofen: 'ibuprofen', voltaren: 'diclofenac', zithromax: 'azithromycin', klacid: 'clarithromycin', ciprobay: 'ciprofloxacin', ventolin: 'salbutamol', asthavent: 'salbutamol', zyrtec: 'cetirizine', tramal: 'tramadol', norvasc: 'amlodipine', renitec: 'enalapril', pharmapress: 'enalapril', aldactone: 'spironolactone', glucophage: 'metformin', zocor: 'simvastatin', coumadin: 'warfarin', eltroxin: 'levothyroxine', euthyrox: 'levothyroxine', zoloft: 'sertraline', bactrim: 'co-trimoxazole', purbac: 'co-trimoxazole', meticorten: 'prednisone' };
+  // match a Medprax / typed name to a medicine Prac360 can check
+  const recognise = (name) => { const n = ' ' + String(name || '').toLowerCase().replace(/[^a-z0-9+/ ]/g, ' ') + ' '; const F = db().medicines.filter((m) => !m.fromRx);
+    for (const [b, g] of Object.entries(BRANDS)) if (n.includes(' ' + b + ' ') || n.startsWith(' ' + b)) { const m = F.find((x) => x.generic === g); if (m) return m; }
+    if (/amox/.test(n) && /clav/.test(n)) return F.find((x) => x.generic === 'amoxicillin+clavulanate') || null;
+    if (/co-?trimox|sulfameth|trimethoprim/.test(n)) return F.find((x) => x.generic === 'co-trimoxazole') || null;
+    const hit = F.filter((x) => x.generic && !/[+]/.test(x.generic) && n.includes(' ' + x.generic.split(/[ /]/)[0] + ' ')).sort((a, b) => b.generic.length - a.generic.length)[0]; return hit || null; };
+  A.rxRecognise = recognise;
+  // every medicine on a script becomes a medicine in the practice list, so checks and the medication list keep working
+  const toMedicine = (sel) => { const d = db(); if (sel.medicineId) return E.medicine(d, sel.medicineId);
+    const key = sel.nappi || sel.name.toLowerCase(); let m = d.medicines.find((x) => x.fromRx && (x.nappi === sel.nappi && sel.nappi || x.name.toLowerCase() === sel.name.toLowerCase())); if (m) return m;
+    const base = recognise(sel.name); m = { id: 'm_rx' + E.id('').slice(-8), name: sel.name, generic: base ? base.generic : sel.name.toLowerCase(), classes: base ? base.classes.slice() : [], allergyClass: base ? base.allergyClass : null, schedule: sel.sched ? 'S' + sel.sched : (base ? base.schedule : ''), nappi: sel.nappi || null, fromRx: true, checked: !!base, key };
+    d.medicines.push(m); return m; };
+  const schedOf = (m) => +String((m && m.schedule) || '').replace(/\D/g, '') || 0;
+
+  // ---------------------------------------------------------------- the script pad
+  const st = () => A.ui.rx;
+  const QUICK = ['1 tablet 3 times a day', '1 tablet twice a day', '1 tablet daily', '1 tablet at night', '2 tablets 4 times a day when needed for pain', '2 puffs when needed', '1 capsule 3 times a day', 'Apply twice a day', '5 ml 3 times a day'];
+  A.rxPad = (o) => { if (!A.can('clinical.write')) return A.toast('Only doctors can write scripts.', 'error'); A.ui.rx = Object.assign({ items: [], sel: null, q: '' }, o); if (A.mpLoad && !A.mpReady()) A.mpLoad(() => { if (document.getElementById('rx2')) search(); }); render(); };
+  const render = () => { const s = st(); const p = E.patient(db(), s.patientId); const al = db().allergies.filter((a) => a.patientId === p.id); const cur = db().meds.filter((m) => m.patientId === p.id && m.active);
+    const prev = db().scripts.filter((x) => x.patientId === p.id && x.items.length).sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 4);
+    const body = `<div id="rx2" class="rx2"><div class="rx2-pt"><b>${esc(p.firstName + ' ' + p.lastName)}</b> · ${A.age(p)} y${al.length ? ` · <span class="crit-t">⚠ Allergies: ${al.map((a) => esc(a.allergen)).join(', ')}</span>` : ' · no known allergies'}${cur.length ? `<div class="tiny muted">On: ${cur.map((m) => esc((E.medicine(db(), m.medicineId) || {}).name || '') + (m.dose ? ' ' + esc(m.dose) : '')).join(' · ')}</div>` : ''}</div>
+      ${prev.length && !s.items.length ? `<div class="rx2-prev"><span class="tiny muted">Repeat a previous script:</span>${prev.map((x) => `<button class="chip" data-act="rx2-copy" data-id="${x.id}">${fd(x.date)} · ${x.items.length} medicine${x.items.length === 1 ? '' : 's'}</button>`).join('')}</div>` : ''}
+      <div class="rx2-find"><label class="f"><span>Medicine <small>(any medicine in South Africa — name, strength or NAPPI)</small></span><input id="rx2-q" autocomplete="off" placeholder="e.g. Augmentin 875, amlodipine 5 mg, 712890-001" value="${esc(s.q || '')}" data-noclean></label><div id="rx2-res" class="rx2-res" role="listbox"></div></div>
+      ${s.sel ? editor(s.sel) : ''}
+      <div class="rx2-items"><h3>On this script (${s.items.length})</h3>${s.items.length ? s.items.map((it, i) => `<div class="rx2-it"><div><b>${esc(it.name)}</b>${it.sched ? ` <span class="badge">S${it.sched}</span>` : ''}${it.checked ? '' : ' <span class="badge warn" title="Prac360 does not know the active ingredient of this medicine">Not checked — check it yourself</span>'}<div class="small">${esc(it.directions)} · ${it.days ? it.days + ' days · ' : ''}qty ${esc(String(it.qty))}${it.repeats ? ` · repeat ×${it.repeats}` : ' · no repeats'}${it.generic ? '' : ' · <b>no generic substitution</b>'}${it.chronic ? ` · chronic${it.icd ? ' (' + esc(it.icd) + ')' : ''}` : ''}</div>${it.override ? `<div class="tiny warn-t">Safety alert overridden: ${esc(it.override)}</div>` : ''}</div><button class="btn sm ghost" data-act="rx2-del" data-i="${i}" aria-label="Remove">✕</button></div>`).join('') : '<p class="muted small">Search above and add each medicine.</p>'}</div>
+      ${s.items.length ? `<label class="f"><span>Note to the pharmacist <small>(optional)</small></span><input id="rx2-note" value="${esc(s.note || '')}" data-noclean></label>${A.signReady && A.signReady(A.user) ? A.signBox('rx', 'rx') : '<p class="tiny muted">Set up your signature and PIN under Practice setup → Signatures to sign scripts electronically. You can still print and sign by hand.</p>'}` : ''}</div>`;
+    A.modal(`Script — ${p.firstName} ${p.lastName}`, body, `<button class="btn" data-act="modal-close">Cancel</button>${s.items.length && !(A.signReady && A.signReady(A.user)) ? '<button class="btn primary" data-act="rx2-save" data-unsigned="1">Save and print (sign by hand)</button>' : ''}`, { wide: true });
+    const q = document.getElementById('rx2-q'); if (q && !s.sel) { q.focus(); if (s.q) search(); } };
+  const editor = (sel) => { const sch = +sel.sched || 0; return `<div class="rx2-ed card flat"><div class="row between"><b>${esc(sel.name)}</b>${sch ? `<span class="badge">Schedule ${sch}</span>` : ''}</div>${sel.nappi ? `<div class="tiny mono muted">NAPPI ${esc(sel.nappi)}${sel.src ? ' · ' + esc(sel.src) : ''}</div>` : `<div class="tiny muted">${esc(sel.src || '')}</div>`}
+    <label class="f"><span>Directions</span><input id="rx2-dir" value="${esc(sel.directions || '')}" placeholder="How the patient must use it" data-noclean></label><div class="rx2-quick">${QUICK.map((t) => `<button type="button" class="chip" data-act="rx2-quick" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div>
+    <div class="grid g4"><label class="f"><span>Days</span><input id="rx2-days" type="number" min="0" max="365" value="${esc(String(sel.days || ''))}" placeholder="e.g. 5"></label><label class="f"><span>Quantity</span><input id="rx2-qty" value="${esc(String(sel.qty || ''))}" placeholder="e.g. 15 or 1 pack" data-noclean></label>
+      <label class="f"><span>Repeats</span><select id="rx2-rep" ${sch === 6 ? 'disabled' : ''}>${[0, 1, 2, 3, 4, 5].map((n) => `<option value="${n}" ${+sel.repeats === n ? 'selected' : ''}>${n ? '×' + n : 'None'}</option>`).join('')}</select>${sch === 6 ? '<small class="tiny muted">Schedule 6: no repeats, valid 30 days</small>' : ''}</label>
+      <label class="f"><span>ICD-10 <small>(chronic)</small></span><input id="rx2-icd" data-icd-field value="${esc(sel.icd || '')}" placeholder="e.g. I10" data-noclean></label></div>
+    <div class="row" style="gap:16px;flex-wrap:wrap"><label class="check"><input type="checkbox" id="rx2-gen" ${sel.generic === false ? '' : 'checked'}> Generic substitution allowed</label><label class="check"><input type="checkbox" id="rx2-chr" ${sel.chronic ? 'checked' : ''}> Chronic medicine (add to the medication list)</label></div>
+    <div id="rx2-alerts"></div><div class="row" style="gap:8px"><button class="btn primary" data-act="rx2-add">Add to the script</button><button class="btn ghost" data-act="rx2-unsel">Choose another medicine</button></div></div>`; };
+  // search: the practice list first, then the Medprax file, then "as typed"
+  const search = () => { const box = document.getElementById('rx2-res'); const q = (document.getElementById('rx2-q') || {}).value || ''; st().q = q; if (!box) return; const t = q.trim(); if (t.length < 2) { box.innerHTML = ''; return; }
+    const lq = t.toLowerCase(); const own = db().medicines.filter((m) => (m.name + ' ' + (m.generic || '') + ' ' + (m.nappi || '')).toLowerCase().includes(lq)).slice(0, 5);
+    let mp = A.mpReady && A.mpReady() ? A.mpSearch(t, { kind: 'medicine', limit: 14 }) : []; let fz = false;
+    if (!own.length && !mp.length && A.fz && A.mpReady && A.mpReady()) { const fx = A.fz.filter(A.medprax.items.filter((x) => x.kind === 'medicine' && !x.disc).slice(0, 26000), (x) => x.name, t, 8); if (fx.length) { mp = fx; fz = true; } }
+    const row = (k, v, lab, sub) => `<button type="button" data-act="rx2-pick" data-k="${k}" data-v="${esc(v)}"><b>${esc(lab)}</b><span>${sub}</span></button>`;
+    box.innerHTML = (fz ? '<div class="tiny muted" style="padding:4px 8px">Did you mean…</div>' : '') + own.map((m) => row('own', m.id, m.name, `Practice list${m.schedule ? ' · ' + esc(m.schedule) : ''}${m.checked === false ? '' : ' · checked for allergies'}`)).join('')
+      + mp.filter((x) => !own.some((m) => m.nappi === x.nappi)).map((x) => row('mp', x.nappi, title(x.label), `NAPPI ${esc(x.nappi)}${x.sched ? ' · S' + esc(x.sched) : ''}${x.mfr ? ' · ' + esc(x.mfr) : ''}${x.disc ? ' · <i>marked discontinued</i>' : ''}${recognise(x.name) ? '' : ' · not checked'}`)).join('')
+      + (A.mpReady && !A.mpReady() ? '<div class="tiny muted" style="padding:6px 8px">Loading the South African medicine list…</div>' : '') + row('free', t, `Use “${t}” as typed`, 'For a medicine not in the list — type the name, strength and form'); };
+  document.addEventListener('input', (e) => { if (e.target && e.target.id === 'rx2-q') { clearTimeout(A.ui.rxT); A.ui.rxT = setTimeout(search, 120); } });
+  H['rx2-pick'] = (el) => { const s = st(); const k = el.dataset.k, v = el.dataset.v;
+    if (k === 'own') { const m = E.medicine(db(), v); s.sel = { medicineId: m.id, name: m.name, sched: schedOf(m) || '', nappi: m.nappi || '', src: 'Practice list' }; }
+    else if (k === 'mp') { const x = A.mpFind(v); s.sel = { name: title(x.label), nappi: x.nappi, sched: x.sched && x.sched !== '99' ? x.sched : '', src: `Medprax${x.mfr ? ' · ' + x.mfr : ''}` }; }
+    else s.sel = { name: v, nappi: '', sched: '', src: 'Typed by the doctor — check the name and strength' };
+    s.q = ''; render(); const d = document.getElementById('rx2-dir'); if (d) d.focus(); };
+  H['rx2-unsel'] = () => { st().sel = null; render(); };
+  H['rx2-quick'] = (el) => { const d = document.getElementById('rx2-dir'); if (d) { d.value = el.dataset.t; d.focus(); } };
+  H['rx2-del'] = (el) => { st().items.splice(+el.dataset.i, 1); render(); };
+  const readEd = () => { const s = st(); const g = (id) => document.getElementById(id); return Object.assign(s.sel, { directions: g('rx2-dir').value.trim(), days: +g('rx2-days').value || 0, qty: g('rx2-qty').value.trim(), repeats: g('rx2-rep').disabled ? 0 : +g('rx2-rep').value, icd: g('rx2-icd').value.trim().toUpperCase(), generic: g('rx2-gen').checked, chronic: g('rx2-chr').checked }); };
+  H['rx2-add'] = (el) => { const s = st(); const it = readEd(); if (!it.directions) return A.toast('Write the directions.', 'error'); if (!it.qty) return A.toast('Give the quantity.', 'error');
+    const m = toMedicine(it); it.medicineId = m.id; it.checked = m.fromRx ? !!m.checked : true; if (m.schedule && !it.sched) it.sched = schedOf(m) || '';
+    const alerts = it.checked ? E.checkPrescription(db(), s.patientId, s.items.map((x) => x.medicineId).concat(m.id)).filter((a) => a.medicineId === m.id) : [];
+    const box = document.getElementById('rx2-alerts'); if (alerts.length && el.dataset.ok !== '1') { box.innerHTML = alerts.map((a) => `<div class="alert ${a.level === 'critical' ? 'crit' : 'warn'}"><span class="ico">${a.level === 'critical' ? '⛔' : '!'}</span><div class="body"><strong>${esc(a.type)}</strong>: ${esc(a.text)}</div></div>`).join('') + `<label class="f"><span>To continue, give your clinical reason <small>(on the script record and in the audit log)</small></span><input id="rx2-why" data-noclean></label><button class="btn danger" data-act="rx2-add" data-ok="1">Prescribe anyway</button>`; return; }
+    if (alerts.length) { const why = (document.getElementById('rx2-why') || {}).value || ''; if (!why.trim()) return A.toast('Give your clinical reason to override the alert.', 'error'); it.override = alerts.map((a) => a.type).join(', ') + ' — ' + why.trim(); }
+    s.items.push(Object.assign({}, it)); s.sel = null; render(); A.toast(`${it.name} added to the script.`); };
+  H['rx2-copy'] = (el) => { const x = db().scripts.find((y) => y.id === el.dataset.id); const s = st(); x.items.forEach((i) => { const m = E.medicine(db(), i.medicineId) || {}; s.items.push({ medicineId: i.medicineId, name: i.name || m.name || 'Medicine', nappi: i.nappi || m.nappi || '', sched: i.sched || schedOf(m) || '', directions: i.directions, days: i.days || 0, qty: String(i.qty || ''), repeats: i.repeats || 0, generic: i.generic !== false, chronic: !!i.chronic, icd: i.icd || '', checked: m.fromRx ? !!m.checked : true }); }); render(); A.toast('Copied — check every line before you sign.'); };
+
+  // ---------------------------------------------------------------- save, sign and print
+  const save = (sg) => { const s = st(); const d = db(); const p = E.patient(d, s.patientId); const date = E.today(d); const s6 = s.items.some((i) => +i.sched === 6); const rep = s.items.some((i) => i.repeats > 0);
+    const rx = { id: E.id('rx'), rxNo: 'RX-' + date.replace(/-/g, '') + '-' + E.id('').slice(-4).toUpperCase(), encounterId: s.ctx === 'consult' ? s.ref : null, ctx: s.ctx, ref: s.ref || null, patientId: p.id, prescriberId: A.user.id, date, validUntil: E.addDays(date, s6 ? 30 : rep ? 182 : 30), note: ((document.getElementById('rx2-note') || {}).value || '').trim(), signature: sg || null,
+      items: s.items.map((i) => ({ medicineId: i.medicineId, name: i.name, nappi: i.nappi || null, sched: i.sched || '', directions: i.directions, days: i.days, qty: i.qty, repeats: i.repeats, generic: i.generic, chronic: i.chronic, icd: i.icd, checked: i.checked, overrides: i.override ? [{ alert: i.override, reason: '' }] : [], dispensed: false })) };
+    A.act(() => { d.scripts.push(rx); rx.items.filter((i) => i.chronic).forEach((i) => { if (!d.meds.some((m) => m.patientId === p.id && m.medicineId === i.medicineId && m.active)) d.meds.push({ id: E.id('med'), patientId: p.id, medicineId: i.medicineId, dose: i.directions, start: date, active: true, chronic: true, icd: i.icd || null, by: A.user.id, source: 'Script ' + rx.rxNo }); });
+      E.audit(d, A.user, 'prescribe', 'script', rx.id, p.id, `${rx.rxNo}: ${rx.items.map((i) => i.name).join('; ')}${sg ? ' (signed)' : ' (to sign by hand)'}`); });
+    return rx; };
+  const sheet = (rx) => { const d = db(); const p = E.patient(d, rx.patientId); const dr = E.user(d, rx.prescriberId) || A.user; const pr = d.practice; const al = d.allergies.filter((a) => a.patientId === p.id).map((a) => a.allergen).join(', ') || 'none known';
+    return `<div class="rx-sheet"><div class="rx-h">${A.logoImg ? A.logoImg() : ''}<div><b>${esc(pr.name)}</b><br><span class="small">${esc(pr.address || '')} · ${esc(pr.phone || '')} · Practice no. ${esc(pr.practiceNo || '')}</span></div></div><hr>
+      <div class="rx-meta"><div><b>Prescription</b> ${esc(rx.rxNo || '')}<br>Date: ${fd(rx.date)} · valid until ${fd(rx.validUntil || E.addDays(rx.date, 30))}</div><div>Patient: <b>${esc(p.firstName + ' ' + p.lastName)}</b><br>${A.age(p)} y · born ${fd(p.dob)}${p.idNumber ? ' · ID ' + esc(p.idNumber) : ''}<br>${esc(p.address || '')}</div></div>
+      <p class="small">Allergies: <b>${esc(al)}</b></p><div class="rx-rx">℞</div><ol class="rx-list">${rx.items.map((i) => `<li><b>${esc(i.name || (E.medicine(d, i.medicineId) || {}).name || '')}</b>${i.sched ? ` <small>(S${esc(String(i.sched))})</small>` : ''}${i.nappi ? ` <small class="mono">NAPPI ${esc(i.nappi)}</small>` : ''}<br>${esc(i.directions)}${i.days ? ` · for ${i.days} days` : ''} · Quantity: ${esc(String(i.qty))} · ${i.repeats ? `Repeat ×${i.repeats}` : 'No repeats'}${i.generic === false ? ' · <b>Do not substitute</b>' : ''}${i.chronic && i.icd ? ` · ICD-10 ${esc(i.icd)}` : ''}</li>`).join('')}</ol>
+      ${rx.note ? `<p class="small">Note to the pharmacist: ${esc(rx.note)}</p>` : ''}${rx.signature ? (A.sigBlock ? A.sigBlock(rx.signature) : '') : `<p style="margin-top:40px">______________________________<br>${esc(dr.name)} · ${esc(A.regOf ? A.regOf(dr) : 'HPCSA ' + (dr.hpcsa || ''))}</p>`}
+      <p class="tiny muted">SYNTHETIC DEMO — not a valid prescription.</p></div>`; };
+  A.rxSheet = sheet;
+  const after = (rx) => { A.closeModal(); A.ui.rx = null; A.modal(`Script ${rx.rxNo}`, sheet(rx), `<button class="btn" data-act="modal-close">Close</button><button class="btn primary" data-act="rx2-pdf" data-id="${rx.id}">Save as PDF</button>`, { wide: true }); };
+  H['rx2-pdf'] = (el) => { const rx = db().scripts.find((x) => x.id === el.dataset.id); A.closeModal(); if (A.printDoc) A.printDoc(`Script ${rx.rxNo || ''} — ${A.pname(rx.patientId)}`, sheet(rx)); };
+  H['rx2-save'] = () => { if (!st().items.length) return; after(save(null)); };
+  const _ds = H['doc-sign']; H['doc-sign'] = async function (el) { if (el.dataset.kind !== 'rx') return _ds.apply(this, arguments);
+    const me = A.user; const pinEl = document.getElementById('sign-pin'); const pin = (pinEl && pinEl.value || '').trim(); const viaFp = el.dataset.verified === '1'; delete el.dataset.verified;
+    if (!pin && !viaFp) { A.toast('Enter your PIN.', 'error'); return; } const r = viaFp ? { ok: true } : await A.checkPin(me, pin); if (!r.ok) { pinEl.value = ''; A.toast(r.msg, 'error'); return; }
+    const sg = { by: me.id, name: me.name, reg: A.regOf(me), img: (A.sigOf(me) || {}).img, at: E.nowIso(db()), method: viaFp ? 'fingerprint' : 'PIN' }; const rx = save(sg); A.toast(`Script ${rx.rxNo} signed.`); after(rx); };
+  // the old "Print script" in the classic consultation uses the new layout too
+  H['print-script'] = (el) => { const rx = db().scripts.filter((x) => x.encounterId === el.dataset.id).pop(); if (!rx) return; A.modal(`Script ${rx.rxNo || ''}`, sheet(rx), `<button class="btn" data-act="modal-close">Close</button><button class="btn primary" data-act="rx2-pdf" data-id="${rx.id}">Save as PDF</button>`, { wide: true }); };
+
+  // ---------------------------------------------------------------- where the pad opens
+  H['rx2-open'] = (el) => { const d = el.dataset; let pid = d.pid; if (!pid && d.ctx === 'consult') pid = (db().encounters.find((x) => x.id === d.ref) || {}).patientId; if (!pid && d.ctx === 'hospital') pid = (db().hosp.admissions.find((x) => x.id === d.ref) || {}).patientId; if (!pid && d.ctx === 'oncology') pid = ((((db().onc || {}).cases) || []).find((x) => x.id === d.ref) || {}).patientId; A.rxPad({ patientId: pid, ctx: d.ctx, ref: d.ref || null }); };
+  const btn = (ctx, ref, pid, lab, cls) => `<button class="btn ${cls || ''}" data-act="rx2-open" data-ctx="${ctx}" data-ref="${ref || ''}" data-pid="${pid || ''}">${lab || '💊 Script'}</button>`;
+  A.rxBtn = btn;
+  // consultation bottom bar (AI Scribe and classic): next to Sick note and Referral letter
+  const addToBar = (h, encId) => h.replace(/(<button class="btn" data-act="referral" data-id="([^"]+)">✉ Referral letter<\/button>)/, (m0, b, id) => b + btn('consult', id || encId));
+  const _cx = P.consult; if (_cx) P.consult = function (params) { return addToBar(_cx.apply(this, arguments), params && params[0]); };
+  // hospital: Medicines tab and TTO tab
+  if (A.HOSP && A.HOSP.T) { ['meds', 'tto'].forEach((t) => { const f = A.HOSP.T[t]; if (!f) return; A.HOSP.T[t] = function (a) { const h = f.apply(this, arguments); if (!A.can('clinical.write')) return h; const card = `<div class="card rx-cta"><b>📝 Script for the pharmacy</b><p class="small muted">For medicines the patient buys at a pharmacy — any medicine in South Africa, with repeats.</p>${btn('hospital', a.id, a.patientId, '💊 Write a script', 'primary')}</div>`; return h.replace(/<\/aside>\s*<\/div>\s*$/, card + '</aside></div>') === h ? h + card : h.replace(/<\/aside>\s*<\/div>\s*$/, card + '</aside></div>'); }; }); }
+  // oncology case page
+  const _onc = P.onc; if (_onc) P.onc = function (params) { const h = _onc.apply(this, arguments); const c = (((db().onc || {}).cases) || []).find((x) => x.id === (params || [])[0]); if (!c || !A.can('clinical.write')) return h; const k = `data-act="onc-consult" data-c="${c.id}">+ Consultation</button>`; return h.replace(k, k + btn('oncology', c.id, c.patientId)); };
+  // patient file: Current medication
+  const _pt = P.patient; if (_pt) P.patient = function (params) { const h = _pt.apply(this, arguments); if (!A.can('clinical.write')) return h; return h.replace(`<button class="btn" data-act="vitals" data-pid="${params[0]}">Capture vitals</button>`, (m) => m + btn('patient', '', params[0])).replace('<h2>Current medication</h2>', `<div class="row between"><h2 style="margin:0">Current medication</h2>${btn('patient', '', params[0], '💊 Write a script', 'sm')}</div>`); };
+})();
+
+
+/* ===== ui-v085.js ===== */
+/* Prac360 v0.85 — small fixes.
+ * ID and passport numbers never contain spaces: every ID-number or passport field removes spaces as you type or
+ * paste (the space bar does nothing there), and spaces already saved on patient records are removed. */
+(function () {
+  'use strict';
+  const A = window.APP, E = window.PE;
+  const isIdField = (el) => { if (!el || el.tagName !== 'INPUT' || /^(date|checkbox|radio|hidden|password|search|number)$/.test(el.type)) return false;
+    if (el.dataset.idField != null) return true; if (['rf-id', 'prf-id', 'p2-id'].includes(el.id)) return true; if (['idNumber', 'passport', 'passportNo'].includes(el.name)) return true;
+    if (el.name === 'pp' && el.closest('#prid, #prf')) return true; if (el.name === 'id' && el.closest('#prid, #prf')) return true;
+    const lab = ((el.closest('label') || {}).textContent || '') + ' ' + (el.getAttribute('aria-label') || '') + ' ' + (el.placeholder || '');
+    return /\b(ID number|ID no\.?|identity number|passport( number| no\.?)?)\b/i.test(lab) && !/search|find|practice|NAPPI|member|account|file/i.test(lab); };
+  A.isIdField = isIdField;
+  const strip = (el) => { const v = el.value; if (!/\s/.test(v)) return; const pos = el.selectionStart; const before = v.slice(0, pos).replace(/\s+/g, '').length; el.value = v.replace(/\s+/g, ''); try { el.setSelectionRange(before, before); } catch (e) { /* ignore */ } };
+  document.addEventListener('keydown', (e) => { if (e.key === ' ' && isIdField(e.target)) e.preventDefault(); }, true);
+  document.addEventListener('input', (e) => { if (isIdField(e.target)) strip(e.target); }, true);
+  document.addEventListener('paste', (e) => { const el = e.target; if (!isIdField(el)) return; const t = (e.clipboardData || window.clipboardData).getData('text'); if (!/\s/.test(t)) return; e.preventDefault(); const s = el.selectionStart, en = el.selectionEnd; el.value = el.value.slice(0, s) + t.replace(/\s+/g, '') + el.value.slice(en); el.dispatchEvent(new Event('input', { bubbles: true })); }, true);
+  // clean what is already saved
+  const fix = () => { const d = A.db; if (!d || d.idSpacesFixed) return; let n = 0; d.patients.forEach((p) => { ['idNumber', 'passport'].forEach((k) => { if (p[k] && /\s/.test(p[k])) { p[k] = String(p[k]).replace(/\s+/g, ''); n++; } }); }); d.idSpacesFixed = 1; if (n) { try { E.audit(d, A.user, 'id-spaces-removed', 'patient', 'all', null, `${n} ID/passport number(s) had spaces removed`); } catch (e) { /* ignore */ } } try { A.save(); } catch (e) { /* ignore */ } };
+  window.addEventListener('hashchange', () => { try { fix(); } catch (e) { /* ignore */ } });
+})();
+
+
+/* ===== ui-v085l.js ===== */
+/* Prac360 v0.85 — What's new + help: scripts with any SA medicine, patient readings, bigger charts, custom dates,
+ * statements on WhatsApp, ID numbers without spaces. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  const add = (id, title, keys, link, steps, screens) => { if (!kb(id)) KB.push({ id, title, keys, screens: screens || [], link, steps }); return steps; };
+  const sRx = add('rxany', 'Write a script with any medicine', ['script', 'prescription', 'prescribe', 'repeat script', 'medication', 'medicine not in stock', 'pharmacy'], '#/patients', ['Click 💊 Script — in the consultation (bottom bar), on the patient file, in Hospital and wards (Medicines or TTO tab) or on the Oncology case page.', 'Type the medicine name, strength or NAPPI — any medicine in South Africa — and pick it, or use “as typed” for one not in the list.', 'Write the directions (or tap a quick one), the days, quantity and repeats; untick generic substitution if needed; tick Chronic to add it to the medication list.', 'Add every medicine, then sign with your PIN and save as PDF or print. “Repeat a previous script” copies an earlier one.'], ['consult', 'patient']);
+  const sMr = add('patreadings', 'Readings the patient adds in the app', ['patient readings', 'patient captured', 'home readings', 'weight from patient', 'blood pressure from patient', 'glucose from patient'], '#/patients', ['Patients add weight, blood pressure, blood glucose, temperature, pulse, oxygen, height or waist in the Prac360 patient app (Health → ＋ Reading) and choose whether to share them.', 'In Prac360 open the patient → ⌚ Patient wearable → 📝 Added by the patient.', 'Press ⤢ on a reading for the bigger view, or ＋ Add to vitals to copy one into the patient’s vitals (it then shows on Trends & graphs as “Patient app”).'], ['patient']);
+  const sBig = add('bigchart', 'Look at readings in a bigger window', ['bigger chart', 'enlarge', 'zoom chart', 'graph bigger', 'trends bigger', 'custom dates wearable'], '#/patients', ['On ⌚ Patient wearable or Trends & graphs, press ⤢ on any reading.', 'Choose 7, 30, 90 days, 12 months or 📅 Custom dates (From and To).', 'Read the latest, average, lowest and highest values, the large chart, and every value in the table.'], ['patient']);
+  const sSt = add('wastatement', 'WhatsApp a statement to a patient', ['whatsapp statement', 'statement whatsapp', 'send statement', 'statement pdf whatsapp'], '#/payments', ['Open the patient’s statement (Payments & accounts → the account → Statement).', 'Click 💬 WhatsApp (or 💬 WhatsApp in the “PDF ready” box).', 'Keep “Protect the PDF with the date of birth” ticked, tick that the patient agreed, and press Send. Automatic mode sends it with the PDF; Click to send shares the PDF or downloads it and opens the chat.']);
+  const sId = add('idnospace', 'ID and passport numbers', ['id number spaces', 'passport spaces', 'id number format'], '#/patients/new', ['Type the ID or passport number without spaces — Prac360 removes spaces as you type or paste.', 'The SA ID number is checked as you type (13 digits and the check digit).']);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.85')) A.RELEASES.unshift({ v: '0.85', date: '2026-11-26', title: 'Scripts with any medicine, patient readings, bigger charts and statements on WhatsApp', items: [
+    { type: 'new', area: 'clinical', title: '💊 Scripts with any medicine in South Africa', text: 'Write a script from the consultation, the patient file, Hospital and wards or Oncology — any medicine in the South African medicine list (Medprax, 26 000+ products) or typed as it must appear. Directions, quantity, repeats, no-substitution and chronic with ICD-10. Allergies and interactions are checked when Prac360 knows the active ingredient. Sign with your PIN, then print or save as PDF. Repeat an earlier script in one click.', link: '#/patients', guide: 'rxany' },
+    { type: 'new', area: 'clinical', title: '📝 Patients add their own readings in the app', text: 'Weight, blood pressure, blood glucose, temperature, pulse, oxygen, height and waist — typed in by the patient, shared only if they choose. They show on ⌚ Patient wearable under “Added by the patient”, and the doctor can add one to the patient’s vitals.', link: '#/patients', guide: 'patreadings' },
+    { type: 'new', area: 'clinical', title: '⤢ Bigger view for every reading', text: 'Press ⤢ on any chart on ⌚ Patient wearable or Trends & graphs: a large chart, latest, average, lowest and highest, and every value in a table.', link: '#/patients', guide: 'bigchart' },
+    { type: 'improved', area: 'clinical', title: '📅 Custom dates on Patient wearable', text: 'Besides 7, 30, 90 days and 12 months you can now choose your own From and To dates, like on Medical aids.', link: '#/patients', guide: 'bigchart' },
+    { type: 'new', area: 'billing', title: '💬 Statements on WhatsApp (PDF)', text: 'Send a patient their statement as a PDF on WhatsApp from the statement page or the “PDF ready” box, protected with their date of birth.', link: '#/payments', guide: 'wastatement' },
+    { type: 'fixed', area: 'general', title: 'No spaces in ID and passport numbers', text: 'ID and passport number fields remove spaces as you type or paste, and spaces already saved were removed.', link: '#/patients/new', guide: 'idnospace' },
+    { type: 'improved', area: 'help', title: '“Go there” and “Show me” on everything in What’s new', text: 'Every item in What’s new now has Go there (opens the screen) and ▶ Show me (a step-by-step walkthrough).', link: '#/whatsnew', guide: 'whatsnew' }] });
+  const C = A.COURSES || []; const f = (re) => C.find((x) => re.test((x.id || '') + ' ' + (x.title || ''))) || C[0];
+  const cl = f(/clinical|consult/i), hc = f(/hospital|ward/i), on = f(/oncol/i), fd = f(/front|reception/i), bi = f(/billing|claim|account/i), sh = f(/one patient|shared|clinical file/i);
+  const les = (co, t, st) => { if (co && co.lessons && !co.lessons.some((l) => l.t === t)) co.lessons.push({ t, body: st.join(' '), guide: '' }); };
+  les(cl, 'Write a script with any medicine', sRx); if (hc !== cl) les(hc, 'Scripts for the pharmacy', sRx); if (on !== cl) les(on, 'Scripts in oncology', sRx); les(sh, 'Readings the patient adds', sMr); les(cl, 'Bigger charts and custom dates', sBig); les(bi, 'Statements on WhatsApp', sSt); les(fd, 'ID and passport numbers', sId);
+  const q = (co, test, o) => { if (co && co.quiz && !co.quiz.some((x) => test.test(x.q))) co.quiz.push(o); };
+  q(cl, /medicine.*not.*stock/i, { q: 'The medicine you want to prescribe is not in the practice’s stock. What do you do?', o: ['You can’t prescribe it', 'Use 💊 Script — any medicine in South Africa can go on a script', 'Add it to stock first'], a: 1 });
+  q(cl, /Schedule 6/i, { q: 'How many repeats can a Schedule 6 medicine have on a Prac360 script?', o: ['None', 'Up to 5', 'Unlimited'], a: 0 });
+  q(sh, /typed in by the patient/i, { q: 'Where do you see readings typed in by the patient in the app?', o: ['⌚ Patient wearable → Added by the patient', 'Reports', 'They never reach Prac360'], a: 0 });
+  q(bi, /statement.*WhatsApp/i, { q: 'How is a statement protected when it is sent on WhatsApp?', o: ['It isn’t', 'With the patient’s date of birth as DDMMYYYY', 'With the practice number'], a: 1 });
+  if (A.FUNCTIONS) { const g = (re) => A.FUNCTIONS.find((x) => re.test(x[0])) || A.FUNCTIONS[0]; const put = (re, t, id) => { const G = g(re); if (G && !G[1].some((x) => x[0] === t)) G[1].push([t, id]); };
+    put(/clinical|consult/i, 'Write a script (any medicine)', 'rxany'); put(/patient/i, 'Readings the patient adds', 'patreadings'); put(/patient|clinical/i, 'Bigger chart view and custom dates', 'bigchart'); put(/payment|account|billing/i, 'WhatsApp a statement', 'wastatement'); put(/patient/i, 'ID and passport numbers', 'idnospace'); }
+})();
+(function () { const A = window.APP; if (A.DEMO_VIDEOS && A.DEMO_VIDEOS.consent) Object.assign(A.DEMO_VIDEOS.consent, { src: 'media/prac360-consent.mp4?v=85', vtt: 'media/prac360-consent.vtt?v=85', poster: 'media/prac360-consent.jpg?v=85' }); })();
+
+
+/* ===== ui-v085wn.js ===== */
+/* Prac360 v0.85 — every item in What's new gets "Go there" and "▶ Show me".
+ * 1) recent items are linked to their own help topic by title;
+ * 2) other items without a walkthrough are matched to the closest help topic (its automatic Show me walkthrough);
+ * 3) anything still without one gets a short walkthrough of its own: open the screen from the menu, then what changed.
+ * Items without a link get the help topic's link, otherwise the main screen for their area. */
+(function () {
+  'use strict';
+  const A = window.APP;
+  const MAP = [[/Appointment reminders on WhatsApp/, 'waremind'], [/Patient-app invite on WhatsApp/, 'wainvite'], [/Practice setup → WhatsApp/, 'wasetup'], [/WhatsApp consent/, 'wasetup'],
+    [/Ward rounds in Hospital/, 'wardround'], [/Medicine chart for inpatients/, 'medchart'], [/Ward and theatre stock and TTO/, 'wardstock'], [/Sick note and referral letter at the bottom/, 'scribeletters'], [/Quizzes shuffle/, 'quizresults'],
+    [/full Prac360 patient app/, 'papp2'], [/Link a watch, ring/, 'wearlink'], [/patient decides what is shared/, 'wearshare'], [/Patient wearable tab on the patient file/, 'weartab'], [/Search forgives spelling/, 'fuzzysearch'],
+    [/Print button on everything/, 'printall'], [/ICD-10 suggestions in every/, 'icdsearch'], [/Why claims were rejected/, 'rejanalysis'], [/Custom dates on Medical aids/, 'macustom'], [/Assign training and track/, 'trainassign'], [/Team progress stays folded/, 'trainassign']];
+  const AREA = { billing: '#/claims', clinical: '#/clinical', reports: '#/reports', general: '#/today', help: '#/learn', stock: '#/stock', admin: '#/settings', security: '#/settings', diary: '#/diary', patients: '#/patients' };
+  const NAVS = ['today', 'diary', 'patients', 'clinical', 'followup', 'hospital', 'oncology', 'dentalops', 'billing', 'claims', 'payments', 'stock', 'reports', 'schemes', 'settings', 'learn', 'whatsnew'];
+  const STOP = new Set('the a an and or of to in on for with your you is are be it this that now from as at by can each every new more all its into when what which who has have not no'.split(' '));
+  const toks = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter((w) => w.length > 2 && !STOP.has(w));
+  const best = (it) => { const KB = A.KB || []; const q = new Set(toks(it.title + ' ' + it.title + ' ' + it.text)); let top = null, sc = 0;
+    KB.forEach((k) => { const ws = toks(k.title + ' ' + (k.keys || []).join(' ')); if (!ws.length) return; let s = 0; ws.forEach((w) => { if (q.has(w)) s++; }); const n = s / Math.sqrt(ws.length); if (n > sc) { sc = n; top = k; } }); return sc >= 1.1 ? top : null; };
+  const own = (r, i, it) => { const id = `wn-${r.v}-${i}`; const link = it.link || AREA[it.area] || '#/today'; const m = link.match(/^#\/([a-z]+)/); const route = m ? m[1] : 'today'; const steps = [];
+    if (NAVS.includes(route)) steps.push({ sel: `[data-tour="nav-${route}"]`, text: `Click this in the menu on the left.`, expect: 'click', skip: `^#/${route}(/|$)`, missing: 'This is not in your menu — your role or your practice’s services do not include it.' });
+    const sub = link.split('/').slice(2).join('/'); if (sub) steps.push({ sel: `#main .tabs a[href="${link}"], #main a[href="${link}"]`, text: 'Open this.', expect: 'click', skip: '^' + link.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(/|$)', missing: 'Open the right screen first, then try again.' });
+    steps.push({ sel: '.page-head h1, main h1, .card h2', text: `${it.title}: ${it.text}`, expect: 'next', missing: 'Open the screen, then press Next.' });
+    A.GUIDES[id] = { title: it.title, steps, auto: true }; return id; };
+  let done = 0;
+  const fill = () => { if (!A.RELEASES || !A.GUIDES || !A.KB) return; if (done === A.RELEASES.reduce((n, r) => n + r.items.length, 0)) return; let n = 0;
+    A.RELEASES.forEach((r) => r.items.forEach((it, i) => { n++;
+      if (!it.guide || !A.GUIDES[it.guide]) { const mm = MAP.find(([re]) => re.test(it.title)); const k = (mm && A.KB.find((x) => x.id === mm[1])) || (it.guide && A.KB.find((x) => x.id === it.guide)) || best(it);
+        if (k && A.GUIDES[k.id]) { it.guide = k.id; if (!it.link) it.link = k.link; } else if (k) { it.guide = k.id; if (!it.link) it.link = k.link; } }
+      if (!it.link) it.link = AREA[it.area] || '#/today';
+      if (!it.guide || !A.GUIDES[it.guide]) it.guide = own(r, i, it); }));
+    done = n; };
+  // help topics get their automatic walkthroughs a moment after start-up, so fill in after that (and again before What's new shows)
+  setTimeout(fill, 50); setTimeout(fill, 1500);
+  const _wn = A.P.whatsnew; if (_wn) A.P.whatsnew = function () { fill(); return _wn.apply(this, arguments); };
+  A.whatsNewFill = fill;
 })();
 
 

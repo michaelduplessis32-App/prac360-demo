@@ -1,278 +1,296 @@
 WEBVTT
 
-00:00:00.717 --> 00:00:01.819
+00:00:00.726 --> 00:00:01.806
 Welcome to Prac360:
 
-00:00:01.819 --> 00:00:05.009
+00:00:01.806 --> 00:00:04.933
 the complete practice system for South African doctors.
 
-00:00:05.009 --> 00:00:15.447
+00:00:04.933 --> 00:00:15.165
 In the next few minutes we'll walk through a day in a practice, from the first booking to the payment from the medical aid, and show you how Prac360 takes the admin off your hands.
 
-00:00:16.149 --> 00:00:17.760
+00:00:15.866 --> 00:00:17.478
 Here's what we'll cover:
 
-00:00:17.760 --> 00:00:31.993
+00:00:17.478 --> 00:00:31.721
 the dashboard and front desk, the patient file, consultations with AI Scribe, billing and claims, payments and stock, the modules, Assist and Talk, the Prac360 network, and how your team stays safe and supported.
 
-00:00:32.694 --> 00:00:34.804
+00:00:32.423 --> 00:00:34.643
 Everyone signs in with their own login.
 
-00:00:34.804 --> 00:00:42.758
+00:00:34.643 --> 00:00:43.010
 Two-step verification adds a code from your phone, so your patients' information stays protected, and each person only sees what their role allows.
 
-00:00:43.460 --> 00:00:45.898
+00:00:43.710 --> 00:00:46.157
 The Home Dashboard is your morning briefing:
 
-00:00:45.898 --> 00:00:53.048
+00:00:46.157 --> 00:00:53.333
 turnover and collections this month, what medical aids and patients owe, today's appointments, and anything that needs attention.
 
-00:00:55.461 --> 00:01:00.942
+00:00:55.711 --> 00:01:00.999
 Messages from Prac360 appear right on the dashboard, and fold away when you've read them.
 
-00:01:00.942 --> 00:01:06.361
+00:01:00.999 --> 00:01:06.228
 Each person can arrange the dashboard their own way, and choose day, dusk or night mode.
 
-00:01:09.744 --> 00:01:12.029
+00:01:09.645 --> 00:01:13.015
+If the system ever feels like too much, switch on Simple mode.
+
+00:01:13.015 --> 00:01:16.221
+Each person sees only the sections they use for their role.
+
+00:01:16.221 --> 00:01:21.275
+The gear lets you tick more, reset puts it back, and switching it off shows everything again.
+
+00:01:23.645 --> 00:01:25.905
 The diary is built for a busy front desk.
 
-00:01:12.029 --> 00:01:19.495
+00:01:25.905 --> 00:01:33.291
 Each doctor has a column, appointments show their status, and you change it with one click as the patient arrives, goes in and leaves.
 
-00:01:22.947 --> 00:01:27.204
+00:01:36.845 --> 00:01:41.164
 A red marker shows who was seen but not billed yet, so nothing slips through.
 
-00:01:27.204 --> 00:01:32.511
+00:01:41.164 --> 00:01:46.549
 No-shows are marked automatically, and the oncology treatment chairs sit right beside the diary.
 
-00:01:34.147 --> 00:01:35.318
+00:01:48.046 --> 00:01:49.247
 Booking takes seconds.
 
-00:01:35.318 --> 00:01:40.219
+00:01:49.247 --> 00:01:54.267
 Choose the patient, and the doctor, time and length are filled in from the slot you clicked.
 
-00:01:40.219 --> 00:01:42.723
+00:01:54.267 --> 00:01:56.831
 Double bookings are stopped before they happen.
 
-00:01:45.147 --> 00:01:50.008
+00:01:59.047 --> 00:02:03.790
 Registering a new patient is one simple form, with compulsory fields clearly marked.
 
-00:01:50.008 --> 00:01:52.843
+00:02:03.790 --> 00:02:06.557
 The medical aid membership can be checked online.
 
-00:01:57.147 --> 00:02:00.516
+00:02:11.046 --> 00:02:14.415
 The patient file shows the whole patient on one screen:
 
-00:02:00.516 --> 00:02:06.886
+00:02:14.415 --> 00:02:20.785
 medical aid, allergies, chronic medicines and conditions, visits, documents, the account and follow-ups.
 
-00:02:09.348 --> 00:02:11.145
+00:02:23.246 --> 00:02:25.027
 Some doctors like to type.
 
-00:02:11.145 --> 00:02:14.533
+00:02:25.027 --> 00:02:28.384
 The Classic consultation is a clean, simple note:
 
-00:02:14.533 --> 00:02:20.755
+00:02:28.384 --> 00:02:34.549
 history, examination, diagnosis and plan, with smart ICD-10 search and your own templates.
 
-00:02:21.455 --> 00:02:22.948
+00:02:35.250 --> 00:02:36.748
 Others prefer to talk.
 
-00:02:22.948 --> 00:02:30.006
+00:02:36.748 --> 00:02:43.827
 With AI Scribe, and only with the patient's permission, Prac360 listens and fills in the note as you go:
 
-00:02:30.006 --> 00:02:36.657
+00:02:43.827 --> 00:02:50.498
 the complaint, the vital signs, the examination, the diagnosis with its ICD-10 code, and the plan.
 
-00:02:41.659 --> 00:02:48.025
+00:02:55.451 --> 00:03:01.818
 It linked the ICD-10 code by itself, and it learns from your choices, so there's less to check every time.
 
-00:02:48.025 --> 00:02:50.428
+00:03:01.818 --> 00:03:04.220
 It even works when the patient is quiet:
 
-00:02:50.428 --> 00:02:52.230
+00:03:04.220 --> 00:03:06.022
 just say the details yourself.
 
-00:02:53.859 --> 00:02:55.445
+00:03:07.651 --> 00:03:09.313
 When you finish, you review.
 
-00:02:55.445 --> 00:03:00.427
+00:03:09.313 --> 00:03:14.537
 Anything that needs a second look is listed, and the fix button corrects it in one step.
 
-00:03:00.427 --> 00:03:03.201
+00:03:14.537 --> 00:03:17.446
 Nothing is signed or billed until you approve it.
 
-00:03:08.060 --> 00:03:14.921
+00:03:21.852 --> 00:03:28.957
 The follow-up manager keeps track of chronic patients, results to review and recalls, so nobody falls through the cracks.
 
-00:03:17.259 --> 00:03:21.318
+00:03:31.052 --> 00:03:34.986
 Signing the note creates the bill with the right tariff codes.
 
-00:03:21.318 --> 00:03:30.026
+00:03:34.986 --> 00:03:43.425
 Before anything is sent, Prac360 checks the codes, modifiers and ICD-10 rules, and the optional SAMA billing coach checks every line.
 
-00:03:30.727 --> 00:03:33.437
+00:03:44.125 --> 00:03:46.878
 Claims go to the medical aids electronically.
 
-00:03:33.437 --> 00:03:37.170
-On the awaiting payment list you see every claim's EDI status:
+00:03:46.878 --> 00:03:52.322
+Awaiting payment groups them per medical aid and shows the date each payment is expected.
 
-00:03:37.170 --> 00:03:42.831
-sent, through the switch, accepted, and waiting for payment, with a warning when it's overdue.
+00:03:52.322 --> 00:03:52.995
+No payment?
 
-00:03:43.927 --> 00:03:48.645
+00:03:52.995 --> 00:03:54.525
+Press request remittance:
+
+00:03:54.525 --> 00:04:02.600
+Prac360 writes the email to the medical aid, and then follows up by itself every day at the same time, until the remittance arrives.
+
+00:04:06.055 --> 00:04:10.874
 If a claim is rejected, Prac360 explains why in plain language.
 
-00:03:48.645 --> 00:03:49.918
+00:04:10.874 --> 00:04:12.174
 Step one, fix it:
 
-00:03:49.918 --> 00:03:54.261
+00:04:12.174 --> 00:04:16.610
 for example the dependant code or an authorisation number.
 
-00:03:54.261 --> 00:03:57.480
+00:04:16.610 --> 00:04:19.899
 Step two, re-send it by EDI with one click.
 
-00:04:00.128 --> 00:04:05.198
-When the medical aid pays, the electronic remittance is imported and reconciled automatically.
+00:04:22.255 --> 00:04:25.889
+When the medical aid pays, the electronic remittance is imported.
 
-00:04:05.198 --> 00:04:08.973
+00:04:25.889 --> 00:04:29.020
+Switch on auto-reconcile and it is reconciled by itself.
+
+00:04:29.020 --> 00:04:32.933
 Short payments move to the patient's account, ready for the statement.
 
-00:04:10.330 --> 00:04:13.474
+00:04:35.456 --> 00:04:38.699
 Payments and accounts keep the money side simple:
 
-00:04:13.474 --> 00:04:20.020
+00:04:38.699 --> 00:04:45.449
 capture cash, card or EFT in seconds, print or email statements, and see the age analysis at a glance.
 
-00:04:20.720 --> 00:04:26.522
+00:04:46.149 --> 00:04:51.669
 Reports cover everything, from turnover and collections to rejections, debtors and stock:
 
-00:04:26.522 --> 00:04:30.434
-on screen, as PDF or Excel, or emailed to you automatically.
+00:04:51.669 --> 00:04:57.500
+on screen, printed straight to your printer, as PDF or Excel, or emailed to you automatically.
 
-00:04:31.145 --> 00:04:39.562
+00:04:58.200 --> 00:05:06.385
 With stock and dispensing, medicines are tracked by batch and expiry, you're warned when it's time to order, and dispensed items are billed straight from stock.
 
-00:04:41.345 --> 00:04:49.763
+00:05:08.400 --> 00:05:16.945
 For practices that admit patients, the hospital and wards module gives you a live ward board, admissions, authorisations, theatre and the hospital account.
 
-00:04:51.548 --> 00:04:55.607
+00:05:18.606 --> 00:05:22.741
 The oncology module follows the cancer patient from referral to follow-up:
 
-00:04:55.607 --> 00:05:03.562
+00:05:22.741 --> 00:05:30.841
 treatment plans and cycles, nursing and pharmacy checks, authorisations, and treatment chairs, where you put a patient in a chair with one click.
 
-00:05:05.749 --> 00:05:08.933
+00:05:32.807 --> 00:05:35.942
 Assist is like a personal assistant inside Prac360.
 
-00:05:08.933 --> 00:05:11.056
+00:05:35.942 --> 00:05:38.032
 Ask it anything in your own words:
 
-00:05:11.056 --> 00:05:17.111
+00:05:38.032 --> 00:05:43.995
 what do I need to do today, what allergies does Thandiwe have, or take me to the rejected claims.
 
-00:05:18.750 --> 00:05:20.593
+00:05:45.813 --> 00:05:47.634
 It also does the work for you.
 
-00:05:20.593 --> 00:05:25.633
+00:05:47.634 --> 00:05:52.611
 Tell it that a patient is allergic to aspirin, or to book Pieter on Friday at ten.
 
-00:05:25.633 --> 00:05:28.092
+00:05:52.611 --> 00:05:55.039
 If something is missing, it simply asks.
 
-00:05:31.750 --> 00:05:32.495
+00:05:58.814 --> 00:05:59.572
 Or just talk.
 
-00:05:32.495 --> 00:05:36.106
+00:05:59.572 --> 00:06:03.244
 Talk is a real voice conversation, like talking to a colleague:
 
-00:05:36.106 --> 00:05:41.151
+00:06:03.244 --> 00:06:08.374
 Assist listens, answers out loud, and you can interrupt it at any time just by speaking.
 
-00:05:41.151 --> 00:05:46.884
+00:06:08.374 --> 00:06:14.203
 A small glowing circle shows it's listening, so the conversation never gets in the way of your work.
 
-00:05:49.954 --> 00:05:51.626
+00:06:17.017 --> 00:06:18.664
 Now, the Prac360 network.
 
-00:05:51.626 --> 00:05:58.381
+00:06:18.664 --> 00:06:25.317
 With the patient's consent, every Prac360 doctor who treats them works from one shared clinical file.
 
-00:05:59.083 --> 00:06:04.731
+00:06:26.018 --> 00:06:31.606
 Consent can be given at the practice, where reception reads a short, plain-language explanation.
 
-00:06:04.731 --> 00:06:11.028
+00:06:31.606 --> 00:06:37.835
 It covers all clinical records, including hospital admissions and oncology, but never accounts or payments.
 
-00:06:13.784 --> 00:06:17.292
+00:06:40.717 --> 00:06:44.264
 Or patients do it themselves in the Prac360 patient app.
 
-00:06:17.292 --> 00:06:24.370
+00:06:44.264 --> 00:06:51.420
 They see every record Prac360 holds on them, give consent with one tap, see who looked, and can stop at any time.
 
-00:06:28.986 --> 00:06:36.166
+00:06:55.917 --> 00:07:02.936
 Every doctor treating the patient now opens one combined, read-only file, with each entry marked by the practice that recorded it.
 
-00:06:36.166 --> 00:06:40.861
+00:07:02.936 --> 00:07:07.525
 And patients can book any doctor in the network, straight into that practice's diary.
 
-00:06:45.187 --> 00:06:48.211
+00:07:12.118 --> 00:07:15.090
 Your team stays connected with internal messages:
 
-00:06:48.211 --> 00:06:50.000
+00:07:15.090 --> 00:07:16.850
 to everyone or to one person.
 
-00:06:50.000 --> 00:06:54.135
+00:07:16.850 --> 00:07:20.914
 They pop up to be acknowledged, but never interrupt a consultation.
 
-00:06:54.836 --> 00:06:56.785
+00:07:21.615 --> 00:07:23.555
 Found a problem or have an idea?
 
-00:06:56.785 --> 00:06:58.733
+00:07:23.555 --> 00:07:25.496
 Report it straight from Prac360.
 
-00:06:58.733 --> 00:07:03.726
+00:07:25.496 --> 00:07:30.469
 The Prac360 team sees it, can ask you questions, and lets you know when it's done.
 
-00:07:04.427 --> 00:07:05.644
+00:07:31.170 --> 00:07:32.374
 Training is built in.
 
-00:07:05.644 --> 00:07:12.193
+00:07:32.374 --> 00:07:38.854
 The Training Academy has short courses for every role, show me tours on the real screens, and a printable manual.
 
-00:07:12.193 --> 00:07:14.338
+00:07:38.854 --> 00:07:40.976
 What's new keeps everyone up to date.
 
-00:07:15.437 --> 00:07:24.957
+00:07:42.187 --> 00:07:51.301
 The practice manager controls who can do what, with roles for reception, nurses, doctors, billing and management, and every change is recorded in the audit trail.
 
-00:07:25.658 --> 00:07:28.138
+00:07:52.393 --> 00:07:54.865
 Every practice gets the core system.
 
-00:07:28.138 --> 00:07:30.341
+00:07:54.865 --> 00:07:57.061
 Then you add only what you need:
 
-00:07:30.341 --> 00:07:40.258
+00:07:57.061 --> 00:08:06.947
 Assist and AI Scribe, stock and dispensing, hospital and wards, oncology, dental, the SAMA billing coach, advanced reports and priority support.
 
-00:07:40.959 --> 00:07:47.502
+00:08:07.650 --> 00:08:14.486
 Your data is protected with personal logins, two-step verification, roles and a full audit trail.
 
-00:07:47.502 --> 00:07:49.998
+00:08:14.486 --> 00:08:17.094
 And Prac360 is made for South Africa:
 
-00:07:49.998 --> 00:07:53.910
+00:08:17.094 --> 00:08:21.182
 medical aids, ICD-10, NAPPI codes, PMBs, VAT and the rand.
 
-00:07:54.611 --> 00:07:55.125
+00:08:21.883 --> 00:08:22.388
 Prac360.
 
-00:07:55.125 --> 00:07:57.696
+00:08:22.388 --> 00:08:24.913
 Less admin, more time for your patients.
 
-00:07:57.696 --> 00:08:01.873
+00:08:24.913 --> 00:08:29.016
 We'll set it up with your codes, your medical aids and your team.
 
-00:08:01.873 --> 00:08:03.801
+00:08:29.016 --> 00:08:30.910
 Book your personal demo today.
 

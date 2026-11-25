@@ -2875,6 +2875,53 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 /* v0.78 — language */
 .auth-lang{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px}.auth-lang select{width:auto;padding:4px 8px;font-size:.88rem}
 html.i18n-wait #root{visibility:hidden}
+/* v0.79 compact transaction header (sticky) */
+.txg.txg-c{padding:10px 14px;position:sticky;top:0;z-index:20;box-shadow:0 4px 14px rgba(15,23,42,.06)}
+.txg-c .txg-top{align-items:center;gap:10px}.txg-c .txg-who{min-width:0;flex:1 1 280px}
+.txg-c .txg-n{font-size:1.1rem;font-weight:800;display:inline}.txg-c .txg-s{display:inline;font-size:.82rem;margin-left:8px}
+.txg-c .txg-meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-block;max-width:420px;vertical-align:bottom}
+.txg-c .txg-b{margin-top:4px}.txg-c .txg-b .badge{font-size:.72rem;padding:1px 7px}
+.txg-c .txg-sum{border-top:0;padding-top:0;gap:6px;font-size:.85rem;align-items:center}
+.txg-chip{border:1px solid var(--line,#e5e7eb);background:var(--surface,#fff);border-radius:999px;padding:3px 10px;white-space:nowrap;color:inherit;text-decoration:none}
+.txg-chip.warn{border-color:#f59e0b;background:#fffbeb}.txg-chip.crit{border-color:#dc2626;background:#fef2f2;color:#991b1b;font-weight:700}.txg-chip.good{border-color:#16a34a;background:#f0fdf4;color:#166534}
+.txg-steps2{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:.8rem;color:var(--muted,#64748b);margin-top:6px}
+.txg-steps2 span{padding:1px 8px;border-radius:999px;background:#f1f5f9}.txg-steps2 span.now{background:#2563eb;color:#fff;font-weight:700}.txg-steps2 span.ok{background:#dcfce7;color:#166534}
+.txg-steps2 i{font-style:normal;opacity:.5}.txg-steps2 em{margin-left:auto;font-style:normal}
+html.night .txg-chip,html.dusk .txg-chip{background:transparent}html.night .txg-steps2 span{background:rgba(255,255,255,.08)}
+@media (max-width:720px){.txg.txg-c{position:static}.txg-c .txg-s{display:block;margin-left:0}.txg-steps2 em{margin-left:0}}
+/* v0.79 phones and tablets */
+html.dev-touch .btn{min-height:40px}html.dev-touch .btn.sm{min-height:34px}
+html.dev-touch input,html.dev-touch select,html.dev-touch textarea{font-size:16px}
+html.kb-open .as-pill,html.kb-open #p360-robot,html.kb-open #talk-orb,html.kb-open .simple-pill,html.kb-open .txg.txg-c{position:static}
+html.kb-open .as-pill,html.kb-open #p360-robot,html.kb-open #talk-orb{display:none!important}
+html.kb-open .modal{max-height:calc(var(--vvh,90vh) - 24px)!important}
+html.kb-open .txg.txg-c{box-shadow:none}
+.p360-next{outline:3px solid #2563eb!important;outline-offset:2px;transition:outline .2s}
+html.dev-tablet .nav a,html.dev-phone .nav a{padding-top:11px;padding-bottom:11px}
+html.dev-touch .voice-btn{width:40px;height:40px}
+.dev-note{display:flex;gap:8px;align-items:flex-start;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:8px 10px;font-size:.85rem;margin:8px 0}
+html[data-theme=dark] .dev-note{background:rgba(37,99,235,.12);border-color:rgba(147,197,253,.35)}
+/* v0.79 switches, claims follow-ups, simple mode, printing */
+.sw-line{display:flex;gap:10px;align-items:center;cursor:pointer;max-width:520px}.sw-line input{position:absolute;opacity:0;pointer-events:none}
+.sw-line small{display:block;color:var(--muted,#64748b);font-size:.8rem;font-weight:400}
+.p3sw{flex:0 0 auto;width:44px;height:24px;border-radius:999px;background:#cbd5e1;position:relative;transition:.2s}.p3sw::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.2s}
+.sw-line input:checked+.p3sw{background:#16a34a}.sw-line input:checked+.p3sw::after{left:23px}.sw-line input:focus-visible+.p3sw{outline:3px solid #93c5fd}
+.rr-card h3{font-size:1.05rem}.rr-line{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.85rem;margin-top:8px;padding:8px 10px;border-radius:10px;background:#f0fdf4;border:1px solid #bbf7d0}
+.rr-line .rr-acts{margin-left:auto;display:flex;gap:6px}html[data-theme=dark] .rr-line{background:rgba(22,163,74,.12);border-color:rgba(134,239,172,.3)}
+.rr-auto{padding:12px 14px}
+.simple-pill{display:flex;align-items:center;gap:2px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);padding:3px 4px 3px 6px;margin-right:8px}
+.simple-pill .sp-tog{display:flex;align-items:center;gap:8px;background:none;border:0;color:#fff;font-weight:700;font-size:.85rem;cursor:pointer;padding:4px 6px}
+.simple-pill .sp-sw{width:34px;height:20px;border-radius:999px;background:rgba(255,255,255,.35);position:relative;transition:.2s}.simple-pill .sp-sw::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.simple-pill.on{background:#16a34a;border-color:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.25)}.simple-pill.on .sp-sw{background:rgba(255,255,255,.45)}.simple-pill.on .sp-sw::after{left:16px}
+.simple-pill .sp-gear{background:none;border:0;color:#fff;font-size:1rem;cursor:pointer;padding:4px 8px;border-left:1px solid rgba(255,255,255,.3)}
+.sm-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px}.sm-item{display:flex;align-items:center;gap:8px;border:1px solid var(--line,#e5e7eb);border-radius:10px;padding:8px 10px;cursor:pointer}.sm-item small{margin-left:auto;color:#16a34a;font-size:.72rem;font-weight:700}
+html.simple .simple-x{display:none!important}
+@media (max-width:720px){.simple-pill .sp-l{display:none}}
+@media print{body.printing-report .nav,body.printing-report .top,body.printing-report .no-print,body.printing-report .page-head .actions,body.printing-report #assist,body.printing-report .as-pill,body.printing-report #p360-robot,body.printing-report #talk-orb,body.printing-report .crumbs,body.printing-report .back-nav{display:none!important}body.printing-report .app{display:block!important}body.printing-report .main{margin:0!important;padding:0!important;max-width:none!important}body.printing-report .card{box-shadow:none!important;break-inside:avoid}}
+.simple-pill .sp-l{white-space:nowrap}
+@media (max-width:1180px){.top .pill.sandbox{display:none}.top .search{min-width:0;flex:1 1 180px;max-width:300px}}
+html.dev-tablet .nav{width:auto}html.dev-tablet .nav a{font-size:.95rem}
+@media (max-width:1180px){.top .pres-n{display:none}.top .search{min-width:170px}html.dev-touch .top .search .kbd{display:none}}
 </style>
 </head>
 <body>
@@ -2914,6 +2961,81 @@ html.i18n-wait #root{visibility:hidden}
   // Helpers for any screen that needs them.
   const parts = (d) => Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).formatToParts(d || new Date()).map((x) => [x.type, x.value]));
   window.SAST = { TZ, OFF, conv, today: () => new Date().toISOString().slice(0, 10), hm: (d) => { const p = parts(d); return p.hour + ':' + p.minute; }, hour: (d) => +parts(d).hour, parts };
+})();
+
+
+/* ===== ui-device.js ===== */
+/* Prac360 v0.79 — phones and tablets.
+ * 1. Knows the device: phone, tablet or computer (touch or mouse), iPad/iPhone or Android. Adds classes to <html>
+ *    (dev-phone, dev-tablet, dev-touch, dev-ios, dev-android) so screens can adapt.
+ * 2. Steadier microphone: tablets and phones stop listening after every short pause. Every listening feature in Prac360
+ *    (Assist Talk, AI Scribe, Capture vitals, dictation) now quietly starts listening again until you press Stop.
+ * 3. The on-screen keyboard: Prac360 never opens it by itself (only when you tap a field), and while it is open the
+ *    field you are typing in is kept in view, floating buttons step aside and pop-ups fit above the keyboard. */
+(function () {
+  'use strict';
+  const ua = navigator.userAgent || ''; const html = document.documentElement;
+  const touch = ('ontouchstart' in window) || (navigator.maxTouchPoints || 0) > 0;
+  const ios = /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && (navigator.maxTouchPoints || 0) > 1);
+  const android = /Android/i.test(ua);
+  const small = Math.min(screen.width || 9999, screen.height || 9999);
+  const phone = /iPhone|iPod/.test(ua) || (android && /Mobile/i.test(ua)) || (touch && small < 600);
+  const tablet = !phone && (/iPad/.test(ua) || (ios && !/iPhone|iPod/.test(ua)) || (android && !/Mobile/i.test(ua)) || (touch && small >= 600 && small <= 1366 && !/Windows NT|CrOS|Linux x86/.test(ua)));
+  const kind = phone ? 'phone' : tablet ? 'tablet' : 'computer';
+  const D = { kind, phone, tablet, touch: touch && (phone || tablet), ios, android, label: phone ? (ios ? 'iPhone' : android ? 'Android phone' : 'phone') : tablet ? (ios ? 'iPad' : android ? 'Android tablet' : 'tablet') : 'computer' };
+  window.P360_DEVICE = D;
+  ['dev-' + kind, D.touch ? 'dev-touch' : '', ios ? 'dev-ios' : '', android ? 'dev-android' : ''].filter(Boolean).forEach((c) => html.classList.add(c));
+
+  // ---------------------------------------------------------------- 2. steadier speech recognition
+  const N = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (N && !N.__p360) {
+    const FATAL = /not-allowed|service-not-allowed|audio-capture|language-not-supported/;
+    const R = function () {
+      const r = new N(); let userEnd = null, userErr = null, wanted = false, fatal = false, restarts = 0, startedAt = 0, timer = null;
+      const nStart = N.prototype.start.bind(r), nStop = N.prototype.stop.bind(r), nAbort = N.prototype.abort.bind(r);
+      Object.defineProperty(r, 'onend', { configurable: true, get: () => userEnd, set: (f) => { userEnd = f; } });
+      Object.defineProperty(r, 'onerror', { configurable: true, get: () => userErr, set: (f) => { userErr = f; } });
+      r.addEventListener('error', (ev) => { const e = (ev && ev.error) || ''; if (FATAL.test(e)) { fatal = true; wanted = false; }
+        // short silences ("no-speech"), our own restarts ("aborted") and brief network drops are not errors for the person
+        if (wanted && !fatal && /no-speech|aborted|network/.test(e)) return; if (userErr) userErr.call(r, ev); });
+      r.addEventListener('end', (ev) => { const quick = Date.now() - startedAt < 400;
+        if (wanted && !fatal && r.continuous && restarts < 400) { restarts++; clearTimeout(timer); timer = setTimeout(() => { if (!wanted) { if (userEnd) userEnd.call(r, ev); return; } try { startedAt = Date.now(); nStart(); } catch (e) { wanted = false; if (userEnd) userEnd.call(r, ev); } }, quick ? 900 : 200); return; }
+        if (userEnd) userEnd.call(r, ev); });
+      r.start = function () { wanted = true; fatal = false; restarts = 0; startedAt = Date.now(); return nStart(); };
+      r.stop = function () { wanted = false; clearTimeout(timer); try { return nStop(); } catch (e) { /* not running */ } };
+      r.abort = function () { wanted = false; clearTimeout(timer); try { return nAbort(); } catch (e) { /* not running */ } };
+      return r;
+    };
+    R.__p360 = true; R.prototype = N.prototype;
+    try { window.SpeechRecognition = R; window.webkitSpeechRecognition = R; } catch (e) { /* read-only in some browsers */ }
+  }
+
+  if (!D.touch) return;
+  // ---------------------------------------------------------------- 3a. no keyboard unless the person taps a field
+  const isText = (el) => el && (el.tagName === 'TEXTAREA' || el.isContentEditable || (el.tagName === 'INPUT' && /^(text|search|email|tel|number|password|url|)$/i.test(el.getAttribute('type') || '')));
+  const nFocus = HTMLElement.prototype.focus;
+  HTMLElement.prototype.focus = function (opts) {
+    if (isText(this) && this.dataset.allowfocus == null && !html.classList.contains('kb-open')) {
+      // show where to type next, without throwing the keyboard over half the screen
+      try { this.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { /* noop */ }
+      this.classList.add('p360-next'); setTimeout(() => this.classList.remove('p360-next'), 1600); return;
+    }
+    return nFocus.call(this, opts);
+  };
+  // autofocus attributes in pop-ups would also open the keyboard
+  new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((n) => { if (n.nodeType === 1 && n.querySelectorAll) n.querySelectorAll('[autofocus]').forEach((x) => x.removeAttribute('autofocus')); }))).observe(html, { childList: true, subtree: true });
+
+  // ---------------------------------------------------------------- 3b. while the keyboard is open
+  const vv = window.visualViewport;
+  const setVh = () => { const h = vv ? vv.height : window.innerHeight; html.style.setProperty('--vvh', Math.round(h) + 'px'); };
+  const check = () => { setVh(); const ae = document.activeElement; const gap = vv ? window.innerHeight - vv.height : 0; const open = isText(ae) && (gap > 140 || (!vv && isText(ae)));
+    html.classList.toggle('kb-open', !!open);
+    if (open) setTimeout(() => { try { const r = ae.getBoundingClientRect(); const vh = vv ? vv.height : innerHeight; if (r.bottom > vh - 12 || r.top < 60) ae.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) { /* noop */ } }, 120); };
+  if (vv) { vv.addEventListener('resize', check); vv.addEventListener('scroll', setVh); }
+  document.addEventListener('focusin', () => setTimeout(check, 250)); document.addEventListener('focusout', () => setTimeout(check, 250));
+  window.addEventListener('orientationchange', () => setTimeout(check, 400)); setVh();
+  // "Done" on the keyboard of a single-line field closes the keyboard instead of jumping to the next field
+  document.addEventListener('focusin', (e) => { const el = e.target; if (el && el.tagName === 'INPUT' && !el.getAttribute('enterkeyhint')) el.setAttribute('enterkeyhint', el.form ? 'done' : 'done'); });
 })();
 
 
@@ -4888,9 +5010,10 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
     ['payments', 'payments', ['accounts.read']], ['stock', 'stock', ['stock.read', 'stock.use'], () => (A.db.settings.stockEnabled ? E.stockAlerts(A.db).filter((a) => a.level === 'critical').length : 0), () => A.db.settings.stockEnabled],
     ['reports', 'reports', ['reports.financial', 'reports.clinical', 'reports.own', 'reports.stock']], ['schemes', 'schemes', ['setup', 'claims.read']], ['settings', 'settings', ['setup', 'docs.sign']], ['messages', 'messages', null, () => (A.msgUnread ? A.msgUnread() : 0), () => !(A.msgNavHidden && A.msgNavHidden())], ['learn', 'learn', null], ['whatsnew', 'whatsnew', null, () => (A.whatsNewCount ? A.whatsNewCount() : 0)], ['feedback', 'feedback', null, () => (A.fbPractice ? A.fbPractice() : 0)]
   ];
+  A.NAV_IDS = () => NAV.filter(([, , perms, , show]) => (!perms || A.canAny(...perms)) && (!show || show())).map((x) => x[0]);
   A.billingQueue = () => A.db.encounters.filter((e) => e.status === 'signed' && !e.historical && (!e.invoiceId || (A.db.invoices.find((i) => i.id === e.invoiceId) || {}).status === 'draft'));
   const navHtml = () => {
-    const items = NAV.filter(([, , perms, , show]) => (!perms || A.canAny(...perms)) && (!show || show()));
+    const items = NAV.filter(([r, , perms, , show]) => (!perms || A.canAny(...perms)) && (!show || show()) && !(A.simpleHides && A.simpleHides(r)));
     return items.map(([r, k, , cnt]) => { const n = cnt ? cnt() : 0; return `<a href="#/${r}" class="${A.route === r || (r === 'patients' && ['patient', 'consult'].includes(A.route)) ? 'on' : ''}" ${A.route === r ? 'aria-current="page"' : ''} data-tour="nav-${r}">${ICONS[r]}<span>${esc(t(k))}</span>${r === 'diary' && A.user ? '<span class="nav-cust" role="button" tabindex="0" data-act="diary-settings-nav" title="Diary settings" aria-label="Diary settings">⚙</span>' : ''}${r === 'today' && A.user ? `<span class="nav-cust" role="button" tabindex="0" data-act="home-customise" title="Customise your Home Dashboard" aria-label="Customise your Home Dashboard">⚙</span>` : ''}${n ? `<span class="count${r === 'clinical' || r === 'whatsnew' ? ' info' : ''}" aria-label="${n} need attention">${n}</span>` : ''}</a>`; }).join('')
       + `<div class="foot"><div class="foot-ver"><strong>Prac360</strong> v${A.appVersion ? A.appVersion() : '0.34'} · demo</div></div>`;
   };
@@ -4942,6 +5065,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
           <a class="brand" href="#/today" aria-label="Prac360 home"><span class="logo" aria-hidden="true"><img class="on-dark" src="${(window.CP_ASSETS || {}).markLight || (window.CP_ASSETS || {}).mark || ''}" alt=""><img class="on-light" src="${(window.CP_ASSETS || {}).mark || ''}" alt=""></span><span class="txt wordmark">Prac<b>360</b></span></a>
           <div class="search" role="search" data-tour="search">${ICONS.search}<input id="gsearch" type="search" placeholder="${esc(t('search'))}" aria-label="Search" autocomplete="off"><span class="kbd hide-sm">/</span><div id="gresults"></div></div>
           <span class="spacer"></span>
+          ${A.simplePill ? A.simplePill() : ''}
           ${A.licencePill ? A.licencePill() : ''}
           <span id="netpill" class="pill offline hide-sm" ${navigator.onLine ? 'hidden' : ''}>Offline — changes saved on this device</span>
           ${A.presenceStrip ? A.presenceStrip() : ''}
@@ -11520,7 +11644,7 @@ Answer with JSON only:
     d.onFinal(({ text }) => (sink ? sink.final(text) : Date.now() - sinkStoppedAt < 3000 ? (lateSink && lateSink.final(text)) : insert(text))); d.onPartial(({ text }) => { if (sink) sink.partial(text); else if (listening) showPartial(text); });
     d.onState(({ state, reason }) => { if (sink) { sink.state(state, reason); return; } setListening(state === 'listening'); if (state === 'listening') showPartial(''); }); };
   const start = (el) => {
-    if (sink && A.assistPause) A.assistPause(); target = el;
+    if (sink && A.assistPause) A.assistPause(); target = el; if (window.P360_DEVICE && window.P360_DEVICE.touch) setTimeout(() => { try { el.blur(); } catch (e) { /* noop */ } }, 60);
     if (A.caps.dictation) { const d = A.caps.dictation; engine = 'cap'; wireCap(d); d.start().catch((e) => { setListening(false); A.toast(e && e.code === 'not_granted' ? 'Microphone not allowed — you can keep typing.' : 'Dictation could not start.', 'error'); }); return; }
     if (SR) { engine = 'native'; native = new SR(); native.lang = 'en-ZA'; native.continuous = true; native.interimResults = true;
       native.onresult = (ev) => { let interim = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { const r = ev.results[i]; if (r.isFinal) insert(r[0].transcript); else interim += r[0].transcript; } showPartial(interim); };
@@ -19126,8 +19250,8 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   'use strict';
   const A = window.APP, H = A.H, P = A.P;
   const V = {
-    short: { src: 'media/prac360-demo-short.mp4?v=57', vtt: 'media/prac360-demo-short.vtt', poster: 'media/prac360-demo-short.jpg?v=57', t: 'Quick overview', d: '3 minutes — the whole system at a glance' },
-    long: { src: 'media/prac360-demo-long.mp4?v=57', vtt: 'media/prac360-demo-long.vtt', poster: 'media/prac360-demo-long.jpg?v=57', t: 'Full tour', d: '8 minutes — every part explained, from booking to payment' } };
+    short: { src: 'media/prac360-demo-short.mp4?v=79', vtt: 'media/prac360-demo-short.vtt?v=79', poster: 'media/prac360-demo-short.jpg?v=79', t: 'Quick overview', d: '3 minutes — the whole system at a glance' },
+    long: { src: 'media/prac360-demo-long.mp4?v=79', vtt: 'media/prac360-demo-long.vtt?v=79', poster: 'media/prac360-demo-long.jpg?v=79', t: 'Full tour', d: '8 minutes — every part explained, from booking to payment' } };
   A.DEMO_VIDEOS = V;
   const thumbs = (cls) => `<div class="dvid-row ${cls || ''}">${Object.entries(V).filter(([, v]) => !v.topic).map(([k, v]) => `<button type="button" class="dvid-th" data-act="demo-video" data-k="${k}" aria-label="Play the ${v.t} video"><span class="dvid-img" style="background-image:url('${v.poster}')"><span class="dvid-play" aria-hidden="true">▶</span></span><span class="dvid-txt"><strong>${v.t}</strong><span class="tiny">${v.d}</span></span></button>`).join('')}</div>`;
   A.demoVideoThumbs = thumbs;
@@ -19571,20 +19695,22 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     const p = E.patient(db(), inv.patientId); const draft = inv.status === 'draft'; const est = E.estimate(db(), inv); const n = inv.lines.filter((l) => !l.excluded).length;
     let findings = []; try { findings = E.evaluateInvoice(db(), inv); } catch (e) { /* ignore */ } const must = findings.filter((f) => f.severity === 'block').length;
     const step = !n ? 1 : must ? 2 : 3; const back = inv.date < today();
-    const guide = `<div class="card txg ${draft ? '' : 'txg-done'}">
-      <div class="txg-top"><div><div class="txg-k">${draft ? 'You are capturing transactions for' : 'Transactions for'}</div><div class="txg-n">${esc(p.firstName + ' ' + p.lastName)}</div><div class="txg-s">${enc.date ? 'Consultation of ' + A.fd(enc.date) : ''}${inv.no ? ' · ' + esc(inv.no) : ''}</div></div>
-        <label class="txg-date ${back ? 'back' : ''}"><span>📅 Date of service</span><input type="date" value="${esc(inv.date)}" max="${today()}" data-change="inv-date" data-id="${inv.id}" ${draft ? '' : 'disabled'} aria-label="Date of service"><small>${draft ? (back ? `Billing for an earlier day (${A.fd(inv.date)}).` : 'Billing for an earlier day? Change the date here.') : 'Locked — the claim was sent.'}</small></label></div>
-      ${draft ? `<ol class="txg-steps"><li class="${step === 1 ? 'now' : 'ok'}"><b>1</b> Add the transactions<small>Accept a suggested code or add one below</small></li><li class="${step === 2 ? 'now' : step > 2 ? 'ok' : ''}"><b>2</b> Fix what is flagged<small>${must ? must + ' item' + (must === 1 ? '' : 's') + ' to fix' : n ? 'Nothing blocking' : 'Checked as you go'}</small></li><li class="${step === 3 ? 'now' : ''}"><b>3</b> Submit the claim<small>Button at the bottom of the page</small></li></ol>` : ''}
-      <div class="txg-sum"><span><strong>${n}</strong> transaction${n === 1 ? '' : 's'}</span><span>Total <strong>${M(est.charge)}</strong></span>${inv.fundingRoute === 'scheme' ? `<span>Medical aid ±<strong>${M(est.scheme)}</strong></span><span>Patient ±<strong>${M(est.patient)}</strong></span>` : '<span>Private account</span>'}</div></div>`;
+    const pr = est.patient > 0.004; const back2 = inv.lines.some((l) => l.date && l.date < today());
+    const guide = `<div class="card txg txg-c ${draft ? '' : 'txg-done'}">
+      <div class="txg-top"><div class="txg-who"><div class="txg-n">${esc(p.firstName + ' ' + p.lastName)}</div><div class="txg-s">${enc.date ? 'Consultation ' + A.fd(enc.date) : ''}${inv.no ? ' · ' + esc(inv.no) : ''}</div></div>
+      <div class="txg-sum"><span class="txg-chip"><b>${n}</b> line${n === 1 ? '' : 's'}</span><span class="txg-chip">Total <b>${M(est.charge)}</b></span>${inv.fundingRoute === 'scheme' ? `<span class="txg-chip">Medical aid <b>${M(est.scheme)}</b></span><span class="txg-chip ${pr ? 'warn' : ''}">Patient <b>${M(est.patient)}</b></span>` : '<span class="txg-chip">Private account</span>'}${draft ? `<a class="txg-chip ${must ? 'crit' : n ? 'good' : ''}" href="javascript:void 0" data-act="tx-to-checks">${must ? '⚠ ' + must + ' to fix' : n ? '✓ Checks passed' : 'Checks run as you add'}</a>` : ''}</div></div>
+      ${draft ? `<div class="txg-steps2"><span class="${step === 1 ? 'now' : 'ok'}">${step > 1 ? '✓' : '1'} Add lines</span><i>›</i><span class="${step === 2 ? 'now' : step > 2 ? 'ok' : ''}">${step > 2 ? '✓' : '2'} Fix what is flagged</span><i>›</i><span class="${step === 3 ? 'now' : ''}">3 Approve and send</span>${back2 ? '<em>Some lines are for an earlier day — the date is on each line.</em>' : '<em>Each line has its own date.</em>'}</div>` : '<div class="txg-steps2"><em>Locked — the claim was sent.</em></div>'}</div>`;
     let doc; try { doc = new DOMParser().parseFromString(`<div id="w">${html}</div>`, 'text/html'); } catch (e) { return html; } const w = doc.getElementById('w');
     const h1 = w.querySelector('.page-head h1'); if (h1 && draft) h1.textContent = 'Capture transactions';
     const bar = w.querySelector('.pbar'); const anchor = bar ? (bar.closest('.card') || bar) : null;
     const tmp = doc.createElement('div'); tmp.innerHTML = guide; const g = tmp.firstElementChild;
     if (anchor && anchor.parentNode) anchor.parentNode.replaceChild(g, anchor); else { const ph = w.querySelector('.page-head'); if (ph) ph.after(g); else w.prepend(g); }
     // the patient's allergies and account badges were on the bar we replaced — keep them in the guide
-    if (bar) { const right = bar.querySelector('.row'); const badges = right ? right.innerHTML : ''; const meta = [...bar.querySelectorAll('.meta')].map((m) => m.textContent).join(' · '); if (meta) g.querySelector('.txg-s').insertAdjacentText('afterend', ''), g.querySelector('.txg-s').insertAdjacentHTML('afterend', `<div class="txg-s">${esc(meta)}</div>`); if (badges) g.querySelector('.txg-top > div').insertAdjacentHTML('beforeend', `<div class="txg-b">${badges}</div>`); }
+    if (bar) { const right = bar.querySelector('.row'); const badges = right ? right.innerHTML : ''; const meta = [...bar.querySelectorAll('.meta')].map((m) => m.textContent).join(' · '); const sEl = g.querySelector('.txg-s'); if (meta) sEl.insertAdjacentHTML('beforeend', `<span class="txg-meta" title="${esc(meta)}"> · ${esc(meta)}}</span>`); if (badges) g.querySelector('.txg-who').insertAdjacentHTML('beforeend', `<div class="txg-b">${badges}</div>`); }
     w.querySelectorAll('h2').forEach((x) => { if (x.textContent.trim() === 'Transactions') x.closest('.card') && x.closest('.card').classList.add('txg-table'); });
+    if (draft) { const tc = w.querySelector('.txg-table'); const cf = w.querySelector('.cf-card'); const co = w.querySelector('.coach-card'); if (tc) { if (co) tc.after(co); if (cf) tc.after(cf); } }
     return w.innerHTML; };
+  H['tx-to-checks'] = () => { const c = document.querySelector('.cf-card'); if (c) { c.scrollIntoView({ behavior: 'smooth', block: 'start' }); c.classList.add('p360-fresh'); setTimeout(() => c.classList.remove('p360-fresh'), 1200); } };
   H['change:inv-date'] = (el) => { const inv = db().invoices.find((i) => i.id === el.dataset.id); if (!inv || inv.status !== 'draft') return; const v = el.value; if (!v) return;
     if (v > today()) { el.value = inv.date; return A.toast('The date of service cannot be in the future.', 'error'); }
     const old = inv.date; A.act(() => { inv.date = v; (inv.lines || []).forEach((l) => { if (!l.date || l.date === old) l.date = v; }); E.audit(db(), A.user, 'invoice-date', 'invoice', inv.id, inv.patientId, `Date of service ${old} → ${v}`); }, `Date of service set to ${A.fd(v)}.`); };
@@ -19604,12 +19730,12 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     { type: 'improved', area: 'billing', title: 'Capture transactions: clear, simple — and back-dating', text: 'The billing screen is now “Capture transactions”: who you are billing, the patient’s allergies and account, three plain steps (add, fix what is flagged, submit) and a running total. The Date of service is right at the top — change it when you bill for an earlier day (future dates are blocked).', link: '#/billing' },
     { type: 'fixed', area: 'general', title: 'Talk: the glowing circle no longer covers Assist', text: 'The circle only shows while Talk is minimised. When the conversation or the Assist window is open, it hides; press the — (minimise) icon at the top of the Talk card to go back to the small circle.', link: '#/today', guide: 'talk' }] });
   const sc = kb('aiscribe'); add(sc, 'Everything said is taken as the doctor’s words — there is no list to manage. Speak naturally; AI Scribe fills the right fields and corrects misheard numbers, units and medicine names.'); add(sc, 'If AI Scribe pauses it says so out loud. After a minute of silence it asks “Are you still there? AI Scribe is still listening.”'); add(sc, 'There is always at least one ICD-10 suggestion under Diagnosis — click it to use it, or search for another.');
-  const bt = kb('billingreview') || kb('billtx'); add(bt, 'The blue box at the top shows who you are billing and the Date of service. Billing for yesterday or earlier? Change the date there before submitting.');
+  const bt = kb('billingreview') || kb('billtx'); add(bt, 'The small bar at the top shows who you are billing, the totals and anything to fix. Billing for yesterday or earlier? Each line has its own Date — change it on the line (or when you add the line) before you submit.');
   add(kb('talk'), 'The small glowing circle shows only while Talk is minimised. Open the conversation with ⤢; go back to the circle with the — (minimise) icon at the top of the Talk card.');
   const C = A.COURSES || []; const ai = C.find((c) => c.id === 'aiscribe');
   if (ai) { if (!ai.lessons.some((l) => l.t === 'Just talk')) ai.lessons.splice(1, 0, { t: 'Just talk', body: 'AI Scribe takes everything it hears as your words and fills in the form as you go — history, vital signs, examination, diagnosis with ICD-10, medicines and follow-up. Say numbers naturally (“BP one twenty over eighty”); it writes 120/80. If it pauses it tells you out loud, and after a minute of silence it asks if you are still there.', guide: '' });
     if (ai.quiz && !ai.quiz.some((q) => /still there/.test(q.q))) ai.quiz.push({ q: 'AI Scribe hears nothing for a minute. What happens?', o: ['It deletes the note', 'It asks out loud “Are you still there? AI Scribe is still listening.”', 'It signs the note'], a: 1 }); }
-  const bc = C.find((c) => c.id === 'billing'); if (bc && !bc.lessons.some((l) => l.t === 'Billing for an earlier day')) bc.lessons.push({ t: 'Billing for an earlier day', body: 'On Capture transactions, change the Date of service in the blue box at the top before you submit. Future dates are blocked, and the rules re-check the date for you.', guide: '' });
+  const bc = C.find((c) => c.id === 'billing'); if (bc && !bc.lessons.some((l) => l.t === 'Billing for an earlier day')) bc.lessons.push({ t: 'Billing for an earlier day', body: 'On Capture transactions, every line has its own Date. Choose it when you add the line, or change it in the Date column, before you submit. Future dates are blocked, and the rules re-check the date for you.', guide: '' });
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /billing/i.test(x[0])) || A.FUNCTIONS.find((x) => x[0] === 'Getting around'); if (g && !g[1].some((x) => /Date of service/.test(x[0]))) g[1].push(['Change the date of service (back-dating)', 'billingreview']); }
 })();
 
@@ -19668,7 +19794,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
       const t = { id: 'tk_' + (k + 1), ref: 'T-' + (1040 + k), dsId: cl.dsId, pkey: pk(cl.name), orgId: cl.orgId, practice: cl.name, contact: cl.contacts[k % 2] || cl.contacts[0], subject: subj, category: cat, priority: pri, channel: ch, status: st, assignee: who, createdAt: iso(created), updatedAt: iso(t0 - agoMin * MIN * 0.2), firstResponseAt: first ? iso(first) : null, resolvedAt: ['resolved', 'closed'].includes(st) ? iso(t0 - agoMin * MIN * 0.1) : null, time: [], calls: [], tags: [], csat: st === 'closed' ? 5 : null, flagged: false,
         thread: [{ at: iso(created), from: 'client', by: (cl.contacts[k % 2] || cl.contacts[0]).name, text: desc, kind: ch === 'phone' ? 'call' : 'message' }] };
       if (who) { t.thread.push({ at: iso(created + 60000), from: 'system', text: `Assigned to ${staff.find((s) => s.id === who).name}${k % 3 === 0 ? ' automatically (rule: ' + SKILL[cat] + ' skills, least busy)' : ''}.`, kind: 'assign' });
-        t.thread.push({ at: iso(first), from: 'staff', by: who, text: k === 2 ? 'Hi! Open the consultation from yesterday, press Bill, and change the Date of service at the top to yesterday before you submit. Shall I stay on the line while you try?' : `Hi ${t.contact.name.split(' ')[0]}, thank you — I am looking into this now and will update you shortly.`, kind: 'reply' });
+        t.thread.push({ at: iso(first), from: 'staff', by: who, text: k === 2 ? 'Hi! Open the consultation from yesterday, press Bill, and set the Date on each line to yesterday before you submit. Shall I stay on the line while you try?' : `Hi ${t.contact.name.split(' ')[0]}, thank you — I am looking into this now and will update you shortly.`, kind: 'reply' });
         t.time.push({ staffId: who, mins: 10 + (k * 7) % 35, at: iso(first), note: 'Investigation' }); }
       if (st === 'client') t.thread.push({ at: iso(created + agoMin * MIN * 0.5), from: 'staff', by: who, text: 'Could you send us the receipt number for the payment, so we can trace it?', kind: 'reply' });
       if (st === 'dev') t.thread.push({ at: iso(created + agoMin * MIN * 0.6), from: 'system', text: 'Sent to the development team.', kind: 'dev' });
@@ -21096,6 +21222,206 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   if (gc && gc.lessons && !gc.lessons.some((l) => /own language/i.test(l.t))) gc.lessons.push({ t: 'Work in your own language', body: steps.join(' '), guide: '' });
   if (gc && gc.quiz && !gc.quiz.some((q) => /print in English/.test(q.q))) gc.quiz.push({ q: 'Which documents always print in English, whatever language you choose?', o: ['All reports', 'Statements and claims sent to the medical aids', 'Nothing, everything is translated'], a: 1 });
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /getting around/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /language/i.test(x[0]))) g[1].push(['Your language (English, Afrikaans, isiZulu, isiXhosa, Sepedi)', 'language']); }
+})();
+
+
+/* ===== ui-v079.js ===== */
+/* Prac360 v0.79 — Print reports straight to the printer · Claims → Awaiting payment: expected payment date, "Request remittance"
+ * by email to the medical aid and automatic daily follow-ups · eRA auto-reconcile switch · transactions: one date per line ·
+ * Simple mode: a per-user on/off switch that hides what you do not use, with a ⚙ to choose more and a reset to default. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, E = window.PE, esc = A.esc; const db = () => A.db; const M = (n) => E.money(n); const fd = (d) => A.fd(d);
+  const today = () => E.today(db()); const nowIso = () => E.nowIso(db());
+  const days = (a, b) => E.daysBetween(String(a).slice(0, 10), String(b).slice(0, 10));
+  const addDays = (iso, n) => { const d = new Date(String(iso).slice(0, 10) + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+  const hm = (iso) => String(iso || '').slice(11, 16);
+
+  // =========================================================== 1. Print any open report on the device's printer
+  document.addEventListener('afterprint', () => document.body.classList.remove('printing-report'));
+  let lastPrint = 0;
+  H['print-now'] = () => { if (Date.now() - lastPrint < 1500) return; lastPrint = Date.now(); document.body.classList.add('printing-report'); setTimeout(() => { try { window.print(); } catch (e) { A.toast('Printing is not available in this window — use Save as PDF.', 'error'); } setTimeout(() => document.body.classList.remove('printing-report'), 1500); }, 60); };
+  const _rep = P.reports; if (_rep) P.reports = function (params) { let h = _rep.apply(this, arguments); if (params && params[0] && h.indexOf('data-act="print-now"') < 0) {
+    const btn = '<button class="btn primary" data-act="print-now" title="Opens your device\'s print window — choose your printer and print">🖨 Print</button>';
+    if (h.indexOf('data-act="print">') > -1) h = h.replace(/<button class="btn" data-act="print">/, btn + '<button class="btn" data-act="print">');
+    else h = h.replace(/(<div class="page-head">[\s\S]*?<\/h1>)/, `$1<div class="no-print" style="margin-top:6px">${btn}</div>`); } return h; };
+  A.printNow = H['print-now'];
+
+  // =========================================================== 2. Transactions: one date per line
+  // The invoice's date follows its lines (the earliest line date), so nothing at the top needs changing.
+  const syncDate = () => { try { const m = (location.hash.match(/^#\/billing\/([^/?]+)/) || [])[1]; if (!m) return; const enc = db().encounters.find((e) => e.id === m); const inv = enc && db().invoices.find((i) => i.id === enc.invoiceId); if (!inv || inv.status !== 'draft') return;
+    const ds = inv.lines.filter((l) => !l.excluded && l.date).map((l) => l.date).sort(); if (ds.length && ds[0] !== inv.date) { inv.date = ds[0]; A.save(); } } catch (e) { /* ignore */ } };
+  setInterval(syncDate, 1200);
+  const _bill = P.billing; if (_bill) P.billing = function (params) { syncDate(); let h = _bill.apply(this, arguments); if (!params || !params[0]) return h;
+    // simple mode keeps the screen short: the pricing explanation folds away
+    return h.replace(/<div class="card">(\s*<div class="row between">\s*<h2[^>]*>What will be paid\?)/, '<div class="card tx-why simple-x">$1'); };
+
+  // =========================================================== 3. Claims → Awaiting payment
+  const S = () => { const s = db().settings; s.claims = Object.assign({ autoFollow: true, autoRecon: false, payDays: 30, followTimes: 'daily' }, s.claims || {}); s.schemeContacts = s.schemeContacts || {}; return s; };
+  const reqs = () => (db().remitReqs = db().remitReqs || []);
+  const slug = (n) => String(n || '').toLowerCase().replace(/medical scheme|medical fund|\(.*?\)/g, '').trim().split(/\s+/)[0].replace(/[^a-z]/g, '') || 'scheme';
+  const contact = (schemeId, name) => { const c = S().schemeContacts[schemeId] || {}; return { email: c.email || `claims@${slug(name)}.example`, payDays: +c.payDays || S().claims.payDays, demo: !c.email }; };
+  const inv = (c) => db().invoices.find((i) => i.id === c.invoiceId);
+  const optOf = (i) => { const ms = db().memberships.find((m) => m.id === i.membershipId); return ms ? Object.assign({ ms }, E.option(db(), ms.optionId)) : null; };
+  const waiting = () => db().claims.filter((c) => c.status === 'accepted' && !c.remittanceId);
+  const acceptedAt = (c) => (c.versions.at(-1) || {}).at || nowIso();
+  const expectOf = (c, schemeId, name) => { const due = addDays(acceptedAt(c), contact(schemeId, name).payDays); const d = days(today(), due); return { due, d, late: d < 0, soon: d >= 0 && d <= 5 }; };
+  const edi = (c) => 'SWO' + (Math.abs([...c.id].reduce((h, ch) => ((h << 5) - h + ch.charCodeAt(0)) | 0, 7)) % 9000000 + 1000000);
+  const openReq = (schemeId) => reqs().find((r) => r.schemeId === schemeId && r.status !== 'closed');
+  const nextAtFrom = (firstAt, after) => { const t = new Date(firstAt).getTime(); let n = t + 864e5; while (n <= after) n += 864e5; return n; };
+
+  // the email — written by Prac360 from the claims (no ID numbers, no diagnoses)
+  const draft = (r, kind, n) => { const p = db().practice; const cl = r.claimIds.map((id) => db().claims.find((c) => c.id === id)).filter(Boolean);
+    const rows = cl.map((c) => { const i = inv(c); const o = optOf(i) || {}; const ms = o.ms || {}; return `• Invoice ${i.no} · ${A.pname(i.patientId)} · member ${ms.memberNo || '—'}${ms.depCode ? '-' + ms.depCode : ''} · seen ${i.date} · ${M(i.total)} · EDI ref ${edi(c)} · accepted ${acceptedAt(c).slice(0, 10)}`; }).join('\n');
+    const total = cl.reduce((t, c) => t + (inv(c).total || 0), 0);
+    const open = kind === 'first' ? `Good day\n\nWe kindly request the remittance advice (eRA) and the expected payment date for the claims below. Your system accepted them, but we have not received payment or a remittance yet.`
+      : n === 1 ? `Good day\n\nThis is a friendly reminder of our remittance request sent on ${fd(r.firstAt)}. We have not yet received the remittance advice or payment for the claims below.`
+        : n === 2 ? `Good day\n\nWe are following up again on our remittance request of ${fd(r.firstAt)}. Please let us know the payment date, or tell us if anything is needed from our side to finalise these claims.`
+          : `Good day\n\nThis is follow-up number ${n} on our remittance request of ${fd(r.firstAt)}. The claims below are still unpaid. Please escalate to the claims team and reply with a contact person and the expected payment date.`;
+    const subject = `${kind === 'first' ? 'Remittance request' : `Follow-up ${n}: remittance request`} — ${p.name} (practice no. ${p.practiceNo || '—'}) — ${cl.length} claim${cl.length === 1 ? '' : 's'}, ${M(total)}`;
+    const body = `${open}\n\nPractice: ${p.name}\nPractice number: ${p.practiceNo || '—'}\nMedical aid: ${r.schemeName}\n\n${rows}\n\nTotal outstanding: ${M(total)}\n\nPlease send the remittance to ${db().settings.comms.replyTo || 'our reply address'} or reply to this email.\n\nKind regards\n${A.user ? A.user.name : ''}\n${p.name}`;
+    return { subject, body, total, n: cl.length }; };
+  const send = (r, kind, n, edited) => { const d = edited || draft(r, kind, n); const em = A.sendEmail({ to: r.to, cc: '', subject: d.subject, body: d.body, kind: 'remittance-request' });
+    r.sent.push({ at: nowIso(), kind, n: n || 0, subject: d.subject, emailId: em && em.id, auto: kind !== 'first' }); E.audit(db(), A.user, 'remittance-request', 'scheme', r.schemeId, null, `${kind === 'first' ? 'Remittance requested' : 'Automatic follow-up ' + n} — ${r.schemeName} (${r.claimIds.length} claims) to ${r.to}`); return em; };
+
+  // the follow-up robot: every day, at the time of the first request, until the remittance arrives
+  const tick = (force) => { if (!A.db || !A.user) return 0; let sentN = 0; try { const now = Date.now();
+    reqs().forEach((r) => { if (r.status === 'closed') return; const still = r.claimIds.filter((id) => { const c = db().claims.find((x) => x.id === id); return c && c.status === 'accepted' && !c.remittanceId; });
+      if (!still.length) { r.status = 'closed'; r.closedReason = 'Remittance received — follow-ups stopped automatically.'; r.closedAt = nowIso(); E.audit(db(), A.user, 'remittance-request-closed', 'scheme', r.schemeId, null, r.closedReason); sentN++; return; }
+      r.claimIds = still; if (r.status === 'paused' || !S().claims.autoFollow) return;
+      if (force || now >= r.nextAt) { const n = r.sent.filter((x) => x.kind !== 'first').length + 1; send(r, 'follow', n); r.nextAt = nextAtFrom(r.firstAt, now);
+        if (n === 3 && A.addFollowup) try { A.addFollowup({ title: `Phone ${r.schemeName} about unpaid claims (3 emails unanswered)`, due: today(), cat: "money", link: "#/claims/submitted" }); } catch (e) { /* optional */ }
+        sentN++; } });
+    if (sentN) A.save(); } catch (e) { /* never break the screen */ } return sentN; };
+  setInterval(() => { if (tick()) { if (/^#\/claims/.test(location.hash)) A.render(); } }, 60000);
+  setTimeout(() => { if (tick() && /^#\/claims/.test(location.hash)) A.render(); }, 4000);
+  A.remitTick = tick;
+
+  const counts = () => { const C = db().claims; return [['ready', 'Ready to claim', db().invoices.filter((i) => i.status === 'ready').length], ['submitted', 'Awaiting payment', waiting().length], ['rejected', 'Rejected', C.filter((c) => c.status === 'rejected').length], ['remittances', 'eRA remittances', db().remittances.filter((r) => r.status !== 'reconciled').length], ['paid', 'Paid', C.filter((c) => ['paid', 'part-paid', 'paid-zero'].includes(c.status)).length]]; };
+  const head = (tab) => `<div class="page-head"><div><h1>Claims</h1><div class="muted">Claims go to the medical aids by EDI through <strong>SwitchOn</strong> <span class="pill mock">MOCK</span> — no real data leaves this browser.</div></div></div><nav class="tabs">${counts().map(([k, l, n]) => `<a href="#/claims/${k}" class="${k === tab ? 'on' : ''}">${l}<span class="n">${n}</span></a>`).join('')}</nav>`;
+  const reqLine = (r) => { const f = r.sent.filter((x) => x.kind !== 'first').length; const nx = new Date(r.nextAt);
+    return `<div class="rr-line"><span class="badge ${r.status === 'paused' ? '' : 'good'}">${r.status === 'paused' ? '⏸ Follow-ups paused' : '🤖 Auto follow-up on'}</span> Requested ${fd(r.firstAt)} at ${hm(r.firstAt)} · ${f ? f + ' follow-up' + (f === 1 ? '' : 's') + ' sent' : 'no follow-ups yet'}${r.status !== 'paused' && S().claims.autoFollow ? ` · next ${fd(nx.toISOString())} at ${hm(r.firstAt)}` : ''}
+      <span class="rr-acts"><button class="btn sm" data-act="rr-log" data-id="${r.id}">Emails (${r.sent.length})</button>${r.status === 'paused' ? `<button class="btn sm" data-act="rr-resume" data-id="${r.id}">Resume</button>` : `<button class="btn sm" data-act="rr-pause" data-id="${r.id}">Pause</button>`}<button class="btn sm" data-act="rr-stop" data-id="${r.id}">Stop</button></span></div>`; };
+  const submitted = () => { const list = waiting(); const by = {};
+    list.forEach((c) => { const i = inv(c); const o = optOf(i) || { schemeId: 'x', schemeName: 'Medical aid' }; (by[o.schemeId] = by[o.schemeId] || { id: o.schemeId, name: o.schemeName, rows: [] }).rows.push({ c, i, x: expectOf(c, o.schemeId, o.schemeName) }); });
+    const groups = Object.values(by).sort((a, b) => a.name.localeCompare(b.name)); const late = list.filter((c) => { const o = optOf(inv(c)) || {}; return expectOf(c, o.schemeId, o.schemeName).late; }).length;
+    const auto = S().claims.autoFollow;
+    return head('submitted') + `<div class="card"><div class="row between" style="align-items:flex-start;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0">Waiting for payment</h2><div class="tiny muted">The medical aid accepted these claims. Each shows when payment is expected. No payment yet? Press “Request remittance”: Prac360 emails the medical aid and then follows up by itself every day at the same time until the remittance arrives.</div></div>
+        <label class="sw-line"><input type="checkbox" data-change="rr-auto" ${auto ? 'checked' : ''}><span class="p3sw"></span><span><strong>Automatic daily follow-ups</strong><small>${auto ? 'On — Prac360 follows up by itself' : 'Off — no automatic emails'}</small></span></label></div>
+      ${late ? `<div class="alert warn" style="margin-top:10px"><span class="ico">!</span><div class="body">${late} claim${late === 1 ? ' is' : 's are'} past the expected payment date. Request the remittance from the medical aid below.</div></div>` : ''}</div>
+      ${groups.length ? groups.map((g) => { const r = openReq(g.id); const ct = contact(g.id, g.name); const tot = g.rows.reduce((t, x) => t + x.i.total, 0); const gl = g.rows.filter((x) => x.x.late).length;
+        return `<div class="card rr-card"><div class="row between" style="gap:10px;flex-wrap:wrap"><div><h3 style="margin:0">${esc(g.name)}</h3><div class="tiny muted">${g.rows.length} claim${g.rows.length === 1 ? '' : 's'} · ${M(tot)} · usually pays within ${ct.payDays} days · claims email <span class="mono">${esc(ct.email)}</span>${ct.demo ? ' <span class="pill mock">demo address</span>' : ''} <a href="javascript:void 0" data-act="rr-contact" data-id="${esc(g.id)}" data-name="${esc(g.name)}">change</a></div></div>
+          ${r ? '' : `<button class="btn ${gl ? 'primary' : ''}" data-act="rr-new" data-id="${esc(g.id)}" data-name="${esc(g.name)}">📧 Request remittance</button>`}</div>
+          ${r ? reqLine(r) : ''}
+          <div class="tbl-wrap"><table class="t small" style="margin-top:8px"><thead><tr><th>Invoice</th><th>Patient</th><th>Seen</th><th class="num">Amount</th><th>Accepted</th><th>Payment expected</th><th>EDI ref</th></tr></thead><tbody>${g.rows.map(({ c, i, x }) => `<tr><td class="mono">${esc(i.no)}</td><td><a href="#/patient/${i.patientId}">${esc(A.pname(i.patientId))}</a></td><td>${fd(i.date)}</td><td class="num">${M(i.total)}</td><td>${fd(acceptedAt(c))}</td>
+            <td><strong>${fd(x.due)}</strong> <span class="badge ${x.late ? 'crit' : x.soon ? 'warn' : 'good'}">${x.late ? Math.abs(x.d) + ' day' + (Math.abs(x.d) === 1 ? '' : 's') + ' late' : x.d === 0 ? 'today' : 'in ' + x.d + ' day' + (x.d === 1 ? '' : 's')}</span></td><td class="mono tiny">${edi(c)}</td></tr>`).join('')}</tbody></table></div></div>`; }).join('')
+        : '<div class="card"><div class="empty">No claims waiting for payment. 🎉</div></div>'}
+      <div class="row" style="gap:8px"><a class="btn" href="#/claims/remittances">Go to eRA remittances</a><button class="btn" data-act="edi-refresh">↻ Check EDI status <span class="pill mock">MOCK</span></button></div>`; };
+
+  const _claims = P.claims; P.claims = function (params) { const tab = (params && params[0]) || 'rejected'; if (tab === 'submitted') return submitted();
+    let h = _claims.apply(this, arguments);
+    if (tab === 'remittances') { const on = S().claims.autoRecon;
+      const sw = `<div class="card rr-auto"><label class="sw-line"><input type="checkbox" data-change="era-auto" ${on ? 'checked' : ''}><span class="p3sw"></span><span><strong>Auto-reconcile remittances</strong><small>${on ? 'On — every new eRA is matched to its claims and reconciled straight away; shortfalls move to the patient' : 'Off — you check each eRA and press Reconcile yourself'}</small></span></label></div>`;
+      h = h.replace(/(<nav class="tabs">[\s\S]*?<\/nav>)/, '$1' + sw).replace(/<span class="badge good">Reconciled<\/span>/g, (m) => m); }
+    return h; };
+
+  H['change:rr-auto'] = (el) => A.act(() => { S().claims.autoFollow = el.checked; E.audit(db(), A.user, 'settings', 'claims', 'autoFollow', null, `Automatic remittance follow-ups ${el.checked ? 'on' : 'off'}`); }, el.checked ? 'Automatic daily follow-ups are on.' : 'Automatic follow-ups are off.');
+  H['change:era-auto'] = (el) => { A.act(() => { S().claims.autoRecon = el.checked; E.audit(db(), A.user, 'settings', 'claims', 'autoRecon', null, `eRA auto-reconcile ${el.checked ? 'on' : 'off'}`); }, el.checked ? 'Auto-reconcile is on.' : 'Auto-reconcile is off — reconcile each eRA yourself.');
+    if (el.checked) { const open = db().remittances.filter((r) => r.status !== 'reconciled'); if (open.length) A.confirm('Reconcile the waiting remittances too?', `${open.length} remittance${open.length === 1 ? ' is' : 's are'} waiting. Reconcile ${open.length === 1 ? 'it' : 'them'} now?`, () => { const n = autoRecon(); A.toast(`${n} remittance${n === 1 ? '' : 's'} reconciled.`); A.render(); }, 'Reconcile now'); } };
+  const autoRecon = () => { let n = 0; db().remittances.filter((r) => r.status !== 'reconciled').forEach((r) => { try { E.reconcileRemittance(db(), r, A.user); r.autoReconciled = true; n++; } catch (e) { /* leave for a person */ } }); if (n) A.save(); return n; };
+  const _fetch = H['fetch-rem']; if (_fetch) H['fetch-rem'] = function () { const before = db().remittances.length; const r = _fetch.apply(this, arguments); if (S().claims.autoRecon && db().remittances.length > before) { const n = autoRecon(); if (n) { A.toast(`${n} new remittance${n === 1 ? '' : 's'} imported and auto-reconciled. Patient portions are on their accounts.`); A.render(); } } tick(); return r; };
+
+  H['rr-new'] = (el) => { const sid = el.dataset.id, name = el.dataset.name; const ct = contact(sid, name); const ids = waiting().filter((c) => (optOf(inv(c)) || {}).schemeId === sid).map((c) => c.id);
+    const r0 = { schemeId: sid, schemeName: name, to: ct.email, claimIds: ids, firstAt: nowIso() }; const d = draft(r0, 'first');
+    A.modal('Request remittance — ' + esc(name), `<p class="small">✦ Prac360 wrote this email from the claims. Check it, then send.</p><p class="small"><strong>After that Prac360 follows up by itself every day at ${hm(nowIso())} until the remittance or payment arrives (you can pause or stop it).</strong></p>
+      <label class="f"><span>To <small>(${esc(name)} claims department)</small> <b class="req">*</b></span><input id="rr-to" type="email" value="${esc(ct.email)}"></label>
+      <label class="f"><span>Subject</span><input id="rr-subj" value="${esc(d.subject)}"></label><label class="f"><span>Message</span><textarea id="rr-body" rows="12">${esc(d.body)}</textarea></label>
+      <p class="tiny muted">No ID numbers or diagnoses are included. The email and every follow-up are kept in Practice setup → Email and SMS → Outbox and in the audit log.</p>`,
+      `<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="rr-send" data-id="${esc(sid)}" data-name="${esc(name)}">📧 Send and follow up daily</button>`, { wide: true }); };
+  H['rr-send'] = (el) => { const to = (document.getElementById('rr-to') || {}).value || ''; if (!/^\S+@\S+\.\S+$/.test(to.trim())) { const f = document.getElementById('rr-to'); if (f) f.classList.add('field-err'); return A.toast('Type the medical aid’s claims email address.', 'error'); }
+    const sid = el.dataset.id, name = el.dataset.name; const ids = waiting().filter((c) => (optOf(inv(c)) || {}).schemeId === sid).map((c) => c.id); const at = nowIso();
+    const r = { id: E.id('rr'), schemeId: sid, schemeName: name, to: to.trim(), claimIds: ids, firstAt: at, nextAt: new Date(at).getTime() + 864e5, sent: [], status: 'open', by: A.user.id };
+    const d0 = draft(r, 'first'); const subj = (document.getElementById('rr-subj') || {}).value || d0.subject, body = (document.getElementById('rr-body') || {}).value || d0.body;
+    A.closeModal(); A.act(() => { reqs().push(r); const c = S().schemeContacts[sid] = S().schemeContacts[sid] || {}; c.email = to.trim(); send(r, 'first', 0, { subject: subj, body }); },
+      `Remittance request emailed to ${name}. Prac360 will follow up every day at ${hm(at)} until it arrives.`); };
+  const rr = (el) => reqs().find((x) => x.id === el.dataset.id);
+  H['rr-pause'] = (el) => A.act(() => { rr(el).status = 'paused'; }, 'Follow-ups paused. Press Resume to carry on.');
+  H['rr-resume'] = (el) => A.act(() => { const r = rr(el); r.status = 'open'; r.nextAt = nextAtFrom(r.firstAt, Date.now()); }, 'Follow-ups resumed.');
+  H['rr-stop'] = (el) => A.confirm('Stop following up?', 'Prac360 will stop emailing this medical aid about these claims. You can request the remittance again later.', () => A.act(() => { const r = rr(el); r.status = 'closed'; r.closedReason = 'Stopped by ' + A.user.name; r.closedAt = nowIso(); }, 'Follow-ups stopped.'), 'Stop');
+  H['rr-log'] = (el) => { const r = rr(el); A.modal('Emails to ' + esc(r.schemeName), `<table class="t small"><thead><tr><th>When</th><th>What</th><th>To</th></tr></thead><tbody>${r.sent.slice().reverse().map((x) => `<tr><td class="mono">${esc(x.at.replace('T', ' ').slice(0, 16))}</td><td>${x.kind === 'first' ? 'Remittance request' : '🤖 Automatic follow-up ' + x.n}<div class="tiny">${esc(x.subject)}</div></td><td>${esc(r.to)}</td></tr>`).join('')}</tbody></table>${r.closedReason ? `<p class="small">${esc(r.closedReason)}</p>` : ''}`, '<button class="btn" data-act="modal-close">Close</button>', { wide: true }); };
+  H['rr-contact'] = (el) => { const sid = el.dataset.id, name = el.dataset.name; const ct = contact(sid, name);
+    A.modal('Claims contact — ' + esc(name), `<label class="f"><span>Claims email address <b class="req">*</b></span><input id="rc-em" type="email" value="${esc(ct.demo ? '' : ct.email)}" placeholder="${esc(ct.email)}"></label><label class="f"><span>Usually pays within (days)</span><input id="rc-days" type="number" min="1" max="120" value="${ct.payDays}"></label><p class="tiny muted">Used for “Payment expected” and remittance requests. Ask the medical aid or your switch for the right address.</p>`,
+      `<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="rc-save" data-id="${esc(sid)}">Save</button>`); };
+  H['rc-save'] = (el) => { const em = document.getElementById('rc-em').value.trim(), dd = +document.getElementById('rc-days').value; if (em && !/^\S+@\S+\.\S+$/.test(em)) return A.toast('That email address does not look right.', 'error'); A.closeModal(); A.act(() => { const c = S().schemeContacts[el.dataset.id] = S().schemeContacts[el.dataset.id] || {}; if (em) c.email = em; if (dd > 0) c.payDays = Math.round(dd); }, 'Saved.'); };
+
+  // =========================================================== 4. Simple mode
+  const DEF = { doctor: ['today', 'diary', 'patients', 'clinical', 'followup', 'oncology', 'messages', 'learn'], nurse: ['today', 'diary', 'patients', 'clinical', 'followup', 'messages', 'learn'], reception: ['today', 'diary', 'patients', 'payments', 'messages', 'learn'], billing: ['today', 'patients', 'billing', 'claims', 'payments', 'messages', 'learn'], manager: ['today', 'diary', 'patients', 'billing', 'claims', 'payments', 'reports', 'settings', 'messages', 'learn'] };
+  const roleDef = () => (DEF[(A.user || {}).role] || DEF.manager).slice();
+  const acc = () => (window.PL && PL.current && PL.current()) || null;
+  A.simplePrefs = () => { const a = acc(); const p = (a && a.prefs && a.prefs.simple) || (A.user && A.user.prefs && A.user.prefs.simple) || {}; return { on: !!p.on, items: Array.isArray(p.items) ? p.items : null }; };
+  const saveSimple = (p) => { const a = acc(); if (a) { a.prefs = Object.assign({}, a.prefs, { simple: p }); try { PL.save(); } catch (e) { /* demo */ } } if (A.user) { A.user.prefs = Object.assign({}, A.user.prefs, { simple: p }); A.save(); } applySimple(); };
+  A.simpleItems = () => { const p = A.simplePrefs(); return p.items || roleDef(); };
+  A.simpleHides = (r) => { if (!A.user || !A.simplePrefs().on) return false; return !A.simpleItems().includes(r); };
+  const applySimple = () => document.documentElement.classList.toggle('simple', !!(A.user && A.simplePrefs().on));
+  A.simplePill = () => { if (!A.user) return ''; const on = A.simplePrefs().on; applySimple();
+    return `<div class="simple-pill ${on ? 'on' : ''}" data-tour="simple"><button type="button" class="sp-tog" data-act="simple-toggle" role="switch" aria-checked="${on}" title="${on ? 'Simple mode is on — only what you need. Click for everything.' : 'Turn on Simple mode to hide what you do not use'}"><span class="sp-sw"></span><span class="sp-l">Simple mode</span></button><button type="button" class="sp-gear" data-act="simple-gear" title="Choose what Simple mode shows" aria-label="Choose what Simple mode shows">⚙</button></div>`; };
+  H['simple-toggle'] = () => { const p = A.simplePrefs(); p.on = !p.on; saveSimple(p); A.render(); A.toast(p.on ? 'Simple mode on — only what you use is showing. ⚙ next to the switch adds more.' : 'Simple mode off — everything is showing.'); };
+  const LABEL = (r) => { try { return A.t(r); } catch (e) { return r; } };
+  H['simple-gear'] = () => { const all = A.NAV_IDS ? A.NAV_IDS() : []; const cur = A.simpleItems(); const def = roleDef();
+    A.modal('Simple mode — what do you want to see?', `<p class="small">Tick the parts of Prac360 you use. With Simple mode on, everything else is hidden from the menu (and some extra detail on busy screens folds away). Turn Simple mode off any time to see everything.</p>
+      <div class="sm-list">${all.map((r) => `<label class="sm-item"><input type="checkbox" class="sm-ck" value="${r}" ${cur.includes(r) ? 'checked' : ''} ${r === 'today' ? 'disabled' : ''}><span>${esc(LABEL(r))}</span>${def.includes(r) ? '<small>default</small>' : ''}</label>`).join('')}</div>
+      <label class="sm-item" style="margin-top:10px"><input type="checkbox" id="sm-on" ${A.simplePrefs().on ? 'checked' : ''}><span><strong>Simple mode on</strong></span></label>`,
+      '<button class="btn" data-act="simple-reset">↺ Reset to default</button><span class="spacer"></span><button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="simple-save">Save</button>'); };
+  H['simple-save'] = () => { const items = ['today'].concat([...document.querySelectorAll('.sm-ck:checked')].map((x) => x.value).filter((x) => x !== 'today')); const on = (document.getElementById('sm-on') || {}).checked; A.closeModal(); saveSimple({ on: !!on, items }); A.render(); A.toast('Saved — Simple mode shows ' + items.length + ' section' + (items.length === 1 ? '' : 's') + '.'); };
+  H['simple-reset'] = () => { const on = A.simplePrefs().on; A.closeModal(); saveSimple({ on, items: null }); A.render(); A.toast('Simple mode is back to the default for your role.'); };
+  const _render = A.render; A.render = function () { applySimple(); return _render.apply(this, arguments); };
+})();
+
+
+/* ===== ui-v079l.js ===== */
+/* Prac360 v0.79 — What's new, help, training and the functions list for: Simple mode, tablets and phones, printing reports,
+ * the simpler transaction screen and Claims → Awaiting payment (expected date, request remittance, daily follow-ups, eRA auto-reconcile). */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.79')) A.RELEASES.unshift({ v: '0.79', date: '2026-11-25', title: 'Simple mode, tablets and phones, and remittance follow-ups', items: [
+    { type: 'new', area: 'general', title: 'Simple mode — only what you need', text: 'A green “Simple mode” switch sits at the top of every screen. Turn it on and the menu shows only the parts you use for your role; busy screens fold away extra detail. The ⚙ next to the switch lets you tick more sections, and “Reset to default” puts it back. Each person has their own setting. Turn it off to see everything.', link: '#/today', guide: 'simplemode' },
+    { type: 'new', area: 'claims', title: 'Awaiting payment: when to expect payment, and Request remittance', text: 'Each claim waiting for payment now shows the date payment is expected (and how many days late it is). No payment yet? Press “📧 Request remittance”: Prac360 writes the email to the medical aid with every claim, you check it and send. After that Prac360 follows up by itself every day at the same time until the remittance arrives — then it stops on its own. Pause or stop it any time.', link: '#/claims/submitted', guide: 'remitreq' },
+    { type: 'new', area: 'claims', title: 'eRA remittances: auto-reconcile switch', text: 'Under Claims → eRA remittances, switch on “Auto-reconcile” and every new remittance is matched to its claims and reconciled straight away; shortfalls move to the patient’s account. Switch it off to check each one yourself.', link: '#/claims/remittances', guide: 'eraauto' },
+    { type: 'improved', area: 'billing', title: 'A simpler transaction screen', text: 'The patient block at the top is now one small bar that stays in view, with the totals and a “to fix” chip. The date of service moved off the top — each line has its own date. Checks before claiming and the SAMA Billing Coach sit right under the transactions and update the moment a line changes.', link: '#/billing' },
+    { type: 'new', area: 'reports', title: '🖨 Print reports', text: 'Every open report has a 🖨 Print button that opens your device’s print window, so you can print straight to your printer.', link: '#/reports' },
+    { type: 'improved', area: 'general', title: 'Better on tablets and phones', text: 'Prac360 now knows when it runs on an iPad, tablet or phone. Talk, AI Scribe and dictation keep listening through short pauses until you press Stop. The keyboard only opens when you tap a field, the field stays in view above the keyboard, floating buttons step aside, and dictating into a field hides the keyboard while you talk.', link: '#/today' }] });
+
+  const add = (id, title, keys, screens, link, steps, guide) => { if (!kb(id)) KB.push({ id, title, keys, screens, link, steps, guide }); };
+  add('simplemode', 'Simple mode — show only what you need', ['simple mode', 'simple', 'too much', 'overwhelming', 'hide menu', 'less', 'easy mode', 'full mode', 'reset'], ['today'], '#/today',
+    ['Click the green “Simple mode” switch at the top of the screen to turn it on or off.', 'With Simple mode on, the menu shows only the sections for your role (for example a doctor sees Home Dashboard, Diary, Patients, Clinical dashboard, Follow-up manager, Internal messages and Training Academy).', 'Click ⚙ next to the switch and tick any extra sections you want to see, then Save.', '“↺ Reset to default” puts back the sections for your role.', 'Turn Simple mode off to see everything (Full mode). The setting is yours only.'], 'simplemode');
+  add('remitreq', 'Request a remittance and let Prac360 follow up', ['remittance', 'request remittance', 'not paid', 'unpaid claim', 'follow up scheme', 'expected payment', 'awaiting payment', 'chase scheme', 'era not received'], ['claims'], '#/claims/submitted',
+    ['Open Claims → Awaiting payment. Claims are grouped per medical aid, each with the date payment is expected.', 'Press “📧 Request remittance” for a medical aid.', 'Check the email Prac360 wrote (claims, member numbers, amounts and EDI references — never ID numbers or diagnoses) and the medical aid’s claims email address, then press “Send and follow up daily”.', 'Prac360 now follows up by itself every day at the same time. After three unanswered emails it adds a reminder in the Follow-up manager to phone the medical aid.', 'When the remittance or payment arrives the follow-ups stop on their own. Use Pause, Resume or Stop any time, and “Emails” to see what was sent.'], 'remitreq');
+  add('eraauto', 'Auto-reconcile eRA remittances', ['auto reconcile', 'auto-reconcile', 'automatic reconcile', 'era', 'remittance'], ['claims'], '#/claims/remittances',
+    ['Open Claims → eRA remittances.', 'Switch on “Auto-reconcile remittances”.', 'Every new eRA is now matched to its claims and reconciled straight away; anything the medical aid did not pay moves to the patient’s account.', 'Switch it off to check and press Reconcile yourself.'], 'eraauto');
+  add('printreport', 'Print a report', ['print', 'printer', 'print report'], ['reports'], '#/reports', ['Open Reports and click a report.', 'Choose the dates.', 'Click 🖨 Print — your device’s print window opens. Choose your printer and print.', 'Save as PDF still saves a copy instead.'], '');
+  add('tablets', 'Using Prac360 on a tablet or phone', ['ipad', 'tablet', 'phone', 'mobile', 'keyboard', 'microphone', 'mic', 'touch'], ['today'], '#/today',
+    ['Open Prac360 in Safari (iPad/iPhone) or Chrome (Android) and allow the microphone the first time you use Talk, AI Scribe or dictation.', 'Talk and AI Scribe keep listening through short pauses until you press Stop.', 'The keyboard opens only when you tap a field; the field stays in view above it. Tap “Done” to close it.', 'To dictate into a field, tap the field, then the small microphone — the keyboard hides while you talk.', 'Turn on Simple mode to keep the screen uncluttered on a small screen.'], '');
+
+  if (A.GUIDES) {
+    A.GUIDES.simplemode = { title: 'Simple mode', steps: [{ sel: '[data-act=simple-toggle]', text: 'This switch turns Simple mode on or off. On: only what you use. Off: everything.', expect: 'next' }, { sel: '[data-act=simple-gear]', text: 'The ⚙ lets you tick extra sections, or reset to the default for your role.', expect: 'next' }] };
+    A.GUIDES.remitreq = { title: 'Request a remittance', steps: [{ sel: 'a[href="#/claims/submitted"]', text: 'Open “Awaiting payment”.', expect: 'click', skip: '^#/claims/submitted' }, { sel: '[data-act=rr-new]', text: 'Press “Request remittance” for the medical aid that has not paid.', expect: 'click', missing: 'There is nothing waiting, or a request is already following up.' }, { sel: '[data-act=rr-send]', text: 'Check the email and press “Send and follow up daily”.', expect: 'click' }] };
+    A.GUIDES.eraauto = { title: 'Auto-reconcile', steps: [{ sel: 'a[href="#/claims/remittances"]', text: 'Open “eRA remittances”.', expect: 'click', skip: '^#/claims/remittances' }, { sel: '.rr-auto .sw-line', text: 'Switch auto-reconcile on or off here.', expect: 'next' }] };
+  }
+  const C = A.COURSES || []; const course = (re) => C.find((c) => re.test((c.id || '') + ' ' + (c.t || c.title || '')));
+  const lesson = (c, t, body, guide) => { if (c && c.lessons && !c.lessons.some((l) => l.t === t)) c.lessons.push({ t, body, guide: guide || '' }); };
+  const quiz = (c, q, o, a) => { if (c && c.quiz && !c.quiz.some((x) => x.q === q)) c.quiz.push({ q, o, a }); };
+  const gs = course(/getting|start|basics/i) || C[0]; const bc = course(/claim|billing/i) || gs;
+  lesson(gs, 'Simple mode', 'Turn on the green Simple mode switch to see only the sections for your role. ⚙ adds more; Reset puts back the default. Turn it off for everything.', 'simplemode');
+  lesson(gs, 'Tablets and phones', 'Talk and AI Scribe keep listening until you press Stop; the keyboard only opens when you tap a field and the field stays in view.', '');
+  lesson(bc, 'Request a remittance and automatic follow-ups', 'Awaiting payment shows when each claim should be paid. Request remittance emails the medical aid; Prac360 then follows up every day at the same time until the remittance arrives.', 'remitreq');
+  lesson(bc, 'Auto-reconcile eRA remittances', 'Switch it on under eRA remittances and every new remittance is reconciled straight away.', 'eraauto');
+  quiz(gs, 'How do you show a section that Simple mode hides?', ['Turn off the computer', 'Click ⚙ next to the Simple mode switch and tick it', 'Ask the practice manager to delete it'], 1);
+  quiz(bc, 'After you request a remittance, when does Prac360 follow up?', ['Never', 'Every day at the time of the first request, until the remittance arrives', 'Every hour'], 1);
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /getting around/i.test(x[0])) || A.FUNCTIONS[0]; const cl = A.FUNCTIONS.find((x) => /claim/i.test(x[0])) || g;
+    const put = (grp, t, id) => { if (grp && !grp[1].some((x) => x[0] === t)) grp[1].push([t, id]); };
+    put(g, 'Simple mode (switch and ⚙ customise)', 'simplemode'); put(g, 'Tablets and phones', 'tablets'); put(g, 'Print a report', 'printreport');
+    put(cl, 'Request remittance and automatic follow-ups', 'remitreq'); put(cl, 'Auto-reconcile eRA remittances', 'eraauto'); }
 })();
 
 

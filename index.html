@@ -2953,6 +2953,89 @@ html[data-theme=dark] .rja-tip{background:rgba(22,163,74,.12);color:#bbf7d0}
 .lc-tab-n.hot{background:#dc2626;color:#fff}
 .ta-nudge{display:block;margin:0 0 12px;padding:10px 14px;border-radius:12px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;text-decoration:none}
 @media (max-width:720px){.ta-grid,.rja-who{grid-template-columns:1fr}}
+/* v0.82 spelling-tolerant search */
+.fz-note{margin:8px 0;padding:8px 12px;border-radius:10px;background:#fffbeb;border:1px solid #fde68a;color:#78350f;font-size:.88rem}
+.fz-note .linkish{background:none;border:0;padding:0;color:#1d4ed8;font-weight:700;text-decoration:underline;cursor:pointer;font:inherit}
+html[data-theme=dark] .fz-note{background:rgba(250,204,21,.1);border-color:rgba(250,204,21,.3);color:#fde68a}html[data-theme=dark] .fz-note .linkish{color:#93c5fd}
+.fz-pop{position:fixed;z-index:9999;background:var(--surface,#fff);border:1px solid var(--line,#e5e7eb);border-radius:10px;box-shadow:0 10px 30px rgba(15,23,42,.18);padding:4px;max-height:260px;overflow:auto}
+.fz-pop-h{font-size:.72rem;color:var(--muted,#64748b);padding:4px 8px;text-transform:uppercase;letter-spacing:.04em}
+.fz-pop button{display:flex;flex-direction:column;align-items:flex-start;width:100%;text-align:left;background:none;border:0;padding:6px 8px;border-radius:8px;cursor:pointer;color:inherit}.fz-pop button:hover{background:var(--surface-2,#f1f5f9)}.fz-pop button span{font-size:.78rem;color:var(--muted,#64748b)}
+/* v0.82 patient app (full demo) */
+.pa2-ov{position:fixed;inset:0;z-index:2000;background:rgba(8,13,26,.72);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px}
+.pa2-bar{display:flex;gap:12px;align-items:center;color:#e2e8f0;font-size:.85rem}.pa2-bar .btn{background:#fff;color:#0f172a}
+body.pa2-open{overflow:hidden}
+.pa2-root{display:flex;justify-content:center}
+.p2-phone{--p2b:#1d4ed8;--p2c:#0ea5e9;position:relative;width:390px;height:min(800px,calc(100vh - 70px));min-height:600px;border:12px solid #0b1220;border-radius:50px;background:#f4f6fb;box-shadow:0 30px 80px rgba(0,0,0,.45);display:flex;flex-direction:column;overflow:hidden;color:#0f172a;font-size:15px;line-height:1.4;font-family:inherit}
+.pa2-root.inline .p2-phone{height:min(760px,calc(100vh - 160px));box-shadow:0 24px 60px rgba(11,18,32,.28)}
+.p2-status{display:flex;justify-content:space-between;align-items:center;padding:8px 22px 4px;font-size:12px;font-weight:700;background:#fff;position:relative}.p2-notch{position:absolute;left:50%;top:0;transform:translateX(-50%);width:110px;height:24px;background:#0b1220;border-radius:0 0 16px 16px}
+.p2-top{display:flex;justify-content:space-between;align-items:center;padding:8px 16px 10px;background:#fff;border-bottom:1px solid #e8ecf3}.p2-logo{font-weight:800;color:var(--p2b);letter-spacing:-.2px}.p2-top-r{display:flex;gap:8px;align-items:center}
+.p2-bell{position:relative;background:none;border:0;font-size:18px;cursor:pointer;padding:4px}.p2-bell i{position:absolute;top:-2px;right:-4px;background:#dc2626;color:#fff;font-style:normal;font-size:10px;font-weight:800;border-radius:999px;padding:1px 5px}
+.p2-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--p2b),var(--p2c));color:#fff;border:0;display:grid;place-items:center;font-weight:800;font-size:13px;cursor:pointer}.p2-av.big{width:64px;height:64px;font-size:22px;margin:0 auto 8px}
+.p2-scr{flex:1;overflow-y:auto;padding:14px 16px 18px;scroll-behavior:smooth}
+.p2-nav{display:flex;background:#fff;border-top:1px solid #e8ecf3;padding:6px 4px 14px}.p2-nav button{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:#64748b;cursor:pointer;padding:4px 0}.p2-nav button i{font-style:normal;font-size:19px;filter:grayscale(1);opacity:.7}.p2-nav button.on{color:var(--p2b);font-weight:700}.p2-nav button.on i{filter:none;opacity:1}
+.p2-h{font-size:1.35rem;font-weight:800;letter-spacing:-.3px;margin:6px 0 4px}.p2-sub{color:#475569;margin:0 0 12px;font-size:.92rem}.p2-fine{font-size:.75rem;color:#64748b;text-align:center;margin:8px 0}.p2-fine.left{text-align:left}
+.p2-btn{display:block;width:100%;border:0;border-radius:14px;padding:13px 16px;margin:8px 0;background:linear-gradient(135deg,var(--p2b),var(--p2c));color:#fff;font-weight:700;font-size:1rem;cursor:pointer;text-align:center}.p2-btn.sm{padding:9px 12px;font-size:.88rem;margin:8px 0 0}.p2-btn.ghost{background:#fff;color:var(--p2b);border:1.5px solid #c7d2fe}.p2-btn.danger{background:#fff;color:#b91c1c;border:1.5px solid #fecaca}.p2-btn:disabled{opacity:.5}
+.p2-link{background:none;border:0;color:var(--p2b);font-weight:600;cursor:pointer;padding:6px 0;display:block;margin:4px auto;font-size:.88rem}.p2-link.inline{display:inline;padding:0;margin:0;font-size:inherit}
+.p2-back{background:none;border:0;color:var(--p2b);font-weight:600;cursor:pointer;padding:0 0 6px;font-size:.92rem}
+.p2-welcome{text-align:center;padding-top:30px}.p2-welcome h1{margin:4px 0 8px;font-size:2rem;letter-spacing:-.5px}.p2-welcome p{color:#475569}.p2-logo-big{width:76px;height:76px;border-radius:22px;margin:0 auto;background:linear-gradient(135deg,var(--p2b),var(--p2c));color:#fff;font-size:42px;display:grid;place-items:center;box-shadow:0 12px 30px rgba(29,78,216,.35)}
+.p2-feat{display:flex;flex-direction:column;gap:8px;margin:18px 0;text-align:left}.p2-feat span{background:#fff;border-radius:12px;padding:10px 12px;font-size:.9rem;box-shadow:0 1px 2px rgba(15,23,42,.06)}
+.p2-steps{display:flex;gap:6px;margin:4px 0}.p2-steps i{flex:1;height:5px;border-radius:3px;background:#dbe3f0}.p2-steps i.on{background:var(--p2b)}.p2-stepl{font-size:.72rem;color:#64748b;margin-bottom:6px}
+.p2-f{display:flex;flex-direction:column;gap:5px;margin:10px 0}.p2-f span{font-size:.82rem;font-weight:700;color:#334155}.p2-f input{border:1.5px solid #cbd5e1;border-radius:12px;padding:12px;font-size:1.1rem;letter-spacing:1.5px;background:#fff;color:#0f172a}.p2-f input:focus{outline:none;border-color:var(--p2b);box-shadow:0 0 0 3px rgba(29,78,216,.15)}.p2-otp{text-align:center;letter-spacing:10px!important;font-size:1.5rem!important}
+.p2-err{background:#fef2f2;color:#991b1b;border-radius:10px;padding:8px 10px;font-size:.85rem;margin:6px 0}.p2-found{background:#f0fdf4;color:#14532d;border-radius:10px;padding:8px 10px;font-size:.88rem;margin:6px 0}.p2-demo{background:#fffbeb;border:1px dashed #f59e0b;border-radius:10px;padding:8px 10px;font-size:.85rem;margin:6px 0;color:#78350f}
+.p2-check{display:flex;gap:8px;align-items:flex-start;font-size:.85rem;margin:10px 0;color:#334155}.p2-check input{margin-top:3px;width:18px;height:18px}
+.p2-dots{display:flex;gap:14px;justify-content:center;margin:18px 0}.p2-dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--p2b)}.p2-dots i.on{background:var(--p2b)}
+.p2-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:270px;margin:0 auto}.p2-pad button{height:58px;border-radius:50%;border:0;background:#fff;font-size:1.4rem;font-weight:600;cursor:pointer;box-shadow:0 1px 3px rgba(15,23,42,.1);color:#0f172a}.p2-pad button:active{background:#e0e7ff}
+.p2-lock{text-align:center;padding-top:24px}.p2-done{text-align:center;padding-top:10px}.p2-done .p2-card{text-align:left}.p2-big{font-size:52px;margin:10px 0}.p2-big.spin{animation:p2spin 1.2s linear infinite;display:inline-block}@keyframes p2spin{to{transform:rotate(360deg)}}
+.p2-card{background:#fff;border-radius:16px;padding:13px 14px;margin:10px 0;box-shadow:0 1px 3px rgba(15,23,42,.07);display:flex;flex-direction:column;gap:3px;position:relative}.p2-card span{font-size:.86rem;color:#475569}.p2-card.hi{background:linear-gradient(135deg,#eff6ff,#ecfeff);border:1px solid #bfdbfe}.p2-card .p2-tg{position:absolute;right:12px;top:12px}
+.p2-hi{font-size:1.5rem;font-weight:800;letter-spacing:-.3px}.p2-date{color:#64748b;font-size:.85rem;margin-bottom:10px}
+.p2-today{background:#fff;border-radius:18px;padding:14px;display:flex;gap:12px;align-items:center;box-shadow:0 1px 3px rgba(15,23,42,.07)}
+.p2-ring{position:relative;width:104px;height:104px;flex:0 0 auto}.p2-ring svg{width:104px;height:104px;transform:rotate(-90deg)}.p2-ring circle{fill:none;stroke-width:9}.p2-ring .bg{stroke:#e2e8f0}.p2-ring .fg{stroke:url(#x);stroke:#16a34a;stroke-linecap:round}.p2-ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.p2-ring b{font-size:1.15rem}.p2-ring span{font-size:.65rem;color:#64748b}
+.p2-mini{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:1}.p2-mini button{background:#f8fafc;border:0;border-radius:12px;padding:7px 8px;text-align:left;cursor:pointer;display:flex;flex-direction:column}.p2-mini span{font-size:.68rem;color:#64748b}.p2-mini b{font-size:.95rem}
+.p2-sync{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;padding:10px 2px;font-size:.82rem;color:#334155;cursor:pointer}.p2-sync i{margin-left:auto;font-style:normal;color:#94a3b8;font-size:1.2rem}
+.p2-dot{width:9px;height:9px;border-radius:50%;background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.18)}
+.p2-sh{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}.p2-sh button{border:0;border-radius:14px;padding:10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.07)}.p2-sh span{font-size:.74rem;color:#64748b}.p2-sh b{font-size:.86rem}.p2-sh .ok b{color:#15803d}.p2-sh .off b{color:#64748b}
+.p2-tile{display:flex;flex-direction:column;width:100%;text-align:left;background:#fff;border:0;border-radius:16px;padding:13px 14px;margin:8px 0;box-shadow:0 1px 3px rgba(15,23,42,.07);cursor:pointer}.p2-tile span{font-size:.85rem;color:#475569}
+.p2-sec{background:#fff;border-radius:16px;padding:10px 14px;margin:10px 0;box-shadow:0 1px 3px rgba(15,23,42,.07)}.p2-sec h4{margin:4px 0 6px;font-size:.88rem;display:flex;align-items:center;gap:6px}
+.p2-row{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:.88rem}.p2-row:last-child{border-bottom:0}.p2-row b{margin-left:auto}.p2-row small{width:100%;color:#64748b;font-size:.76rem}.p2-row.muted{color:#64748b}
+.p2-none{color:#94a3b8;font-size:.85rem;padding:6px 0}.p2-src{margin-left:auto;font-size:.66rem;background:#eef2ff;color:#3730a3;border-radius:999px;padding:1px 7px}.p2-priv{margin-left:auto;font-style:normal;font-size:.7rem;background:#fef3c7;color:#92400e;border-radius:999px;padding:1px 8px}
+.row-b{display:flex;justify-content:space-between;align-items:center}.p2-add{border:0;background:#e0e7ff;color:#1e3a8a;font-weight:700;border-radius:999px;padding:6px 12px;cursor:pointer}
+.p2-devs{display:flex;flex-direction:column;gap:8px;margin-top:8px}.p2-dev{background:#fff;border-radius:16px;padding:11px 12px;box-shadow:0 1px 3px rgba(15,23,42,.07)}.p2-dev-h{display:flex;gap:10px;align-items:center}.p2-dev-h>div{flex:1;display:flex;flex-direction:column}.p2-dev-i{font-size:24px}.p2-bat{font-size:.72rem;color:#64748b}
+.p2-st{display:inline-flex;align-items:center;gap:5px;font-size:.76rem;color:#15803d;font-weight:600}.p2-st i{width:8px;height:8px;border-radius:50%;background:currentColor}.p2-st.paused{color:#64748b}.p2-st.att{color:#b45309}.p2-st.busy{color:#1d4ed8}.p2-st.busy i{animation:p2pulse 1s infinite}@keyframes p2pulse{50%{opacity:.25}}
+.p2-dev-a{display:flex;gap:8px;margin-top:8px}.p2-dev-a button{flex:1;border:1px solid #dbe3f0;background:#f8fafc;border-radius:10px;padding:7px;font-size:.8rem;cursor:pointer;color:#0f172a}
+.p2-seg{display:flex;background:#e8ecf3;border-radius:12px;padding:3px;margin:12px 0 4px}.p2-seg button{flex:1;border:0;background:none;padding:7px;border-radius:9px;font-size:.82rem;cursor:pointer;color:#334155}.p2-seg button.on{background:#fff;font-weight:700;box-shadow:0 1px 2px rgba(15,23,42,.1)}
+.p2-met{display:block;width:100%;text-align:left;background:#fff;border:0;border-radius:16px;padding:11px 13px 6px;margin:8px 0;box-shadow:0 1px 3px rgba(15,23,42,.07);cursor:pointer;color:#0f172a}.p2-met-h{display:flex;justify-content:space-between;font-size:.82rem;color:#475569}.p2-met-h em{font-style:normal;font-size:.7rem;border-radius:999px;padding:1px 8px}.p2-met-h em.sh{background:#dcfce7;color:#166534}.p2-met-h em.pr{background:#f1f5f9;color:#475569}.p2-met b{font-size:1.2rem;display:block}.p2-met small{color:#64748b;font-size:.74rem}
+.p2-phone .wr-svg{width:100%;height:56px;display:block;margin-top:4px}.p2-phone .wr-ax{font-size:.62rem}
+.p2-big-n{font-size:2rem;font-weight:800;margin:10px 0 4px;display:flex;flex-direction:column}.p2-big-n small{font-size:.8rem;color:#64748b;font-weight:500}.p2-chart{background:#fff;border-radius:16px;padding:10px;box-shadow:0 1px 3px rgba(15,23,42,.07)}.p2-chart .wr-svg{height:150px}
+.p2-tg{width:46px;height:28px;border-radius:999px;border:0;background:#cbd5e1;position:relative;cursor:pointer;flex:0 0 auto;transition:background .15s}.p2-tg i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s}.p2-tg.on{background:#16a34a}.p2-tg.on i{left:21px}
+.p2-tr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:.88rem}.p2-tr:last-child{border-bottom:0}.p2-tr span{display:flex;flex-direction:column}.p2-tr input[type=checkbox]{width:20px;height:20px}
+.p2-warn{color:#b45309;font-size:.74rem;margin-top:2px}
+.p2-sw{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:13px 14px;margin:10px 0 0;box-shadow:0 1px 3px rgba(15,23,42,.07);border-left:5px solid #cbd5e1}.p2-sw.on{border-left-color:#16a34a}.p2-sw>div{flex:1;display:flex;flex-direction:column}.p2-sw span{font-size:.8rem;color:#475569}.p2-sw .p2-btn.sm{width:auto;margin:0}
+.p2-radio{display:flex;gap:8px;align-items:center;padding:7px 0;font-size:.88rem}.p2-radio input{width:18px;height:18px}
+.p2-pick{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid #f1f5f9;padding:10px 2px;cursor:pointer;color:#0f172a}.p2-pick:last-child{border-bottom:0}.p2-pick span{font-size:22px}.p2-pick b{flex:1;font-size:.92rem}.p2-pick small{color:#64748b;font-size:.72rem}.p2-pick:disabled{opacity:.5}
+.p2-vendor{margin:-14px -16px;min-height:100%;background:#0f172a;color:#e2e8f0;display:flex;flex-direction:column}.p2-vh{padding:16px;font-weight:800;font-size:1.1rem;border-bottom:1px solid #1e293b}.p2-vb{padding:18px;text-align:center}.p2-vb ul{text-align:left;margin:10px 0;padding-left:22px}.p2-vb p{font-size:.85rem;color:#94a3b8}.p2-vb .p2-btn.ghost{background:transparent;color:#e2e8f0;border-color:#334155}
+.p2-import{text-align:center;padding-top:40px}.p2-prog{height:10px;border-radius:5px;background:#e2e8f0;overflow:hidden;margin:16px 0 4px}.p2-prog i{display:block;height:100%;background:linear-gradient(90deg,var(--p2b),var(--p2c));transition:width .2s}
+.p2-doc{background:#fff;border-radius:16px;padding:11px 13px;margin:8px 0;box-shadow:0 1px 3px rgba(15,23,42,.07);display:flex;flex-direction:column}.p2-doc span{font-size:.8rem;color:#64748b}.p2-slots{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.p2-slots button{border:1px solid #c7d2fe;background:#eef2ff;color:#1e3a8a;border-radius:10px;padding:6px 8px;font-size:.76rem;cursor:pointer}
+.p2-prof{text-align:center;margin:4px 0 8px;display:flex;flex-direction:column}.p2-prof span{color:#64748b;font-size:.85rem}
+.p2-rowb{display:flex;width:100%;justify-content:space-between;background:none;border:0;border-bottom:1px solid #f1f5f9;padding:10px 0;font-size:.88rem;cursor:pointer;color:#0f172a}.p2-rowb:last-child{border-bottom:0}.p2-rowb i{font-style:normal;color:#94a3b8}
+.p2-note{display:flex;gap:10px;background:#fff;border-radius:14px;padding:10px 12px;margin:8px 0;box-shadow:0 1px 3px rgba(15,23,42,.07)}.p2-note span{font-size:20px}.p2-note div{display:flex;flex-direction:column}.p2-note b{font-size:.86rem;font-weight:600}.p2-note small{color:#64748b;font-size:.74rem}
+.p2-empty{text-align:center;padding:20px 0}.p2-empty p{color:#475569}
+.p2-toast{position:absolute;left:16px;right:16px;bottom:84px;background:#0f172a;color:#fff;border-radius:12px;padding:10px 12px;font-size:.85rem;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+@media (max-width:480px){.pa2-ov{padding:0}.pa2-bar{padding:6px}.p2-phone{width:100vw;height:calc(100vh - 44px);border:0;border-radius:0;min-height:0}}
+/* v0.82 Patient wearable tab (Prac360) */
+.wr-src{display:flex;gap:12px;align-items:flex-start;background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:10px 14px;margin-bottom:12px}.wr-src-i{font-size:26px}.wr-src div{display:flex;flex-direction:column}.wr-src span{font-size:.85rem;color:#1e3a8a}
+html[data-theme=dark] .wr-src{background:rgba(37,99,235,.12);border-color:rgba(96,165,250,.35)}html[data-theme=dark] .wr-src span{color:#bfdbfe}
+.wr-top{display:grid;grid-template-columns:3fr 2fr;gap:14px}.wr-dev{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line,#eef0f3)}.wr-dev:last-child{border-bottom:0}.wr-dev-i{font-size:24px}.wr-dev-t{flex:1;display:flex;flex-direction:column}.wr-dev-t span{font-size:.78rem;color:var(--muted,#64748b)}
+.wr-sync{display:inline-flex;gap:6px;align-items:center;font-size:.78rem;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}.wr-sync i{width:8px;height:8px;border-radius:50%;background:currentColor}.wr-sync.ok{background:#dcfce7;color:#166534}.wr-sync.paused{background:#f1f5f9;color:#475569}.wr-sync.att{background:#fef3c7;color:#92400e}
+.wr-chips{display:flex;flex-wrap:wrap;gap:6px}.wr-chip{font-size:.78rem;border-radius:999px;padding:3px 10px}.wr-chip.on{background:#dcfce7;color:#166534}.wr-chip.off{background:#f1f5f9;color:#475569;text-decoration:line-through}
+.wr-bar{margin:6px 0 12px;flex-wrap:wrap;gap:8px}
+.wr-flags .wr-flag{display:flex;flex-direction:column;padding:8px 10px;border-radius:10px;margin:6px 0}.wr-flag.warn{background:#fff7ed;border-left:4px solid #f59e0b}.wr-flag.info{background:#f0f9ff;border-left:4px solid #0ea5e9}.wr-flag span{font-size:.84rem;color:var(--muted,#64748b)}.wr-flags.ok{color:#166534}
+html[data-theme=dark] .wr-flag.warn{background:rgba(245,158,11,.12)}html[data-theme=dark] .wr-flag.info{background:rgba(14,165,233,.12)}
+.wr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}.wr-card{background:var(--surface,#fff);border:1px solid var(--line,#e5e7eb);border-radius:14px;padding:12px 14px}.wr-ch{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.wr-ch span{font-size:.85rem;color:var(--muted,#64748b)}.wr-ch b{font-size:1.2rem}.wr-cs{font-size:.76rem;color:var(--muted,#64748b);margin-bottom:6px}
+.wr-svg{width:100%;height:90px;display:block;overflow:hidden}.wr-b{fill:#60a5fa}.wr-b2{fill:#1d4ed8}.wr-l{fill:none;stroke:#2563eb;stroke-width:2;vector-effect:non-scaling-stroke}.wr-l2{fill:none;stroke:#94a3b8;stroke-width:1.5;stroke-dasharray:3 3;vector-effect:non-scaling-stroke}.wr-ref{stroke:#f59e0b;stroke-width:1;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}.wr-pt{fill:transparent;cursor:pointer}.wr-pt:hover{fill:rgba(37,99,235,.25)}
+.wr-ax{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted,#94a3b8)}.wr-nodata{font-size:.8rem;color:var(--muted,#94a3b8);padding:20px 0;text-align:center}
+.wr-empty h2{margin:6px 0}.wr-hidden{background:#fffbeb;border-color:#fde68a}.wr-pb{text-decoration:none;background:#dcfce7;color:#166534}
+@media (max-width:900px){.wr-top{grid-template-columns:1fr}}
+.p2-card:has(> .p2-tg){padding-right:70px}.p2-ring .fg{stroke:#16a34a}
 </style>
 </head>
 <body>
@@ -5207,20 +5290,21 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
     const box = document.getElementById('gresults'); q = (q || '').trim().toLowerCase(); sIdx = -1; sItems = [];
     if (q.length < 2) { box.innerHTML = ''; return; }
     const groups = [];
-    if (A.can('patients.read')) { const ps = A.db.patients.filter((p) => `${p.firstName} ${p.lastName} ${p.idNumber} ${p.phone}`.toLowerCase().includes(q) || A.db.memberships.some((m) => m.patientId === p.id && m.memberNo.includes(q))).slice(0, 6); if (ps.length) groups.push(['Patients', ps.map((p) => [`#/patient/${p.id}`, `${p.firstName} ${p.lastName}`, `${A.age(p)} y · ID …${p.idNumber.slice(-4)}`])]); }
-    const icds = A.db.icd10.filter((c) => (c.code + ' ' + c.desc).toLowerCase().includes(q)).slice(0, 5); if (icds.length) groups.push(['ICD-10', icds.map((c) => [`#/reports/icd/${c.code}`, c.code, c.desc])]);
+    if (A.can('patients.read')) { const ps = A.db.patients.filter((p) => `${p.firstName} ${p.lastName} ${p.idNumber} ${p.phone}`.toLowerCase().includes(q) || A.db.memberships.some((m) => m.patientId === p.id && m.memberNo.includes(q))).slice(0, 6); let pl = 'Patients'; if (!ps.length && A.fz && !/\d/.test(q)) { ps.push(...A.fz.filter(A.db.patients, (p) => p.firstName + ' ' + p.lastName, q, 6)); pl = 'Patients — did you mean?'; } if (ps.length) groups.push([pl, ps.map((p) => [`#/patient/${p.id}`, `${p.firstName} ${p.lastName}`, `${A.age(p)} y · ID …${p.idNumber.slice(-4)}`])]); }
+    let icds = A.db.icd10.filter((c) => (c.code + ' ' + c.desc).toLowerCase().includes(q)).slice(0, 5); let il = 'ICD-10'; if (!icds.length && A.icdFuzzy && q.length > 3) { const F = A.icdFuzzy(q, { limit: 5 }); if (F.length) { icds = F.slice(0, 5); il = `ICD-10 — did you mean “${F.fixed}”?`; } } if (icds.length) groups.push([il, icds.map((c) => [`#/reports/icd/${c.code}`, c.code, c.desc])]);
     const tars = A.db.tariffs.filter((c) => (c.code + ' ' + c.desc).toLowerCase().includes(q)).slice(0, 4); if (tars.length) groups.push(['Tariff codes (demo)', tars.map((c) => [`#/settings/prices`, c.code, c.desc])]);
-    if (A.db.settings.stockEnabled && A.canAny('stock.read', 'stock.use')) { const st = A.db.stockItems.filter((i) => (i.name + ' ' + i.nappi + ' ' + i.barcode).toLowerCase().includes(q)).slice(0, 4); if (st.length) groups.push(['Stock', st.map((i) => [`#/stock/item/${i.id}`, i.name, `${E.onHand(A.db, i.id)} ${i.unit} on hand`])]); }
+    if (A.db.settings.stockEnabled && A.canAny('stock.read', 'stock.use')) { let st = A.db.stockItems.filter((i) => (i.name + ' ' + i.nappi + ' ' + i.barcode).toLowerCase().includes(q)).slice(0, 4); let sl = 'Stock'; if (!st.length && A.fz) { st = A.fz.filter(A.db.stockItems, (i) => i.name, q, 4); sl = 'Stock — did you mean?'; } if (st.length) groups.push([sl, st.map((i) => [`#/stock/item/${i.id}`, i.name, `${E.onHand(A.db, i.id)} ${i.unit} on hand`])]); }
+    if (A.can('patients.read') || A.can('accounts.read')) { const nm = [...new Set((A.db.schemes || []).map((x) => x.name))]; let ms = nm.filter((n) => n.toLowerCase().includes(q)); let ml = 'Medical aids'; if (!ms.length && A.fz && q.length > 3) { ms = A.fz.filter(nm, (n) => n, q, 3); ml = 'Medical aids — did you mean?'; } if (ms.length) groups.push([ml, ms.slice(0, 3).map((n) => ['#/schemes/all', n, 'Medical aid', n])]); }
     const pages = NAV.filter(([r, k, perms]) => (!perms || A.canAny(...perms)) && t(k).toLowerCase().includes(q)).map(([r, k]) => [`#/${r}`, t(k), 'Page']); if (pages.length) groups.push(['Pages', pages]);
     groups.forEach((g) => g[1].forEach((x) => sItems.push(x)));
-    box.innerHTML = groups.length ? `<div class="results" role="listbox">${groups.map(([g, items]) => `<div class="grp">${esc(g)}</div>${items.map((x) => `<button type="button" role="option" data-act="search-go" data-href="${esc(x[0])}"><strong>${esc(x[1])}</strong><span class="muted small">${esc(x[2])}</span></button>`).join('')}`).join('')}</div>` : `<div class="results"><div class="empty">No matches. Try a surname, ID number, member number, ICD-10 code or stock item.</div></div>`;
+    box.innerHTML = groups.length ? `<div class="results" role="listbox">${groups.map(([g, items]) => `<div class="grp">${esc(g)}</div>${items.map((x) => `<button type="button" role="option" data-act="search-go" data-href="${esc(x[0])}"${x[3] ? ` data-maq="${esc(x[3])}"` : ''}><strong>${esc(x[1])}</strong><span class="muted small">${esc(x[2])}</span></button>`).join('')}`).join('')}</div>` : `<div class="results"><div class="empty">No matches. Try a surname, ID number, member number, ICD-10 code or stock item.</div></div>`;
   };
   const searchKeys = (e) => {
     const btns = [...document.querySelectorAll('#gresults button')]; if (!btns.length) return;
     if (e.key === 'ArrowDown') sIdx = Math.min(btns.length - 1, sIdx + 1); else if (e.key === 'ArrowUp') sIdx = Math.max(0, sIdx - 1); else if (e.key === 'Enter') { e.preventDefault(); (btns[Math.max(0, sIdx)]).click(); return; }
     btns.forEach((b, i) => b.classList.toggle('sel', i === sIdx)); e.preventDefault();
   };
-  H['search-go'] = (el) => { document.getElementById('gresults').innerHTML = ''; A.go(el.dataset.href); };
+  H['search-go'] = (el) => { document.getElementById('gresults').innerHTML = ''; if (el.dataset.maq) { A.ui.maQ = el.dataset.maq; A.ui.maOpen = el.dataset.maq; } A.go(el.dataset.href); };
   document.addEventListener('click', (e) => { if (!e.target.closest('.search')) { const r = document.getElementById('gresults'); if (r) r.innerHTML = ''; } });
 
   // ---------- charts (simple, accessible SVG; hover tooltips) ----------
@@ -5577,10 +5661,11 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
       if (alt !== w0) { L = A.icdSearch(alt, { re: K.re, limit: 40 }); L.alt = alt; }
       if (!L.length && L0.length) L = L0;
       // still nothing: drop one word at a time and show the closest matches
+      if (!L.length && A.icdFuzzy && w0.length > 3) { const F = A.icdFuzzy(alt, { re: K.re, limit: 40 }); if (F.length) { L = F; L.alt = F.fixed; L.fixed = F.fixed; } }
       if (!L.length) { const ws = alt.split(/\s+/).filter(Boolean); for (let i = 0; i < ws.length && !L.length && ws.length > 1; i++) L = A.icdSearch(ws.filter((_, j) => j !== i).join(' '), { re: K.re, limit: 40 }); if (L.length) L.close = true; }
-      if (L !== L0 && L0.length) { const c = L.close, al = L.alt; L = L.concat(L0.filter((x) => !L.includes(x))).slice(0, 40); if (c && L.length) L.close = true; L.alt = al; } }
+      if (L !== L0 && L0.length) { const c = L.close, al = L.alt, fx = L.fixed; L = L.concat(L0.filter((x) => !L.includes(x))).slice(0, 40); if (c && L.length) L.close = true; L.alt = al; L.fixed = fx; } }
     // words (not a code): codes whose description starts with the searched word come first ("flu" → Influenza …)
-    if (L.alt && !morph) { const first = L.alt.toLowerCase().trim().split(/\s+/)[0]; const st = (x) => (x.desc.toLowerCase().startsWith(first) ? 0 : 1); const c = L.close; L = L.map((x, i) => [x, i]).sort((a, b) => st(a[0]) - st(b[0]) || a[1] - b[1]).map((a) => a[0]); if (c) L.close = true; }
+    if (L.alt && !morph) { const first = L.alt.toLowerCase().trim().split(/\s+/)[0]; const st = (x) => (x.desc.toLowerCase().startsWith(first) ? 0 : 1); const c = L.close, fx = L.fixed; L = L.map((x, i) => [x, i]).sort((a, b) => st(a[0]) - st(b[0]) || a[1] - b[1]).map((a) => a[0]); if (c) L.close = true; if (fx) L.fixed = fx; }
     if (!q.trim() && !morph && !K.re) { const com = A.icdCommon(25); if (com.length) L = com.concat(L.filter((x) => !com.includes(x))).slice(0, 40); }
     return L; };
   const mark = (t, q) => { let h = esc(t); const ws = String(q || '').toLowerCase().split(/[\s,]+/).filter((w) => w.length > 1 && !/^[a-z]\d/i.test(w)).sort((a, b) => b.length - a.length);
@@ -5593,8 +5678,8 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
     if (!box) { box = document.createElement('div'); box.className = 'icd-ac'; box.setAttribute('role', 'listbox'); document.body.appendChild(box);
       box.addEventListener('mousedown', (e) => e.preventDefault()); box.addEventListener('click', (e) => { const o = e.target.closest('[data-i]'); if (o) pick(+o.dataset.i); }); }
     const empty = !q.trim(); const morph = /morph/.test(K.k);
-    box.innerHTML = (items.length ? `<div class="icd-ac-h">${empty ? (morph ? 'Morphology codes' : 'Codes your practice uses most — or type a code or words') : items.close ? 'No exact match — closest codes:' : items.length >= 40 ? 'Best 40 matches — type more to narrow' : items.length + ' match' + (items.length === 1 ? '' : 'es')}</div>`
-      + items.map((x, i) => `<div class="icd-ac-o" role="option" data-i="${i}"><b>${esc(morph ? x.code.replace(/^M/, '') : x.code)}</b><span>${mark(x.desc, q)}</span>${x.pmb ? '<i>PMB</i>' : ''}</div>`).join('')
+    box.innerHTML = (items.length ? `<div class="icd-ac-h">${empty ? (morph ? 'Morphology codes' : 'Codes your practice uses most — or type a code or words') : items.fixed ? `Did you mean “${esc(items.fixed)}”? Showing those codes:` : items.close ? 'No exact match — closest codes:' : items.length >= 40 ? 'Best 40 matches — type more to narrow' : items.length + ' match' + (items.length === 1 ? '' : 'es')}</div>`
+      + items.map((x, i) => `<div class="icd-ac-o" role="option" data-i="${i}"><b>${esc(morph ? x.code.replace(/^M/, '') : x.code)}</b><span>${mark(x.desc, items.fixed || q)}</span>${x.pmb ? '<i>PMB</i>' : ''}</div>`).join('')
       : `<div class="icd-ac-none">No ICD-10 code matches “${esc(q)}”. Try fewer letters, part of a word, or the code (for example J06).</div>`);
     el.setAttribute('aria-expanded', 'true'); place(); };
   const pick = (i) => { const x = items[i]; if (!x || !inp) return; const K = kind(inp); const el = inp; const { pre } = seg(el); const morph = /morph/.test(K.k);
@@ -5955,14 +6040,15 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
     const FILT = [['all', 'All', () => true], ['today', 'Booked today', (p) => !!todayAp(p.id)]].concat(A.oncOn && A.oncOn() ? [['onc', 'Oncology', (p) => inOnc(p.id)]] : [], A.hospOn && A.hospOn() ? [['hosp', 'In hospital', (p) => inHosp(p.id)]] : [], A.can('accounts.read') ? [['owes', 'Owes money', owes]] : []);
     const fx = (FILT.find((f) => f[0] === pf) || FILT[0])[2];
     const base = d.patients.filter((p) => !q || `${p.firstName} ${p.lastName} ${p.idNumber}`.toLowerCase().includes(q));
-    const rows = base.filter(fx).sort((a, b) => (a.lastName < b.lastName ? -1 : 1));
+    let fzN = ''; if (q && !base.length && A.fz) { const nm = (p) => `${p.firstName} ${p.lastName}`; const hits = A.fz.filter(d.patients, nm, q, 25); if (hits.length) { base.push(...hits); fzN = A.fzNote(A.ui.pq, nm(hits[0]), 'fz-pq'); } }
+    const rows = base.filter(fx).sort((a, b) => (fzN ? 0 : a.lastName < b.lastName ? -1 : 1));
     const last = (pid) => d.encounters.filter((e) => e.patientId === pid).map((e) => e.date).sort().pop();
     const ST = { booked: 'Booked', arrived: 'Waiting', waiting: 'Waiting', 'in-consult': 'In consultation', inconsult: 'In consultation', done: 'Seen', completed: 'Seen', 'no-show': 'No-show' };
     const acts = (p) => `${A.can('diary') ? `<button class="btn sm" data-act="book" data-pid="${p.id}" title="Book an appointment">Book</button>` : ''}${A.can('clinical.write') ? `<button class="btn sm" data-act="start-consult" data-pid="${p.id}" title="Start a consultation">Consult</button>` : ''}`;
     return `<div class="page-head"><div><h1>Patients</h1><div class="muted">Find a patient, then open their file — everything about one person is there.</div></div><div class="actions">${A.can('patients.write') ? '<a class="btn primary" href="#/patients/new">New patient</a>' : ''}</div></div>
       <div class="card"><div class="pt-tools"><input id="pq" type="search" placeholder="Search by name or ID number" value="${esc(A.ui.pq || '')}" data-input="pq" aria-label="Search patients">
         <div class="pt-chips" role="group" aria-label="Show">${FILT.map(([k, l, f]) => `<button class="chip ${k === pf ? 'on' : ''}" data-act="pt-filter" data-f="${k}">${l} <strong>${base.filter(f).length}</strong></button>`).join('')}</div></div>
-      <div class="tbl-wrap"><table class="t pt-list"><thead><tr><th>Patient</th><th>ID number</th><th>Medical aid</th><th>Today</th>${A.can('accounts.read') ? '<th class="num">Balance</th>' : ''}<th>Last visit</th><th class="pt-acts-h"><span class="sr-only">Actions</span></th></tr></thead><tbody>
+      ${fzN}<div class="tbl-wrap"><table class="t pt-list"><thead><tr><th>Patient</th><th>ID number</th><th>Medical aid</th><th>Today</th>${A.can('accounts.read') ? '<th class="num">Balance</th>' : ''}<th>Last visit</th><th class="pt-acts-h"><span class="sr-only">Actions</span></th></tr></thead><tbody>
       ${rows.map((p) => { const ap = todayAp(p.id); return `<tr class="click" data-act="open-patient" data-id="${p.id}"><td><a href="#/patient/${p.id}"><strong>${esc(p.lastName)}, ${esc(p.firstName)}</strong></a><div class="tiny muted">${A.age(p)} y${p.mainMemberId ? ' · dependant of ' + esc(A.pname(p.mainMemberId)) : ''}${inOnc(p.id) ? ' · <span class="badge info">Oncology</span>' : ''}${inHosp(p.id) ? ' · <span class="badge warn">In hospital</span>' : ''}</div></td><td class="mono">${esc(p.idNumber.slice(0, 6))} ${esc(p.idNumber.slice(6, 10))} ${esc(p.idNumber.slice(10))}</td><td>${esc(A.msLabel(p.id))}</td><td>${ap ? `<span class="badge ${/arrived|waiting/.test(ap.status) ? 'warn' : /consult/.test(ap.status) ? 'info' : /done|completed/.test(ap.status) ? 'good' : ''}">${esc(A.ft(ap.start))} · ${esc(ST[ap.status] || ap.status)}</span>` : '<span class="muted tiny">—</span>'}</td>${A.can('accounts.read') ? `<td class="num">${M(p.mainMemberId ? 0 : balanceOf(p.id))}</td>` : ''}<td>${fd(last(p.id))}</td><td class="pt-acts">${acts(p)}</td></tr>`; }).join('')}</tbody></table></div>
       ${rows.length ? '' : '<div class="empty">No patients match.</div>'}</div>`;
   };
@@ -6531,8 +6617,8 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
       <h3 style="margin-top:14px">Top used items (30 days)</h3>${topUsed(30).map((r) => `<div class="row between small" style="padding:4px 0;border-bottom:1px solid var(--line)"><span>${esc(r.item.name)}</span><strong>${r.qty} ${esc(r.item.unit)}</strong></div>`).join('') || '<p class="muted small">No usage.</p>'}</div></div>`;
   };
   const topUsed = (days) => { const from = E.addDays(E.today(db()), -days); const m = {}; db().movements.filter((x) => x.date >= from && (x.type === 'issue' || x.type === 'dispense')).forEach((x) => { m[x.itemId] = (m[x.itemId] || 0) - x.qty; }); return Object.entries(m).map(([id, qty]) => ({ item: E.item(db(), id), qty })).sort((a, b) => b.qty - a.qty).slice(0, 6); };
-  ST.catalogue = () => `<div class="card"><input type="search" id="sq" placeholder="Filter, or scan a barcode" data-input="sq" value="${esc(A.ui.sq || '')}" style="max-width:360px;margin-bottom:10px" aria-label="Filter stock"><div class="tbl-wrap"><table class="t"><thead><tr><th>Item</th><th>Category</th><th>NAPPI-style code <span class="tiny">(demo)</span></th><th class="num">On hand</th><th class="num">Min / max</th><th class="num">Avg cost / unit</th><th>Nearest expiry</th></tr></thead><tbody>
-    ${db().stockItems.filter((i) => !A.ui.sq || (i.name + i.nappi + i.barcode).toLowerCase().includes(A.ui.sq.toLowerCase())).map((i) => { const oh = E.onHand(db(), i.id); const bs = db().batches.filter((b) => b.itemId === i.id && E.batchOnHand(db(), b.id) > 0).sort((a, b) => (a.expiry < b.expiry ? -1 : 1)); return `<tr class="click" data-act="go" data-href="#/stock/item/${i.id}"><td><a href="#/stock/item/${i.id}"><strong>${esc(i.name)}</strong></a><div class="tiny">${esc(i.location)}${i.coldChain ? ' · cold chain' : ''}</div></td><td>${esc(i.category)}</td><td class="mono small">${esc(i.nappi)}</td><td class="num">${oh <= i.min ? `<span class="badge ${oh <= 0 ? 'crit' : 'warn'}">${oh}</span>` : oh} ${esc(i.unit)}</td><td class="num">${i.min} / ${i.max}</td><td class="num">${M(i.avgCost)}</td><td>${bs[0] ? fd(bs[0].expiry) : '—'}</td></tr>`; }).join('')}</tbody></table></div></div>`;
+  ST.catalogue = () => `<div class="card"><input type="search" id="sq" placeholder="Filter, or scan a barcode" data-input="sq" value="${esc(A.ui.sq || '')}" style="max-width:360px;margin-bottom:10px" aria-label="Filter stock"><!--sqfz--><div class="tbl-wrap"><table class="t"><thead><tr><th>Item</th><th>Category</th><th>NAPPI-style code <span class="tiny">(demo)</span></th><th class="num">On hand</th><th class="num">Min / max</th><th class="num">Avg cost / unit</th><th>Nearest expiry</th></tr></thead><tbody>
+    ${(() => { const q = A.ui.sq || ''; let L = db().stockItems.filter((i) => !q || (i.name + i.nappi + i.barcode).toLowerCase().includes(q.toLowerCase())); if (q && !L.length && A.fz) { L = A.fz.filter(db().stockItems, (i) => i.name + ' ' + i.category, q, 30); A.ui.sqFz = L.length ? A.fzNote(q, L[0].name, 'fz-sq') : ''; } else A.ui.sqFz = ''; return L; })().map((i) => { const oh = E.onHand(db(), i.id); const bs = db().batches.filter((b) => b.itemId === i.id && E.batchOnHand(db(), b.id) > 0).sort((a, b) => (a.expiry < b.expiry ? -1 : 1)); return `<tr class="click" data-act="go" data-href="#/stock/item/${i.id}"><td><a href="#/stock/item/${i.id}"><strong>${esc(i.name)}</strong></a><div class="tiny">${esc(i.location)}${i.coldChain ? ' · cold chain' : ''}</div></td><td>${esc(i.category)}</td><td class="mono small">${esc(i.nappi)}</td><td class="num">${oh <= i.min ? `<span class="badge ${oh <= 0 ? 'crit' : 'warn'}">${oh}</span>` : oh} ${esc(i.unit)}</td><td class="num">${i.min} / ${i.max}</td><td class="num">${M(i.avgCost)}</td><td>${bs[0] ? fd(bs[0].expiry) : '—'}</td></tr>`; }).join('')}</tbody></table></div></div>`;
   H['input:sq'] = (el) => { A.ui.sq = el.value; A.render(); };
   ST.item = (params) => {
     const it = E.item(db(), params[1]); if (!it) return P.notfound(); const bs = db().batches.filter((b) => b.itemId === it.id); const mv = db().movements.filter((m) => m.itemId === it.id).slice(-25).reverse(); const today = E.today(db());
@@ -6904,6 +6990,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
     const fx = (FILT.find((f) => f[0] === pf) || FILT[0])[2];
     const hay = (p) => { const h = E.patient(d, holderOf(p)) || p; const m = msOf(p.id) || msOf(h.id) || {}; return `${p.firstName} ${p.lastName} ${p.lastName}, ${p.firstName} ${p.idNumber} ${p.fileNo} ${h.accountNo} ${m.memberNo || ''} ${h.firstName} ${h.lastName}`.toLowerCase(); };
     const base = d.patients.filter((p) => !p.deceased || pf === 'all').filter((p) => !q || q.split(/\s+/).every((w) => hay(p).includes(w)));
+    let fzN = ''; if (q && !base.length && A.fz && !/\d/.test(q)) { const nm = (p) => `${p.firstName} ${p.lastName}`; const hits = A.fz.filter(d.patients.filter((p) => !p.deceased || pf === 'all'), nm, q, 25); if (hits.length) { base.push(...hits); fzN = A.fzNote(A.ui.pq, nm(hits[0]), 'fz-pq'); } }
     const shown = base.filter(fx);
     const ST = { booked: 'Booked', arrived: 'Waiting', waiting: 'Waiting', 'in-consult': 'In consultation', inconsult: 'In consultation', done: 'Seen', completed: 'Seen', 'no-show': 'No-show' };
     const todayB = (p) => { const ap = todayAp(p.id); return ap ? `<span class="badge info" title="Today">${String(ap.start).slice(11, 16)} · ${ST[ap.status] || 'Booked'}</span>` : ''; };
@@ -6913,7 +7000,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
     const head = `<div class="page-head"><div><h1>Patients</h1><div class="muted">One line per account (main member). The main member is responsible for the account.</div></div><div class="actions">${A.can('patients.write') ? '<a class="btn primary" href="#/patients/new">New patient</a>' : ''}</div></div>`;
     const tools = `<div class="card pt2-tools"><div class="pt2-row"><input id="pq" type="search" placeholder="Search name, ID number, file no., account no. or member no." value="${esc(A.ui.pq || '')}" data-input="pq" aria-label="Search patients">
         <label class="pt3-deps"><input type="checkbox" data-change="pt-deps" ${A.ui.ptDeps !== false ? 'checked' : ''}> Include dependants</label></div>
-      <div class="pt-chips" role="group" aria-label="Show">${FILT.map(([k, l, f]) => `<button class="chip ${k === pf ? 'on' : ''}" data-act="pt-filter" data-f="${k}">${l} <strong>${base.filter(f).length}</strong></button>`).join('')}</div></div>`;
+      <div class="pt-chips" role="group" aria-label="Show">${FILT.map(([k, l, f]) => `<button class="chip ${k === pf ? 'on' : ''}" data-act="pt-filter" data-f="${k}">${l} <strong>${base.filter(f).length}</strong></button>`).join('')}</div>${fzN}</div>`;
     // one row per account (main member); tick "Include dependants" to list each account's dependants under it
     const deps = A.ui.ptDeps !== false; const acc = {}; shown.forEach((p) => { const h = holderOf(p); (acc[h] = acc[h] || []).push(p); });
     const ids = Object.keys(acc).sort((a, b) => { const x = E.patient(d, a), y = E.patient(d, b); return (x.lastName + x.firstName).localeCompare(y.lastName + y.firstName); }); const lim = A.ui.ptLim || 150;
@@ -14379,7 +14466,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   // ---------------------------------------------------------------- Tariff service → Contract types
   if (A.CONSOLE) { const _ct = A.CONSOLE.tariffs; A.CONSOLE.tariffs = () => { let h = _ct(); h = h.replace('<a href="#console/tariffs/import"', `<a href="#console/tariffs/ctypes" class="${A.ui.tsSub === 'ctypes' ? 'on' : ''}">Contract types</a><a href="#console/tariffs/import"`);
       if (A.ui.tsSub === 'ctypes' || (A.route === 'console' && A.params[1] === 'ctypes')) { const a = h.indexOf('<div class="ts-main">'); const b = h.lastIndexOf('</div></div>'); h = h.slice(0, a) + `<div class="ts-main">${ctView()}` + h.slice(b); h = h.replace(/<a href="#console\/tariffs\/overview" class="on">/, '<a href="#console/tariffs/overview" class="">'); } return h; }; }
-  const ctView = () => { const ro = ['auditor', 'readonly', 'viewer'].includes(((window.PL.s.grants.find((g) => g.accountId === (window.PL.current() || {}).id && g.scope === 'platform')) || {}).role); const q = (A.ui.ctQ || '').toUpperCase(); const L = TS.ctypes().filter((t) => !q || (t.scheme + ' ' + t.name).toUpperCase().includes(q));
+  const ctView = () => { const ro = ['auditor', 'readonly', 'viewer'].includes(((window.PL.s.grants.find((g) => g.accountId === (window.PL.current() || {}).id && g.scope === 'platform')) || {}).role); const q = (A.ui.ctQ || '').toUpperCase(); let L = TS.ctypes().filter((t) => !q || (t.scheme + ' ' + t.name).toUpperCase().includes(q)); if (q && !L.length && A.fz) L = A.fz.filter(TS.ctypes(), (t) => t.scheme + ' ' + t.name, q, 60);
     const by = {}; L.forEach((t) => { (by[t.scheme] = by[t.scheme] || []).push(t); });
     return `<div class="card"><div class="row between" style="flex-wrap:wrap;gap:8px"><div><h2 style="margin:0">Contract types</h2><div class="small muted">The contracts a practice can choose per medical aid, and how each links plans to payment arrangements. Mappings are DEMO.</div></div><div class="row" style="gap:8px"><input class="ts-q" placeholder="Search medical aid or contract" value="${esc(A.ui.ctQ || '')}" data-change="ct-q" data-noclean>${ro ? '' : '<button class="btn sm primary" data-act="ctt-edit" data-id="">+ Add</button>'}</div></div>
       ${Object.keys(by).sort().map((s) => `<h3 style="margin:14px 0 4px">${esc(s)} <span class="tiny muted">${plansOf(s).length} open plans</span></h3><table class="t small"><thead><tr><th>Contract</th><th>Default arrangement</th><th>Plan rules</th><th></th></tr></thead><tbody>${by[s].map((t) => `<tr><td><strong>${esc(t.name)}</strong>${t.note ? `<div class="tiny muted">${esc(t.note)}</div>` : ''}</td><td class="mono">${esc(t.def)}${hasRates(t.def) ? '' : ' <span class="badge warn">no rates</span>'}</td><td class="tiny">${t.rules.map(([m, pa]) => `plan name contains "${esc(m)}" → <span class="mono">${esc(pa)}</span>`).join('<br>') || '—'}</td><td>${ro ? '' : `<button class="btn sm ghost" data-act="ctt-edit" data-id="${t.id}">Edit</button>`}</td></tr>`).join('')}</tbody></table>`).join('') || '<p class="muted">None.</p>'}</div>`; };
@@ -15943,7 +16030,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   };
   let lastPub = 0;
   const publish = (force) => { const d = db(); if (!d || !window.PL || !PL.s) return 0; if (!force && Date.now() - lastPub < 20000) return 0; lastPub = Date.now(); const st = store(); let n = 0;
-    d.patients.forEach((p) => { const k = keyOf(p); const c = k && st.consents[k]; if (!isActive(c)) return; st.records[k] = st.records[k] || { practices: {} }; st.records[k].practices[dsId()] = snapshot(p); n++; });
+    d.patients.forEach((p) => { const k = keyOf(p); const c = k && st.consents[k]; if (!isActive(c)) return; st.records[k] = st.records[k] || { practices: {} }; st.records[k].practices[dsId()] = A.shrFilter ? A.shrFilter(snapshot(p), c) : snapshot(p); n++; });
     if (n) PL.save(); return n; };
   A.shrPublish = publish; A.shrSnapshot = (p) => snapshot(p); A.shrDsId = () => dsId();
   const _save = A.save; if (_save) A.save = function () { const r = _save.apply(this, arguments); try { setTimeout(() => publish(false), 50); } catch (e) { /* ignore */ } return r; };
@@ -19560,6 +19647,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const upcoming = (p) => { const k = key(p); const local = db().appointments.filter((a) => a.patientId === p.id && a.status === 'booked' && a.start >= E.today(db())).map((a) => ({ start: a.start, doc: A.uname(a.providerId), practice: pracName(), app: a.src === 'app' }));
     const net = nb().filter((b) => b.key === k && b.ds !== myDs()).map((b) => ({ start: b.start, doc: b.doc, practice: b.practice, app: true })); return local.concat(net).sort((a, b) => a.start.localeCompare(b.start)); };
 
+  A.pappLib = { sources, all, doctors, slots, when, upcoming, consent, on, nb, myDs, pracName };
   // ---- phone screens
   const screens = {
     home: (p) => { const up = upcoming(p)[0]; const c = consent(p);
@@ -21154,9 +21242,10 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     const plans = T.plans(); const byScheme = {}; plans.forEach((p) => { (byScheme[p.scheme] = byScheme[p.scheme] || []).push(p); });
     const names = [...new Set(T.schemes().map((s) => s.name))]; const sch = T.schemes();
     let list = names.map((n) => ({ name: n, rows: sch.filter((s) => s.name === n), plans: byScheme[n] || [] })).filter((x) => showClosed || x.rows.some((r) => !r.closed) || x.plans.some((p) => !p.closed));
-    if (q) list = list.filter((x) => (x.name + ' ' + x.rows.map((r) => r.admin + ' ' + r.code).join(' ') + ' ' + x.plans.map((p) => p.name).join(' ')).toLowerCase().includes(q));
-    list.sort((a, b) => a.name.localeCompare(b.name)); const open = A.ui.maOpen;
-    return `<div class="row ma-toolbar" style="gap:8px;flex-wrap:wrap"><input type="search" id="ma-q" value="${esc(A.ui.maQ || '')}" placeholder="Search a medical aid, administrator or plan — e.g. Discovery, Medscheme, Classic" style="flex:1;min-width:260px" data-noclean aria-label="Search medical aids"><label class="check small" style="margin:0"><input type="checkbox" data-change="ma-closed" ${showClosed ? 'checked' : ''}> Show closed</label></div>
+    const all0 = list; let fzN = ''; if (q) list = list.filter((x) => (x.name + ' ' + x.rows.map((r) => r.admin + ' ' + r.code).join(' ') + ' ' + x.plans.map((p) => p.name).join(' ')).toLowerCase().includes(q));
+    if (q && !list.length && A.fz) { list = A.fz.filter(all0, (x) => x.name + ' ' + x.rows.map((r) => r.admin).join(' ') + ' ' + x.plans.map((p) => p.name).join(' '), q, 40); if (list.length) fzN = A.fzNote(A.ui.maQ, list[0].name, 'fz-maq'); }
+    if (!fzN) list.sort((a, b) => a.name.localeCompare(b.name)); const open = A.ui.maOpen;
+    return `<div class="row ma-toolbar" style="gap:8px;flex-wrap:wrap"><input type="search" id="ma-q" value="${esc(A.ui.maQ || '')}" placeholder="Search a medical aid, administrator or plan — e.g. Discovery, Medscheme, Classic" style="flex:1;min-width:260px" data-noclean aria-label="Search medical aids"><label class="check small" style="margin:0"><input type="checkbox" data-change="ma-closed" ${showClosed ? 'checked' : ''}> Show closed</label></div>${fzN}
       <p class="tiny muted">${list.length} medical aid${list.length === 1 ? '' : 's'} · ${nf(plans.length)} plans and ${nf(T.pas().length)} payment arrangements in the Prac360 list (kept by the Prac360 tariff team).</p>
       <div class="card ma-dir">${list.slice(0, 150).map((x) => { const o = open === x.name; const live = x.plans.filter((p) => showClosed || !p.closed); const r0 = x.rows[0] || {};
         return `<div class="ma-di ${o ? 'open' : ''}"><button class="ma-dh" data-act="ma-di" data-n="${esc(x.name)}" aria-expanded="${o}"><span><b>${esc(x.name)}</b> <span class="tiny muted">${esc(r0.admin || '')}${r0.route ? ' · claims via ' + esc(r0.route) : ''}</span></span><span class="tiny">${live.length} plan${live.length === 1 ? '' : 's'} ${o ? '▴' : '▾'}</span></button>
@@ -21738,6 +21827,524 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   setTimeout(() => addPrint(document.body), 500);
 
   // ---------------------------------------------------------------- "When a PDF is ready" preference gets "Print straight away"
+})();
+
+
+/* ===== ui-fuzzy.js ===== */
+/* Prac360 v0.82 — spelling-tolerant search.
+ * One small matcher (A.fz) used by every search: it forgives a wrong, missing, extra or swapped letter
+ * ("Smtih" → Smith, "Discvery" → Discovery, "paracetomol" → Paracetamol, "pnuemonia" → Pneumonia) and says
+ * "Did you mean …?" so the user can see why the results appear.
+ * Plugged into: the top search, Patients, Medical aids (page and contract types), Stock, every ICD-10 field,
+ * and every pick-list box (datalist) in the system. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, esc = A.esc;
+  const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9.\s'-]/g, ' ').replace(/['-]/g, '');
+  const words = (s) => norm(s).split(/[\s.]+/).filter(Boolean);
+  // optimal string alignment distance (insert, delete, change, swap two letters), stops early above max
+  const dist = (a, b, max) => { if (a === b) return 0; const la = a.length, lb = b.length; if (Math.abs(la - lb) > max) return max + 1;
+    let p2 = null, p1 = Array.from({ length: lb + 1 }, (_, j) => j);
+    for (let i = 1; i <= la; i++) { const c = [i]; let lo = i; for (let j = 1; j <= lb; j++) { let v = Math.min(p1[j] + 1, c[j - 1] + 1, p1[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); if (p2 && i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) v = Math.min(v, p2[j - 2] + 1); c[j] = v; if (v < lo) lo = v; } if (lo > max) return max + 1; p2 = p1; p1 = c; }
+    return p1[lb]; };
+  const tol = (w) => (w.length <= 3 ? 0 : w.length <= 5 ? 1 : w.length <= 9 ? 2 : 3);
+  // how far a typed word is from a word in the text (a typed word may also be the start of a longer word)
+  const wd = (q, t) => { if (t.startsWith(q)) return 0; const m = tol(q); if (!m) return 9; let d = dist(q, t, m); if (t.length > q.length) { d = Math.min(d, dist(q, t.slice(0, q.length), m), dist(q, t.slice(0, q.length + 1), m)); } return d; };
+  // score of a text against a query: null = no match; 0 = exact; higher = more spelling corrections needed
+  const score = (text, q) => { const qs = words(q); if (!qs.length) return null; const ts = words(text); let s = 0;
+    for (const w of qs) { if (/\d/.test(w)) { if (!norm(text).includes(w)) return null; continue; } let b = 9; for (const t of ts) { const d = wd(w, t); if (d < b) b = d; if (!b) break; } if (b > tol(w)) return null; s += b; } return s; };
+  const filter = (list, textOf, q, limit) => { const out = []; for (const x of list) { const s = score(textOf(x), q); if (s != null) out.push([x, s]); } out.sort((a, b) => a[1] - b[1]); return out.slice(0, limit || 50).map((a) => a[0]); };
+  // the corrected query: each misspelt word replaced by the closest word from a vocabulary (word → how common)
+  const fix = (q, vocab) => { if (!vocab) return q; const keys = vocab.__keys || (vocab.__keys = [...vocab.keys()].sort());
+    const hasPrefix = (w) => { let lo = 0, hi = keys.length; while (lo < hi) { const m = (lo + hi) >> 1; if (keys[m] < w) lo = m + 1; else hi = m; } return lo < keys.length && keys[lo].startsWith(w); };
+    return norm(q).split(/\s+/).filter(Boolean).map((w) => { if (/\d/.test(w) || vocab.has(w) || hasPrefix(w)) return w; const m = tol(w); if (!m) return w; let best = null, bd = m + 1, bc = -1;
+      for (const k of keys) { if (k.length < w.length - m) continue; let d = dist(w, k, m), full = true; if (k.length > w.length) { const d2 = Math.min(dist(w, k.slice(0, w.length), m), dist(w, k.slice(0, w.length + 1), m)); if (d2 < d) { d = d2; full = false; } } if (d > m) continue; const c = vocab.get(k) + (full ? 1e6 : 0); if (d < bd || (d === bd && c > bc)) { bd = d; bc = c; best = full ? k : k.slice(0, Math.max(w.length, 4)); } }
+      return best || w; }).join(' '); };
+  const vocabOf = (texts) => { const v = new Map(); texts.forEach((t) => words(t).forEach((w) => { if (w.length > 2 && !/\d/.test(w)) v.set(w, (v.get(w) || 0) + 1); })); return v; };
+  // the closest whole name, for "Did you mean Thandi Nkosi?"
+  const best = (list, textOf, q) => { const r = filter(list, textOf, q, 1); return r.length ? textOf(r[0]) : null; };
+  A.fz = { norm, dist, score, filter, fix, vocabOf, best, words };
+
+  // ---------------------------------------------------------------- ICD-10 vocabulary (built once, on first use)
+  let icdV = null, icdN = 0; A.icdVocab = () => { const L = (A.db && A.db.icd10) || []; if (!icdV || icdN !== L.length) { icdV = vocabOf(L.map((x) => x.desc)); icdN = L.length; } return icdV; };
+  A.icdFuzzy = (q, opt) => { const f = fix(q, A.icdVocab()); if (!f || f === norm(q).trim()) return []; const L = A.icdSearch(f, opt || { limit: 40 }); L.fixed = f; return L; };
+
+  // a "Did you mean" line for list pages
+  A.fzNote = (q, sug, act) => `<div class="fz-note" role="status">🔎 No exact match for “<b>${esc(q)}</b>” — showing close spellings.${sug ? ` Did you mean <button class="linkish" data-act="${act}" data-q="${esc(sug)}">${esc(sug)}</button>?` : ''}</div>`;
+  const setQ = (key, inputId) => (el) => { A.ui[key] = el.dataset.q; A.render(); const i = document.getElementById(inputId); if (i) { i.value = el.dataset.q; i.focus(); } };
+  H['fz-pq'] = setQ('pq', 'pq'); H['fz-sq'] = setQ('sq', 'sq'); H['fz-maq'] = (el) => { A.ui.maQ = el.dataset.q; A.ui.maOpen = null; A.render(); };
+
+  // ---------------------------------------------------------------- pick-lists (datalist) everywhere: "Did you mean"
+  let pop = null, pin = null;
+  const closePop = () => { if (pop) pop.remove(); pop = null; pin = null; };
+  const opts = (dl) => [...dl.options].map((o) => ({ v: o.value, l: o.label && o.label !== o.value ? o.label : (o.textContent || '').trim() }));
+  document.addEventListener('input', (e) => { const el = e.target; if (!el || el.tagName !== 'INPUT' || !el.getAttribute('list')) { return; } const dl = document.getElementById(el.getAttribute('list')); if (!dl || dl.dataset.icd) return closePop();
+    const q = el.value.trim(); if (q.length < 4) return closePop(); const O = opts(dl); const nq = norm(q); if (O.some((o) => norm(o.v + ' ' + o.l).includes(nq))) return closePop();
+    const hits = filter(O, (o) => o.v + ' ' + o.l, q, 6); if (!hits.length) return closePop();
+    if (!pop) { pop = document.createElement('div'); pop.className = 'fz-pop'; pop.setAttribute('role', 'listbox'); document.body.appendChild(pop); pop.addEventListener('mousedown', (ev) => ev.preventDefault()); pop.addEventListener('click', (ev) => { const b = ev.target.closest('[data-v]'); if (!b || !pin) return; pin.value = b.dataset.v; pin.dispatchEvent(new Event('input', { bubbles: true })); pin.dispatchEvent(new Event('change', { bubbles: true })); closePop(); }); }
+    pin = el; const r = el.getBoundingClientRect(); pop.style.left = Math.max(6, r.left) + 'px'; pop.style.top = (r.bottom + 4) + 'px'; pop.style.width = Math.max(r.width, 280) + 'px';
+    pop.innerHTML = `<div class="fz-pop-h">Did you mean…</div>${hits.map((o) => `<button type="button" role="option" data-v="${esc(o.v)}"><b>${esc(o.v)}</b>${o.l && o.l !== o.v ? `<span>${esc(o.l)}</span>` : ''}</button>`).join('')}`; }, true);
+  document.addEventListener('focusout', (e) => { if (e.target === pin) setTimeout(closePop, 150); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
+  window.addEventListener('hashchange', closePop);
+})();
+(function () { const A = window.APP; const _st = A.P.stock; if (_st) A.P.stock = function () { A.ui.sqFz = ''; const h = _st.apply(this, arguments); return A.ui.sqFz ? h.replace('<!--sqfz-->', A.ui.sqFz) : h; }; })();
+
+
+/* ===== ui-wear.js ===== */
+/* Prac360 v0.82 — Patient wearables.
+ * The patient registers in the Prac360 patient app with their SA ID number, links a watch, ring, scale or
+ * blood-pressure monitor, and the device's history syncs to the app automatically. The PATIENT decides whether
+ * Prac360 practices may see it, which kinds of data, and from which date. In Prac360 it shows on the patient file
+ * under "⌚ Patient wearable", clearly marked as the patient's own device data (not measured at the practice).
+ * Every practice view is recorded and shown to the patient in the app.
+ *
+ * DEMO NOTES: devices and readings are SIMULATED (synthetic, generated per patient). In production, data comes
+ * through Apple Health, Google Health Connect or the device maker's own connection, with the patient's approval.
+ * Wearable numbers are for awareness — they are not a diagnosis and are never used to bill.
+ * Stored in the Prac360 platform data (PL.s.pa), keyed by the patient's Prac360 ID (hash of the SA ID number). */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, E = window.PE, esc = A.esc; const PL = window.PL; const db = () => A.db;
+  const PA = () => { const s = PL.s; s.pa = s.pa || {}; s.pa.accounts = s.pa.accounts || {}; s.pa.wear = s.pa.wear || {}; return s.pa; };
+  const keyOf = (p) => (A.shrKey ? A.shrKey(p) : null);
+  const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+  const rng = (seed) => { let x = hash(seed) || 1; return () => { x ^= x << 13; x >>>= 0; x ^= x >> 17; x ^= x << 5; x >>>= 0; return x / 4294967296; }; };
+  const now = () => new Date(); const iso = (d) => d.toISOString(); const dayStr = (d) => new Date(d.getTime() + 2 * 3600e3).toISOString().slice(0, 10); // SA date
+  const addD = (ds, n) => { const d = new Date(ds + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+  const today = () => dayStr(now());
+  const ago = (t) => { const m = Math.max(0, Math.round((Date.now() - Date.parse(t)) / 60000)); return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' day' + (Math.round(m / 1440) === 1 ? '' : 's') + ' ago'; };
+
+  // ---------------------------------------------------------------- what can be measured
+  const TYPES = [
+    { k: 'steps', ic: '👣', t: 'Steps', u: 'steps', d: 'How many steps you took each day.' },
+    { k: 'active', ic: '🏃', t: 'Active minutes', u: 'min', d: 'Minutes of brisk walking, exercise or sport.' },
+    { k: 'sleep', ic: '😴', t: 'Sleep', u: 'h', d: 'How long you slept, and how much was deep and dream (REM) sleep.' },
+    { k: 'rhr', ic: '❤️', t: 'Resting heart rate', u: 'bpm', d: 'Your heart rate when you are calm and resting. Lower is usually fitter.' },
+    { k: 'hr', ic: '💓', t: 'Heart rate (day)', u: 'bpm', d: 'Your average and highest heart rate during the day.' },
+    { k: 'hrv', ic: '〰️', t: 'Heart rate variability', u: 'ms', d: 'Small changes between heartbeats. Higher usually means well rested.' },
+    { k: 'spo2', ic: '🫁', t: 'Blood oxygen', u: '%', d: 'Oxygen in your blood while you sleep (average and lowest).' },
+    { k: 'temp', ic: '🌡️', t: 'Skin temperature', u: '°C', d: 'Change in your skin temperature at night compared with your normal.' },
+    { k: 'resp', ic: '🌬️', t: 'Breathing rate', u: '/min', d: 'Breaths per minute while you sleep.' },
+    { k: 'bp', ic: '🩺', t: 'Blood pressure', u: 'mmHg', d: 'Readings from your home blood-pressure monitor.' },
+    { k: 'weight', ic: '⚖️', t: 'Weight', u: 'kg', d: 'Readings from your smart scale.' }];
+  const TY = Object.fromEntries(TYPES.map((x) => [x.k, x]));
+  const W8 = ['steps', 'active', 'sleep', 'rhr', 'hr', 'hrv', 'spo2', 'temp', 'resp'];
+  // device makers (names only — no logos). Connections are simulated in the demo.
+  const BRANDS = [
+    { id: 'garmin', n: 'Garmin', kind: 'watch', ic: '⌚', model: 'Garmin watch', via: 'Garmin Connect', hist: 365, types: W8 },
+    { id: 'samsung-w', n: 'Samsung Galaxy Watch', kind: 'watch', ic: '⌚', model: 'Galaxy Watch', via: 'Samsung Health', hist: 365, types: W8 },
+    { id: 'apple', n: 'Apple Watch', kind: 'watch', ic: '⌚', model: 'Apple Watch', via: 'Apple Health', hist: 365, types: W8 },
+    { id: 'fitbit', n: 'Fitbit', kind: 'watch', ic: '⌚', model: 'Fitbit', via: 'Health Connect', hist: 365, types: W8 },
+    { id: 'huawei', n: 'Huawei Watch', kind: 'watch', ic: '⌚', model: 'Huawei Watch', via: 'Huawei Health', hist: 180, types: W8 },
+    { id: 'polar', n: 'Polar', kind: 'watch', ic: '⌚', model: 'Polar watch', via: 'Polar Flow', hist: 180, types: ['steps', 'active', 'sleep', 'rhr', 'hr', 'hrv'] },
+    { id: 'oura', n: 'Oura Ring', kind: 'ring', ic: '💍', model: 'Oura Ring', via: 'Oura', hist: 180, types: ['steps', 'active', 'sleep', 'rhr', 'hrv', 'spo2', 'temp', 'resp'] },
+    { id: 'samsung-r', n: 'Samsung Galaxy Ring', kind: 'ring', ic: '💍', model: 'Galaxy Ring', via: 'Samsung Health', hist: 180, types: ['steps', 'active', 'sleep', 'rhr', 'hrv', 'spo2', 'temp', 'resp'] },
+    { id: 'ultrahuman', n: 'Ultrahuman Ring', kind: 'ring', ic: '💍', model: 'Ultrahuman Ring', via: 'Ultrahuman', hist: 180, types: ['steps', 'sleep', 'rhr', 'hrv', 'spo2', 'temp'] },
+    { id: 'whoop', n: 'Whoop', kind: 'band', ic: '⌚', model: 'Whoop band', via: 'Whoop', hist: 180, types: ['sleep', 'rhr', 'hr', 'hrv', 'spo2', 'temp', 'resp'] },
+    { id: 'withings-bp', n: 'Withings blood pressure monitor', kind: 'bp', ic: '🩺', model: 'BP monitor', via: 'Withings', hist: 730, types: ['bp'] },
+    { id: 'withings-sc', n: 'Withings smart scale', kind: 'scale', ic: '⚖️', model: 'Smart scale', via: 'Withings', hist: 730, types: ['weight'] },
+    { id: 'phone', n: 'My phone (step counter)', kind: 'phone', ic: '📱', model: 'Phone', via: 'Apple Health / Health Connect', hist: 365, types: ['steps', 'active'] }];
+  const BR = Object.fromEntries(BRANDS.map((b) => [b.id, b]));
+
+  // ---------------------------------------------------------------- per-patient store
+  const acc = (k) => (k ? PA().accounts[k] || null : null);
+  const W = (k) => { const w = PA().wear; if (!w[k]) w[k] = { devices: [], share: { on: false, types: {}, from: 'all' }, views: [], events: [] }; const x = w[k]; x.devices = x.devices || []; x.share = x.share || { on: false, types: {}, from: 'all' }; x.share.types = x.share.types || {}; x.views = x.views || []; x.events = x.events || []; return x; };
+  const save = () => { try { PL.save(); } catch (e) { /* demo */ } };
+  // a patient "profile" so each person's numbers look like one real person
+  const base = (k) => { const r = rng('base:' + k); const pf = ['steady', 'apnoea', 'active', 'ill', 'sedentary'][hash('pf:' + k) % 5]; return { pf, steps: 4500 + r() * 6500, sleep: 6.2 + r() * 1.6, rhr: 56 + r() * 18, hrv: 28 + r() * 40, spo2: 95.5 + r() * 2.2, resp: 13 + r() * 3, sys: 118 + r() * 22, dia: 74 + r() * 12, kg: 62 + r() * 34 }; };
+  // one day's readings (deterministic: the same day always gives the same numbers)
+  const dayData = (k, ds) => { const b = base(k); const r = rng(k + ':' + ds); const wd = new Date(ds + 'T12:00:00Z').getUTCDay(); const wk = wd === 0 || wd === 6; const dAgo = Math.round((Date.parse(today()) - Date.parse(ds)) / 864e5);
+    const ill = b.pf === 'ill' && dAgo <= 3; const ap = b.pf === 'apnoea' && r() < 0.32; const act = b.pf === 'active' ? 1.45 : b.pf === 'sedentary' ? 0.55 : 1;
+    let steps = Math.round(b.steps * act * (wk ? 0.8 : 1) * (0.6 + r() * 0.8) * (ill ? 0.45 : 1)); if (ds === today()) { const h = (new Date().getUTCHours() + 2) % 24; steps = Math.round(steps * Math.min(1, Math.max(0.05, (h - 6) / 15))); }
+    const sl = Math.max(3.8, b.sleep + (r() - 0.5) * 1.6 + (wk ? 0.5 : 0) - (ap ? 0.6 : 0)); const deep = sl * (0.13 + r() * 0.07) * (ap ? 0.7 : 1), rem = sl * (0.19 + r() * 0.06), awake = sl * (0.04 + r() * 0.05) * (ap ? 1.8 : 1);
+    const rhr = Math.round(b.rhr + (r() - 0.5) * 5 + (ill ? 9 : 0) - (b.pf === 'active' ? 4 : 0)); const spo2 = +(b.spo2 + (r() - 0.5) * 1.2 - (ap ? 1.6 : 0)).toFixed(1);
+    const out = { date: ds, steps, active: Math.round(steps / 160 + r() * 12), sleep: { h: +sl.toFixed(2), deep: +deep.toFixed(2), rem: +rem.toFixed(2), awake: +awake.toFixed(2), light: +(sl - deep - rem - awake).toFixed(2) }, rhr, hr: { avg: rhr + 14 + Math.round(r() * 10), max: Math.round(105 + steps / 220 + r() * 30) },
+      hrv: Math.round(b.hrv + (r() - 0.5) * 14 - (ill ? 12 : 0) - (ap ? 6 : 0)), spo2: { avg: spo2, min: +(spo2 - 2.5 - r() * 2.5 - (ap ? 5 + r() * 3 : 0)).toFixed(0) * 1 }, temp: +((r() - 0.5) * 0.5 + (ill ? 0.9 + r() * 0.4 : 0)).toFixed(1), resp: +(b.resp + (r() - 0.5) * 1.2 + (ill ? 2 : 0) + (ap ? 1 : 0)).toFixed(1) };
+    if (hash('bp:' + k + ds) % 3 === 0) out.bp = { sys: Math.round(b.sys + (r() - 0.5) * 12), dia: Math.round(b.dia + (r() - 0.5) * 8), pulse: rhr + Math.round(r() * 8) };
+    if (hash('kg:' + k + ds) % 3 === 0) out.weight = +(b.kg + Math.sin(Date.parse(ds) / 864e5 / 40) * 0.8 + (r() - 0.5) * 0.6).toFixed(1);
+    return out; };
+
+  // ---------------------------------------------------------------- devices and sync
+  const lastSync = (k, dv) => { if (dv.paused) return dv.pausedAt || dv.linkedAt; if (dv.kind === 'scale' || dv.kind === 'bp') { for (let i = 0; i < 6; i++) { const ds = addD(today(), -i); const x = dayData(k, ds); if ((dv.kind === 'scale' && x.weight) || (dv.kind === 'bp' && x.bp)) { const t = new Date(ds + 'T05:' + String(10 + (hash(dv.id) % 40)).padStart(2, '0') + ':00Z'); return iso(new Date(Math.min(Date.now() - 60000, t.getTime()))); } } }
+    const every = dv.kind === 'phone' ? 30 : 15; const off = (Math.floor(Date.now() / 60000) + (hash(dv.id) % every)) % every; const t = Date.now() - off * 60000 - 20000; const m = Math.max(t, Date.parse(dv.syncedAt || 0)); return iso(new Date(Math.max(m, Date.parse(dv.linkedAt))));
+  };
+  const status = (k, dv) => { if (dv.paused) return { cls: 'paused', t: 'Paused by the patient', s: 'Paused' }; const ls = lastSync(k, dv); const h = (Date.now() - Date.parse(ls)) / 36e5; if (h > 72) return { cls: 'att', t: 'Not synced for ' + ago(ls).replace(' ago', '') + ' — the device may be off or out of range', s: 'Needs attention' }; return { cls: 'ok', t: (dv.kind === 'scale' || dv.kind === 'bp' ? 'Last reading ' : 'Synced ') + ago(ls), s: 'Synced' }; };
+  const histFrom = (dv) => addD(String(dv.linkedAt).slice(0, 10), -(dv.histDays || (BR[dv.brand] || {}).hist || 90));
+  const devTypes = (k) => { const s = new Set(); W(k).devices.filter((d) => !d.removed).forEach((d) => (d.types || []).forEach((t) => s.add(t))); return TYPES.filter((t) => s.has(t.k)).map((t) => t.k); };
+  const firstDay = (k, type) => { const ds = W(k).devices.filter((d) => !d.removed && (d.types || []).includes(type)).map(histFrom).sort(); return ds[0] || null; };
+  const lastDay = (k, type) => { const ds = W(k).devices.filter((d) => !d.removed && (d.types || []).includes(type)).map((d) => lastSync(k, d).slice(0, 10)).sort(); return ds.length ? ds[ds.length - 1] : null; };
+  // series for one type between two dates — what the APP sees (all of it)
+  const series = (k, type, from, to) => { const f0 = firstDay(k, type), l0 = lastDay(k, type); if (!f0) return []; const a = from > f0 ? from : f0, b = to < l0 ? to : l0; const out = []; for (let d = a; d <= b; d = addD(d, 1)) { const x = dayData(k, d); const v = x[type]; if (v != null) out.push({ date: d, v }); } return out; };
+  // what a PRACTICE may see — only what the patient chose to share
+  const shareFrom = (k) => { const s = W(k).share; if (s.from === 'linked') { const d = W(k).devices.filter((x) => !x.removed).map((x) => String(x.linkedAt).slice(0, 10)).sort(); return d[0] || today(); } if (s.from === '90d') return addD(today(), -90); if (s.from === 'date') return s.fromDate || today(); return '0000-00-00'; };
+  const shared = (k, type) => { const w = W(k); return !!(w.share.on && w.share.types[type] !== false && devTypes(k).includes(type)); };
+  const sharedSeries = (k, type, from, to) => (shared(k, type) ? series(k, type, from > shareFrom(k) ? from : shareFrom(k), to) : []);
+
+  // simple, plain-language "worth a look" notes (never a diagnosis)
+  const avg = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : null);
+  const flags = (k, from, to, get) => { get = get || sharedSeries; const out = [];
+    const sp = get(k, 'spo2', from, to); const low = sp.filter((x) => x.v.min < 90).length; if (sp.length >= 7 && low >= 3) out.push({ lvl: 'warn', t: `Blood oxygen dropped below 90% during sleep on ${low} of ${sp.length} nights`, s: 'Can be seen with sleep apnoea, lung problems or a loose ring. Worth asking about snoring and daytime tiredness.' });
+    const sl = get(k, 'sleep', from, to); const sa = avg(sl.map((x) => x.v.h)); if (sl.length >= 7 && sa < 6) out.push({ lvl: 'info', t: `Short sleep — on average ${sa.toFixed(1)} hours a night`, s: 'Less than 6 hours on most nights.' });
+    const rh = get(k, 'rhr', addD(to, -60), to); if (rh.length > 20) { const last = avg(rh.slice(-4).map((x) => x.v)), was = avg(rh.slice(0, -7).map((x) => x.v)); if (last - was >= 7) out.push({ lvl: 'warn', t: `Resting heart rate is up ${Math.round(last - was)} bpm in the last few days`, s: 'Often seen with an infection, fever, poor sleep, stress or dehydration.' }); }
+    const tp = get(k, 'temp', addD(to, -4), to); if (tp.filter((x) => x.v >= 0.8).length >= 2) out.push({ lvl: 'warn', t: 'Skin temperature higher than normal on recent nights', s: 'May fit with a fever. Ask about symptoms.' });
+    const st = get(k, 'steps', from, to); const sa2 = avg(st.map((x) => x.v)); if (st.length >= 7 && sa2 < 3500) out.push({ lvl: 'info', t: `Low activity — about ${Math.round(sa2).toLocaleString('en-ZA')} steps a day`, s: 'Fewer than 3 500 steps a day on average.' });
+    const bp = get(k, 'bp', from, to); if (bp.length >= 3) { const s = avg(bp.map((x) => x.v.sys)), d = avg(bp.map((x) => x.v.dia)); if (s >= 135 || d >= 85) out.push({ lvl: 'warn', t: `Home blood pressure averages ${Math.round(s)}/${Math.round(d)} mmHg (${bp.length} readings)`, s: 'Above the usual home target of 135/85.' }); }
+    const wt = get(k, 'weight', addD(to, -30), to); if (wt.length >= 4) { const ch = (wt[wt.length - 1].v - wt[0].v) / wt[0].v * 100; if (Math.abs(ch) >= 3) out.push({ lvl: 'info', t: `Weight ${ch > 0 ? 'up' : 'down'} ${Math.abs(ch).toFixed(1)}% in 30 days`, s: `${wt[0].v} kg → ${wt[wt.length - 1].v} kg` }); }
+    return out; };
+
+  // ---------------------------------------------------------------- the API the patient app uses
+  A.WEAR = { TYPES, TY, BRANDS, BR, W, acc, keyOf, dayData, series, sharedSeries, shared, shareFrom, devTypes, status, lastSync, histFrom, flags, ago, today, addD, save, PA, hash,
+    event: (k, t, ic) => { const w = W(k); w.events.unshift({ at: iso(now()), t, ic: ic || '🔔' }); w.events = w.events.slice(0, 60); },
+    link: (k, brandId, types) => { const b = BR[brandId]; const w = W(k); const dv = { id: 'dv_' + Math.random().toString(36).slice(2, 9), brand: b.id, name: b.n, kind: b.kind, linkedAt: iso(now()), histDays: b.hist, types: (types && types.length ? types : b.types).slice(), syncedAt: iso(now()) }; w.devices.push(dv); A.WEAR.event(k, `${b.n} linked — ${b.hist} days of history imported`, b.ic); save(); return dv; },
+    syncNow: (k, id) => { const dv = W(k).devices.find((d) => d.id === id); if (dv) { dv.syncedAt = iso(now()); save(); } },
+    pause: (k, id, on) => { const dv = W(k).devices.find((d) => d.id === id); if (!dv) return; dv.paused = on; dv.pausedAt = on ? iso(now()) : null; if (!on) dv.syncedAt = iso(now()); A.WEAR.event(k, `${dv.name} ${on ? 'paused' : 'syncing again'}`, on ? '⏸' : '🔄'); save(); },
+    unlink: (k, id) => { const w = W(k); const dv = w.devices.find((d) => d.id === id); if (!dv) return; w.devices = w.devices.filter((d) => d.id !== id); A.WEAR.event(k, `${dv.name} removed — its data is no longer shown or shared`, '✕'); save(); } };
+
+  // ---------------------------------------------------------------- demo: one patient already uses the app (Thandiwe Mokoena)
+  const seedDemo = () => { const d = db(); if (!d || !PL.s) return; const p = d.patients.find((x) => x.firstName === 'Thandiwe' && x.lastName === 'Mokoena'); const k = p && keyOf(p); if (!k || PA().seeded2 && PA().seeded2[k]) return; PA().seeded2 = PA().seeded2 || {}; PA().seeded2[k] = 1;
+    if (!acc(k)) PA().accounts[k] = { name: p.firstName + ' ' + p.lastName, first: p.firstName, cell: p.phone || p.cell || '082 000 0000', at: iso(new Date(Date.now() - 41 * 864e5)), pin: '12345', bio: true, notif: { views: true, sync: false, reminders: true } };
+    const w = W(k); if (!w.devices.length) { const t0 = Date.now() - 40 * 864e5; w.devices.push({ id: 'dv_demo1', brand: 'oura', name: 'Oura Ring', kind: 'ring', linkedAt: iso(new Date(t0)), histDays: 180, types: BR.oura.types.slice() }, { id: 'dv_demo2', brand: 'withings-bp', name: 'Withings blood pressure monitor', kind: 'bp', linkedAt: iso(new Date(t0 + 3 * 864e5)), histDays: 730, types: ['bp'] }, { id: 'dv_demo3', brand: 'phone', name: 'My phone (step counter)', kind: 'phone', linkedAt: iso(new Date(t0 + 3 * 864e5)), histDays: 365, types: ['steps', 'active'] });
+      w.share = { on: true, types: { temp: false }, from: 'all', at: iso(new Date(t0 + 4 * 864e5)) }; w.events = [{ at: iso(new Date(t0)), t: 'Oura Ring linked — 180 days of history imported', ic: '💍' }]; }
+    save(); };
+
+  // ---------------------------------------------------------------- shared clinical record: the patient's "don't share" choices
+  const CAT = { visits: 'Consultation notes and diagnoses', problems: 'Conditions', meds: 'Medicines', allergies: 'Allergies', vitals: 'Measurements and results', docs: 'Letters and reports', admissions: 'Hospital stays', oncology: 'Oncology' };
+  A.SHR_CATS = CAT;
+  A.shrFilter = (snap, c) => { const ex = (c && c.exclude) || []; if (!ex.length || !snap) return snap; const s = Object.assign({}, snap); ex.forEach((f) => { s[f] = f === 'oncology' ? null : []; }); s.hidden = ex.map((f) => CAT[f]).filter(Boolean); return s; };
+  const _sh = P.shared; if (_sh) P.shared = function (params) { let h = _sh.apply(this, arguments); const p = E.patient(db(), params[0]); const c = p && A.shrStore && A.shrStore().consents[keyOf(p)]; if (c && c.status === 'active' && (c.exclude || []).length) { const i = h.indexOf('</div></div>') + 12; h = h.slice(0, i) + `<div class="card wr-hidden">🔒 <strong>${esc(p.firstName)} chose not to share:</strong> ${c.exclude.map((f) => esc(CAT[f] || f)).join(', ')}. <span class="muted small">Ask the patient directly if you need this.</span></div>` + h.slice(i); } return h; };
+
+  // ---------------------------------------------------------------- Prac360: the "⌚ Patient wearable" tab
+  const _ext = A.extendPatientTabs; A.extendPatientTabs = function (p, tabs) { const r = _ext ? _ext.apply(this, arguments) : tabs; const T = r || tabs; if (A.can('clinical.read') && !T.some((x) => x[0] === 'wearable')) { const i = T.findIndex((t) => t[0] === 'trends'); T.splice(i < 0 ? 1 : i + 1, 0, ['wearable', '⌚ Patient wearable', true]); } return T; };
+  A.PTX = A.PTX || {};
+  const PER = [['7', '7 days'], ['30', '30 days'], ['90', '90 days'], ['365', '12 months']];
+  const fmt = (type, v) => { if (v == null) return '—'; switch (type) { case 'steps': return Math.round(v).toLocaleString('en-ZA'); case 'sleep': { const h = Math.floor(v), m = Math.round((v - h) * 60); return `${h}h ${String(m).padStart(2, '0')}m`; } case 'spo2': return v.toFixed(1) + '%'; case 'temp': return (v > 0 ? '+' : '') + v.toFixed(1) + ' °C'; case 'weight': return v.toFixed(1) + ' kg'; case 'resp': return v.toFixed(1); default: return String(Math.round(v)); } };
+  const val = (type, v) => (type === 'sleep' ? v.h : type === 'spo2' ? v.avg : type === 'hr' ? v.avg : type === 'bp' ? v.sys : v);
+  A.WEAR.fmt = fmt; A.WEAR.val = val;
+  // a small SVG chart: bars for counts, a line for the rest (hover shows the day and value)
+  const chart = (type, S, opt) => { opt = opt || {}; const Wd = opt.w || 520, Ht = opt.h || 120, pad = 4; if (!S.length) return '<div class="wr-nodata">No readings in this period</div>';
+    const vals = S.map((x) => val(type, x.v)); let lo = Math.min(...vals), hi = Math.max(...vals); if (type === 'bp') { lo = Math.min(...S.map((x) => x.v.dia)); hi = Math.max(hi, 140); } if (type === 'spo2') { lo = Math.min(89, ...S.map((x) => x.v.min)); hi = Math.max(hi, 99); } if (type === 'steps' || type === 'active' || type === 'sleep') lo = 0; if (hi === lo) { hi += 1; lo -= 1; } const sp = (hi - lo) * 0.12; hi += sp; if (lo !== 0) lo -= sp;
+    const X = (i) => pad + (S.length === 1 ? (Wd - 2 * pad) / 2 : i * (Wd - 2 * pad) / (S.length - 1)); const Y = (v) => Ht - pad - (v - lo) / (hi - lo) * (Ht - 2 * pad); const tip = (x) => `${A.fd(x.date)}: ${type === 'bp' ? x.v.sys + '/' + x.v.dia + ' mmHg' : type === 'spo2' ? x.v.avg + '% (lowest ' + x.v.min + '%)' : type === 'hr' ? 'avg ' + x.v.avg + ', max ' + x.v.max + ' bpm' : type === 'sleep' ? fmt('sleep', x.v.h) + ' (deep ' + fmt('sleep', x.v.deep) + ')' : fmt(type, x.v) + ' ' + TY[type].u}`;
+    let g = '';
+    if (type === 'steps' || type === 'active' || type === 'sleep') { const bw = Math.max(1.5, (Wd - 2 * pad) / S.length - 2); S.forEach((x, i) => { const v = val(type, x.v); const cx = pad + i * (Wd - 2 * pad) / S.length; g += `<rect class="wr-b" x="${cx.toFixed(1)}" y="${Y(v).toFixed(1)}" width="${bw.toFixed(1)}" height="${(Ht - pad - Y(v)).toFixed(1)}" rx="${Math.min(3, bw / 2)}"><title>${esc(tip(x))}</title></rect>`; if (type === 'sleep') g += `<rect class="wr-b2" x="${cx.toFixed(1)}" y="${Y(x.v.deep).toFixed(1)}" width="${bw.toFixed(1)}" height="${(Ht - pad - Y(x.v.deep)).toFixed(1)}" rx="${Math.min(3, bw / 2)}"><title>${esc(tip(x))}</title></rect>`; }); }
+    else { const line = (f, cls) => `<polyline class="${cls}" points="${S.map((x, i) => X(i).toFixed(1) + ',' + Y(f(x)).toFixed(1)).join(' ')}"/>`; if (type === 'bp') g += line((x) => x.v.sys, 'wr-l') + line((x) => x.v.dia, 'wr-l2'); else if (type === 'spo2') g += line((x) => x.v.min, 'wr-l2') + line((x) => x.v.avg, 'wr-l'); else g += line((x) => val(type, x.v), 'wr-l');
+      if (type === 'spo2') g += `<line class="wr-ref" x1="0" x2="${Wd}" y1="${Y(90)}" y2="${Y(90)}"/>`; if (type === 'bp') g += `<line class="wr-ref" x1="0" x2="${Wd}" y1="${Y(135)}" y2="${Y(135)}"/>`; if (type === 'temp') g += `<line class="wr-ref" x1="0" x2="${Wd}" y1="${Y(0)}" y2="${Y(0)}"/>`;
+      if (S.length <= 120) S.forEach((x, i) => { g += `<circle class="wr-pt" cx="${X(i).toFixed(1)}" cy="${Y(type === 'bp' ? x.v.sys : val(type, x.v)).toFixed(1)}" r="${S.length > 40 ? 6 : 8}"><title>${esc(tip(x))}</title></circle>`; }); }
+    return `<svg class="wr-svg" viewBox="0 0 ${Wd} ${Ht}" preserveAspectRatio="none" role="img" aria-label="${esc(TY[type].t)} chart">${g}</svg><div class="wr-ax"><span>${A.fd(S[0].date)}</span><span>${A.fd(S[S.length - 1].date)}</span></div>`; };
+  A.WEAR.chart = chart;
+  const summary = (type, S) => { if (!S.length) return { main: '—', sub: '' }; const v = S.map((x) => val(type, x.v)); const a = avg(v);
+    if (type === 'bp') return { main: `${Math.round(avg(S.map((x) => x.v.sys)))}/${Math.round(avg(S.map((x) => x.v.dia)))}`, sub: `average of ${S.length} reading${S.length === 1 ? '' : 's'} · last ${S[S.length - 1].v.sys}/${S[S.length - 1].v.dia}` };
+    if (type === 'weight') return { main: fmt(type, S[S.length - 1].v), sub: `latest · ${S.length} weigh-ins` };
+    if (type === 'spo2') return { main: fmt(type, a), sub: `average · lowest ${Math.min(...S.map((x) => x.v.min))}%` };
+    if (type === 'sleep') return { main: fmt('sleep', a), sub: `average a night · deep ${fmt('sleep', avg(S.map((x) => x.v.deep)))}` };
+    if (type === 'hr') return { main: Math.round(a) + ' bpm', sub: `average · highest ${Math.max(...S.map((x) => x.v.max))}` };
+    return { main: fmt(type, a) + (['rhr', 'hrv', 'active', 'resp'].includes(type) ? ' ' + TY[type].u : ''), sub: 'average a day' }; };
+  A.WEAR.summary = summary;
+  const logView = (p, k) => { const w = W(k); const ds = A.shrDsId ? A.shrDsId() : 'local'; const last = w.views.find((v) => v.by === A.user.name && v.ds === ds); if (last && Date.now() - Date.parse(last.at) < 30 * 60000) return; w.views.unshift({ at: iso(now()), by: A.user.name, role: E.roleLabel ? E.roleLabel(A.user.role) : A.user.role, practice: (db().practice || {}).name, ds }); w.views = w.views.slice(0, 200); try { E.audit(db(), A.user, 'wearable-view', 'patient', p.id, p.id, 'Viewed the patient’s wearable data'); } catch (e) { /* ignore */ } save(); };
+  A.PTX.wearable = (p) => { seedDemo(); const k = keyOf(p); const a = acc(k); const w = k ? W(k) : null; const open = `<button class="btn" data-act="pa-open" data-pid="${p.id}">📱 Open the patient app</button>`;
+    const src = `<div class="wr-src"><span class="wr-src-i">⌚</span><div><strong>From the patient’s own devices</strong><span>Shared by ${esc(p.firstName)} in the Prac360 patient app. Measured by the patient’s watch, ring or home devices — not measured or checked by the practice. For awareness only, not a diagnosis.</span></div></div>`;
+    if (!k) return `<div class="card">${src}<p>${esc(p.firstName)} needs an SA ID or passport number on the file before they can link the patient app.</p></div>`;
+    if (!a) return `<div class="card wr-empty">${src}<h2>Not linked yet</h2><p>${esc(p.firstName)} does not use the Prac360 patient app yet. In the app the patient registers with their ID number, links a watch, ring, smart scale or blood-pressure monitor, and chooses what to share with the practice.</p><div class="row" style="gap:8px">${open}<button class="btn" data-act="pa-invite" data-pid="${p.id}">✉ Send the patient an app invite</button></div></div>`;
+    const devs = w.devices.filter((d) => !d.removed);
+    if (!w.share.on || !devs.length) return `<div class="card wr-empty">${src}<h2>${devs.length ? 'Not shared' : 'No devices linked'}</h2><p>${esc(p.firstName)} uses the Prac360 patient app${devs.length ? ` and has ${devs.length} device${devs.length === 1 ? '' : 's'} linked, but has chosen not to share wearable data with practices` : ' but has not linked a watch, ring or home device yet'}. Only the patient can change this, in the app.</p>${open}</div>`;
+    logView(p, k); const per = A.ui.wrPer || '30'; const to = today(), from = addD(to, -(+per - 1)); const types = devTypes(k); const sh = types.filter((t) => shared(k, t)), notSh = types.filter((t) => !shared(k, t));
+    const F = flags(k, from, to);
+    const devRows = devs.map((d) => { const s = status(k, d); const b = BR[d.brand] || {}; return `<div class="wr-dev"><span class="wr-dev-i">${b.ic || '⌚'}</span><div class="wr-dev-t"><strong>${esc(d.name)}</strong><span>${esc(b.via ? 'via ' + b.via : '')} · linked ${A.fd(String(d.linkedAt).slice(0, 10))} · history from ${A.fd(histFrom(d))}</span></div><span class="wr-sync ${s.cls}" title="${esc(s.t)}"><i></i>${esc(s.t)}</span></div>`; }).join('');
+    const cards = sh.map((t) => { const S = sharedSeries(k, t, from, to); const m = summary(t, S); return `<div class="wr-card" data-type="${t}"><div class="wr-ch"><span>${TY[t].ic} ${esc(TY[t].t)}</span><b>${esc(m.main)}</b></div><div class="wr-cs">${esc(m.sub)}</div>${chart(t, S, { h: 90 })}</div>`; }).join('');
+    return `<div class="wr">${src}
+      <div class="wr-top"><div class="card wr-devs"><div class="row between"><h2 style="margin:0">Linked devices</h2><span class="tiny muted">Syncs automatically from the patient’s phone</span></div>${devRows}</div>
+        <div class="card wr-share"><h2 style="margin-top:0">What ${esc(p.firstName)} shares</h2><div class="wr-chips">${sh.map((t) => `<span class="wr-chip on">${TY[t].ic} ${esc(TY[t].t)}</span>`).join('')}</div>${notSh.length ? `<p class="small" style="margin:10px 0 4px">🔒 <strong>Not shared by the patient:</strong></p><div class="wr-chips">${notSh.map((t) => `<span class="wr-chip off">${esc(TY[t].t)}</span>`).join('')}</div>` : ''}<p class="tiny muted" style="margin-top:10px">${W(k).share.from === 'all' ? 'All device history is shared.' : 'Shared from ' + A.fd(shareFrom(k)) + '.'} Your view is recorded and the patient can see it in the app.</p></div></div>
+      <div class="row between wr-bar"><div class="seg ma-period" role="group" aria-label="Period">${PER.map(([v, l]) => `<button class="${per === v ? 'on' : ''}" data-act="wr-per" data-v="${v}">${l}</button>`).join('')}</div><div class="row" style="gap:8px"><button class="btn" data-act="wr-pdf" data-pid="${p.id}">Save as PDF</button>${open}</div></div>
+      ${F.length ? `<div class="card wr-flags"><h3 style="margin-top:0">Worth a look <span class="tiny muted">— from the patient’s device data, not a diagnosis</span></h3>${F.map((f) => `<div class="wr-flag ${f.lvl}"><b>${f.lvl === 'warn' ? '⚠' : 'ℹ'} ${esc(f.t)}</b><span>${esc(f.s)}</span></div>`).join('')}</div>` : `<div class="card wr-flags ok">✓ Nothing stands out in the last ${esc(per)} days of shared data.</div>`}
+      <div class="wr-grid">${cards}</div></div>`; };
+  H['wr-per'] = (el) => { A.ui.wrPer = el.dataset.v; A.render(); };
+  H['pa-invite'] = (el) => { const p = E.patient(db(), el.dataset.pid); try { E.audit(db(), A.user, 'patient-app-invite', 'patient', p.id, p.id, 'Sent the patient an invite to the Prac360 patient app'); } catch (e) { /* ignore */ } A.save(); A.toast(`Invite sent to ${p.firstName} (demo — no real SMS or email is sent).`); };
+  H['wr-pdf'] = (el) => { const p = E.patient(db(), el.dataset.pid); const k = keyOf(p); const per = A.ui.wrPer || '30'; const to = today(), from = addD(to, -(+per - 1)); const sh = devTypes(k).filter((t) => shared(k, t));
+    const rows = sh.map((t) => { const m = summary(t, sharedSeries(k, t, from, to)); return `<tr><td>${esc(TY[t].t)}</td><td><b>${esc(m.main)}</b></td><td>${esc(m.sub)}</td></tr>`; }).join(''); const F = flags(k, from, to);
+    A.printDoc && A.printDoc(`Wearable summary — ${p.firstName} ${p.lastName}`, `<h1>Patient wearable summary</h1><p><b>${esc(p.firstName + ' ' + p.lastName)}</b> · ${A.fd(from)} to ${A.fd(to)} (${per} days)</p><p style="font-size:11px">Data from the patient’s own devices, shared in the Prac360 patient app. Not measured by the practice. For awareness only — not a diagnosis.</p><table class="t"><thead><tr><th>Measure</th><th>Value</th><th></th></tr></thead><tbody>${rows}</tbody></table>${F.length ? `<h2>Worth a look</h2><ul>${F.map((f) => `<li><b>${esc(f.t)}</b> — ${esc(f.s)}</li>`).join('')}</ul>` : ''}`); };
+
+  // a small chip on the patient bar: wearable linked and when it last synced
+  const _pb = A.patientBar; A.patientBar = function (p, extra) { let x = extra || ''; try { const k = keyOf(p); const a = acc(k); if (a && A.can('clinical.read')) { const w = W(k); const devs = w.devices.filter((d) => !d.removed); if (devs.length && w.share.on) { const ls = devs.map((d) => lastSync(k, d)).sort().pop(); x += `<a class="badge wr-pb" href="#/patient/${p.id}/wearable" title="Wearable data shared by the patient">⌚ Wearable · synced ${esc(ago(ls))}</a>`; } else x += '<span class="badge" title="Uses the Prac360 patient app">📱 Patient app</span>'; } } catch (e) { /* ignore */ } return _pb.call(this, p, x); };
+  A.wearSeed = seedDemo;
+  window.addEventListener('hashchange', () => { try { seedDemo(); } catch (e) { /* ignore */ } });
+})();
+
+
+/* ===== ui-papp.js ===== */
+/* Prac360 v0.82 — the Prac360 patient app (full demo lookalike).
+ * Opens over Prac360 as a phone (button next to "Watch how consent works", on the patient file's ⌚ Patient wearable
+ * tab, and at #/patientapp/<id>). Everything works, with synthetic data:
+ *   register with the SA ID number → confirm the cell number with a code → create a PIN (and fingerprint / Face ID)
+ *   Home · Health (link a watch, ring, scale or BP monitor; history imports and syncs automatically) · Records ·
+ *   Book (any Prac360 network doctor) · Sharing (the patient decides: medical records on/off and which parts,
+ *   wearable data on/off, which kinds and from when, and sees who looked) · Settings · Notifications.
+ * The app has its own click handling (data-pa) so it never clashes with Prac360's own buttons. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, E = window.PE, esc = A.esc; const PL = window.PL; const db = () => A.db;
+  const WR = () => A.WEAR; const L = () => A.pappLib; const fd = (d) => (d ? A.fd(String(d).slice(0, 10)) : '—');
+  const S = A.PA2S = A.PA2S || { pid: null, scr: 'welcome', tab: 'home' };
+  const pat = () => E.patient(db(), S.pid); const key = () => A.shrKey(pat());
+  const acc = () => WR().acc(key()); const W = () => WR().W(key());
+  const save = () => { WR().save(); };
+  const masked = (id) => '•••••••••' + String(id || '').slice(-4);
+  const cellMask = (c) => { const d = String(c || '').replace(/\D/g, ''); return d.length >= 7 ? d.slice(0, 3) + ' ••• ' + d.slice(-4) : c; };
+  const luhn = (s) => { let t = 0; for (let i = 0; i < 13; i++) { let d = +s[i]; if (i % 2 === 1) { d *= 2; if (d > 9) d -= 9; } t += d; } return t % 10 === 0; };
+  const tg = (on, act, data, lab) => `<button class="p2-tg ${on ? 'on' : ''}" role="switch" aria-checked="${!!on}" aria-label="${esc(lab || '')}" data-pa="${act}" ${data || ''}><i></i></button>`;
+  const back = (to, l) => `<button class="p2-back" data-pa="go" data-to="${to}">‹ ${esc(l || 'Back')}</button>`;
+  const clock = () => { const d = new Date(Date.now() + 2 * 3600e3); return d.toISOString().slice(11, 16); };
+  const goal = 8000;
+
+  // ================================================================ screens before sign-in
+  const welcome = () => `<div class="p2-welcome"><div class="p2-logo-big">✚</div><h1>Prac360</h1><p>Your health records, bookings and watch or ring data — in one place, and you decide who sees what.</p>
+    <div class="p2-feat"><span>📋 All your records from every Prac360 doctor</span><span>⌚ Link your watch, ring, scale or BP monitor</span><span>🔒 You choose what your doctors can see</span><span>📅 Book any Prac360 doctor</span></div>
+    <button class="p2-btn" data-pa="go" data-to="reg1">Create my account</button><button class="p2-btn ghost" data-pa="go" data-to="${acc() ? 'lock' : 'have'}">I already have an account</button><p class="p2-fine">Demo app · synthetic data</p></div>`;
+  const have = () => `${back('welcome')}<div class="p2-h">No account yet</div><p class="p2-sub">We couldn’t find a Prac360 app account on this phone. It takes about a minute to create one with your ID number.</p><button class="p2-btn" data-pa="go" data-to="reg1">Create my account</button>`;
+  const steps = (n) => `<div class="p2-steps">${[1, 2, 3].map((i) => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</div><div class="p2-stepl">Step ${n} of 3</div>`;
+  const reg1 = () => { const p = pat(); const r = S.reg || (S.reg = {}); return `${back('welcome')}${steps(1)}<div class="p2-h">Who are you?</div><p class="p2-sub">Enter your South African ID number. We use it to find your records at every Prac360 practice — nobody else can see it.</p>
+    <label class="p2-f"><span>SA ID number</span><input id="p2-id" inputmode="numeric" maxlength="13" autocomplete="off" placeholder="13 digits" value="${esc(r.id || '')}" data-pa-in="id"></label>
+    ${r.err ? `<div class="p2-err">${esc(r.err)}</div>` : ''}${r.ok ? `<div class="p2-found">✓ We found you: <b>${esc(p.firstName + ' ' + p.lastName)}</b>, born ${fd(p.dob)}</div>` : ''}
+    <button class="p2-link" data-pa="demo-id">Demo: use ${esc(p.firstName)}’s ID number</button>
+    <label class="p2-check"><input type="checkbox" id="p2-terms" ${r.terms ? 'checked' : ''} data-pa-in="terms"><span>I agree to the <button type="button" class="p2-link inline" data-pa="terms">terms and privacy notice</button>. My health information is protected under POPIA.</span></label>
+    <button class="p2-btn" data-pa="reg1-next">Continue</button>`; };
+  const reg2 = () => { const p = pat(); const r = S.reg; const cell = p.phone || p.cell || '082 555 0142'; return `${back('reg1')}${steps(2)}<div class="p2-h">Confirm your cell number</div><p class="p2-sub">For your safety we send a code to the cell number your practice has for you: <b>${esc(cellMask(cell))}</b>.</p>
+    ${r.sent ? `<label class="p2-f"><span>6-digit code</span><input id="p2-otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" class="p2-otp" value="${esc(r.otp || '')}" data-pa-in="otp"></label><div class="p2-demo">Demo: your code is <b>${r.code}</b> <button class="p2-link inline" data-pa="otp-fill">fill it in</button></div>${r.err ? `<div class="p2-err">${esc(r.err)}</div>` : ''}<button class="p2-btn" data-pa="reg2-next">Confirm</button><button class="p2-link" data-pa="otp-send">Send the code again</button>`
+      : `<button class="p2-btn" data-pa="otp-send">Send me the code</button><p class="p2-fine">Wrong number? Ask your practice to update it.</p>`}`; };
+  const pad = (val, act) => `<div class="p2-dots">${[0, 1, 2, 3, 4].map((i) => `<i class="${i < val.length ? 'on' : ''}"></i>`).join('')}</div><div class="p2-pad">${[1, 2, 3, 4, 5, 6, 7, 8, 9, 'bio', 0, 'del'].map((d) => d === 'bio' ? (act === 'lock' && (acc() || {}).bio ? '<button data-pa="bio" aria-label="Use fingerprint or Face ID">☝</button>' : '<span></span>') : `<button data-pa="pin" data-d="${d}" data-m="${act}" aria-label="${d === 'del' ? 'Delete' : d}">${d === 'del' ? '⌫' : d}</button>`).join('')}</div>`;
+  const reg3 = () => { const r = S.reg; const conf = r.pin1 && r.pin1.length === 5; return `${back('reg2')}${steps(3)}<div class="p2-h">${conf ? 'Type your PIN again' : 'Create a 5-digit PIN'}</div><p class="p2-sub">You use it to open the app. Don’t use your birthday.</p>${r.err ? `<div class="p2-err">${esc(r.err)}</div>` : ''}${pad(r.pin || '', 'reg')}<button class="p2-link" data-pa="demo-pin">Demo: use 12345</button>`; };
+  const reg4 = () => { const p = pat(); const srcs = L().sources(p); return `<div class="p2-done"><div class="p2-big">🎉</div><div class="p2-h">You’re in, ${esc(p.firstName)}!</div><p class="p2-sub">We found your records at <b>${srcs.length} Prac360 practice${srcs.length === 1 ? '' : 's'}</b>.</p>
+    <div class="p2-card"><b>☝ Open with your fingerprint or face?</b><span>Quicker than your PIN.</span>${tg((acc() || {}).bio, 'bio-tg', '', 'Fingerprint or Face ID')}</div>
+    <div class="p2-card hi"><b>⌚ Do you wear a watch or ring?</b><span>Link it and your sleep, steps, heart rate and blood oxygen sync here automatically. You decide later if your doctors may see it.</span><button class="p2-btn sm" data-pa="link-start">Link a device</button></div>
+    <button class="p2-btn ghost" data-pa="go" data-to="app">Later — take me to the app</button></div>`; };
+  const lock = () => { const p = pat(); const r = S.lk || (S.lk = { pin: '' }); return `<div class="p2-lock"><div class="p2-av big">${esc(ini(p))}</div><div class="p2-h">Welcome back, ${esc(p.firstName)}</div><p class="p2-sub">Enter your PIN</p>${r.err ? `<div class="p2-err">${esc(r.err)}</div>` : ''}${pad(r.pin, 'lock')}<button class="p2-link" data-pa="demo-unlock">Demo: open without the PIN</button></div>`; };
+  const ini = (p) => ((p.firstName[0] || '') + (String(p.lastName || '').split(' ').pop()[0] || '')).toUpperCase();
+
+  // ================================================================ Home
+  const devs = () => W().devices.filter((d) => !d.removed);
+  const tday = () => WR().today();
+  const home = () => { const p = pat(); const k = key(); const D = devs(); const up = L().upcoming(p)[0]; const c = L().consent(p); const sh = W().share; const types = WR().devTypes(k);
+    let today = ''; if (D.length) { const td = WR().dayData(k, tday()); const has = (t) => types.includes(t); const pct = Math.min(1, td.steps / goal); const R = 34, C = 2 * Math.PI * R;
+      const ls = D.map((d) => WR().lastSync(k, d)).sort().pop();
+      today = `<div class="p2-today"><div class="p2-ring"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="${R}" class="bg"/><circle cx="42" cy="42" r="${R}" class="fg" stroke-dasharray="${(C * pct).toFixed(1)} ${C.toFixed(1)}"/></svg><div><b>${has('steps') ? td.steps.toLocaleString('en-ZA') : '—'}</b><span>of ${goal.toLocaleString('en-ZA')} steps</span></div></div>
+        <div class="p2-mini">${has('sleep') ? `<button data-pa="metric" data-t="sleep"><span>😴 Sleep</span><b>${WR().fmt('sleep', td.sleep.h)}</b></button>` : ''}${has('rhr') ? `<button data-pa="metric" data-t="rhr"><span>❤️ Resting HR</span><b>${td.rhr} bpm</b></button>` : ''}${has('spo2') ? `<button data-pa="metric" data-t="spo2"><span>🫁 Oxygen</span><b>${td.spo2.avg}%</b></button>` : ''}${has('hrv') ? `<button data-pa="metric" data-t="hrv"><span>〰️ HRV</span><b>${td.hrv} ms</b></button>` : ''}</div></div>
+        <button class="p2-sync" data-pa="tab" data-t="health"><span class="p2-dot ok"></span>${D.length} device${D.length === 1 ? '' : 's'} · synced ${esc(WR().ago(ls))}<i>›</i></button>`; }
+    else today = `<div class="p2-card hi"><b>⌚ Link a watch or ring</b><span>See your sleep, steps, heart rate and blood oxygen here — synced automatically.</span><button class="p2-btn sm" data-pa="link-start">Link a device</button></div>`;
+    const ex = (c && c.exclude) || []; const shT = types.filter((t) => WR().shared(k, t)).length;
+    const views = whoLooked().slice(0, 2);
+    return `<div class="p2-hi">Hi ${esc(p.firstName)} 👋</div><div class="p2-date">${new Date().toLocaleDateString('en-ZA', { weekday: 'long', day: 'numeric', month: 'long' })}</div>${today}
+      <div class="p2-sh"><button data-pa="tab" data-t="share" class="${c && c.status === 'active' ? 'ok' : 'off'}"><span>📋 Medical records</span><b>${c && c.status === 'active' ? 'Shared' + (ex.length ? ` · ${ex.length} kept private` : '') : 'Not shared'}</b></button><button data-pa="tab" data-t="share" class="${sh.on && D.length ? 'ok' : 'off'}"><span>⌚ Wearable data</span><b>${!D.length ? 'No device' : sh.on ? `Shared · ${shT} of ${types.length}` : 'Not shared'}</b></button></div>
+      <button class="p2-tile" data-pa="tab" data-t="book"><b>📅 ${up ? 'Next appointment' : 'Book a doctor'}</b><span>${up ? `${esc(L().when(up.start))} · ${esc(up.doc)}` : 'Any doctor in the Prac360 network'}</span></button>
+      ${views.length ? `<div class="p2-sec"><h4>👀 Recently looked at your information</h4>${views.map((v) => `<div class="p2-row"><b>${esc(v.by)}</b><small>${esc(v.practice)} · ${esc(v.what)} · ${esc(WR().ago(v.at))}</small></div>`).join('')}</div>` : ''}`; };
+
+  // ================================================================ Health (wearables)
+  const PER = [['7', '7 days'], ['30', '30 days'], ['90', '90 days']];
+  const devCard = (d) => { const k = key(); const s = WR().status(k, d); const b = WR().BR[d.brand] || {}; const bat = 35 + (WR().hash(d.id) % 60); const syncing = S.syncing === d.id;
+    return `<div class="p2-dev"><div class="p2-dev-h"><span class="p2-dev-i">${b.ic || '⌚'}</span><div><b>${esc(d.name)}</b><span class="p2-st ${syncing ? 'busy' : s.cls}"><i></i>${syncing ? 'Syncing…' : esc(s.t)}</span></div>${d.kind === 'scale' || d.kind === 'bp' ? '' : `<span class="p2-bat">🔋 ${bat}%</span>`}</div>
+      <div class="p2-dev-a"><button data-pa="sync" data-id="${d.id}" ${d.paused ? 'disabled' : ''}>🔄 Sync now</button><button data-pa="dev" data-id="${d.id}">Settings</button></div></div>`; };
+  const health = () => { const k = key(); const D = devs(); if (S.link) return linkFlow(); if (S.dev) return devSettings(); if (S.metric) return metricView();
+    if (!D.length) return `<div class="p2-h">My health</div><div class="p2-empty"><div class="p2-big">⌚</div><p>Link your watch, ring, smart scale or blood-pressure monitor. Your history comes in once, and new readings sync automatically.</p><button class="p2-btn" data-pa="link-start">Link a device</button></div>`;
+    const per = S.per || '7'; const to = tday(), from = WR().addD(to, -(+per - 1)); const types = WR().devTypes(k);
+    return `<div class="row-b"><div class="p2-h">My health</div><button class="p2-add" data-pa="link-start">＋ Link</button></div>
+      <div class="p2-devs">${D.map(devCard).join('')}</div><p class="p2-fine">New readings sync automatically in the background, about every 15 minutes.</p>
+      <div class="p2-seg">${PER.map(([v, l]) => `<button class="${per === v ? 'on' : ''}" data-pa="per" data-v="${v}">${l}</button>`).join('')}</div>
+      ${types.map((t) => { const T = WR().TY[t]; const Sx = WR().series(k, t, from, to); const m = WR().summary(t, Sx); const sh = WR().shared(k, t); return `<button class="p2-met" data-pa="metric" data-t="${t}"><div class="p2-met-h"><span>${T.ic} ${esc(T.t)}</span><em class="${sh ? 'sh' : 'pr'}">${sh ? '🔗 Shared' : '🔒 Private'}</em></div><b>${esc(m.main)}</b><small>${esc(m.sub)}</small>${WR().chart(t, Sx, { w: 300, h: 56 })}</button>`; }).join('')}`; };
+  const metricView = () => { const k = key(); const t = S.metric; const T = WR().TY[t]; const per = S.per || '7'; const to = tday(), from = WR().addD(to, -(+per - 1)); const Sx = WR().series(k, t, from, to); const m = WR().summary(t, Sx); const sh = WR().shared(k, t); const w = W();
+    return `${back('health-home', 'My health')}<div class="p2-h">${T.ic} ${esc(T.t)}</div><p class="p2-sub">${esc(T.d)}</p><div class="p2-seg">${PER.map(([v, l]) => `<button class="${per === v ? 'on' : ''}" data-pa="per" data-v="${v}">${l}</button>`).join('')}</div>
+      <div class="p2-big-n">${esc(m.main)}<small>${esc(m.sub)}</small></div><div class="p2-chart">${WR().chart(t, Sx, { w: 320, h: 150 })}</div>
+      ${t === 'sleep' && Sx.length ? `<div class="p2-sec"><h4>Last night</h4>${['deep', 'rem', 'light', 'awake'].map((x) => `<div class="p2-row">${{ deep: 'Deep sleep', rem: 'Dream (REM) sleep', light: 'Light sleep', awake: 'Awake' }[x]}<b>${WR().fmt('sleep', Sx[Sx.length - 1].v[x])}</b></div>`).join('')}</div>` : ''}
+      <div class="p2-card"><b>${sh ? '🔗 Your Prac360 doctors can see this' : '🔒 Only you can see this'}</b><span>${w.share.on ? 'Switch off to keep it private.' : 'Wearable sharing is off. Turn it on under Sharing.'}</span>${w.share.on ? tg(sh, 'wtype', `data-t="${t}"`, 'Share ' + T.t) : `<button class="p2-btn sm" data-pa="tab" data-t="share">Go to Sharing</button>`}</div>`; };
+  const devSettings = () => { const k = key(); const d = devs().find((x) => x.id === S.dev); if (!d) { S.dev = null; return health(); } const b = WR().BR[d.brand] || {}; const s = WR().status(k, d);
+    return `${back('health-home', 'My health')}<div class="p2-h">${b.ic || '⌚'} ${esc(d.name)}</div><p class="p2-sub">Connected through ${esc(b.via || '')} · linked ${fd(d.linkedAt)}</p>
+      <div class="p2-sec"><div class="p2-row">Status<b class="p2-st ${s.cls}"><i></i>${esc(s.s)}</b></div><div class="p2-row">Last sync<b>${esc(WR().ago(WR().lastSync(k, d)))}</b></div><div class="p2-row">History imported<b>from ${fd(WR().histFrom(d))}</b></div><div class="p2-row">Automatic sync<b>${d.paused ? 'Paused' : 'On'}</b></div></div>
+      <div class="p2-sec"><h4>What this device sends to the app</h4>${d.types.map((t) => `<div class="p2-row">${WR().TY[t].ic} ${esc(WR().TY[t].t)}<b>✓</b></div>`).join('')}</div>
+      <button class="p2-btn ghost" data-pa="pause" data-id="${d.id}">${d.paused ? '▶ Start syncing again' : '⏸ Pause syncing'}</button><button class="p2-btn danger" data-pa="unlink" data-id="${d.id}">Remove this device</button><p class="p2-fine">Removing it stops syncing and its data is no longer shown or shared.</p>`; };
+  // linking a device: choose → what it sends → approve with the maker → import history → done
+  const linkFlow = () => { const st = S.link; const B = WR().BRANDS; const b = st.brand && WR().BR[st.brand];
+    if (st.step === 'pick') { const grp = [['Watches and bands', (x) => ['watch', 'band'].includes(x.kind)], ['Rings', (x) => x.kind === 'ring'], ['Home devices', (x) => ['bp', 'scale'].includes(x.kind)], ['My phone', (x) => x.kind === 'phone']]; const have = new Set(devs().map((d) => d.brand));
+      return `${back('link-cancel', 'Cancel')}<div class="p2-h">Link a device</div><p class="p2-sub">Choose your watch, ring or home device.</p>${grp.map(([g, f]) => `<div class="p2-sec"><h4>${g}</h4>${B.filter(f).map((x) => `<button class="p2-pick" data-pa="link-brand" data-b="${x.id}" ${have.has(x.id) ? 'disabled' : ''}><span>${x.ic}</span><b>${esc(x.n)}</b><small>${have.has(x.id) ? 'Linked' : 'via ' + esc(x.via)}</small></button>`).join('')}</div>`).join('')}`; }
+    if (st.step === 'types') return `${back('link-pick')}<div class="p2-h">${b.ic} ${esc(b.n)}</div><p class="p2-sub">Choose what your ${esc(b.n)} may send to the Prac360 app. You decide separately what your doctors can see.</p><div class="p2-sec">${b.types.map((t) => `<label class="p2-tr"><span>${WR().TY[t].ic} ${esc(WR().TY[t].t)}</span><input type="checkbox" class="p2-lt" value="${t}" ${!st.types || st.types.includes(t) ? 'checked' : ''}></label>`).join('')}</div><button class="p2-btn" data-pa="link-approve">Continue</button>`;
+    if (st.step === 'approve') return `<div class="p2-vendor"><div class="p2-vh">${esc(b.via)}</div><div class="p2-vb"><div class="p2-big">🔐</div><b>Prac360 would like to read:</b><ul>${st.types.map((t) => `<li>${esc(WR().TY[t].t)}</li>`).join('')}</ul><p>Prac360 can read this data. It cannot change your ${esc(b.via)} account. You can remove access at any time.</p><button class="p2-btn" data-pa="link-allow">Allow</button><button class="p2-btn ghost" data-pa="link-pick">Don’t allow</button><p class="p2-fine">Demo: no real sign-in — the connection is simulated.</p></div></div>`;
+    if (st.step === 'import') return `<div class="p2-import"><div class="p2-big spin">🔄</div><div class="p2-h">Importing your history</div><p class="p2-sub">${b.hist} days of ${st.types.slice(0, 3).map((t) => WR().TY[t].t.toLowerCase()).join(', ')}${st.types.length > 3 ? ' and more' : ''}…</p><div class="p2-prog"><i style="width:${st.pct || 0}%"></i></div><p class="p2-fine">${st.pct || 0}%</p></div>`;
+    const w = W(); return `<div class="p2-done"><div class="p2-big">✅</div><div class="p2-h">${esc(b.n)} linked</div><p class="p2-sub">${b.hist} days of history imported. From now on it syncs automatically in the background.</p>
+      ${w.share.on ? `<div class="p2-card"><b>🔗 Wearable sharing is on</b><span>Your doctors can see the kinds of data you share. Change it any time under Sharing.</span></div>` : `<div class="p2-card hi"><b>Share it with your Prac360 doctors?</b><span>They’ll see it on your patient file, marked as coming from your own device. You choose which kinds, and you can stop any time. Every look is recorded.</span><button class="p2-btn sm" data-pa="go" data-to="share-wear">Choose what to share</button></div>`}
+      <button class="p2-btn ghost" data-pa="link-done">Done</button></div>`; };
+
+  // ================================================================ Records
+  const records = () => { const p = pat(); const s = L().sources(p); const all = (f) => L().all(s, f); const c = L().consent(p); const ex = (c && c.status === 'active' && c.exclude) || []; const tag = (x) => `<span class="p2-src">${esc(x._p)}</span>`;
+    const al = all('allergies'), md = all('meds'), pr = all('problems'), ad = all('admissions'), vi = all('visits').sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5), vt = all('vitals').slice(0, 5); const onc = s.filter((x) => x.oncology).map((x) => Object.assign({ _p: x.practice }, x.oncology));
+    const sec = (f, t, rows) => `<div class="p2-sec"><h4>${t}${ex.includes(f) ? '<em class="p2-priv">🔒 Private</em>' : ''}</h4>${rows || '<div class="p2-none">Nothing recorded</div>'}</div>`;
+    return `<div class="p2-h">My records</div><p class="p2-sub">Everything Prac360 holds on your ID, from ${s.length} practice${s.length === 1 ? '' : 's'}. You always see all of it.${ex.length ? ' Parts marked 🔒 are kept private from other practices.' : ''}</p>
+      ${sec('allergies', '⚠ Allergies', al.map((a) => `<div class="p2-row">${esc(a.allergen)}${a.severity ? ` · ${esc(a.severity)}` : ''}${tag(a)}</div>`).join(''))}
+      ${sec('meds', '💊 Medicines', md.map((m) => `<div class="p2-row">${esc(m.name)} <small>${esc(m.dose)}</small>${tag(m)}</div>`).join(''))}
+      ${sec('problems', '🩺 Conditions', pr.map((m) => `<div class="p2-row">${esc(m.text)}${tag(m)}</div>`).join(''))}
+      ${sec('vitals', '📈 Measurements', vt.map((v) => `<div class="p2-row">${esc(v.type)} <b>${esc(v.value)} ${esc(v.unit)}</b><small>${fd(v.date)}</small></div>`).join(''))}
+      ${sec('admissions', '🛏 Hospital stays', ad.map((a) => `<div class="p2-row"><b>${fd(a.at)}</b> · ${esc(a.why || 'Admission')}${tag(a)}</div>`).join(''))}
+      ${sec('oncology', '🎗 Oncology', onc.map((o) => `<div class="p2-row">${esc(o.dx)} <small>${esc(o.plan)}</small>${tag(o)}</div>`).join(''))}
+      ${sec('visits', '🗓 Recent visits', vi.map((v) => `<div class="p2-row"><b>${fd(v.date)}</b> · ${esc(v.by)}<small>${esc((v.dx || []).join('; '))}</small>${tag(v)}</div>`).join(''))}`; };
+
+  // ================================================================ Book
+  const book = () => { const p = pat(); const st = S.bk || (S.bk = {}); const docs = L().doctors(); const sel = st.slot ? docs.find((d) => d.id === st.doc) : null; const on = L().on(p);
+    if (st.done) return `<div class="p2-done"><div class="p2-big">✅</div><div class="p2-h">Booked</div><div class="p2-card"><b>${esc(st.done.doc)}</b><span>${esc(st.done.practice)}</span><span>${esc(L().when(st.done.start))}</span></div><p class="p2-sub">${on ? '🔗 Your records are shared, so the doctor can see your file at the visit.' : '🔒 Your records are not shared — the doctor only sees what you tell them.'}</p><button class="p2-btn ghost" data-pa="bk-reset">Done</button></div>`;
+    if (sel) return `${back('bk-reset')}<div class="p2-h">Confirm booking</div><div class="p2-card"><b>${esc(sel.name)}</b><span>${esc(sel.what)} · ${esc(sel.practice)}</span><span>${esc(L().when(st.slot))}</span></div><p class="p2-sub">${on ? '🔗 Sharing is on — this doctor will see your shared file.' : '🔒 Sharing is off.'}</p><button class="p2-btn" data-pa="bk-book">Book</button>`;
+    return `<div class="p2-h">Book a doctor</div><p class="p2-sub">Any doctor in the Prac360 network. Tap a time.</p>${docs.map((d) => `<div class="p2-doc"><b>${esc(d.name)}</b><span>${esc(d.what)} · ${esc(d.practice)}</span><div class="p2-slots">${L().slots(d).map((x) => `<button data-pa="bk-pick" data-doc="${esc(d.id)}" data-s="${x}">${esc(L().when(x))}</button>`).join('')}</div></div>`).join('')}`; };
+
+  // ================================================================ Sharing (the patient is in control)
+  const whoLooked = () => { const k = key(); const a = (A.shrStore ? A.shrStore().access : []).filter((x) => x.key === k).map((x) => ({ at: x.at, by: x.by, practice: x.practice, what: 'medical records' })); const v = W().views.map((x) => ({ at: x.at, by: x.by, practice: x.practice, what: 'wearable data' })); return a.concat(v).sort((x, y) => String(y.at).localeCompare(String(x.at))); };
+  const share = () => { const p = pat(); const k = key(); const c = L().consent(p); const on = c && c.status === 'active'; const ex = (on && c.exclude) || []; const w = W(); const types = WR().devTypes(k); const CAT = A.SHR_CATS;
+    const recs = on ? `<div class="p2-sw on"><div><b>📋 My medical records</b><span>Shared with Prac360 doctors who treat you · since ${fd(c.givenAt)}</span></div>${tg(true, 'rec-off', '', 'Share medical records')}</div>
+      <div class="p2-sec"><h4>What doctors can see</h4><p class="p2-fine left">Switch off anything you want to keep private. The practice that wrote it still has it.</p>${Object.entries(CAT).map(([f, l]) => `<div class="p2-tr"><span>${esc(l)}${f === 'allergies' && ex.includes(f) ? '<small class="p2-warn">⚠ Doctors won’t know your allergies — this can be unsafe.</small>' : ''}</span>${tg(!ex.includes(f), 'rec-cat', `data-f="${f}"`, l)}</div>`).join('')}<div class="p2-row muted">✕ Accounts, payments and appointments are never shared</div></div>`
+      : `<div class="p2-sw"><div><b>📋 My medical records</b><span>Not shared. Only the practice that wrote a record can see it.</span></div>${tg(false, 'rec-on', '', 'Share medical records')}</div>${S.recAsk ? `<div class="p2-sec"><h4>Before you switch it on</h4><div class="p2-row">✓ Every Prac360 doctor who treats you sees one file with your records</div><div class="p2-row">✓ You can keep parts private and stop at any time</div><div class="p2-row">✓ Every look is recorded — you see it here</div><div class="p2-row muted">✕ Accounts and payments are never shared</div><label class="p2-check"><input type="checkbox" id="p2-ok"> I understand and I agree.</label><button class="p2-btn" data-pa="rec-consent">Give consent</button></div>` : ''}`;
+    const wear = !types.length ? `<div class="p2-sw"><div><b>⌚ My wearable data</b><span>No device linked yet.</span></div><button class="p2-btn sm" data-pa="link-start">Link</button></div>`
+      : `<div class="p2-sw ${w.share.on ? 'on' : ''}" id="p2-wear"><div><b>⌚ My wearable data</b><span>${w.share.on ? 'Shared with your Prac360 doctors' : 'Only you can see it'}</span></div>${tg(w.share.on, 'wear-on', '', 'Share wearable data')}</div>
+        ${w.share.on ? `<div class="p2-sec"><h4>Which kinds</h4>${types.map((t) => `<div class="p2-tr"><span>${WR().TY[t].ic} ${esc(WR().TY[t].t)}</span>${tg(WR().shared(k, t), 'wtype', `data-t="${t}"`, WR().TY[t].t)}</div>`).join('')}</div>
+        <div class="p2-sec"><h4>Share history from</h4>${[['all', 'All my device history'], ['linked', 'Only from when I linked my device'], ['90d', 'Only the last 90 days']].map(([v, l]) => `<label class="p2-radio"><input type="radio" name="p2-from" value="${v}" ${w.share.from === v ? 'checked' : ''} data-pa-in="from"> ${l}</label>`).join('')}</div>` : ''}`;
+    const log = whoLooked().slice(0, 8);
+    return `<div class="p2-h">Sharing</div><p class="p2-sub">You decide what your Prac360 doctors can see. Changes work straight away.</p>${recs}${wear}
+      <div class="p2-sec"><h4>👀 Who looked</h4>${log.map((v) => `<div class="p2-row"><b>${esc(v.by)}</b><small>${esc(v.practice || '')} · ${esc(v.what)} · ${fd(v.at)}</small></div>`).join('') || '<div class="p2-none">Nobody yet</div>'}</div>`; };
+
+  // ================================================================ Settings and notifications
+  const settings = () => { const p = pat(); const a = acc() || {}; const n = a.notif || {};
+    return `${back('app', 'Home')}<div class="p2-prof"><div class="p2-av big">${esc(ini(p))}</div><b>${esc(p.firstName + ' ' + p.lastName)}</b><span>ID ${esc(masked(p.idNumber))}</span></div>
+      <div class="p2-sec"><h4>My details</h4><div class="p2-row">Cell<b>${esc(cellMask(a.cell))}</b></div><div class="p2-row">Member since<b>${fd(a.at)}</b></div><p class="p2-fine left">Your details come from your practice. To change them, ask the practice.</p></div>
+      <div class="p2-sec"><h4>Security</h4><div class="p2-tr"><span>☝ Fingerprint or Face ID</span>${tg(a.bio, 'bio-tg', '', 'Fingerprint or Face ID')}</div><button class="p2-rowb" data-pa="pin-change">Change my PIN <i>›</i></button></div>
+      <div class="p2-sec"><h4>Notify me when</h4><div class="p2-tr"><span>A doctor looks at my information</span>${tg(n.views !== false, 'notif', 'data-n="views"', 'Views')}</div><div class="p2-tr"><span>A device stops syncing</span>${tg(n.sync !== false, 'notif', 'data-n="sync"', 'Sync')}</div><div class="p2-tr"><span>Appointment reminders</span>${tg(n.reminders !== false, 'notif', 'data-n="reminders"', 'Reminders')}</div></div>
+      <div class="p2-sec"><h4>Help</h4><button class="p2-rowb" data-pa="terms">Privacy notice <i>›</i></button><button class="p2-rowb" data-pa="export">Download a copy of my data <i>›</i></button></div>
+      <button class="p2-btn ghost" data-pa="signout">Sign out</button><button class="p2-btn danger" data-pa="delete">Delete my app account</button><p class="p2-fine">Deleting the app account removes your linked devices and wearable sharing. Your records at your practices stay.</p>`; };
+  const notes = () => { const ev = W().events.map((e) => ({ at: e.at, ic: e.ic, t: e.t })); const vw = W().views.map((v) => ({ at: v.at, ic: '👀', t: `${v.by} at ${v.practice} looked at your wearable data` })); const ac = (A.shrStore ? A.shrStore().access : []).filter((x) => x.key === key()).map((x) => ({ at: x.at, ic: '👀', t: `${x.by} at ${x.practice} opened your shared medical file` }));
+    const all = ev.concat(vw, ac).sort((a, b) => String(b.at).localeCompare(String(a.at))).slice(0, 25); const a = acc(); if (a) { a.seenNotes = new Date().toISOString(); save(); }
+    return `${back('app', 'Home')}<div class="p2-h">Notifications</div>${all.map((x) => `<div class="p2-note"><span>${x.ic}</span><div><b>${esc(x.t)}</b><small>${esc(WR().ago(x.at))}</small></div></div>`).join('') || '<div class="p2-none">Nothing yet</div>'}`; };
+  const unread = () => { const a = acc(); if (!a) return 0; const since = a.seenNotes || a.at; return W().views.filter((v) => v.at > since).length + (A.shrStore ? A.shrStore().access : []).filter((x) => x.key === key() && x.at > since).length + W().events.filter((e) => e.at > since).length; };
+
+  // ================================================================ frame
+  const TABS = [['home', '🏠', 'Home'], ['health', '⌚', 'Health'], ['records', '📋', 'Records'], ['book', '📅', 'Book'], ['share', '🔒', 'Sharing']];
+  const body = () => { const p = pat(); if (!p) return '<div class="p2-none">Patient not found</div>';
+    if (S.sheet) return sheet();
+    if (S.scr !== 'app') return ({ welcome, have, reg1, reg2, reg3, reg4, lock }[S.scr] || welcome)();
+    if (S.tab === 'settings') return settings(); if (S.tab === 'notes') return notes();
+    return ({ home, health, records, book, share }[S.tab] || home)(); };
+  const sheet = () => S.sheet === 'terms' ? `${back('sheet-close', 'Close')}<div class="p2-h">Privacy notice (short version)</div><div class="p2-sec"><div class="p2-row">Your health information is special personal information under POPIA. We only use it to show you your records and to share it with the doctors you choose.</div><div class="p2-row">Your ID number is used only to find your records. It is never shown to other patients or sold.</div><div class="p2-row">Wearable data stays yours. Your doctors see it only if you switch sharing on, and only the kinds you choose.</div><div class="p2-row">Every time a practice looks, it is recorded and shown to you.</div><div class="p2-row">You can stop sharing, remove devices or delete your account at any time.</div></div><p class="p2-fine">Demo text — the full notice is provided with the live app.</p>` : '';
+  const html = () => { const p = pat(); const inApp = S.scr === 'app' && !S.sheet; const n = inApp ? unread() : 0;
+    return `<div class="p2-phone" role="application" aria-label="Prac360 patient app"><div class="p2-status"><span>${clock()}</span><span class="p2-notch"></span><span>📶 🔋</span></div>
+      ${inApp ? `<div class="p2-top"><span class="p2-logo">✚ Prac360</span><span class="p2-top-r"><button class="p2-bell" data-pa="tab" data-t="notes" aria-label="Notifications">🔔${n ? `<i>${n > 9 ? '9+' : n}</i>` : ''}</button><button class="p2-av" data-pa="tab" data-t="settings" aria-label="My profile and settings">${esc(ini(p))}</button></span></div>` : ''}
+      <div class="p2-scr" id="p2-scr">${body()}</div>
+      ${inApp ? `<nav class="p2-nav">${TABS.map(([k, i, l]) => `<button class="${k === S.tab ? 'on' : ''}" data-pa="tab" data-t="${k}"><i>${i}</i>${l}</button>`).join('')}</nav>` : ''}${S.msg ? `<div class="p2-toast">${esc(S.msg)}</div>` : ''}</div>`; };
+  const paint = (keepScroll) => { const r = document.getElementById('pa2-root'); if (!r) return; const sc = document.getElementById('p2-scr'); const y = keepScroll && sc ? sc.scrollTop : 0; r.innerHTML = html(); const s2 = document.getElementById('p2-scr'); if (s2) s2.scrollTop = y; };
+  let msgT = null; const msg = (t) => { S.msg = t; paint(true); clearTimeout(msgT); msgT = setTimeout(() => { S.msg = null; paint(true); }, 2600); };
+  const start = (pid) => { if (S.pid !== pid) { Object.assign(S, { pid, scr: 'welcome', tab: 'home', reg: null, lk: null, link: null, dev: null, metric: null, bk: null, sheet: null, recAsk: false }); } if (acc() && S.scr !== 'app') S.scr = 'lock'; if (!acc() && S.scr === 'app') S.scr = 'welcome'; };
+
+  // overlay
+  const open = (pid) => { if (A.wearSeed) A.wearSeed(); start(pid); close(); const o = document.createElement('div'); o.className = 'pa2-ov'; o.id = 'pa2-ov'; o.innerHTML = `<div class="pa2-bar"><span>📱 Prac360 patient app · <b>demo</b> · synthetic data · ${esc(pat().firstName)} ${esc(pat().lastName)}</span><button class="btn sm" data-pa="close" aria-label="Close the patient app">✕ Close</button></div><div id="pa2-root" class="pa2-root"></div>`; document.body.appendChild(o); document.body.classList.add('pa2-open'); paint(); };
+  const close = () => { const o = document.getElementById('pa2-ov'); if (o) o.remove(); document.body.classList.remove('pa2-open'); if (A.db && document.querySelector('#main')) { try { A.render(); } catch (e) { /* ignore */ } } };
+  A.PA2 = { open, close, paint, S, go: (scr, tab) => { if (scr) S.scr = scr; if (tab) S.tab = tab; paint(); }, act: (name, data) => { const el = document.createElement('button'); Object.entries(data || {}).forEach(([k, v]) => { el.dataset[k] = v; }); return R[name] && R[name](el); } };
+  H['pa-open'] = (el) => { const pid = el.dataset.pid || (A.params && A.params[0]); if (A.closeModal && document.querySelector('.modal')) A.closeModal(); setTimeout(() => open(pid), 30); };
+  window.addEventListener('hashchange', () => { if (document.getElementById('pa2-ov')) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && document.getElementById('pa2-ov') && !S.sheet) close(); });
+
+  // ================================================================ actions
+  const R = {};
+  R.close = close;
+  R.go = (el) => { const to = el.dataset.to; S.metric = null; S.dev = null;
+    if (to === 'sheet-close') { S.sheet = null; } else if (to === 'health-home') { S.tab = 'health'; } else if (to === 'link-cancel') { S.link = null; S.tab = S.link0 || 'health'; } else if (to === 'link-pick') { S.link.step = 'pick'; } else if (to === 'app') { S.scr = 'app'; S.tab = 'home'; } else if (to === 'share-wear') { S.link = null; S.scr = 'app'; S.tab = 'share'; paint(); const e = document.getElementById('p2-wear'); if (e) e.scrollIntoView({ block: 'start' }); return; } else if (to === 'bk-reset') { S.bk = {}; } else S.scr = to;
+    if (S.scr === 'reg1' && !S.reg) S.reg = {}; if (S.scr === 'lock') S.lk = { pin: '' }; paint(); };
+  R.tab = (el) => { S.tab = el.dataset.t; S.metric = null; S.dev = null; S.link = null; if (S.tab === 'book') S.bk = S.bk && S.bk.done ? {} : (S.bk || {}); paint(); };
+  R.terms = () => { S.sheet = 'terms'; paint(); };
+  R['demo-id'] = () => { S.reg = Object.assign(S.reg || {}, { id: pat().idNumber, err: null }); paint(); const i = document.getElementById('p2-id'); if (i) i.dispatchEvent(new Event('input', { bubbles: true })); };
+  R['reg1-next'] = () => { const r = S.reg; const id = String((document.getElementById('p2-id') || {}).value || r.id || '').replace(/\D/g, ''); r.id = id; r.terms = !!(document.getElementById('p2-terms') || {}).checked || r.terms; const p = pat();
+    if (!/^\d{13}$/.test(id)) r.err = 'An SA ID number has 13 digits.'; else if (!luhn(id)) r.err = 'That ID number doesn’t look right — please check it.'; else if (id !== String(p.idNumber).replace(/\s/g, '')) r.err = 'We couldn’t find this ID number at a Prac360 practice. Check it, or ask your practice.'; else if (!r.terms) r.err = 'Please agree to the terms and privacy notice.'; else { r.err = null; r.ok = true; S.scr = 'reg2'; }
+    paint(); };
+  R['otp-send'] = () => { const r = S.reg; r.sent = true; r.code = String(100000 + (WR().hash(key() + Date.now()) % 900000)); r.otp = ''; r.err = null; paint(); };
+  R['otp-fill'] = () => { S.reg.otp = S.reg.code; paint(); };
+  R['reg2-next'] = () => { const r = S.reg; const v = String((document.getElementById('p2-otp') || {}).value || r.otp || '').trim(); if (v !== r.code) { r.err = 'That code is not right. Check the SMS and try again.'; paint(); return; } r.err = null; r.pin = ''; r.pin1 = ''; S.scr = 'reg3'; paint(); };
+  const finishPin = (pin) => { const p = pat(); const k = key(); WR().PA().accounts[k] = { name: p.firstName + ' ' + p.lastName, first: p.firstName, cell: p.phone || p.cell || '082 555 0142', at: new Date().toISOString(), pin, bio: false, notif: { views: true, sync: true, reminders: true } };
+    WR().event(k, 'Welcome to Prac360! Your records are linked to your ID.', '🎉'); try { E.audit(db(), { name: p.firstName + ' ' + p.lastName, role: 'patient' }, 'patient-app-registered', 'patient', p.id, p.id, 'The patient registered in the Prac360 patient app'); A.save(); } catch (e) { /* ignore */ } save(); S.scr = 'reg4'; paint(); };
+  R.pin = (el) => { const d = el.dataset.d; if (el.dataset.m === 'lock') { const r = S.lk; r.pin = d === 'del' ? r.pin.slice(0, -1) : (r.pin + d).slice(0, 5); r.err = null; if (r.pin.length === 5) { if (r.pin === (acc() || {}).pin) { S.scr = 'app'; S.tab = 'home'; S.lk = { pin: '' }; } else { r.err = 'Wrong PIN. Try again.'; r.pin = ''; } } paint(); return; }
+    const r = S.reg; r.pin = d === 'del' ? (r.pin || '').slice(0, -1) : ((r.pin || '') + d).slice(0, 5); r.err = null; if (r.pin.length === 5) { if (!r.pin1) { if (/^(\d)\1{4}$|12345|54321/.test(r.pin) && r.pin !== '12345') { r.err = 'Too easy to guess — choose another PIN.'; r.pin = ''; } else { r.pin1 = r.pin; r.pin = ''; } } else if (r.pin === r.pin1) { finishPin(r.pin); return; } else { r.err = 'The PINs don’t match. Start again.'; r.pin = ''; r.pin1 = ''; } } paint(); };
+  R['demo-pin'] = () => finishPin('12345');
+  R['demo-unlock'] = () => { S.scr = 'app'; S.tab = 'home'; paint(); };
+  R.bio = () => { S.scr = 'app'; S.tab = 'home'; paint(); };
+  R['bio-tg'] = () => { const a = acc(); if (!a) return; a.bio = !a.bio; save(); paint(true); };
+  R.signout = () => { S.scr = 'lock'; S.lk = { pin: '' }; paint(); };
+  R['pin-change'] = () => msg('Demo: you would confirm your old PIN, then choose a new one.');
+  R.export = () => msg('Demo: a copy of your records and device data would be emailed to you.');
+  R.notif = (el) => { const a = acc(); a.notif = a.notif || {}; a.notif[el.dataset.n] = a.notif[el.dataset.n] === false; save(); paint(true); };
+  R.delete = () => { if (!S.del) { S.del = true; msg('Tap “Delete my app account” again to confirm.'); setTimeout(() => { S.del = false; }, 5000); return; } S.del = false; const k = key(); delete WR().PA().accounts[k]; delete WR().PA().wear[k]; save(); Object.assign(S, { scr: 'welcome', tab: 'home', reg: null }); paint(); };
+  // health
+  R.per = (el) => { S.per = el.dataset.v; paint(true); };
+  R.metric = (el) => { S.tab = 'health'; S.metric = el.dataset.t; paint(); };
+  R.dev = (el) => { S.dev = el.dataset.id; paint(); };
+  R.sync = (el) => { const id = el.dataset.id; S.syncing = id; paint(true); setTimeout(() => { WR().syncNow(key(), id); S.syncing = null; paint(true); }, 1400); };
+  R.pause = (el) => { const d = devs().find((x) => x.id === el.dataset.id); WR().pause(key(), d.id, !d.paused); paint(true); };
+  R.unlink = (el) => { if (S.unl !== el.dataset.id) { S.unl = el.dataset.id; msg('Tap “Remove this device” again to confirm.'); setTimeout(() => { S.unl = null; }, 5000); return; } WR().unlink(key(), el.dataset.id); S.dev = null; S.unl = null; paint(); };
+  R['link-start'] = () => { S.link0 = S.scr === 'app' ? S.tab : 'health'; S.scr = 'app'; S.tab = 'health'; S.metric = null; S.dev = null; S.link = { step: 'pick' }; paint(); };
+  R['link-brand'] = (el) => { S.link = { step: 'types', brand: el.dataset.b }; paint(); };
+  R['link-approve'] = () => { const t = [...document.querySelectorAll('.p2-lt:checked')].map((x) => x.value); if (!t.length) return msg('Choose at least one kind of data.'); S.link.types = t; S.link.step = 'approve'; paint(); };
+  R['link-allow'] = () => { const st = S.link; st.step = 'import'; st.pct = 0; paint(); const tick = () => { if (!S.link || S.link !== st) return; st.pct = Math.min(100, st.pct + 9 + Math.round(Math.random() * 12)); if (st.pct >= 100) { WR().link(key(), st.brand, st.types); st.step = 'done'; } paint(); if (st.step === 'import') setTimeout(tick, 380); }; setTimeout(tick, 400); };
+  R['link-done'] = () => { S.link = null; S.tab = 'health'; paint(); };
+  R.wtype = (el) => { const w = W(); const t = el.dataset.t; w.share.types[t] = w.share.types[t] === false; WR().event(key(), `${WR().TY[t].t}: ${w.share.types[t] === false ? 'now private' : 'shared with your doctors'}`, w.share.types[t] === false ? '🔒' : '🔗'); save(); paint(true); };
+  R['wear-on'] = () => { const w = W(); w.share.on = !w.share.on; w.share.at = new Date().toISOString(); WR().event(key(), w.share.on ? 'You shared your wearable data with your Prac360 doctors' : 'You stopped sharing your wearable data', w.share.on ? '🔗' : '🔒'); try { E.audit(db(), { name: pat().firstName + ' ' + pat().lastName, role: 'patient' }, w.share.on ? 'wearable-share-on' : 'wearable-share-off', 'patient', pat().id, pat().id, w.share.on ? 'The patient shared wearable data in the app' : 'The patient stopped sharing wearable data in the app'); A.save(); } catch (e) { /* ignore */ } save(); paint(true); msg(w.share.on ? 'Wearable sharing is on.' : 'Wearable sharing is off.'); };
+  // records consent
+  const consentStore = () => A.shrStore(); const nowIso = () => new Date().toISOString();
+  R['rec-on'] = () => { S.recAsk = true; paint(true); };
+  R['rec-consent'] = () => { const ok = document.getElementById('p2-ok'); if (!ok || !ok.checked) return msg('Tick the box to show you understand.'); const p = pat(); const k = key(); const st = consentStore(); const now = nowIso();
+    st.consents[k] = { status: 'active', scope: 'all-clinical', exclude: [], by: 'patient', name: p.firstName + ' ' + p.lastName, relationship: '', how: 'app', givenAt: now, atPractice: 'Prac360 patient app', atDs: 'app', witness: 'the patient, signed in to the app', history: ((st.consents[k] || {}).history || []).concat([{ at: now, what: 'Consent given by the patient in the Prac360 patient app', practice: 'Prac360 patient app', by: p.firstName + ' ' + p.lastName }]) };
+    try { E.audit(db(), A.user, 'shared-record-consent', 'patient', p.id, p.id, 'Consent to share clinical records given by the patient in the Prac360 patient app'); } catch (e) { /* ignore */ } S.recAsk = false; A.shrPublishNow(); PL.save(); A.save && A.save(); WR().event(k, 'You shared your medical records with your Prac360 doctors', '🔗'); save(); paint(true); msg('Your records are shared.'); };
+  R['rec-off'] = () => { if (!S.recOff) { S.recOff = true; msg('Tap again to stop sharing your medical records.'); setTimeout(() => { S.recOff = false; }, 5000); return; } S.recOff = false; const p = pat(); const k = key(); const st = consentStore(); const c = st.consents[k]; if (!c) return; const now = nowIso(); c.status = 'withdrawn'; c.withdrawnAt = now; (c.history = c.history || []).push({ at: now, what: 'Consent withdrawn by the patient in the Prac360 patient app', practice: 'Prac360 patient app', by: p.firstName + ' ' + p.lastName }); delete st.records[k];
+    try { E.audit(db(), A.user, 'shared-record-withdraw', 'patient', p.id, p.id, 'Sharing stopped by the patient in the app'); } catch (e) { /* ignore */ } PL.save(); WR().event(k, 'You stopped sharing your medical records', '🔒'); save(); paint(true); msg('Sharing stopped.'); };
+  R['rec-cat'] = (el) => { const p = pat(); const k = key(); const st = consentStore(); const c = st.consents[k]; if (!c) return; const f = el.dataset.f; c.exclude = c.exclude || []; const was = c.exclude.includes(f); c.exclude = was ? c.exclude.filter((x) => x !== f) : c.exclude.concat(f); (c.history = c.history || []).push({ at: nowIso(), what: `${A.SHR_CATS[f]}: ${was ? 'shared again' : 'kept private'} (patient app)`, practice: 'Prac360 patient app', by: p.firstName + ' ' + p.lastName });
+    A.shrPublishNow(); PL.save(); WR().event(k, `${A.SHR_CATS[f]}: ${was ? 'shared again' : 'now private'}`, was ? '🔗' : '🔒'); save(); paint(true); };
+  // booking
+  R['bk-pick'] = (el) => { S.bk = { doc: el.dataset.doc, slot: el.dataset.s }; paint(); };
+  R['bk-reset'] = () => { S.bk = {}; paint(); };
+  R['bk-book'] = () => { const p = pat(); const st = S.bk; const doc = L().doctors().find((d) => d.id === st.doc); if (!doc || !st.slot) return; const start = st.slot;
+    if (doc.local) db().appointments.push({ id: E.id('ap'), patientId: p.id, providerId: doc.id, start, duration: 15, type: 'consult', status: 'booked', reason: '📱 Booked in the Prac360 patient app' + (L().on(p) ? ' · shared file available' : ''), src: 'app' }); else L().nb().push({ id: E.id('nb'), key: key(), first: p.firstName, last: p.lastName, dob: p.dob, doc: doc.name, docKey: doc.id, practice: doc.practice, ds: doc.ds, start, at: nowIso() });
+    A.save(); PL.save(); WR().event(key(), `Booked: ${doc.name}, ${L().when(start)}`, '📅'); S.bk = { done: { doc: doc.name, practice: doc.practice, start } }; paint(); };
+
+  document.addEventListener('click', (e) => { const el = e.target.closest('[data-pa]'); if (!el || !el.closest('.pa2-ov, #pa2-root')) return; e.preventDefault(); e.stopPropagation(); const f = R[el.dataset.pa]; if (f) f(el); }, true);
+  document.addEventListener('input', (e) => { const el = e.target; if (!el.closest || !el.closest('#pa2-root')) return; const n = el.dataset.paIn; if (!n) return;
+    if (n === 'id') { const v = el.value.replace(/\D/g, '').slice(0, 13); if (v !== el.value) el.value = v; S.reg.id = v; S.reg.err = null; }
+    if (n === 'otp') S.reg.otp = el.value.replace(/\D/g, ''); if (n === 'terms') S.reg.terms = el.checked;
+    if (n === 'from') { const w = W(); w.share.from = el.value; WR().event(key(), 'You changed how much history your doctors can see', '🗓'); save(); paint(true); } }, true);
+  document.addEventListener('change', (e) => { const el = e.target; if (el.closest && el.closest('#pa2-root') && el.dataset.paIn === 'terms') S.reg.terms = el.checked; }, true);
+  // keep the clock and sync times fresh while the app is open
+  setInterval(() => { if (document.getElementById('pa2-root') && !document.activeElement.closest('#pa2-root')) paint(true); }, 30000);
+
+  // ================================================================ entry points
+  // 1) the consent window: "📱 Open the patient app" next to "▶ Watch how consent works"
+  const _sc = H['shr-consent']; if (_sc) H['shr-consent'] = function (el) { const r = _sc.apply(this, arguments); setTimeout(() => { const v = document.querySelector('.modal .shr-vid'); if (v && !v.querySelector('[data-act=pa-open]')) v.querySelector('button').insertAdjacentHTML('afterend', `<button type="button" class="btn sm primary" data-act="pa-open" data-pid="${esc(el.dataset.pid)}">📱 Open the patient app</button>`); }, 0); return r; };
+  // 2) the patient app page shows the app on the page itself
+  const _pp = P.patientapp; P.patientapp = function (params) { const p = E.patient(db(), params[0]) || db().patients[0]; if (!p) return _pp.apply(this, arguments); if (A.wearSeed) A.wearSeed(); start(p.id);
+    return `<div class="page-head"><div><h1>📱 Prac360 patient app <span class="badge">Demo</span></h1><div class="muted"><a href="#/patient/${p.id}">← ${esc(p.firstName + ' ' + p.lastName)}</a> · how the app looks on the patient’s phone · synthetic data</div></div><div class="actions"><button class="btn" data-act="demo-video" data-k="consent">▶ Watch how it works</button><button class="btn" data-act="pa-open" data-pid="${p.id}">⤢ Open full screen</button></div></div>
+      <div class="pa-wrap"><div id="pa2-root" class="pa2-root inline">${html()}</div><div class="pa-how card"><h2>What the patient can do</h2><ol class="pa-steps"><li><b>Register with their ID number.</b> Confirm the cell number with a code, set a PIN or fingerprint.</li><li><b>Link a watch, ring or home device.</b> History imports once; new readings sync automatically.</li><li><b>See all their records</b> from every Prac360 practice.</li><li><b>Decide what doctors see.</b> Medical records on or off, and which parts; wearable data on or off, which kinds and from when.</li><li><b>See who looked</b> and get notified.</li><li><b>Book any Prac360 doctor.</b></li></ol><p class="small muted">In Prac360, wearable data shows on the patient file under <a href="#/patient/${p.id}/wearable">⌚ Patient wearable</a>.</p></div></div>`; };
+})();
+
+
+/* ===== ui-v082l.js ===== */
+/* Prac360 v0.82 — What's new + help: spelling-tolerant search, the full patient app, wearables and the Patient wearable tab. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.82')) A.RELEASES.unshift({ v: '0.82', date: '2026-11-25', title: 'Patient app with wearables, and search that forgives spelling mistakes', items: [
+    { type: 'new', area: 'clinical', title: '📱 The full Prac360 patient app', text: 'Open the patient app from the sharing window (next to “Watch how consent works”), from the patient file or from #/patientapp. Patients register with their SA ID number, confirm their cell number with a code, set a PIN or fingerprint, see all their records, book any Prac360 doctor and decide what is shared.' },
+    { type: 'new', area: 'clinical', title: '⌚ Link a watch, ring, scale or blood-pressure monitor', text: 'In the app, patients link Garmin, Samsung, Apple Watch, Fitbit, Huawei, Polar, Oura, Galaxy Ring, Ultrahuman, Whoop, Withings or their phone. History imports once and new readings sync automatically: sleep, steps, heart rate, heart rate variability, blood oxygen, skin temperature, breathing rate, blood pressure and weight. (Connections are simulated in the demo.)' },
+    { type: 'new', area: 'clinical', title: '🔒 The patient decides what is shared', text: 'Wearable sharing on or off, which kinds of data and from which date. Medical-record sharing on or off, and which parts to keep private (for example letters and reports). Changes work straight away, and every look by a practice is shown to the patient.' },
+    { type: 'new', area: 'clinical', title: '⌚ Patient wearable tab on the patient file', text: 'Shows the patient’s linked devices with their sync status, what they share and what they keep private, “worth a look” notes in plain words (never a diagnosis) and a chart for every reading over 7, 30 or 90 days or 12 months. Clearly marked as coming from the patient’s own devices. The patient bar shows “⌚ Wearable · synced …”.' },
+    { type: 'improved', area: 'general', title: '🔎 Search forgives spelling mistakes', text: 'Search for a patient, medical aid, stock item or ICD-10 code with a typo — “Mkoena”, “Discvery”, “paracetomol”, “pnuemonia” — and Prac360 shows the closest matches with “Did you mean …?”. Works in the top search bar, Patients, Medical aids, Stock, every ICD-10 field and every pick-list.' }] });
+  const add = (id, title, keys, link, steps, screens) => { if (!kb(id)) KB.push({ id, title, keys, screens: screens || [], link, steps }); return steps; };
+  const sF = add('fuzzysearch', 'Search with a spelling mistake', ['spelling', 'typo', 'did you mean', 'misspelt', 'misspelled', 'search not finding'], '#/patients', ['Type in any search box — the top search bar, Patients, Medical aids, Stock or an ICD-10 field.', 'If nothing matches exactly, Prac360 shows the closest spellings with “🔎 No exact match — showing close spellings”.', 'Click the suggested name after “Did you mean” to search for it, or pick a result straight away.', 'In pick-lists a small “Did you mean…” list appears under the box.']);
+  const sA = add('papp2', 'Show a patient the Prac360 patient app', ['patient app', 'register app', 'app for patients', 'open patient app', 'show patient app'], '#/patients', ['Open the patient → Details & medical aid → Share (the sharing window).', 'Click 📱 Open the patient app next to “Watch how consent works”.', 'The app opens as the patient sees it on their phone. Walk them through: register with the ID number, confirm the cell number, set a PIN.', 'Close it with ✕ Close or Esc.']);
+  const sW = add('wearlink', 'Patients: link a watch or ring', ['wearable', 'smart watch', 'smart ring', 'link device', 'oura', 'garmin', 'fitbit', 'apple watch', 'sync'], '#/patients', ['In the patient app, go to ⌚ Health → ＋ Link.', 'Pick the watch, ring, scale or blood-pressure monitor and choose what it may send.', 'Approve the connection on the device maker’s page.', 'History imports once; new readings sync automatically. Sync status shows on each device.']);
+  const sS = add('wearshare', 'Patients: choose what to share', ['share wearable', 'privacy', 'keep private', 'what doctors see', 'stop sharing'], '#/patients', ['In the patient app, open 🔒 Sharing.', 'Medical records: switch on (with consent) and switch off any part to keep private.', 'Wearable data: switch on, then switch off any kind you want to keep private, and choose how much history to share.', 'See who looked under 👀 Who looked. Switch anything off at any time — it works straight away.']);
+  const sT = add('weartab', 'See a patient’s wearable data', ['patient wearable', 'wearable tab', 'watch data', 'sleep data', 'oxygen', 'steps', 'home blood pressure'], '#/patients', ['Open the patient file → ⌚ Patient wearable.', 'Check the linked devices and when they last synced, and what the patient shares or keeps private.', 'Read “Worth a look” — plain-language prompts, never a diagnosis.', 'Choose 7, 30, 90 days or 12 months; hover a chart for the day’s value. Save as PDF or 🖨 Print for the file. Your view is shown to the patient.'], ['patient']);
+  const C = A.COURSES || []; const cl = C.find((x) => /clinical|consult/i.test((x.id || '') + ' ' + (x.title || ''))) || C[0]; const fd = C.find((x) => /front|reception/i.test((x.id || '') + ' ' + (x.title || ''))) || cl; const gs = C.find((x) => /getting|start/i.test((x.id || '') + ' ' + (x.title || ''))) || cl; const sh = C.find((x) => /one patient|shared|clinical file/i.test((x.id || '') + ' ' + (x.title || ''))) || cl;
+  const les = (co, t, st) => { if (co && co.lessons && !co.lessons.some((l) => l.t === t)) co.lessons.push({ t, body: st.join(' '), guide: '' }); };
+  les(gs, 'Search with a spelling mistake', sF); les(fd, 'Show a patient the patient app', sA); les(sh, 'Wearables in the patient app', sW.concat(sS)); les(cl, 'The Patient wearable tab', sT);
+  const q = (co, test, o) => { if (co && co.quiz && !co.quiz.some((x) => test.test(x.q))) co.quiz.push(o); };
+  q(cl, /Patient wearable tab/, { q: 'Where does the data on the ⌚ Patient wearable tab come from?', o: ['Measured by the practice', 'The patient’s own watch, ring or home devices, shared by the patient in the app', 'The medical aid'], a: 1 });
+  q(sh, /keep.*private.*app/i, { q: 'A patient wants to share their records but keep letters and reports private. What do they do?', o: ['Stop all sharing', 'In the app under Sharing, switch off “Letters and reports”', 'Phone every practice'], a: 1 });
+  q(gs, /Discvery/, { q: 'You type “Discvery” in the search. What happens?', o: ['No results', 'Prac360 shows Discovery with “Did you mean …?”', 'An error'], a: 1 });
+  if (A.FUNCTIONS) { const g = (re) => A.FUNCTIONS.find((x) => re.test(x[0])) || A.FUNCTIONS[0]; const put = (re, t, id) => { const G = g(re); if (G && !G[1].some((x) => x[0] === t)) G[1].push([t, id]); };
+    put(/getting|general|every/i, 'Search with a spelling mistake', 'fuzzysearch'); put(/patient/i, 'Open the patient app', 'papp2'); put(/patient/i, 'Patient wearable tab', 'weartab'); put(/patient/i, 'Patients link a watch or ring', 'wearlink'); put(/patient/i, 'Patients choose what to share', 'wearshare'); }
+  if (A.DEMO_VIDEOS && A.DEMO_VIDEOS.consent) Object.assign(A.DEMO_VIDEOS.consent, { src: 'media/prac360-consent.mp4?v=82', vtt: 'media/prac360-consent.vtt?v=82', poster: 'media/prac360-consent.jpg?v=82', t: 'The Prac360 patient app: consent, wearables and sharing', d: 'The patient registers, links a watch or ring, decides what is shared — and what the doctor sees' });
 })();
 
 

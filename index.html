@@ -3047,6 +3047,13 @@ html[data-theme=dark] .wr-flag.warn{background:rgba(245,158,11,.12)}html[data-th
 .hr-pg{font-size:.76rem;border-radius:999px;padding:1px 8px;background:#f1f5f9}.hr-pg.better{background:#dcfce7;color:#166534}.hr-pg.worse{background:#fee2e2;color:#991b1b}.hr-pg.same{background:#fef9c3;color:#854d0e}
 .hs-pick{position:relative}.hs-res{display:flex;flex-direction:column;border:1px solid var(--line,#e5e7eb);border-radius:10px;margin-top:4px;max-height:240px;overflow:auto;background:var(--surface,#fff)}.hs-res:empty{display:none}.hs-res button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;background:none;border:0;border-bottom:1px solid var(--line,#f1f5f9);padding:7px 10px;cursor:pointer;color:inherit}.hs-res button:hover{background:var(--surface-2,#f1f5f9)}.hs-res span{font-size:.76rem;color:var(--muted,#64748b)}
 @media (max-width:900px){.hr-r{grid-template-columns:1fr}}
+/* v0.84 WhatsApp */
+.wa-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}.wa-mode{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line,#e5e7eb);border-radius:12px;padding:10px 12px;cursor:pointer}.wa-mode.on{border-color:#16a34a;background:#f0fdf4}.wa-mode span{display:flex;flex-direction:column}.wa-mode small{color:var(--muted,#64748b);font-size:.8rem}html[data-theme=dark] .wa-mode.on{background:rgba(22,163,74,.12)}
+.wa-safe{display:flex;flex-direction:column;gap:4px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:10px 12px;margin:10px 0}.wa-safe>span{font-size:.85rem;color:#78350f}html[data-theme=dark] .wa-safe{background:rgba(250,204,21,.1)}html[data-theme=dark] .wa-safe>span{color:#fde68a}
+.wa-auto{border-top:1px solid var(--line,#e5e7eb);margin-top:12px;padding-top:6px}.wa-ping{margin-top:10px;border-radius:10px;padding:8px 12px;font-size:.88rem}.wa-ping.ok{background:#dcfce7;color:#14532d}.wa-ping.bad{background:#fee2e2;color:#7f1d1d}
+.wa-how ol{padding-left:20px;line-height:1.55}.wa-tpl{border:1px solid var(--line,#e5e7eb);border-radius:10px;padding:8px 10px;margin:8px 0}.wa-tpl pre{white-space:pre-wrap;font-size:.82rem;margin:6px 0 0;background:var(--surface-2,#f8fafc);padding:8px;border-radius:8px}
+.wa-bubble{background:#dcf8c6;color:#111;border-radius:12px 12px 12px 2px;padding:10px 12px;font-size:.9rem;margin-bottom:10px;max-width:440px;box-shadow:0 1px 1px rgba(0,0,0,.1)}
+@media (max-width:820px){.wa-modes{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -6088,7 +6095,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
         <label class="f"><span>Main member <small>(for dependants — the account goes to them)</small></span><select name="mainMemberId"><option value="">The patient is the main member</option>${db().patients.filter((p) => !p.mainMemberId).map((p) => `<option value="${p.id}">${esc(p.firstName + ' ' + p.lastName)}</option>`).join('')}</select></label></div>
       <h2 style="margin-top:10px">Consent</h2>
       <label class="check"><input type="checkbox" name="c_popia" checked> Patient received and acknowledged the POPIA processing notice</label>
-      <label class="check"><input type="checkbox" name="c_sms"> Patient agrees to SMS appointment reminders</label>
+      <label class="check"><input type="checkbox" name="c_sms"> Patient agrees to SMS appointment reminders</label><label class="check"><input type="checkbox" name="c_wa"> Patient agrees to WhatsApp messages (appointment reminders, patient-app invite)</label>
       <label class="check"><input type="checkbox" name="c_ai"> Patient agrees to AI-assisted note drafting (clinician always reviews)</label>
       <div class="row" style="margin-top:12px"><button class="btn primary" type="submit">Save patient</button><a class="btn" href="#/patients">Cancel</a><span class="tiny">Duplicate check runs on save (name + date of birth, ID number).</span></div></form>`;
   H['input:rf-id'] = (el) => { const v = el.value.replace(/\s/g, ''); const msg = document.getElementById('rf-id-msg'); if (v.length < 13) { msg.textContent = ''; return; }
@@ -6103,7 +6110,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
     const p = A.act(() => { const p = { id: E.id('p'), firstName: v.firstName.trim(), lastName: v.lastName.trim(), sex: v.sex, dob: v.dob, idNumber: v.idNumber.replace(/\s/g, ''), language: v.language, phone: v.phone, email: v.email, address: v.address, mainMemberId: v.mainMemberId || null, synthetic: true, createdAt: E.nowIso(db()) };
       db().patients.push(p);
       if (pay === 'scheme') { const mm = v.mainMemberId ? E.patient(db(), v.mainMemberId) : null; const o = E.option(db(), v.optionId); db().memberships.push({ id: 'ms_' + p.id, patientId: p.id, optionId: v.optionId, memberNo: v.memberNo.trim(), depCode: (v.depCode || '00').padStart(2, '0'), mainMember: mm ? mm.firstName + ' ' + mm.lastName : 'Self', status: 'active', verifiedAt: null, savingsRemaining: o.dayToDay ? o.dayToDay : null }); }
-      [['c_popia', 'POPIA processing notice acknowledged'], ['c_sms', 'SMS appointment reminders'], ['c_ai', 'AI-assisted note drafting']].forEach(([k, type]) => db().consents.push({ id: E.id('cs'), patientId: p.id, type, granted: !!v[k], at: E.nowIso(db()), evidence: 'Captured at registration by ' + A.user.name }));
+      [['c_popia', 'POPIA processing notice acknowledged'], ['c_sms', 'SMS appointment reminders'], ['c_wa', 'WhatsApp messages'], ['c_ai', 'AI-assisted note drafting']].forEach(([k, type]) => db().consents.push({ id: E.id('cs'), patientId: p.id, type, granted: !!v[k], at: E.nowIso(db()), evidence: 'Captured at registration by ' + A.user.name }));
       E.audit(db(), A.user, 'create', 'patient', p.id, p.id, 'Registered'); return p; }, 'Patient saved.');
     if (p) A.go('#/patient/' + p.id + '/details'); };
 
@@ -7598,9 +7605,9 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
       if (old.length && can('payments.write')) add({ key: `old120:${t.slice(0, 7)}:${old.length}`, cat: 'money', title: `${old.length} medical aid amount(s) unpaid for 120+ days`, detail: `${M(old.reduce((s, i) => s + E.invoiceLiability(d, i).scheme, 0))} — consider moving to patient liable`, due: t, act: { name: 'liab-batch', data: {}, label: 'Review and move' } });
     }
     if (can('diary')) {
-      const tom = E.addDays(t, 1); const appts = d.appointments.filter((a) => a.start.slice(0, 10) === tom && a.status === 'booked'); const sent = new Set(d.smsLog.filter((x) => x.apptId).map((x) => x.apptId));
-      const toRemind = appts.filter((a) => !sent.has(a.id) && A.smsConsent && A.smsConsent(a.patientId));
-      if (toRemind.length) add({ key: `remind:${tom}`, cat: 'diary', title: `Send reminders for tomorrow (${toRemind.length})`, detail: `${toRemind.length} of ${appts.length} booked patients agreed to SMS · ${toRemind.length} credit(s)`, due: t, act: { name: 'fu-reminders', data: {}, label: `Send ${toRemind.length} SMS` } });
+      const tom = E.addDays(t, 1); const appts = d.appointments.filter((a) => a.start.slice(0, 10) === tom && a.status === 'booked'); const toRemind = appts.filter((a) => !(A.waRemindedBy ? A.waRemindedBy(a) : d.smsLog.some((x) => x.apptId === a.id)) && (A.waChannel ? A.waChannel(a) : A.smsConsent && A.smsConsent(a.patientId)));
+      const nWa = A.waChannel ? toRemind.filter((a) => A.waChannel(a) === 'wa').length : 0;
+      if (toRemind.length) add({ key: `remind:${tom}`, cat: 'diary', title: `Send reminders for tomorrow (${toRemind.length})`, detail: `${toRemind.length} of ${appts.length} booked patients agreed to reminders${nWa ? ` · ${nWa} by WhatsApp, ${toRemind.length - nWa} by SMS` : ' by SMS'}`, due: t, act: { name: 'fu-reminders', data: {}, label: `Send ${toRemind.length} reminder${toRemind.length === 1 ? '' : 's'}` } });
       d.appointments.filter((a) => a.status === 'no-show' && daysAgo(a.start.slice(0, 10)) <= 14 && daysAgo(a.start.slice(0, 10)) >= 0 && !d.appointments.some((b) => b.patientId === a.patientId && b.start > a.start && b.status === 'booked')).forEach((a) => add({ key: `noshow:${a.id}`, cat: 'diary', title: 'No-show — offer a new appointment', detail: `${A.pname(a.patientId)} · missed ${fd(a.start.slice(0, 10))} ${A.ft(a.start)}`, patientId: a.patientId, due: E.addDays(a.start.slice(0, 10), 1), link: `#/patient/${a.patientId}`, action: 'Open file' }));
     }
     if (any('patients.write', 'eligibility')) {
@@ -22579,6 +22586,177 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   q(rp, /quiz results/i, { q: 'Where do practice managers see how many quiz questions a person got wrong?', o: ['Training Academy → Assigned training → Quiz results', 'Reports → Claims', 'Nowhere'], a: 0 });
   if (A.FUNCTIONS) { const g = (re) => A.FUNCTIONS.find((x) => re.test(x[0])) || A.FUNCTIONS[0]; const put = (re, t, id) => { const G = g(re); if (G && !G[1].some((x) => x[0] === t)) G[1].push([t, id]); };
     put(/hospital/i, 'Ward rounds', 'wardround'); put(/hospital/i, 'Inpatient medicine chart', 'medchart'); put(/hospital|stock/i, 'Ward and theatre stock', 'wardstock'); put(/train|learn|practice|general/i, 'Quiz results for your team', 'quizresults'); put(/clinical|consult/i, 'Sick note or referral from AI Scribe', 'scribeletters'); }
+})();
+
+
+/* ===== ui-wa.js ===== */
+/* Prac360 v0.84 — WhatsApp.
+ * Only two things in Prac360 can send WhatsApp messages: APPOINTMENT REMINDERS and the PATIENT-APP INVITE
+ * (patient file → ⌚ Patient wearable). A.sendWhatsApp refuses every other kind.
+ *
+ * Three ways, chosen in Practice setup → WhatsApp:
+ *   • Off.
+ *   • Click to send (works straight away): Prac360 opens WhatsApp (app or WhatsApp Web) with the message filled in;
+ *     the staff member presses Send. Uses the practice's own WhatsApp.
+ *   • Automatic: Prac360 sends through the practice's Google Apps Script (the same Google Sheet as the demo inbox),
+ *     which calls the WhatsApp Business Cloud API with the practice's own Meta token. The token stays in the script —
+ *     never in Prac360. Reminders can then also go out by themselves every day at a set time (while Prac360 is open).
+ * Patients must agree to WhatsApp messages (consent "WhatsApp messages" on the patient file).
+ * SAFETY: in the sample practice the patients are made up, but their cell numbers could belong to real people — so
+ * every WhatsApp from the sample practice goes to YOUR test number instead, marked "[Demo]". */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, E = window.PE, esc = A.esc; const db = () => A.db;
+  const KINDS = { 'appt-reminder': 'Appointment reminder', 'app-invite': 'Patient app invite' };
+  const CONSENT = 'WhatsApp messages';
+  const S = () => { const s = db().settings; s.wa = s.wa || { mode: 'click', hub: '', key: '', autoRemind: true, remindAt: '17:00', testTo: '', appLink: 'https://michaelduplessis32-app.github.io/prac360-demo/#/patientapp', lastAuto: null }; return s.wa; };
+  const log = () => { db().waLog = db().waLog || []; return db().waLog; };
+  const sample = () => !!(A.dsEntry && A.dsEntry.dataset && A.dsEntry.dataset.sample);
+  const hubUrl = () => S().hub || (window.P360_HUB && window.P360_HUB.url) || '';
+  // SA cell numbers → 27XXXXXXXXX; international numbers with + are kept
+  const num = (ph) => { let d = String(ph || '').replace(/[^\d+]/g, ''); if (d.startsWith('+')) d = d.slice(1); else if (/^0\d{9}$/.test(d)) d = '27' + d.slice(1); return /^27[6-8]\d{8}$/.test(d) || (/^\d{10,15}$/.test(d) && !d.startsWith('27') && String(ph).trim().startsWith('+')) ? d : null; };
+  const mask = (n) => (n ? '+' + n.slice(0, 2) + ' •• ••• ' + n.slice(-4) : '—');
+  A.waNumber = num;
+  const consentOf = (pid) => db().consents.find((c) => c.patientId === pid && c.type === CONSENT);
+  A.waConsent = (pid) => !!(consentOf(pid) || {}).granted;
+  const ensure = () => { const d = db(); if (!d || d.waMigrated) return; d.waMigrated = 1; d.patients.forEach((p) => { if (consentOf(p.id)) return; const sms = d.consents.find((c) => c.patientId === p.id && /^SMS/.test(c.type)); d.consents.push({ id: E.id('cs'), patientId: p.id, type: CONSENT, granted: !!(sms && sms.granted), at: E.today(d), evidence: sample() ? 'Demo: same as the SMS consent' : 'Not asked yet' }); }); S(); try { A.save(); } catch (e) { /* ignore */ } };
+  A.waEnsure = ensure;
+
+  // ---------------------------------------------------------------- messages (the same words as the WhatsApp templates)
+  const practice = () => db().practice;
+  const longDate = (d) => new Date(d + 'T12:00:00Z').toLocaleDateString('en-ZA', { weekday: 'long', day: 'numeric', month: 'long' });
+  const TPL = {
+    'appt-reminder': { name: 'appointment_reminder', text: 'Hello {{1}}, this is a reminder of your appointment with {{2}} at {{3}} on {{4}} at {{5}}. To change or cancel it, please call {{6}}.' },
+    'app-invite': { name: 'patient_app_invite', text: 'Hello {{1}}, {{2}} invites you to the Prac360 patient app. See your records, link your watch or ring, and choose what you share with your doctors. Get started here: {{3}}' } };
+  A.WA_TPL = TPL;
+  const fill = (kind, params) => TPL[kind].text.replace(/\{\{(\d)\}\}/g, (m, i) => params[+i - 1] || '');
+  const reminderParams = (a) => { const p = E.patient(db(), a.patientId); return [p.firstName, A.uname(a.providerId), practice().name, longDate(a.start.slice(0, 10)), A.ft(a.start), practice().phone || 'the practice']; };
+  const inviteParams = (p) => [p.firstName, practice().name, S().appLink || location.origin + location.pathname];
+
+  // ---------------------------------------------------------------- send
+  const ready = () => { const s = S(); if (s.mode === 'off') return 'WhatsApp is switched off. Switch it on in Practice setup → WhatsApp.'; if (sample() && !num(s.testTo)) return 'This is the sample practice: add your own cell number as the test number in Practice setup → WhatsApp first. Messages go there instead of to the made-up patients.'; if (s.mode === 'auto' && !s.key) return 'Add the WhatsApp key in Practice setup → WhatsApp first.'; return null; };
+  A.waReady = ready;
+  // Sends one message. In "click to send" mode it must run straight from a click (it opens WhatsApp in a new tab).
+  A.sendWhatsApp = (m) => { if (!KINDS[m.kind]) throw new Error('Only appointment reminders and patient-app invites can be sent on WhatsApp.');
+    const s = S(); const why = ready(); if (why) throw new Error(why); const p = E.patient(db(), m.patientId); const real = num(m.phone || (p && p.phone));
+    const to = sample() ? num(s.testTo) : real; if (!to) throw new Error(`${p ? p.firstName + '’s' : 'The'} cell number doesn’t look right${p && p.phone ? ' (' + p.phone + ')' : ''}. Fix it on the patient file.`);
+    let text = fill(m.kind, m.params); if (sample()) text = `[Demo for ${p ? p.firstName + ' ' + p.lastName : 'a patient'}] ` + text;
+    const rec = { id: E.id('wa'), at: E.nowIso(db()), by: A.user.id, kind: m.kind, patientId: m.patientId, apptId: m.apptId || null, to: '…' + to.slice(-4), demoTo: sample(), mode: s.mode, status: 'sending', text };
+    log().unshift(rec); E.audit(db(), A.user, 'whatsapp-' + m.kind, 'whatsapp', rec.id, m.patientId || null, `${KINDS[m.kind]} by WhatsApp to ${mask(to)}${sample() ? ' (demo: your test number)' : ''}`);
+    if (s.mode === 'click') { const w = window.open('https://wa.me/' + to + '?text=' + encodeURIComponent(text), '_blank', 'noopener'); rec.status = w === null ? 'blocked' : 'opened'; A.save(); return Promise.resolve(rec); }
+    A.save(); const params = sample() && p ? [`[Demo] ` + m.params[0]].concat(m.params.slice(1)) : m.params;
+    return fetch(hubUrl(), { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'wa_send', key: s.key, kind: m.kind, to, params, text, ref: rec.id }) })
+      .then((r) => r.json()).then((j) => { rec.status = j.ok ? 'sent' : 'failed'; rec.wamid = j.id || null; rec.error = j.ok ? null : j.say || j.error || 'Not sent'; A.save(); return rec; })
+      .catch((e) => { rec.status = 'failed'; rec.error = 'Could not reach the Apps Script: ' + (e.message || e); A.save(); return rec; }); };
+  const done = (rec, who) => { if (rec.status === 'sent') A.toast(`WhatsApp sent to ${who}.`); else if (rec.status === 'opened') A.toast(`WhatsApp opened with the message for ${who} — press Send in WhatsApp.`); else if (rec.status === 'blocked') A.toast('Your browser blocked the WhatsApp window. Allow pop-ups for Prac360 and try again.', 'error'); else A.toast(`WhatsApp to ${who} failed: ${rec.error}`, 'error'); if (A.route === 'settings' || document.querySelector('.wa-rem')) A.render(); };
+
+  // ---------------------------------------------------------------- appointment reminders
+  const tomorrow = () => E.addDays(E.today(db()), 1);
+  const remindedBy = (a) => { const w = log().find((x) => x.apptId === a.id && ['sent', 'delivered', 'read', 'opened'].includes(x.status)); if (w) return ['wa', w]; const s = (db().smsLog || []).find((x) => x.apptId === a.id); return s ? ['sms', s] : null; };
+  A.waRemindedBy = remindedBy;
+  const channel = (a) => { const p = E.patient(db(), a.patientId); if (S().mode !== 'off' && A.waConsent(a.patientId) && num(p.phone)) return 'wa'; if (A.smsConsent && A.smsConsent(a.patientId)) return 'sms'; return null; };
+  A.waChannel = channel;
+  const sendReminder = (a) => A.sendWhatsApp({ kind: 'appt-reminder', patientId: a.patientId, apptId: a.id, params: reminderParams(a) });
+  const remModal = () => { const d = db(); const tom = tomorrow(); const L = d.appointments.filter((a) => a.start.slice(0, 10) === tom && a.status === 'booked').sort((x, y) => x.start.localeCompare(y.start)); const s = S();
+    const rows = L.map((a) => { const p = E.patient(d, a.patientId); const ch = channel(a); const r = remindedBy(a);
+      return `<tr><td class="nowrap">${A.ft(a.start)}</td><td><strong>${esc(p.firstName + ' ' + p.lastName)}</strong><div class="tiny muted">${esc(A.uname(a.providerId))}</div></td><td>${ch === 'wa' ? '💬 WhatsApp' : ch === 'sms' ? '📱 SMS' : '<span class="muted">No consent</span>'}</td>
+        <td>${r ? `<span class="badge good">✓ ${r[0] === 'wa' ? 'WhatsApp ' + esc(r[1].status) : 'SMS sent'}</span>` : ch === 'wa' && s.mode === 'click' ? `<button class="btn sm primary" data-act="wa-remind-one" data-id="${a.id}">💬 Open WhatsApp</button>` : ch ? '<span class="tiny muted">To send</span>' : ''}</td></tr>`; }).join('');
+    const todo = L.filter((a) => !remindedBy(a)); const nWa = todo.filter((a) => channel(a) === 'wa').length, nSms = todo.filter((a) => channel(a) === 'sms').length;
+    return { html: `<div class="wa-rem"><p class="small">${L.length} appointment${L.length === 1 ? '' : 's'} tomorrow (${A.fd(tom)}). Patients who agreed to WhatsApp get a WhatsApp; others who agreed to SMS get an SMS.${sample() ? ` <b>Sample practice:</b> WhatsApps go to your test number ${esc(mask(num(s.testTo)))}.` : ''}</p>${s.mode === 'click' && nWa ? '<p class="tiny muted">Click to send: press 💬 Open WhatsApp for each patient, then Send in WhatsApp.</p>' : ''}
+      <div class="tbl-wrap"><table class="t small"><thead><tr><th>Time</th><th>Patient</th><th>By</th><th></th></tr></thead><tbody>${rows || '<tr><td colspan="4" class="muted">No appointments tomorrow.</td></tr>'}</tbody></table></div></div>`, nWa, nSms }; };
+  H['fu-reminders'] = () => { ensure(); const M = remModal(); const s = S(); const auto = s.mode === 'auto';
+    A.modal('Tomorrow’s reminders', M.html, `<button class="btn" data-act="modal-close">Close</button>${M.nSms ? `<button class="btn" data-act="wa-remind-sms">📱 Send ${M.nSms} SMS</button>` : ''}${auto && M.nWa ? `<button class="btn primary" data-act="wa-remind-all">💬 Send ${M.nWa} WhatsApp${M.nWa === 1 ? '' : 's'}</button>` : ''}`, { wide: true }); };
+  const refresh = () => { if (document.querySelector('.wa-rem')) H['fu-reminders'](); };
+  H['wa-remind-one'] = (el) => { const a = db().appointments.find((x) => x.id === el.dataset.id); try { sendReminder(a).then((r) => { done(r, A.pname(a.patientId)); refresh(); }); } catch (e) { A.toast(e.message, 'error'); } };
+  H['wa-remind-all'] = async () => { const L = db().appointments.filter((a) => a.start.slice(0, 10) === tomorrow() && a.status === 'booked' && !remindedBy(a) && channel(a) === 'wa'); let ok = 0, bad = 0, last = '';
+    A.toast(`Sending ${L.length} WhatsApp reminder${L.length === 1 ? '' : 's'}…`);
+    for (const a of L) { try { const r = await sendReminder(a); if (r.status === 'sent') ok++; else { bad++; last = r.error; } } catch (e) { bad++; last = e.message; break; } }
+    A.toast(`${ok} WhatsApp reminder${ok === 1 ? '' : 's'} sent${bad ? ` · ${bad} failed: ${last}` : ''}.`, bad ? 'error' : null); refresh(); };
+  H['wa-remind-sms'] = () => { const d = db(); const L = d.appointments.filter((a) => a.start.slice(0, 10) === tomorrow() && a.status === 'booked' && !remindedBy(a) && channel(a) === 'sms'); let n = 0;
+    const ok = A.act(() => { L.forEach((a) => { const p = E.patient(d, a.patientId); A.sendSms({ to: p.phone, text: `Reminder: ${p.firstName}, you have an appointment at ${d.practice.name} tomorrow at ${A.ft(a.start)}. Reply NO to cancel or call ${d.practice.phone}.`, patientId: p.id, kind: 'Appointment reminder', apptId: a.id }); n++; }); return true; });
+    if (ok) A.toast(`${n} reminder SMS ${d.settings.comms.smsProvider === 'demo' ? 'logged (demo — not delivered)' : 'sent'}.`); refresh(); };
+  // one appointment, from the appointment window in the Diary
+  const _ao = H['appt-open']; H['appt-open'] = function (el) { const r = _ao.apply(this, arguments); try { ensure(); const a = db().appointments.find((x) => x.id === el.dataset.id); const foot = document.querySelector('#modal .mf');
+      if (a && foot && a.status === 'booked' && a.start.slice(0, 10) >= E.today(db()) && A.can('diary') && S().mode !== 'off') { const ok = A.waConsent(a.patientId); const r0 = remindedBy(a);
+        foot.insertAdjacentHTML('afterbegin', `<button class="btn ghost" data-act="wa-remind-appt" data-id="${a.id}" ${ok ? '' : 'disabled title="The patient has not agreed to WhatsApp messages"'}>💬 ${r0 && r0[0] === 'wa' ? 'Send the WhatsApp reminder again' : 'WhatsApp reminder'}</button>`); } } catch (e) { /* ignore */ } return r; };
+  H['wa-remind-appt'] = (el) => { const a = db().appointments.find((x) => x.id === el.dataset.id); try { sendReminder(a).then((r) => done(r, A.pname(a.patientId))); } catch (e) { A.toast(e.message, 'error'); } };
+  // automatic: every day at the set time, tomorrow's WhatsApp reminders go out (Automatic mode, while Prac360 is open)
+  const tick = async () => { try { const d = db(); if (!d || !A.user || !A.can('diary')) return; const s = S(); if (s.mode !== 'auto' || !s.autoRemind || ready()) return; const t = E.today(d); const hm = new Date(Date.now() + 2 * 3600e3).toISOString().slice(11, 16); if (s.lastAuto === t || hm < (s.remindAt || '17:00')) return;
+    s.lastAuto = t; A.save(); const L = d.appointments.filter((a) => a.start.slice(0, 10) === tomorrow() && a.status === 'booked' && !remindedBy(a) && channel(a) === 'wa'); let ok = 0; for (const a of L) { try { const r = await sendReminder(a); if (r.status === 'sent') ok++; } catch (e) { break; } }
+    if (L.length) A.toast(`💬 ${ok} of ${L.length} WhatsApp reminders for tomorrow sent automatically.`); } catch (e) { /* ignore */ } };
+  setInterval(tick, 60000); setTimeout(tick, 8000);
+
+  // ---------------------------------------------------------------- patient-app invite (patient file → ⌚ Patient wearable)
+  H['pa-invite'] = (el) => { ensure(); const p = E.patient(db(), el.dataset.pid); const s = S(); const why = ready(); const n = num(p.phone); const params = inviteParams(p); const text = fill('app-invite', params);
+    A.modal(`Invite ${p.firstName} to the patient app`, `<div class="wa-inv"><div class="wa-bubble">${esc(text).replace(/(https?:\/\/\S+)/, '<u>$1</u>')}</div>
+      <p class="small">To: <strong>${esc(p.phone || 'no cell number')}</strong>${n ? '' : ' <span class="crit-t">— not a valid cell number</span>'}${sample() && n ? `<br><span class="tiny muted">Sample practice: goes to your test number ${esc(mask(num(s.testTo)))} instead.</span>` : ''} · ${s.mode === 'auto' ? 'sent automatically through WhatsApp Business' : s.mode === 'click' ? 'opens WhatsApp — you press Send' : ''}</p>
+      ${why ? `<p class="crit-t small">${esc(why)}</p>` : ''}<label class="check"><input type="checkbox" id="wa-ok" ${A.waConsent(p.id) ? 'checked' : ''}> ${esc(p.firstName)} agreed to get this on WhatsApp</label></div>`,
+      `<button class="btn" data-act="modal-close">Cancel</button><button class="btn primary" data-act="wa-invite-go" data-pid="${p.id}" ${why || !n ? 'disabled' : ''}>💬 Send on WhatsApp</button>`); };
+  H['wa-invite-go'] = (el) => { const p = E.patient(db(), el.dataset.pid); if (!document.getElementById('wa-ok').checked) return A.toast('Tick that the patient agreed to get it on WhatsApp.', 'error'); A.closeModal();
+    try { E.audit(db(), A.user, 'patient-app-invite', 'patient', p.id, p.id, 'Invited the patient to the Prac360 patient app by WhatsApp'); A.sendWhatsApp({ kind: 'app-invite', patientId: p.id, params: inviteParams(p) }).then((r) => done(r, p.firstName)); } catch (e) { A.toast(e.message, 'error'); } };
+
+  // ---------------------------------------------------------------- Practice setup → WhatsApp
+  A.EXTRA_SETTINGS_TABS = A.EXTRA_SETTINGS_TABS || []; if (!A.EXTRA_SETTINGS_TABS.some((x) => x[0] === 'whatsapp')) A.EXTRA_SETTINGS_TABS.push(['whatsapp', 'WhatsApp', 'comms']);
+  const ST = { sending: ['info', 'Sending…'], sent: ['good', 'Sent'], delivered: ['good', 'Delivered'], read: ['good', 'Read'], failed: ['crit', 'Failed'], opened: ['info', 'Opened in WhatsApp'], blocked: ['warn', 'Pop-up blocked'] };
+  A.SS = A.SS || {}; A.SS.whatsapp = () => { ensure(); const s = S(); const L = log().slice(0, 60); const ping = A.ui.waPing;
+    const mode = (k, t, d) => `<label class="wa-mode ${s.mode === k ? 'on' : ''}"><input type="radio" name="wa-mode" value="${k}" ${s.mode === k ? 'checked' : ''} data-change="wa-mode"><span><b>${t}</b><small>${d}</small></span></label>`;
+    return `<div class="wa-set"><div class="card"><h2 style="margin-top:0">💬 WhatsApp</h2><p class="small">Only <b>appointment reminders</b> and the <b>patient-app invite</b> are sent on WhatsApp. Patients must agree to WhatsApp messages (Consents on the patient file).</p>
+      <div class="wa-modes">${mode('off', 'Off', 'No WhatsApp messages.')}${mode('click', 'Click to send', 'Works straight away: Prac360 opens WhatsApp with the message filled in and you press Send. Uses your practice’s own WhatsApp on this computer.')}${mode('auto', 'Automatic — WhatsApp Business', 'Prac360 sends by itself through your Google Sheet’s Apps Script and your WhatsApp Business number. Reminders can go out every day on their own.')}</div>
+      ${sample() || s.testTo ? `<div class="wa-safe"><b>🛡 Test number${sample() ? ' (required in the sample practice)' : ''}</b><span>The sample practice’s patients are made up, but their cell numbers could belong to real people. Every WhatsApp from the sample practice goes to this number instead, marked “[Demo]”.</span><label class="f"><span>Your own cell number</span><input id="wa-test" value="${esc(s.testTo || '')}" placeholder="e.g. 082 123 4567" inputmode="tel" data-noclean></label></div>` : ''}
+      <label class="f"><span>Patient-app link in the invite</span><input id="wa-link" value="${esc(s.appLink || '')}" data-noclean></label>
+      ${s.mode === 'auto' ? `<div class="wa-auto"><h3>Automatic sending</h3><div class="grid g2"><label class="f"><span>Apps Script address</span><input id="wa-hub" value="${esc(s.hub || '')}" placeholder="${esc((window.P360_HUB || {}).url || 'https://script.google.com/macros/s/…/exec')}" data-noclean></label><label class="f"><span>WhatsApp key <small>(the same as WA_KEY in the script)</small></span><input id="wa-key" type="password" value="${esc(s.key || '')}" autocomplete="off" data-noclean></label></div>
+        <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" data-act="wa-ping">Check the connection</button>${num(s.testTo) ? '<button class="btn" data-act="wa-test-send">Send a test reminder to my test number</button>' : ''}</div>
+        ${ping ? `<div class="wa-ping ${ping.ok && ping.configured ? 'ok' : 'bad'}">${ping.ok ? (ping.configured ? `✓ Connected. Templates: <code>${esc(ping.remind)}</code> and <code>${esc(ping.invite)}</code> (${esc(ping.lang)}). ${ping.today} of ${ping.max} sent today.${ping.allowed ? ` Test mode: only ${ping.allowed} allowed number${ping.allowed === 1 ? '' : 's'}.` : ''}` : '⚠ The script answers, but WA_TOKEN and WA_PHONE_ID are not set yet.') : '✕ ' + esc(ping.say || ping.error || 'Could not connect')}</div>` : ''}
+        <label class="check" style="margin-top:10px"><input type="checkbox" id="wa-autor" ${s.autoRemind ? 'checked' : ''}> Send tomorrow’s reminders automatically every day at <input type="time" id="wa-at" value="${esc(s.remindAt || '17:00')}" style="width:auto;display:inline-block"></label><p class="tiny muted">Runs while Prac360 is open on at least one computer with Diary access.${s.lastAuto ? ` Last run: ${A.fd(s.lastAuto)}.` : ''}</p></div>` : ''}
+      <div style="text-align:right"><button class="btn primary" data-act="wa-save">Save</button></div></div>
+      ${s.mode === 'auto' ? `<details class="card wa-how" ${ping && ping.ok && ping.configured ? '' : 'open'}><summary><b>How to set up automatic WhatsApp (once, about 30 minutes)</b></summary><ol class="small">
+        <li><b>Meta:</b> go to developers.facebook.com → My apps → Create app → Business → add <b>WhatsApp</b>. Link or create your Meta Business account and add your practice’s WhatsApp Business number (a number not already used in the WhatsApp app).</li>
+        <li><b>Token:</b> Business settings → Users → System users → add one → Generate token for your app with <code>whatsapp_business_messaging</code> and <code>whatsapp_business_management</code>. Copy the <b>Phone number ID</b> from WhatsApp → API setup.</li>
+        <li><b>Templates:</b> WhatsApp Manager → Message templates → create the two below (category <b>Utility</b>, language English). Wait for “Approved”.</li>
+        <li><b>Script:</b> open your Google Sheet → Extensions → Apps Script → paste the new <code>Code.gs</code>. Project Settings (⚙) → Script properties → add <code>WA_TOKEN</code>, <code>WA_PHONE_ID</code>, <code>WA_KEY</code> (a long password you make up) and, while testing, <code>WA_ALLOWED_TO</code> (your own number, e.g. 27821234567).</li>
+        <li>Deploy → Manage deployments → ✏ Edit → Version: <b>New version</b> → Deploy (the address stays the same).</li>
+        <li>Here: type the same WA_KEY above, press <b>Check the connection</b>, then <b>Send a test reminder</b>.</li>
+        <li><i>Optional</i> — delivery ticks: in Meta → WhatsApp → Configuration set the Callback URL to your Apps Script address, the Verify token to the value of <code>WA_VERIFY</code>, and subscribe to <code>messages</code>.</li></ol>
+        ${Object.entries(TPL).map(([k, t]) => `<div class="wa-tpl"><div class="row between"><b>${esc(KINDS[k])}: <code>${t.name}</code></b><button class="btn sm" data-act="wa-copy" data-k="${k}">Copy text</button></div><pre>${esc(t.text)}</pre></div>`).join('')}
+        <p class="tiny muted">Never paste the Meta token into Prac360, an email or a chat. It stays in the script.</p></details>` : ''}
+      <div class="card"><div class="row between"><h2 style="margin:0">Messages sent</h2>${s.mode === 'auto' && L.some((x) => x.wamid) ? '<button class="btn sm" data-act="wa-refresh">↻ Delivery status</button>' : ''}</div>${L.length ? `<div class="tbl-wrap"><table class="t small"><thead><tr><th>When</th><th>What</th><th>Patient</th><th>To</th><th>How</th><th>Status</th></tr></thead><tbody>${L.map((x) => { const st = ST[x.status] || ['', x.status]; return `<tr><td class="nowrap">${A.fd(x.at.slice(0, 10))} ${x.at.slice(11, 16)}</td><td>${esc(KINDS[x.kind])}</td><td>${x.patientId ? esc(A.pname(x.patientId)) : '—'}</td><td class="mono small">${esc(x.to)}${x.demoTo ? ' <span class="tiny muted">(test)</span>' : ''}</td><td class="small">${x.mode === 'auto' ? 'Automatic' : 'Click to send'}</td><td><span class="badge ${st[0]}">${esc(st[1])}</span>${x.error ? `<div class="tiny crit-t">${esc(x.error)}</div>` : ''}</td></tr>`; }).join('')}</tbody></table></div>` : '<p class="muted small">No WhatsApp messages yet.</p>'}</div></div>`; };
+  const keep = () => { const s = S(); const g = (id) => document.getElementById(id); if (g('wa-test')) s.testTo = g('wa-test').value.trim(); if (g('wa-link')) s.appLink = g('wa-link').value.trim(); if (g('wa-hub')) s.hub = g('wa-hub').value.trim(); if (g('wa-key')) s.key = g('wa-key').value.trim(); if (g('wa-autor')) s.autoRemind = g('wa-autor').checked; if (g('wa-at')) s.remindAt = g('wa-at').value || '17:00'; };
+  H['change:wa-mode'] = (el) => { keep(); S().mode = el.value; A.ui.waPing = null; A.save(); A.render(); };
+  H['wa-save'] = () => { keep(); const s = S(); if (s.testTo && !num(s.testTo)) return A.toast('The test number doesn’t look like a cell number.', 'error'); if (s.hub && !/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(s.hub)) return A.toast('The Apps Script address must look like https://script.google.com/macros/s/…/exec', 'error'); E.audit(db(), A.user, 'whatsapp-settings', 'settings', 'wa', null, 'Mode: ' + s.mode); A.save(); A.render(); A.toast('WhatsApp settings saved.'); };
+  H['wa-ping'] = async () => { keep(); A.save(); const s = S(); if (!s.key) return A.toast('Type the WhatsApp key first.', 'error'); try { const u = new URL(hubUrl()); u.searchParams.set('action', 'wa_ping'); u.searchParams.set('key', s.key); const r = await fetch(u.toString(), { redirect: 'follow' }); A.ui.waPing = await r.json(); } catch (e) { A.ui.waPing = { ok: false, say: 'Could not reach the Apps Script (' + (e.message || e) + ').' }; } A.render(); };
+  H['wa-test-send'] = () => { keep(); A.save(); const d = db(); const a = d.appointments.find((x) => x.status === 'booked' && x.start.slice(0, 10) >= E.today(d)) || d.appointments[0]; const s = S();
+    try { A.sendWhatsApp({ kind: 'appt-reminder', patientId: null, phone: '+' + num(s.testTo), params: reminderParams(a) }).then((r) => done(r, 'your test number')); } catch (e) { A.toast(e.message, 'error'); } };
+  H['wa-copy'] = (el) => { try { navigator.clipboard.writeText(TPL[el.dataset.k].text); A.toast('Template text copied.'); } catch (e) { A.toast('Select the text and copy it.', 'error'); } };
+  H['wa-refresh'] = async () => { const s = S(); const ids = log().filter((x) => x.wamid).slice(0, 60).map((x) => x.wamid); try { const u = new URL(hubUrl()); u.searchParams.set('action', 'wa_status'); u.searchParams.set('key', s.key); u.searchParams.set('ids', ids.join(',')); const j = await (await fetch(u.toString(), { redirect: 'follow' })).json();
+      if (!j.ok) return A.toast('Could not read the delivery status: ' + (j.say || j.error), 'error'); log().forEach((x) => { const st = x.wamid && j.items[x.wamid]; if (st) { x.status = st.status; if (st.error) x.error = st.error; } }); A.save(); A.render(); A.toast('Delivery status updated.'); } catch (e) { A.toast('Could not reach the Apps Script.', 'error'); } };
+
+  window.addEventListener('hashchange', () => { try { ensure(); } catch (e) { /* ignore */ } });
+})();
+
+
+/* ===== ui-v084l.js ===== */
+/* Prac360 v0.84 — What's new + help: WhatsApp for appointment reminders and the patient-app invite. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.84')) A.RELEASES.unshift({ v: '0.84', date: '2026-11-25', title: 'WhatsApp reminders and patient-app invites', items: [
+    { type: 'new', area: 'general', title: '💬 Appointment reminders on WhatsApp', text: 'Patients who agreed to WhatsApp messages get their reminder on WhatsApp; others who agreed to SMS still get an SMS. Send tomorrow’s reminders from the Follow-up manager, or one reminder from the appointment in the Diary. In Automatic mode they can go out by themselves every day at a set time.' },
+    { type: 'new', area: 'clinical', title: '💬 Patient-app invite on WhatsApp', text: 'Patient file → ⌚ Patient wearable → Send the patient an app invite now sends a WhatsApp with the link to the Prac360 patient app.' },
+    { type: 'new', area: 'general', title: 'Practice setup → WhatsApp', text: 'Choose Off, Click to send (opens WhatsApp with the message ready — works straight away) or Automatic (WhatsApp Business through your Google Sheet’s Apps Script). Check the connection, send a test, and see every message with its status (sent, delivered, read or failed). Only reminders and app invites can be sent on WhatsApp.' },
+    { type: 'improved', area: 'general', title: 'WhatsApp consent', text: 'Each patient has a “WhatsApp messages” consent on the patient file, and the registration form has a WhatsApp tick-box.' }] });
+  const add = (id, title, keys, link, steps) => { if (!kb(id)) KB.push({ id, title, keys, screens: [], link, steps }); return steps; };
+  const sR = add('waremind', 'Send appointment reminders on WhatsApp', ['whatsapp', 'whatsapp reminder', 'appointment reminder', 'remind patients', 'wa'], '#/followup', ['Follow-up manager → Send reminders for tomorrow (or open an appointment in the Diary → 💬 WhatsApp reminder).', 'Patients who agreed to WhatsApp get a WhatsApp; others who agreed to SMS get an SMS.', 'Click to send: press 💬 Open WhatsApp for each patient and then Send in WhatsApp. Automatic: press 💬 Send — Prac360 sends them all.', 'See every message and its status under Practice setup → WhatsApp.']);
+  const sI = add('wainvite', 'Invite a patient to the app on WhatsApp', ['app invite', 'invite patient app', 'whatsapp invite'], '#/patients', ['Open the patient file → ⌚ Patient wearable.', 'Click ✉ Send the patient an app invite.', 'Check the message and number, tick that the patient agreed, and press 💬 Send on WhatsApp.']);
+  const sS = add('wasetup', 'Set up WhatsApp', ['whatsapp setup', 'whatsapp business', 'meta', 'whatsapp token', 'click to send'], '#/settings/whatsapp', ['Practice setup → WhatsApp.', 'Click to send works straight away with your practice’s WhatsApp on that computer.', 'Automatic needs a WhatsApp Business number from Meta, two approved templates and the Apps Script settings — follow the steps on the page, then Check the connection and Send a test.', 'In the sample practice, add your own cell number: every demo WhatsApp goes there, not to the made-up patients.']);
+  const C = A.COURSES || []; const f = (re) => C.find((x) => re.test((x.id || '') + ' ' + (x.title || ''))) || C[0];
+  const fd = f(/front|reception/i), rp = f(/running|manag/i);
+  const les = (co, t, st) => { if (co && co.lessons && !co.lessons.some((l) => l.t === t)) co.lessons.push({ t, body: st.join(' '), guide: '' }); };
+  les(fd, 'WhatsApp reminders and invites', sR.concat(sI)); les(rp, 'Set up WhatsApp', sS);
+  const q = (co, test, o) => { if (co && co.quiz && !co.quiz.some((x) => test.test(x.q))) co.quiz.push(o); };
+  q(fd, /WhatsApp.*Prac360 send/i, { q: 'Which messages can Prac360 send on WhatsApp?', o: ['Statements and invoices', 'Appointment reminders and the patient-app invite', 'Anything'], a: 1 });
+  q(fd, /agreed to SMS but not WhatsApp/i, { q: 'A patient agreed to SMS but not WhatsApp. How do they get their reminder?', o: ['By SMS', 'By WhatsApp anyway', 'They don’t get one'], a: 0 });
+  if (A.FUNCTIONS) { const g = (re) => A.FUNCTIONS.find((x) => re.test(x[0])) || A.FUNCTIONS[0]; const put = (re, t, id) => { const G = g(re); if (G && !G[1].some((x) => x[0] === t)) G[1].push([t, id]); };
+    put(/diary|appoint|front/i, 'WhatsApp appointment reminders', 'waremind'); put(/patient/i, 'Patient-app invite on WhatsApp', 'wainvite'); put(/setup|practice|general/i, 'Set up WhatsApp', 'wasetup'); }
 })();
 
 

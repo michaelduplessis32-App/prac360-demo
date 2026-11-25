@@ -2931,6 +2931,28 @@ html.dev-tablet .nav{width:auto}html.dev-tablet .nav a{font-size:.95rem}
 .icd-ac-none{padding:10px;color:var(--muted,#64748b)}
 html.night .icd-ac,html[data-theme=dark] .icd-ac{background:#1e293b;color:#e2e8f0}html.night .icd-ac-o:hover,html.night .icd-ac-o.on{background:rgba(59,130,246,.18)}
 html.dev-touch .icd-ac-o{padding:11px 12px}
+/* v0.81 print the PDF pages */
+#p360-print{display:none}
+@media print{body.printing-pdf>*:not(#p360-print){display:none!important}body.printing-pdf #p360-print{display:block!important}
+ body.printing-pdf{margin:0!important;background:#fff!important}@page{margin:0}
+ #p360-print .pp-page{position:relative;width:210mm;height:296mm;overflow:hidden;page-break-after:always;break-after:page}#p360-print .pp-page:last-child{page-break-after:auto;break-after:auto}
+ #p360-print .pp-page img{position:absolute}#p360-print .pp-wm{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-45deg);font:700 52mm/1 Helvetica,Arial,sans-serif;color:rgba(179,38,30,.13)}}
+/* v0.81 date range, rejection analysis, assigned training */
+.ma-range{display:flex;gap:8px;align-items:center;font-size:.85rem}.ma-range label{display:flex;gap:6px;align-items:center}.ma-range input{width:auto;padding:5px 8px}
+.rja{margin-top:18px}.rja .ma-kpi .n{font-size:1.35rem}
+.rja-reasons{display:flex;flex-direction:column;gap:12px}.rja-r{padding-bottom:10px;border-bottom:1px solid var(--line,#eef0f3)}.rja-r:last-child{border-bottom:0}
+.rja-rh{display:flex;gap:8px;align-items:center;margin-bottom:4px}.rja-code{font-family:ui-monospace,Menlo,monospace;font-size:.75rem;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;border-radius:6px;padding:1px 6px}.rja-n{margin-left:auto;font-weight:800}
+.rja-r .ma-bar i.c{background:#ef4444}.rja-meta{font-size:.78rem;color:var(--muted,#64748b);margin-top:3px}.rja-tip{font-size:.82rem;margin-top:5px;background:#f0fdf4;border-radius:8px;padding:6px 8px;color:#14532d}
+html[data-theme=dark] .rja-tip{background:rgba(22,163,74,.12);color:#bbf7d0}
+.rja-who{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rja-who>div{display:flex;gap:10px;align-items:center;border:1px solid var(--line,#e5e7eb);border-radius:12px;padding:10px}.rja-wn{font-size:1.5rem;font-weight:800;min-width:36px;text-align:center}.rja-who small{display:block;color:var(--muted,#64748b);font-size:.75rem}
+.ta-list{display:flex;flex-direction:column;gap:8px}.ta-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border:1px solid var(--line,#e5e7eb);border-radius:12px;padding:10px 12px}.ta-who{flex:1 1 260px;display:flex;flex-direction:column}
+.ta-bar{display:inline-block;width:120px;height:8px;border-radius:4px;background:#e2e8f0;overflow:hidden;vertical-align:middle}.ta-bar i{display:block;height:100%;background:#16a34a}
+.ta-st{font-size:.75rem;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}.ta-st.done{background:#dcfce7;color:#166534}.ta-st.late{background:#fee2e2;color:#991b1b}.ta-st.busy{background:#dbeafe;color:#1e40af}.ta-st.todo{background:#f1f5f9;color:#475569}
+.ta-grid{display:grid;grid-template-columns:2fr 1fr;gap:10px}.ta-courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px}.ta-c{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line,#e5e7eb);border-radius:10px;padding:8px;cursor:pointer}.ta-c small{display:block;color:var(--muted,#64748b)}
+.ta-c:has(input:checked){border-color:#2563eb;background:#eff6ff}html[data-theme=dark] .ta-c:has(input:checked){background:rgba(37,99,235,.15)}
+.lc-tab-n.hot{background:#dc2626;color:#fff}
+.ta-nudge{display:block;margin:0 0 12px;padding:10px 14px;border-radius:12px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;text-decoration:none}
+@media (max-width:720px){.ta-grid,.rja-who{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -5535,8 +5557,14 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
   const ADD = { 'cx-icd-q': 'cx-icd-add', 'dx-search': 'dx-add-search' }; // pick = add straight away in these search boxes
   const SYN = { 'sore throat': 'pharyngitis', throat: 'pharyn', flu: 'influenza', 'the flu': 'influenza', cold: 'nasopharyngitis', sugar: 'diabetes', diabetic: 'diabetes', 'high blood pressure': 'hypertension', 'blood pressure': 'hypertension', bp: 'hypertension', uti: 'urinary tract infection', 'bladder infection': 'cystitis', 'chest infection': 'bronchitis', 'heart attack': 'myocardial infarction', stroke: 'cerebral infarction', 'back pain': 'back pain', 'low back': 'low back', ear: 'otitis', 'ear infection': 'otitis media', sinus: 'sinusitis', tummy: 'abdominal', stomach: 'abdominal', 'runny tummy': 'diarrhoea', diarrhea: 'diarrhoea', 'pink eye': 'conjunctivitis', rash: 'rash', eczema: 'dermatitis', 'chest pain': 'chest pain', tb: 'tuberculosis', hiv: 'hiv', depression: 'depressive', anxiety: 'anxiety', asthma: 'asthma', gout: 'gout', 'kidney stone': 'calculus of kidney', fracture: 'fracture', 'broken': 'fracture', sprain: 'sprain', pregnant: 'pregnancy', pregnancy: 'pregnancy', checkup: 'general examination', 'check up': 'general examination', 'check-up': 'general examination' };
   let box = null, inp = null, items = [], hi = -1, tm = null;
-  const kind = (el) => { const dl = el && document.getElementById(el.dataset.icdl || ''); return dl ? { k: dl.dataset.icd, re: dl.dataset.icdRe || null } : null; };
-  const adopt = (el) => { if (!el || !el.getAttribute) return false; if (el.dataset.icdl) return true; const id = el.getAttribute('list'); const dl = id && document.getElementById(id); if (!dl || !dl.dataset || !dl.dataset.icd) return false;
+  const kind = (el) => { if (!el) return null; if (el.dataset.icdk) return { k: el.dataset.icdk, re: el.dataset.icdRe || null }; const dl = document.getElementById(el.dataset.icdl || ''); return dl ? { k: dl.dataset.icd, re: dl.dataset.icdRe || null } : null; };
+  // any other ICD-10 box (no list): the transaction's "other ICD-10", the ICD-10 column on each line, fix-it pop-ups …
+  const looksIcd = (el) => { if (el.tagName !== 'INPUT' || !/^(text|search|)$/i.test(el.getAttribute('type') || '') || el.dataset.noicd != null || el.closest('.icd-ac, .top, .modal-head')) return false;
+    if (el.dataset.icdField != null || el.name === 'dxmore' || el.dataset.change === 'line-icd') return true;
+    const lab = (el.getAttribute('aria-label') || '') + ' ' + (el.getAttribute('placeholder') || '') + ' ' + ((el.closest('label, .f') || {}).querySelector ? ((el.closest('label, .f').querySelector('span') || {}).textContent || '') : '');
+    return /\bICD[- ]?10\b|\bICD\b/i.test(lab) && !/title|reason|note|search prac|treatment code|tariff/i.test(lab); };
+  const adopt = (el) => { if (!el || !el.getAttribute || !el.dataset) return false; if (el.dataset.icdl || el.dataset.icdk) return true; const id = el.getAttribute('list'); const dl = id && document.getElementById(id);
+    if (!dl || !dl.dataset || !dl.dataset.icd) { if (!looksIcd(el)) return false; el.dataset.icdk = 'code'; el.setAttribute('autocomplete', 'off'); el.setAttribute('role', 'combobox'); el.setAttribute('aria-autocomplete', 'list'); el.setAttribute('data-noclean', ''); return true; }
     el.dataset.icdl = id; el.removeAttribute('list'); el.setAttribute('autocomplete', 'off'); el.setAttribute('role', 'combobox'); el.setAttribute('aria-autocomplete', 'list'); return true; };
   const multi = (el) => el.dataset.icdMulti != null || /,/.test(el.value) || /,|code\(s\)|codes|comma/i.test(el.placeholder || '');
   const seg = (el) => { const v = String(el.value || ''); if (!multi(el)) return { pre: '', q: v.split(' — ')[0] }; const i = v.lastIndexOf(','); return { pre: i < 0 ? '' : v.slice(0, i + 1) + ' ', q: v.slice(i + 1).trim() }; };
@@ -5577,8 +5605,8 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
   const move = (d) => { if (!box || !items.length) return; hi = (hi + d + items.length) % items.length; box.querySelectorAll('.icd-ac-o').forEach((o, i) => o.classList.toggle('on', i === hi)); const o = box.querySelector('.icd-ac-o.on'); if (o) o.scrollIntoView({ block: 'nearest' }); };
 
   document.addEventListener('focusin', (e) => { if (adopt(e.target)) setTimeout(() => { if (document.activeElement === e.target) show(e.target); }, 30); }, true);
-  document.addEventListener('input', (e) => { const t = e.target; if (!t || !t.dataset || !t.dataset.icdl) return; clearTimeout(tm); tm = setTimeout(() => show(t), 90); }, true);
-  document.addEventListener('keydown', (e) => { const t = e.target; if (!t || !t.dataset || !t.dataset.icdl) return;
+  document.addEventListener('input', (e) => { const t = e.target; if (!t || !t.dataset || !(t.dataset.icdl || t.dataset.icdk || adopt(t))) return; clearTimeout(tm); tm = setTimeout(() => show(t), 90); }, true);
+  document.addEventListener('keydown', (e) => { const t = e.target; if (!t || !t.dataset || !(t.dataset.icdl || t.dataset.icdk)) return;
     if (e.key === 'ArrowDown') { e.preventDefault(); if (!box) show(t); else move(1); } else if (e.key === 'ArrowUp') { if (box) { e.preventDefault(); move(-1); } }
     else if (e.key === 'Enter') { if (box && items.length) { e.preventDefault(); e.stopPropagation(); const { q } = seg(t); const exact = items.findIndex((x) => x.code.toUpperCase() === q.trim().toUpperCase()); pick(hi >= 0 ? hi : exact >= 0 ? exact : 0); } else if (ADD[t.id]) { e.preventDefault(); A.H[ADD[t.id]] && A.H[ADD[t.id]](t); } }
     else if (e.key === 'Escape') { if (box) { e.preventDefault(); e.stopPropagation(); close(); } } }, true);
@@ -5586,7 +5614,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
   document.addEventListener('mousedown', (e) => { if (box && !box.contains(e.target) && e.target !== inp) close(); }, true);
   window.addEventListener('resize', place); document.addEventListener('scroll', () => { if (box) place(); }, true);
   // the old filler must not refill a datalist we no longer use
-  const _fill = A.icdFill; A.icdFill = (el) => (el && el.dataset && el.dataset.icdl ? null : _fill && _fill(el));
+  const _fill = A.icdFill; A.icdFill = (el) => (el && el.dataset && (el.dataset.icdl || el.dataset.icdk) ? null : _fill && _fill(el));
   A.icdSuggest = show;
 })();
 
@@ -11948,7 +11976,7 @@ ${run.original}`;
   const E = window.PE, A = window.APP, esc = A.esc;
   const prefs = () => { if (A.db && A.user) { A.user.prefs = A.user.prefs || {}; return A.user.prefs; } const acc = window.PL && PL.current && PL.current(); if (acc) { acc.prefs = acc.prefs || {}; return acc.prefs; } return {}; };
   const savePrefs = () => { if (A.db && A.user) A.save(); else if (window.PL && PL.save) PL.save(); };
-  const ACTIONS = { ask: 'Ask me each time', open: 'Open in my PDF reader', preview: 'Preview in Prac360', save: 'Save the file', 'open-save': 'Open and save' };
+  const ACTIONS = { ask: 'Ask me each time', print: 'Print straight away', open: 'Open in my PDF reader', preview: 'Preview in Prac360', save: 'Save the file', 'open-save': 'Open and save' };
   const kb = (n) => (n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB');
   const close = (id) => { const el = document.getElementById(id); if (el) el.remove(); };
 
@@ -11994,7 +12022,9 @@ ${run.original}`;
     if (action === 'preview') A.previewPdf(doc);
     if (action === 'save' || (action === 'open-save' && !A.framed)) await A.savePdf(doc);
     if (action === 'email' && A.composeEmail && A.db) A.composeEmail(doc);
+    if (action === 'print' && A.printPdfDoc) A.printPdfDoc(doc);
   };
+  A.prefsPdf = () => prefs().pdfAction || 'ask';
   A.pdfReady = async (doc) => {
     const pref = prefs().pdfAction || 'ask';
     if (pref !== 'ask') return run(doc, pref);
@@ -16176,7 +16206,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     const status = (x) => x.complete ? '<span class="tcx-st done">✓ Done</span>' : x.done.length ? '<span class="tcx-st busy">In progress</span>' : '<span class="tcx-st todo">Not started</span>';
     const row = (x) => `<div class="tcx-row${me && x.id === me.id ? ' me' : ''}"><span class="tcx-av">${ini(x.name)}</span><span class="tcx-who"><strong>${esc(x.name)}${me && x.id === me.id ? ' (you)' : ''}</strong><span>${esc(x.role || '')}</span>${remState(x)}</span><span class="tcx-bar" role="img" aria-label="${x.done.length} of ${x.courses.length} courses"><i style="width:${pc(x)}%"></i></span><span class="tcx-n">${x.done.length}/${x.courses.length}</span>${status(x)}</div>`;
     const sorted = t.people.slice().sort((a, b) => (a.complete - b.complete) || (pc(a) - pc(b)));
-    const todo = t.people.filter((x) => !x.complete && !(me && x.id === me.id)); const open = !((PL.current() || {}).prefs || {}).tcTeamClosed;
+    const todo = t.people.filter((x) => !x.complete && !(me && x.id === me.id)); const open = false; // v0.81: always starts folded away — click to see each person
     const team = mgr && where !== 'home' ? `<details class="tcx-team" ${open ? 'open' : ''} data-tc-team><summary class="tcx-th"><span class="tcx-tog"><span class="tcx-chev" aria-hidden="true">▸</span>Team progress <span class="tcx-cnt">${t.finished}/${t.people.length} done</span></span><span class="tcx-hint">${open ? 'Hide' : 'Show'}</span></summary>
       ${todo.length ? `<div class="tcx-remind"><div><strong>${todo.length} ${todo.length === 1 ? 'person still needs' : 'people still need'} to finish.</strong><span>They get a message on screen to acknowledge, plus an email. You can see who saw it.</span></div><button class="tcx-rbtn" data-act="tc-remind">🔔 Remind ${todo.length === 1 ? esc(todo[0].name.split(' ')[0]) : 'everyone'}</button></div>` : ''}
       ${sorted.map(row).join('')}</details>` : '';
@@ -21036,8 +21066,9 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   'use strict';
   const A = window.APP, H = A.H, P = A.P, E = window.PE, esc = A.esc; if (!P.schemes) return;
   const db = () => A.db; const TS = () => A.TS || {}; const M = (n) => E.money(n); const pct = (a, b) => (b ? Math.round((a / b) * 1000) / 10 : 0);
-  const today = () => E.today(db()); const PERIODS = [['1m', 'This month'], ['3m', 'Last 3 months'], ['12m', 'Last 12 months'], ['all', 'All time']];
-  const since = (p) => { const t = today(); if (p === 'all') return ''; if (p === '1m') return t.slice(0, 8) + '01'; const d = new Date(t + 'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() - (p === '3m' ? 3 : 12)); return d.toISOString().slice(0, 10); };
+  const today = () => E.today(db()); const PERIODS = [['1m', 'This month'], ['3m', 'Last 3 months'], ['12m', 'Last 12 months'], ['all', 'All time'], ['custom', '📅 Custom dates']];
+  const since = (p) => { const t = today(); if (p === 'all') return ''; if (p === 'custom') return A.ui.maFrom || ''; if (p === '1m') return t.slice(0, 8) + '01'; const d = new Date(t + 'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() - (p === '3m' ? 3 : 12)); return d.toISOString().slice(0, 10); };
+  const until = (p) => (p === 'custom' ? A.ui.maTo || '' : '');
   const schemeOfOpt = (oid) => db().schemes.find((s) => s.options.some((o) => o.id === oid));
   const nf = (n) => Number(n || 0).toLocaleString('en-ZA');
 
@@ -21047,7 +21078,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     const active = d.memberships.filter((m) => m.status !== 'inactive'); const onAid = new Set();
     active.forEach((m) => { const s = schemeOfOpt(m.optionId); if (!s) return; const r = row(s); r.patients.add(m.patientId); r.plans[m.optionId] = (r.plans[m.optionId] || 0) + 1; onAid.add(m.patientId); });
     const remBy = {}; (d.remittances || []).forEach((rm) => (rm.lines || []).forEach((l) => { remBy[l.claimId] = { paid: +l.paid || 0, short: +l.shortfall || +l.patientLiable || 0, date: rm.date }; }));
-    d.claims.forEach((c) => { const inv = d.invoices.find((i) => i.id === c.invoiceId); if (!inv || (from && inv.date < from)) return; const ms = d.memberships.find((m) => m.id === inv.membershipId); const s = ms && schemeOfOpt(ms.optionId); if (!s) return; const r = row(s);
+    d.claims.forEach((c) => { const inv = d.invoices.find((i) => i.id === c.invoiceId); if (!inv || (from && inv.date < from) || (until(period) && inv.date > until(period))) return; const ms = d.memberships.find((m) => m.id === inv.membershipId); const s = ms && schemeOfOpt(ms.optionId); if (!s) return; const r = row(s);
       const v = (c.versions || [])[0] || {}; const st = (v.response || {}).status; r.claims++; r.claimed += +inv.total || 0; const pd = remBy[c.id];
       if (st === 'rejected' && !pd) r.rejected++; if (pd) { r.paid += pd.paid; r.shortfall += pd.short; const sent = String(((c.versions || []).slice(-1)[0] || {}).at || inv.date).slice(0, 10); const dd = E.daysBetween(sent, pd.date); if (dd >= 0) r.days.push(dd); } else if (st !== 'rejected') r.waiting += +inv.total || 0; });
     const rows = Object.values(by).filter((r) => r.patients.size || r.claims || r.s.active).map((r) => Object.assign(r, { n: r.patients.size, paidPct: pct(r.paid, r.claimed), avgDays: r.days.length ? Math.round(r.days.reduce((a, b) => a + b, 0) / r.days.length) : null }));
@@ -21062,13 +21093,17 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   const tabs = (cur) => `<nav class="tabs">${[['overview', 'Overview'], ['ours', 'Our medical aids'], ['all', 'All medical aids']].map(([k, l]) => `<a href="#/schemes/${k}" class="${k === cur ? 'on' : ''}">${l}</a>`).join('')}</nav>`;
   const head = `<div class="page-head"><div><h1>Medical aids</h1><div class="muted">Who your patients are on, how each medical aid pays, and every plan with its payment arrangements.</div></div><div class="actions">${A.can('setup') ? '<button class="btn" data-act="scheme-add">Add a medical aid</button>' : ''}</div></div>`;
   const periodSel = (p) => `<div class="seg ma-period" role="group" aria-label="Period">${PERIODS.map(([k, l]) => `<button class="${p === k ? 'on' : ''}" data-act="ma-period" data-p="${k}">${l}</button>`).join('')}</div>`;
-  H['ma-period'] = (el) => { A.ui.maP = el.dataset.p; A.render(); };
+  H['ma-period'] = (el) => { A.ui.maP = el.dataset.p; if (el.dataset.p === 'custom' && !A.ui.maFrom) { const d = new Date(today() + 'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() - 1); A.ui.maFrom = d.toISOString().slice(0, 10); A.ui.maTo = today(); } A.render(); };
+  const customSel = (p) => (p === 'custom' ? `<span class="ma-range"><label>From <input type="date" value="${A.ui.maFrom || ''}" max="${today()}" data-change="ma-from"></label><label>To <input type="date" value="${A.ui.maTo || today()}" max="${today()}" data-change="ma-to"></label></span>` : '');
+  H['change:ma-from'] = (el) => { A.ui.maFrom = el.value; if (A.ui.maTo && el.value > A.ui.maTo) A.ui.maTo = el.value; A.render(); };
+  H['change:ma-to'] = (el) => { A.ui.maTo = el.value; if (A.ui.maFrom && el.value < A.ui.maFrom) A.ui.maFrom = el.value; A.render(); };
+  const periodText = (p) => (p === 'all' ? 'at any time' : p === 'custom' ? `from ${A.fd(A.ui.maFrom)} to ${A.fd(A.ui.maTo || today())}` : 'from ' + A.fd(since(p)));
 
   // ---------------------------------------------------------------- Overview
   const overview = () => { const p = A.ui.maP || '3m'; const S = stats(p); const rows = S.rows.slice().sort((a, b) => b.claimed - a.claimed || b.n - a.n); const maxN = Math.max(1, ...rows.map((r) => r.n), S.privateN); const maxC = Math.max(1, ...rows.map((r) => r.claimed));
     const best = rows.filter((r) => r.claims >= 3).sort((a, b) => b.paidPct - a.paidPct)[0]; const worst = rows.filter((r) => r.claims >= 3).sort((a, b) => a.paidPct - b.paidPct)[0]; const most = rows.slice().sort((a, b) => b.n - a.n)[0];
     const insights = [most && most.n ? `<b>${esc(short(most.s.name))}</b> has the most patients: ${most.n} (${pct(most.n, S.allPat)}% of your patients).` : '', best ? `<b>${esc(short(best.s.name))}</b> pays best: ${best.paidPct}% of what was claimed${best.avgDays != null ? `, in about ${best.avgDays} days` : ''}.` : '', worst && worst !== best ? `<b>${esc(short(worst.s.name))}</b> pays least: ${worst.paidPct}% of what was claimed${worst.rejected ? ` and ${worst.rejected} claim${worst.rejected === 1 ? ' was' : 's were'} rejected` : ''}.` : '', S.t.waiting > 0 ? `<b>${M(S.t.waiting)}</b> is still waiting for payment from medical aids.` : ''].filter(Boolean);
-    return `<div class="row between ma-toolbar">${periodSel(p)}<span class="tiny muted">Claims for services ${p === 'all' ? 'at any time' : 'from ' + A.fd(since(p))} · synthetic demo data</span></div>
+    return `<div class="row between ma-toolbar"><div class="row" style="gap:10px;flex-wrap:wrap;align-items:center">${periodSel(p)}${customSel(p)}</div><span class="tiny muted">Claims for services ${periodText(p)} · synthetic demo data</span></div>
       <div class="ma-kpis">${kpi(`${pct(S.onAid, S.allPat)}%`, 'Patients on a medical aid', `${nf(S.onAid)} of ${nf(S.allPat)} · ${nf(S.privateN)} private`)}${kpi(M(S.t.claimed), 'Claimed', `${nf(S.t.claims)} claims`)}${kpi(M(S.t.paid), 'Paid by medical aids', `${pct(S.t.paid, S.t.claimed)}% of claimed`, 'good')}${kpi(M(S.t.waiting), 'Waiting for payment', 'accepted, not paid yet', S.t.waiting ? 'warn' : '')}${kpi(nf(S.t.rejected), 'Rejected claims', S.t.claims ? `${pct(S.t.rejected, S.t.claims)}% of claims` : '', S.t.rejected ? 'crit' : '')}${kpi(S.t.avgDays == null ? '—' : S.t.avgDays + ' days', 'Average time to payment', 'from sending to paid')}</div>
       ${insights.length ? `<div class="card ma-ins"><h3>What stands out</h3><ul>${insights.map((x) => `<li>${x}</li>`).join('')}</ul></div>` : ''}
       <div class="ma-grid"><div class="card"><h3>Who your patients are on</h3><p class="tiny muted">Patients per medical aid, and the share of all your patients.</p>
@@ -21319,8 +21354,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   H['print-now'] = () => { if (Date.now() - lastPrint < 1500) return; lastPrint = Date.now(); document.body.classList.add('printing-report'); setTimeout(() => { try { window.print(); } catch (e) { A.toast('Printing is not available in this window — use Save as PDF.', 'error'); } setTimeout(() => document.body.classList.remove('printing-report'), 1500); }, 60); };
   const _rep = P.reports; if (_rep) P.reports = function (params) { let h = _rep.apply(this, arguments); if (params && params[0] && h.indexOf('data-act="print-now"') < 0) {
     const btn = '<button class="btn primary" data-act="print-now" title="Opens your device\'s print window — choose your printer and print">🖨 Print</button>';
-    if (h.indexOf('data-act="print">') > -1) h = h.replace(/<button class="btn" data-act="print">/, btn + '<button class="btn" data-act="print">');
-    else h = h.replace(/(<div class="page-head">[\s\S]*?<\/h1>)/, `$1<div class="no-print" style="margin-top:6px">${btn}</div>`); } return h; };
+    if (h.indexOf('data-act="print">') > -1) { /* v0.81: the 🖨 Print twin is added next to Save as PDF */ } else h = h.replace(/(<div class="page-head">[\s\S]*?<\/h1>)/, `$1<div class="no-print" style="margin-top:6px">${btn}</div>`); } return h; };
   A.printNow = H['print-now'];
 
   // =========================================================== 2. Transactions: one date per line
@@ -21514,6 +21548,196 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   if (c && c.lessons && !c.lessons.some((l) => l.t === 'Find an ICD-10 code')) c.lessons.push({ t: 'Find an ICD-10 code', body: steps.join(' '), guide: '' });
   if (c && c.quiz && !c.quiz.some((q) => /diab typ/.test(q.q))) c.quiz.push({ q: 'You type “diab typ 2” in the ICD-10 box. What happens?', o: ['Nothing — you must type the exact code', 'Type 2 diabetes codes drop down to pick from', 'An error appears'], a: 1 });
   if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /clinical|consult/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /ICD-10 codes as you type/.test(x[0]))) g[1].push(['Search ICD-10 codes as you type', 'icdsearch']); }
+})();
+
+
+/* ===== ui-v081.js ===== */
+/* Prac360 v0.81
+ * • Claims → Rejected: a redesigned "Why claims were rejected" in the style of the Medical aids overview, with a period
+ *   (this month, 3 months, 12 months, all time or your own dates): key numbers, the top reasons with how to prevent each,
+ *   rejections per medical aid, and who rejected them (the switch or the medical aid).
+ * • Training Academy → 📌 Assigned training: a practice manager or doctor assigns courses to a person with a due date and
+ *   tracks their progress; everyone sees what was assigned to them. A short summary also shows on My account and security. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, P = A.P, E = window.PE, esc = A.esc; const PL = window.PL;
+  const db = () => A.db; const M = (n) => E.money(n); const pct = (a, b) => (b ? Math.round((a / b) * 1000) / 10 : 0); const nf = (n) => Number(n || 0).toLocaleString('en-ZA');
+  const today = () => E.today(db());
+
+  // =========================================================== shared period picker (same look as Medical aids)
+  const PERIODS = [['1m', 'This month'], ['3m', 'Last 3 months'], ['12m', 'Last 12 months'], ['all', 'All time'], ['custom', '📅 Custom dates']];
+  const range = (key) => { const u = A.ui[key] = A.ui[key] || { p: '3m' }; const t = today(); let from = '', to = '';
+    if (u.p === '1m') from = t.slice(0, 8) + '01'; else if (u.p === '3m' || u.p === '12m') { const d = new Date(t + 'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() - (u.p === '3m' ? 3 : 12)); from = d.toISOString().slice(0, 10); }
+    else if (u.p === 'custom') { from = u.from || ''; to = u.to || t; }
+    const label = u.p === 'all' ? 'at any time' : u.p === 'custom' ? `from ${A.fd(from)} to ${A.fd(to)}` : 'since ' + A.fd(from); return { p: u.p, from, to, label, inR: (d) => { d = String(d || '').slice(0, 10); return (!from || d >= from) && (!to || d <= to); } }; };
+  A.periodBar = (key) => { const r = range(key); return `<div class="row" style="gap:10px;flex-wrap:wrap;align-items:center"><div class="seg ma-period" role="group" aria-label="Period">${PERIODS.map(([k, l]) => `<button class="${r.p === k ? 'on' : ''}" data-act="pr-p" data-k="${key}" data-p="${k}">${l}</button>`).join('')}</div>
+    ${r.p === 'custom' ? `<span class="ma-range"><label>From <input type="date" value="${r.from}" max="${today()}" data-change="pr-from" data-k="${key}"></label><label>To <input type="date" value="${r.to}" max="${today()}" data-change="pr-to" data-k="${key}"></label></span>` : ''}</div>`; };
+  A.periodRange = range;
+  H['pr-p'] = (el) => { const u = A.ui[el.dataset.k] = A.ui[el.dataset.k] || {}; u.p = el.dataset.p; if (u.p === 'custom' && !u.from) { const d = new Date(today() + 'T00:00:00Z'); d.setUTCMonth(d.getUTCMonth() - 1); u.from = d.toISOString().slice(0, 10); u.to = today(); } A.render(); };
+  H['change:pr-from'] = (el) => { const u = A.ui[el.dataset.k]; u.from = el.value; if (u.to && u.from > u.to) u.to = u.from; A.render(); };
+  H['change:pr-to'] = (el) => { const u = A.ui[el.dataset.k]; u.to = el.value; if (u.from && u.to < u.from) u.from = u.to; A.render(); };
+
+  // =========================================================== Claims → Rejected: why claims were rejected
+  const PREVENT = { M02: 'Run the membership check when the patient books or arrives — it shows a suspended member before the visit.', M05: 'Check the dependant code against the medical aid card at every check-in.', A01: 'Get the authorisation number before the service and capture it on the invoice.', SW01: 'Check the practice number in Practice setup.', SW02: 'Copy the membership number from the card at registration and re-check it at every visit.', SW03: 'Use the full ICD-10 code with its decimal (for example J20.1, not J20).', M10: 'Check the plan’s benefits and limits before the service.', M07: 'Send claims within 4 months of the service date.' };
+  const help = (code) => (E.REJECTION_HELP || {})[code] || {};
+  const shortS = (n) => String(n || '').replace(/\s*(Medical Scheme|Medical Fund|Health Medical Scheme)\b/i, '').trim();
+  const rejStats = (r) => { const d = db(); const by = {}; const sch = {}; const who = { sw: 0, ma: 0 }; let sent = 0, rej = 0, value = 0, fixed = 0, open = 0; const claimsR = new Set();
+    d.claims.forEach((c) => { const inv = d.invoices.find((i) => i.id === c.invoiceId); if (!inv) return; const ms = d.memberships.find((m) => m.id === inv.membershipId); const o = ms && E.option(d, ms.optionId); const sn = o ? shortS(o.schemeName) : 'Medical aid';
+      (c.versions || []).forEach((v) => { if (!r.inR(v.at)) return; sent++; (sch[sn] = sch[sn] || { name: sn, sent: 0, rej: 0, value: 0, reasons: {} }).sent++;
+        if (v.response && v.response.status === 'rejected') { rej++; claimsR.add(c.id); value += inv.total || 0; const code = v.response.code; const k = by[code] = by[code] || { code, title: help(code).title || v.response.text || code, n: 0, value: 0, sw: 0 }; k.n++; k.value += inv.total || 0;
+          const isSw = /^SW/.test(code) || /switch/i.test(v.response.by || ''); if (isSw) { who.sw++; k.sw++; } else who.ma++; sch[sn].rej++; sch[sn].value += inv.total || 0; sch[sn].reasons[k.title] = (sch[sn].reasons[k.title] || 0) + 1; } }); });
+    claimsR.forEach((id) => { const c = d.claims.find((x) => x.id === id); if (c.status === 'rejected') open++; else fixed++; });
+    return { sent, rej, value, fixed, open, reasons: Object.values(by).sort((a, b) => b.n - a.n || b.value - a.value), schemes: Object.values(sch).filter((s) => s.rej).sort((a, b) => b.rej - a.rej), who }; };
+  const kpi = (n, l, s, cls) => `<div class="ma-kpi ${cls || ''}"><span class="n">${n}</span><span class="l">${l}</span>${s ? `<span class="s">${s}</span>` : ''}</div>`;
+  const bar = (v, max, cls, t) => `<span class="ma-bar" title="${esc(t || '')}"><i class="${cls || ''}" style="width:${max ? Math.max(2, Math.round(v / max * 100)) : 0}%"></i></span>`;
+  const rejAnalysis = () => { const r = range('rjR'); const S = rejStats(r); const maxR = Math.max(1, ...S.reasons.map((x) => x.n)); const rate = pct(S.rej, S.sent);
+    return `<section class="rja"><div class="row between ma-toolbar"><div><h2 style="margin:0">Why claims were rejected</h2><div class="tiny muted">Rejections ${esc(r.label)} · synthetic demo data</div></div>${A.periodBar('rjR')}</div>
+      <div class="ma-kpis">${kpi(nf(S.rej), 'Rejections', `${nf(S.sent)} claims sent`, S.rej ? 'crit' : 'good')}${kpi(rate + '%', 'Rejection rate', rate <= 5 ? 'healthy (5% or less)' : 'aim for 5% or less', rate > 5 ? 'warn' : 'good')}${kpi(M(S.value), 'Value rejected', 'invoice totals')}${kpi(nf(S.fixed), 'Fixed and re-sent', S.fixed + S.open ? pct(S.fixed, S.fixed + S.open) + '% of rejected claims' : '', 'good')}${kpi(nf(S.open), 'Still to fix', S.open ? 'see the list above' : 'nothing waiting', S.open ? 'crit' : '')}${kpi(S.reasons[0] ? esc(S.reasons[0].code) : '—', 'Most common reason', S.reasons[0] ? esc(S.reasons[0].title) : 'no rejections')}</div>
+      ${S.rej ? `<div class="ma-grid"><div class="card"><h3>Top reasons</h3><p class="tiny muted">How often each reason came back, what it cost, and how to stop it happening again.</p>
+        <div class="rja-reasons">${S.reasons.map((x) => `<div class="rja-r"><div class="rja-rh"><span class="rja-code">${esc(x.code)}</span><strong>${esc(x.title)}</strong><span class="rja-n">${x.n}×</span></div>${bar(x.n, maxR, 'c', `${x.n} rejections`)}<div class="rja-meta">${M(x.value)} · ${pct(x.n, S.rej)}% of rejections · by ${x.sw === x.n ? 'the switch' : x.sw ? 'switch and medical aid' : 'the medical aid'}</div><div class="rja-tip">💡 ${esc(PREVENT[x.code] || (help(x.code).steps || ['Read the reason on the claim and fix it before re-sending.'])[0])}</div></div>`).join('')}</div></div>
+        <div class="card"><h3>Per medical aid</h3><p class="tiny muted">Claims sent and rejected per medical aid in this period.</p><table class="t small ma-tbl"><thead><tr><th>Medical aid</th><th class="num">Sent</th><th class="num">Rejected</th><th class="num">Rate</th><th>Top reason</th></tr></thead><tbody>${S.schemes.map((s) => { const top = Object.entries(s.reasons).sort((a, b) => b[1] - a[1])[0]; const rr = pct(s.rej, s.sent); return `<tr><td><strong>${esc(s.name)}</strong><div class="tiny muted">${M(s.value)}</div></td><td class="num">${s.sent}</td><td class="num">${s.rej}</td><td class="num"><b class="${rr > 10 ? 'crit-t' : rr > 5 ? 'warn-t' : 'good-t'}">${rr}%</b></td><td class="tiny">${esc(top ? top[0] : '—')}</td></tr>`; }).join('')}</tbody></table>
+        <h3 style="margin-top:14px">Who rejected them</h3><div class="rja-who"><div><span class="rja-wn">${S.who.sw}</span><span>by the switch<small>wrong or missing details — fix and re-send the same day</small></span></div><div><span class="rja-wn">${S.who.ma}</span><span>by the medical aid<small>membership, benefits or authorisation</small></span></div></div></div></div>`
+        : `<div class="card"><div class="empty">No claims were rejected ${esc(r.label)}. 🎉</div></div>`}</section>`; };
+  const _claims = P.claims; P.claims = function (params) { const tab = (params && params[0]) || 'rejected'; let h = _claims.apply(this, arguments); if (tab !== 'rejected') return h;
+    const k = h.indexOf('<div class="card"><h2>Why claims were rejected'); return (k > -1 ? h.slice(0, k) : h) + rejAnalysis(); };
+
+  // =========================================================== Training: assign courses and track them
+  const orgOf = () => (A.dsEntry && A.dsEntry.org) || null; const me = () => (PL && PL.current && PL.current()) || {};
+  const store = () => { const o = orgOf(); if (o) { o.trainAssign = o.trainAssign || []; return o.trainAssign; } const s = db().settings; s.trainAssign = s.trainAssign || []; return s.trainAssign; };
+  const saveAll = () => { try { PL.save(); } catch (e) { /* demo */ } A.save(); };
+  const roles = () => (A.user ? (E.userRoles ? E.userRoles(A.user) : [A.user.role]) : []);
+  const canAssign = () => roles().some((r) => ['manager', 'owner', 'doctor', 'admin'].includes(r)) || (A.can && A.can('setup'));
+  const team = () => { const o = orgOf(); let list = []; try { const t = o && A.trainChallenge ? A.trainChallenge(o) : null; if (t) list = t.people.map((x) => ({ id: x.id, name: x.name, role: x.role, email: x.email })); } catch (e) { /* ignore */ }
+    if (!list.length) list = (db().users || []).filter((u) => u.active !== false).map((u) => ({ id: 'u:' + u.id, name: u.name, role: E.roleLabel ? E.roleLabel(u.role) : u.role, email: u.email })); return list; };
+  const allCourses = () => (A.COURSES || []).filter((c) => c && c.id && c.title && (c.lessons || []).length);
+  const courseOf = (id) => allCourses().find((c) => c.id === id);
+  const progOf = (accId, cid) => { const c = courseOf(cid); const a = /^u:/.test(accId) ? null : PL.acct(accId); const tr = (a && a.training && a.training[cid]) || {}; const n = c && c.lessons ? c.lessons.length : 0; const done = tr.lessons ? Object.values(tr.lessons).filter(Boolean).length : 0;
+    return { complete: !!tr.completedAt, at: tr.completedAt || null, pct: tr.completedAt ? 100 : n ? Math.round(Math.min(done, n) / (n + 1) * 100) : 0, started: !!tr.completedAt || done > 0, score: tr.score }; };
+  const status = (a) => { const p = progOf(a.to, a.course); const late = !p.complete && a.due && a.due < today(); return Object.assign(p, { late, label: p.complete ? '✓ Done' : late ? 'Overdue' : p.started ? 'In progress' : 'Not started', cls: p.complete ? 'done' : late ? 'late' : p.started ? 'busy' : 'todo' }); };
+  const mineAssigned = () => store().filter((a) => a.to === me().id && !a.removed);
+  const pbar = (n) => `<span class="ta-bar" role="img" aria-label="${n}%"><i style="width:${n}%"></i></span>`;
+  const assignedBody = () => { const mine = mineAssigned(); const unseen = mine.filter((a) => !a.seenAt); if (unseen.length) { unseen.forEach((a) => { a.seenAt = new Date().toISOString(); }); saveAll(); }
+    const myCard = `<div class="card"><h2 style="margin-top:0">Assigned to you</h2>${mine.length ? `<div class="ta-list">${mine.sort((a, b) => String(a.due).localeCompare(String(b.due))).map((a) => { const c = courseOf(a.course); const s = status(a);
+      return `<div class="ta-row"><div class="ta-who"><strong>${esc(c ? c.title : a.course)}</strong><span class="tiny muted">from ${esc(a.byName)} · due ${a.due ? A.fd(a.due) : '—'}${a.note ? ' · “' + esc(a.note) + '”' : ''}</span></div>${pbar(s.pct)}<span class="ta-st ${s.cls}">${s.label}</span>${s.complete ? '' : `<a class="btn sm primary" href="#/learn/academy/${esc(a.course)}">${s.started ? 'Continue' : 'Start'} →</a>`}</div>`; }).join('')}</div>` : '<div class="empty">Nothing assigned to you. Courses for your role are under My courses.</div>'}</div>`;
+    if (!canAssign()) return myCard;
+    const list = store().filter((a) => !a.removed); const f = A.ui.taF || 'all'; const ppl = team(); const cs = allCourses();
+    const rows = list.filter((a) => { const s = status(a); return f === 'all' || (f === 'open' ? !s.complete : f === 'late' ? s.late : s.complete); }).sort((a, b) => (status(a).complete - status(b).complete) || String(a.due).localeCompare(String(b.due)));
+    const nDone = list.filter((a) => status(a).complete).length, nLate = list.filter((a) => status(a).late).length;
+    const form = `<div class="card ta-form"><h2 style="margin-top:0">Assign training</h2><p class="tiny muted">Choose a person, tick one or more courses and a due date. They see it under 📌 Assigned training and get an email; you track their progress below.</p>
+      <div class="ta-grid"><label class="f"><span>Person <b class="req">*</b></span><select id="ta-to"><option value="">— choose —</option>${ppl.map((x) => `<option value="${esc(x.id)}">${esc(x.name)}${x.role ? ' · ' + esc(x.role) : ''}</option>`).join('')}</select></label>
+      <label class="f"><span>Due date <b class="req">*</b></span><input type="date" id="ta-due" value="${E.addDays(today(), 14)}" min="${today()}"></label><label class="f" style="grid-column:1/-1"><span>Note <small>(optional)</small></span><input id="ta-note" maxlength="140" placeholder="e.g. Before you start billing on your own"></label></div>
+      <div class="f"><span>Courses <b class="req">*</b></span><div class="ta-courses">${cs.map((c) => `<label class="ta-c"><input type="checkbox" class="ta-ck" value="${esc(c.id)}"><span>${esc(c.title)}<small>${(c.lessons || []).length} lessons</small></span></label>`).join('')}</div></div>
+      <div style="text-align:right"><button class="btn primary" data-act="ta-assign">📌 Assign</button></div></div>`;
+    const tracker = `<div class="card"><div class="row between" style="flex-wrap:wrap;gap:8px"><div><h2 style="margin:0">Training you assigned</h2><div class="tiny muted">${list.length} assignment${list.length === 1 ? '' : 's'} · ${nDone} done · ${nLate} overdue</div></div>
+      <div class="row" style="gap:6px">${[['all', 'All'], ['open', 'Not done'], ['late', 'Overdue'], ['done', 'Done']].map(([k, l]) => `<button class="chip ${f === k ? 'on' : ''}" data-act="ta-f" data-f="${k}">${l}</button>`).join('')}</div></div>
+      ${rows.length ? `<div class="tbl-wrap"><table class="t small ta-tbl"><thead><tr><th>Person</th><th>Course</th><th>Due</th><th>Progress</th><th>Status</th><th></th></tr></thead><tbody>${rows.map((a) => { const c = courseOf(a.course); const s = status(a);
+        return `<tr><td><strong>${esc(a.toName)}</strong><div class="tiny muted">assigned ${A.fd(a.at.slice(0, 10))}${a.byId !== me().id ? ' by ' + esc(a.byName) : ''}</div></td><td>${esc(c ? c.title : a.course)}${a.note ? `<div class="tiny muted">“${esc(a.note)}”</div>` : ''}</td><td>${a.due ? A.fd(a.due) : '—'}</td><td>${pbar(s.pct)} <span class="tiny">${s.pct}%</span>${s.complete && s.at ? `<div class="tiny muted">finished ${A.fd(s.at.slice(0, 10))}</div>` : ''}</td><td><span class="ta-st ${s.cls}">${s.label}</span>${a.remindedAt ? `<div class="tiny muted">reminded ${A.fd(a.remindedAt.slice(0, 10))}</div>` : ''}</td>
+          <td class="nowrap">${s.complete ? '' : `<button class="btn sm" data-act="ta-remind" data-id="${a.id}">🔔 Remind</button>`}<button class="btn sm ghost" data-act="ta-del" data-id="${a.id}" title="Remove this assignment">✕</button></td></tr>`; }).join('')}</tbody></table></div>` : '<div class="empty">Nothing here yet. Assign a course above.</div>'}</div>`;
+    return (mine.length ? myCard : '') + form + tracker; };
+  // the tab in the Training Academy
+  const _learn = P.learn; P.learn = function (params) { const p0 = params && params[0];
+    const addTab = (h, on) => { const n = mineAssigned().filter((a) => !status(a).complete).length; const tab = `<a role="tab" href="#/learn/assigned" class="lc-tab ${on ? 'on' : ''}" aria-selected="${on}"><span aria-hidden="true">📌</span>Assigned training${n ? `<span class="lc-tab-n hot">${n}</span>` : ''}</a>`;
+      if (on) h = h.replace(/class="lc-tab on"/g, 'class="lc-tab"').replace(/aria-selected="true"/g, 'aria-selected="false"'); return h.replace('</nav>', tab + '</nav>'); };
+    if (p0 === 'assigned') { let h = _learn.call(this, []); const k = h.indexOf('<div class="lc-panel" role="tabpanel">'); if (k > -1) h = h.slice(0, k) + `<div class="lc-panel" role="tabpanel">${assignedBody()}</div>`; return addTab(h, true); }
+    const h = _learn.apply(this, arguments); return h.indexOf('class="lc-tabs"') > -1 ? addTab(h, false) : h; };
+  H['ta-f'] = (el) => { A.ui.taF = el.dataset.f; A.render(); };
+  H['ta-assign'] = () => { const to = document.getElementById('ta-to').value, due = document.getElementById('ta-due').value, note = document.getElementById('ta-note').value.trim(); const cids = [...document.querySelectorAll('.ta-ck:checked')].map((x) => x.value);
+    const bad = []; if (!to) bad.push('ta-to'); if (!due) bad.push('ta-due'); bad.forEach((id) => document.getElementById(id).classList.add('field-err')); if (bad.length || !cids.length) return A.toast(!cids.length && !bad.length ? 'Tick at least one course.' : 'Choose the person and the due date.', 'error');
+    const p = team().find((x) => x.id === to); const now = new Date().toISOString(); let n = 0;
+    cids.forEach((cid) => { if (store().some((a) => a.to === to && a.course === cid && !a.removed && !status(a).complete)) return; store().push({ id: 'ta_' + Math.random().toString(36).slice(2, 10), to, toName: p ? p.name : to, course: cid, due, note, byId: me().id, byName: A.user.name, at: now, seenAt: null }); n++; });
+    if (p && p.email && PL.mail) try { PL.mail(p.email, `Prac360: ${A.user.name} assigned you training`, `${A.user.name} assigned you ${cids.length} Training Academy course${cids.length === 1 ? '' : 's'}, due ${A.fd(due)}:\n${cids.map((c) => '• ' + (courseOf(c) || {}).title).join('\n')}${note ? '\n\n' + note : ''}\n\nOpen Prac360 → Training Academy → Assigned training.`); } catch (e) { /* demo */ }
+    if (E.audit) E.audit(db(), A.user, 'training-assigned', 'user', to, null, `${n} course(s) to ${p ? p.name : to}, due ${due}`); saveAll(); A.render(); A.toast(n ? `Assigned ${n} course${n === 1 ? '' : 's'} to ${p ? p.name : 'them'}.` : 'Those courses were already assigned.'); };
+  H['ta-remind'] = (el) => { const a = store().find((x) => x.id === el.dataset.id); if (!a) return; const p = team().find((x) => x.id === a.to); a.remindedAt = new Date().toISOString(); a.seenAt = null;
+    if (p && p.email && PL.mail) try { PL.mail(p.email, 'Prac360: training reminder', `A friendly reminder from ${A.user.name}: please finish “${(courseOf(a.course) || {}).title}” by ${A.fd(a.due)}. Training Academy → Assigned training.`); } catch (e) { /* demo */ } saveAll(); A.render(); A.toast('Reminder sent to ' + a.toName + '.'); };
+  H['ta-del'] = (el) => A.confirm('Remove this assignment?', 'The person keeps any progress they made; it just leaves their Assigned training list.', () => { const a = store().find((x) => x.id === el.dataset.id); if (a) { a.removed = true; saveAll(); } A.render(); }, 'Remove');
+  // My account and security: a small summary
+  const _acc = P.account; if (_acc) P.account = function () { const h = _acc.apply(this, arguments); const mine = mineAssigned(); const open = mine.filter((a) => !status(a).complete).length; const mineBy = store().filter((a) => !a.removed && a.byId === me().id); const doneBy = mineBy.filter((a) => status(a).complete).length;
+    if (!mine.length && !(canAssign() && mineBy.length)) return h;
+    const card = `<div class="card ta-acc"><h3 style="margin-top:0">📌 Training</h3>${mine.length ? `<p class="small">Assigned to you: <strong>${open}</strong> to finish of ${mine.length}.</p>` : ''}${canAssign() && mineBy.length ? `<p class="small">Training you assigned: <strong>${doneBy} of ${mineBy.length}</strong> done${mineBy.some((a) => status(a).late) ? ' · <span class="crit-t">some overdue</span>' : ''}.</p>` : ''}<a class="btn sm" href="#/learn/assigned">Open Assigned training →</a></div>`;
+    return h + card; };
+  // a gentle nudge on the Home Dashboard when something new was assigned
+  const _today = P.today; if (_today) P.today = function () { const h = _today.apply(this, arguments); const nw = mineAssigned().filter((a) => !a.seenAt && !status(a).complete); return nw.length ? `<a class="ta-nudge" href="#/learn/assigned">📌 <strong>${esc(nw[0].byName)}</strong> assigned you ${nw.length} training course${nw.length === 1 ? '' : 's'} — open Assigned training →</a>` + h : h; };
+})();
+
+
+/* ===== ui-v081l.js ===== */
+/* Prac360 v0.81 — What's new + help: print everywhere, ICD-10 in every field, rejected-claims analysis, custom dates, assigned training. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.81')) A.RELEASES.unshift({ v: '0.81', date: '2026-11-25', title: 'Print anything, rejected-claims analysis and assigned training', items: [
+    { type: 'new', area: 'general', title: '🖨 Print button on everything you can save as PDF', text: 'Reports, sick notes, referral letters, statements, invoices, prescriptions and every other document with a Save as PDF button now also have a 🖨 Print button. It opens your computer’s or tablet’s normal print window with your default printer already chosen. The PDF-ready box and the PDF preview have a Print button too.' },
+    { type: 'improved', area: 'billing', title: 'ICD-10 suggestions in every ICD-10 field', text: 'All ICD-10 fields — including “Other ICD-10 codes” on the transaction screen — now drop down matching codes as you type, exactly like the consultation screen. Suggestions use the full code with its decimal (for example J20.1); a few codes such as I10 are complete without a decimal and are correct as they are.' },
+    { type: 'improved', area: 'billing', title: 'Why claims were rejected — redesigned', text: 'Claims → Rejected now shows a clear summary in the same style as Medical aids: rejections, rejection rate, value, how many were fixed, the top reasons with how to prevent each, a per-medical-aid table and whether the switch or the medical aid rejected them. Choose this month, 3 months, 12 months, all time or your own dates.' },
+    { type: 'improved', area: 'reports', title: 'Custom dates on Medical aids', text: 'Medical aids → Overview has a 📅 Custom dates option: pick a From and To date and every number updates.' },
+    { type: 'new', area: 'general', title: '📌 Assign training and track it', text: 'Practice managers and doctors can assign Training Academy courses to a person with a due date and an optional note, then see progress, overdue courses and send a reminder. Everyone sees their own list under Training Academy → 📌 Assigned training, with a summary on My account and security.' },
+    { type: 'improved', area: 'general', title: 'Team progress stays folded away', text: 'In the training challenge, Team progress now always starts closed so it doesn’t take up the screen in busy practices. Click it to see each person.' }] });
+  const add = (id, title, keys, link, steps, screens) => { if (!kb(id)) KB.push({ id, title, keys, screens: screens || [], link, steps }); return steps; };
+  const sP = add('printall', 'Print a report, sick note or letter', ['print', 'printer', 'print pdf', 'print report', 'print sick note', 'print letter', 'default printer'], '#/reports', ['Open the report or document (a report, sick note, referral letter, statement or invoice).', 'Click 🖨 Print next to Save as PDF.', 'Your computer’s print window opens with your default printer chosen — check the pages and click Print.', 'On an iPad or tablet, choose the printer in the print window that opens.'], ['reports']);
+  const sR = add('rejanalysis', 'See why claims were rejected', ['rejected', 'rejection rate', 'why rejected', 'rejection reasons', 'top reasons'], '#/claims/rejected', ['Go to Claims → Rejected.', 'Scroll to Why claims were rejected and choose a period, or 📅 Custom dates for your own From and To dates.', 'Read the top reasons — each has a 💡 tip to stop it happening again.', 'Use Per medical aid to see which medical aid rejects most, and Who rejected them to tell switch errors from medical aid decisions.'], ['claims']);
+  const sM = add('macustom', 'Medical aids: choose your own dates', ['custom dates', 'date range', 'medical aid period', 'from to'], '#/schemes', ['Go to Medical aids → Overview.', 'Click 📅 Custom dates.', 'Pick the From and To dates — the numbers update straight away.']);
+  const sT = add('trainassign', 'Assign training to a staff member', ['assign training', 'assigned training', 'training progress', 'track training', 'due date training', 'remind training'], '#/learn/assigned', ['Go to Training Academy → 📌 Assigned training (practice managers and doctors).', 'Choose the person, tick one or more courses and set the due date. Add a note if you like.', 'Click 📌 Assign — they get an email and see it in their own Assigned training list.', 'Track progress in Training you assigned; filter Not done or Overdue, and click 🔔 Remind to nudge them.']);
+  const C = A.COURSES || []; const c = C.find((x) => /getting|start|everyday/i.test((x.id || '') + ' ' + (x.t || x.title || ''))) || C[0]; const b = C.find((x) => /billing|claim/i.test((x.id || '') + ' ' + (x.title || ''))) || c; const r = C.find((x) => /running|manag/i.test((x.id || '') + ' ' + (x.title || ''))) || c;
+  const les = (co, t, st) => { if (co && co.lessons && !co.lessons.some((l) => l.t === t)) co.lessons.push({ t, body: st.join(' '), guide: '' }); };
+  les(c, 'Print anything', sP); les(b, 'Why claims were rejected', sR); les(r, 'Assign training to your team', sT);
+  const q = (co, test, o) => { if (co && co.quiz && !co.quiz.some((x) => test.test(x.q))) co.quiz.push(o); };
+  q(c, /🖨 Print/, { q: 'You click 🖨 Print on a sick note. What happens?', o: ['It emails the patient', 'Your device’s print window opens with the default printer', 'It only saves a PDF'], a: 1 });
+  q(r, /assign.*course/i, { q: 'How do you make sure a new receptionist finishes Front desk training?', o: ['Assign the course with a due date under 📌 Assigned training and track it', 'Ask them every day', 'There is no way'], a: 0 });
+  if (A.FUNCTIONS) { const g = (re) => A.FUNCTIONS.find((x) => re.test(x[0])) || A.FUNCTIONS[0]; const put = (re, t, id) => { const G = g(re); if (G && !G[1].some((x) => x[0] === t)) G[1].push([t, id]); };
+    put(/report|general|every/i, 'Print a report or document', 'printall'); put(/claim|billing/i, 'Why claims were rejected (analysis)', 'rejanalysis'); put(/medical aid|scheme|report/i, 'Medical aids custom dates', 'macustom'); put(/train|learn|practice|general/i, 'Assign and track training', 'trainassign'); }
+})();
+
+
+/* ===== ui-print.js ===== */
+/* Prac360 v0.81 — Print anything that can be saved as a PDF.
+ * • Every "Save as PDF" / "… PDF" button gets a 🖨 Print button next to it (reports, sick notes, referral letters, statements,
+ *   invoices, scripts, charts, quotes, certificates …). Buttons that already say "Print" now print straight away.
+ * • The "PDF ready" box and the PDF preview have 🖨 Print too, and "Print straight away" can be your default.
+ * Printing opens the computer's or tablet's own print window with its default printer — the pages are exactly the PDF pages. */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, esc = A.esc;
+  let printNext = 0; const want = () => Date.now() - printNext < 25000;
+  A.printMode = () => { printNext = Date.now(); };
+
+  // ---------------------------------------------------------------- print a finished PDF (its page images) via the system print window
+  A.printPdfDoc = (doc) => {
+    printNext = 0; const old = document.getElementById('p360-print'); if (old) old.remove();
+    const m = doc.margin || 0;
+    const pages = (doc.previews || []).map((pg) => `<div class="pp-page"><img src="${pg.img}" alt="" style="left:${m * 100}%;top:${m * 70.7}%;width:${100 - m * 200}%">${doc.watermark ? `<div class="pp-wm">${esc(doc.watermark)}</div>` : ''}</div>`).join('');
+    const box = document.createElement('div'); box.id = 'p360-print'; box.innerHTML = pages; document.body.appendChild(box);
+    const imgs = [...box.querySelectorAll('img')]; let waited = 0;
+    const go = () => { document.body.classList.add('printing-pdf'); const done = () => { document.body.classList.remove('printing-pdf'); box.remove(); window.removeEventListener('afterprint', done); };
+      window.addEventListener('afterprint', done); try { window.print(); } catch (e) { A.toast('This window cannot print — use Save PDF and print it from your PDF reader.', 'error'); } setTimeout(() => { if (document.body.classList.contains('printing-pdf') && !window.matchMedia('print').matches) done(); }, 2500); };
+    const ready = () => imgs.every((i) => i.complete); const wait = () => { if (ready() || waited > 3000) go(); else { waited += 100; setTimeout(wait, 100); } }; wait();
+    if (A.db && A.user && window.PE) { PE.audit(A.db, A.user, 'pdf-printed', 'document', doc.filename, null, doc.title); A.save(); }
+  };
+  // the "PDF ready" step: in print mode go straight to printing
+  const _ready = A.pdfReady; A.pdfReady = async function (doc) { if (want()) return A.printPdfDoc(doc); const r = await _ready.apply(this, arguments);
+    const box = document.querySelector('#pdf-ready .pr-actions'); if (box && !box.querySelector('[data-p3p]')) { const b = document.createElement('button'); b.className = 'btn primary'; b.dataset.p3p = '1'; b.textContent = '🖨 Print'; b.title = 'Opens the print window — your default printer is selected';
+      b.addEventListener('click', (e) => { e.stopPropagation(); const d = document.getElementById('pdf-ready'); if (d) d.remove(); A.printPdfDoc(doc); }); box.insertBefore(b, box.firstChild); const o = box.querySelector('[data-pr="open"]'); if (o) o.classList.remove('primary'); b.focus(); }
+    return r; };
+  // preview: add 🖨 Print to the bar
+  const _prev = A.previewPdf; if (_prev) A.previewPdf = function (doc) { const r = _prev.apply(this, arguments); const bar = document.querySelector('#pdf-view .pv-bar'); if (bar && !bar.querySelector('[data-p3p]')) { const b = document.createElement('button'); b.className = 'btn sm primary'; b.dataset.p3p = '1'; b.textContent = '🖨 Print'; b.addEventListener('click', (e) => { e.stopPropagation(); A.printPdfDoc(doc); }); const s = bar.querySelector('[data-pv="save"]'); if (s) { s.classList.remove('primary'); s.before(b); } else bar.appendChild(b); } return r; };
+
+  // ---------------------------------------------------------------- a 🖨 Print button next to every PDF button
+  const isPdfBtn = (b) => { const t = (b.textContent || '').trim(); return b.dataset && b.dataset.act && /\bPDF\b/.test(t) && !/print/i.test(t) && !/^(manual-open|cert)$/.test(b.dataset.act) && !b.closest('#pdf-ready, #pdf-view, .pdf-sheet, .no-p3p'); };
+  const isPrintBtn = (b) => { const t = (b.textContent || '').trim(); return b.dataset && b.dataset.act && /^(🖨\s*)?Print\b/i.test(t) && !/save as pdf/i.test(t) && b.dataset.act !== 'pdf-print' && b.dataset.act !== 'print-now'; };
+  const addPrint = (root) => { (root.querySelectorAll ? root.querySelectorAll('button[data-act]') : []).forEach((b) => {
+    if (!isPdfBtn(b) || (b.previousElementSibling && b.previousElementSibling.dataset && b.previousElementSibling.dataset.act === 'pdf-print')) return;
+    const p = document.createElement('button'); p.type = 'button'; p.className = b.className.replace(/\bprimary\b/, '').replace(/\bghost\b/, '') + (/\bsm\b/.test(b.className) ? '' : ''); if (!/\bbtn\b/.test(p.className)) p.className = 'btn ' + p.className;
+    p.dataset.act = 'pdf-print'; p.title = 'Print — opens the print window with your default printer'; p.textContent = '🖨 Print';
+    // the twin button knows which PDF button to press
+    Object.keys(b.dataset).forEach((k) => { if (k !== 'act') p.dataset['p3' + k] = b.dataset[k]; }); p.dataset.p3act = b.dataset.act; b.before(p); }); };
+  H['pdf-print'] = (el) => { const next = el.nextElementSibling; A.printMode(); if (next && next.dataset && next.dataset.act === el.dataset.p3act) next.click(); else { const fake = document.createElement('button'); Object.keys(el.dataset).forEach((k) => { if (/^p3/.test(k) && k !== 'p3act') fake.dataset[k.slice(2).replace(/^./, (c) => c.toLowerCase())] = el.dataset[k]; }); fake.dataset.act = el.dataset.p3act; (H[fake.dataset.act] || (() => {}))(fake); } };
+  // buttons that already say "Print …" print straight away
+  document.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('button[data-act]'); if (b && isPrintBtn(b)) A.printMode(); }, true);
+  // reports page 🖨 Print (v0.79) now prints the same pages as the PDF
+  const _pn = H['print-now']; H['print-now'] = (el) => { const pdf = document.querySelector('#main button[data-act="print"]'); if (pdf) { A.printMode(); pdf.click(); } else if (_pn) _pn(el); };
+  new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1) addPrint(n.matches && n.matches('button[data-act]') ? n.parentNode || n : n); }).observe(document.documentElement, { childList: true, subtree: true });
+  setTimeout(() => addPrint(document.body), 500);
+
+  // ---------------------------------------------------------------- "When a PDF is ready" preference gets "Print straight away"
 })();
 
 

@@ -2922,6 +2922,15 @@ html.simple .simple-x{display:none!important}
 @media (max-width:1180px){.top .pill.sandbox{display:none}.top .search{min-width:0;flex:1 1 180px;max-width:300px}}
 html.dev-tablet .nav{width:auto}html.dev-tablet .nav a{font-size:.95rem}
 @media (max-width:1180px){.top .pres-n{display:none}.top .search{min-width:170px}html.dev-touch .top .search .kbd{display:none}}
+/* v0.80 ICD-10 suggestions */
+.icd-ac{position:fixed;z-index:10050;background:var(--surface,#fff);border:1px solid var(--line,#d1d5db);border-radius:10px;box-shadow:0 12px 32px rgba(15,23,42,.18);overflow:auto;font-size:.9rem}
+.icd-ac-h{position:sticky;top:0;background:inherit;padding:6px 10px;font-size:.75rem;color:var(--muted,#64748b);border-bottom:1px solid var(--line,#e5e7eb)}
+.icd-ac-o{display:flex;gap:10px;align-items:baseline;padding:7px 10px;cursor:pointer;border-bottom:1px solid rgba(0,0,0,.04)}
+.icd-ac-o b{flex:0 0 64px;font-family:ui-monospace,Menlo,monospace;color:#1d4ed8}.icd-ac-o span{flex:1}.icd-ac-o i{font-style:normal;font-size:.7rem;background:#fef3c7;color:#92400e;border-radius:6px;padding:0 5px}
+.icd-ac-o:hover,.icd-ac-o.on{background:#eff6ff}.icd-ac-o mark{background:#fde68a;color:inherit;border-radius:2px;padding:0 1px}
+.icd-ac-none{padding:10px;color:var(--muted,#64748b)}
+html.night .icd-ac,html[data-theme=dark] .icd-ac{background:#1e293b;color:#e2e8f0}html.night .icd-ac-o:hover,html.night .icd-ac-o.on{background:rgba(59,130,246,.18)}
+html.dev-touch .icd-ac-o{padding:11px 12px}
 </style>
 </head>
 <body>
@@ -5512,6 +5521,73 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
   let tm = null; document.addEventListener('input', (e) => { const t = e.target; if (!t || !t.getAttribute || !t.getAttribute('list')) return; clearTimeout(tm); tm = setTimeout(() => fill(t), 120); }, true);
   document.addEventListener('focusin', (e) => { const t = e.target; if (t && t.getAttribute && t.getAttribute('list')) fill(t); }, true);
   A.icdFill = fill;
+})();
+
+
+/* ===== ui-icdac.js ===== */
+/* Prac360 v0.80 — ICD-10 suggestions as you type, in every ICD-10 field (consultations, AI Scribe, billing, problems, hospital, oncology).
+ * Type a code (J06, j069, E11.9) or any words or parts of words in any order ("throat acute", "diab typ 2") and matching codes
+ * drop down under the field straight away. ↑ ↓ to move, Enter to pick, Esc to close; tap on a tablet.
+ * Replaces the browser's own list, which filtered our results again and hardly worked on iPads. */
+(function () {
+  'use strict';
+  const A = window.APP; const esc = A.esc;
+  const ADD = { 'cx-icd-q': 'cx-icd-add', 'dx-search': 'dx-add-search' }; // pick = add straight away in these search boxes
+  const SYN = { 'sore throat': 'pharyngitis', throat: 'pharyn', flu: 'influenza', 'the flu': 'influenza', cold: 'nasopharyngitis', sugar: 'diabetes', diabetic: 'diabetes', 'high blood pressure': 'hypertension', 'blood pressure': 'hypertension', bp: 'hypertension', uti: 'urinary tract infection', 'bladder infection': 'cystitis', 'chest infection': 'bronchitis', 'heart attack': 'myocardial infarction', stroke: 'cerebral infarction', 'back pain': 'back pain', 'low back': 'low back', ear: 'otitis', 'ear infection': 'otitis media', sinus: 'sinusitis', tummy: 'abdominal', stomach: 'abdominal', 'runny tummy': 'diarrhoea', diarrhea: 'diarrhoea', 'pink eye': 'conjunctivitis', rash: 'rash', eczema: 'dermatitis', 'chest pain': 'chest pain', tb: 'tuberculosis', hiv: 'hiv', depression: 'depressive', anxiety: 'anxiety', asthma: 'asthma', gout: 'gout', 'kidney stone': 'calculus of kidney', fracture: 'fracture', 'broken': 'fracture', sprain: 'sprain', pregnant: 'pregnancy', pregnancy: 'pregnancy', checkup: 'general examination', 'check up': 'general examination', 'check-up': 'general examination' };
+  let box = null, inp = null, items = [], hi = -1, tm = null;
+  const kind = (el) => { const dl = el && document.getElementById(el.dataset.icdl || ''); return dl ? { k: dl.dataset.icd, re: dl.dataset.icdRe || null } : null; };
+  const adopt = (el) => { if (!el || !el.getAttribute) return false; if (el.dataset.icdl) return true; const id = el.getAttribute('list'); const dl = id && document.getElementById(id); if (!dl || !dl.dataset || !dl.dataset.icd) return false;
+    el.dataset.icdl = id; el.removeAttribute('list'); el.setAttribute('autocomplete', 'off'); el.setAttribute('role', 'combobox'); el.setAttribute('aria-autocomplete', 'list'); return true; };
+  const multi = (el) => el.dataset.icdMulti != null || /,/.test(el.value) || /,|code\(s\)|codes|comma/i.test(el.placeholder || '');
+  const seg = (el) => { const v = String(el.value || ''); if (!multi(el)) return { pre: '', q: v.split(' — ')[0] }; const i = v.lastIndexOf(','); return { pre: i < 0 ? '' : v.slice(0, i + 1) + ' ', q: v.slice(i + 1).trim() }; };
+  const search = (q, K) => { const morph = /morph/.test(K.k); let qq = morph ? q.replace(/^(\d)/, 'M$1') : q;
+    let L = A.icdSearch(qq, { re: K.re, morph, limit: 40 });
+    // "J069" → J06.9, "e119" → E11.9
+    if (!L.length && /^[a-z]\d{3,4}$/i.test(qq.trim())) { qq = qq.trim().slice(0, 3) + '.' + qq.trim().slice(3); L = A.icdSearch(qq, { re: K.re, morph, limit: 40 }); }
+    // everyday words → the words ICD-10 uses ("sore throat" → pharyngitis, "sugar" → diabetes)
+    if (q.trim() && !morph) { const L0 = L; const w0 = q.toLowerCase().trim(); let alt = w0; Object.keys(SYN).sort((a, b) => b.length - a.length).forEach((k) => { if (new RegExp('\\b' + k + '\\b').test(alt)) alt = alt.replace(new RegExp('\\b' + k + '\\b', 'g'), SYN[k]); });
+      if (alt !== w0) { L = A.icdSearch(alt, { re: K.re, limit: 40 }); L.alt = alt; }
+      if (!L.length && L0.length) L = L0;
+      // still nothing: drop one word at a time and show the closest matches
+      if (!L.length) { const ws = alt.split(/\s+/).filter(Boolean); for (let i = 0; i < ws.length && !L.length && ws.length > 1; i++) L = A.icdSearch(ws.filter((_, j) => j !== i).join(' '), { re: K.re, limit: 40 }); if (L.length) L.close = true; }
+      if (L !== L0 && L0.length) { const c = L.close, al = L.alt; L = L.concat(L0.filter((x) => !L.includes(x))).slice(0, 40); if (c && L.length) L.close = true; L.alt = al; } }
+    // words (not a code): codes whose description starts with the searched word come first ("flu" → Influenza …)
+    if (L.alt && !morph) { const first = L.alt.toLowerCase().trim().split(/\s+/)[0]; const st = (x) => (x.desc.toLowerCase().startsWith(first) ? 0 : 1); const c = L.close; L = L.map((x, i) => [x, i]).sort((a, b) => st(a[0]) - st(b[0]) || a[1] - b[1]).map((a) => a[0]); if (c) L.close = true; }
+    if (!q.trim() && !morph && !K.re) { const com = A.icdCommon(25); if (com.length) L = com.concat(L.filter((x) => !com.includes(x))).slice(0, 40); }
+    return L; };
+  const mark = (t, q) => { let h = esc(t); const ws = String(q || '').toLowerCase().split(/[\s,]+/).filter((w) => w.length > 1 && !/^[a-z]\d/i.test(w)).sort((a, b) => b.length - a.length);
+    ws.forEach((w) => { h = h.replace(new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'), '\u0001$1\u0002'); }); return h.replace(/\u0001/g, '<mark>').replace(/\u0002/g, '</mark>'); };
+  const place = () => { if (!box || !inp) return; const r = inp.getBoundingClientRect(); const vh = window.visualViewport ? window.visualViewport.height : innerHeight;
+    const below = vh - r.bottom, up = below < 220 && r.top > below; box.style.left = Math.max(6, Math.min(r.left, innerWidth - 340)) + 'px'; box.style.width = Math.max(r.width, 340) + 'px';
+    box.style.maxHeight = Math.max(160, Math.min(360, (up ? r.top : below) - 12)) + 'px'; if (up) { box.style.top = ''; box.style.bottom = (innerHeight - r.top + 4) + 'px'; } else { box.style.bottom = ''; box.style.top = (r.bottom + 4) + 'px'; } };
+  const close = () => { if (box) box.remove(); box = null; items = []; hi = -1; if (inp) inp.setAttribute('aria-expanded', 'false'); };
+  const show = (el) => { const K = kind(el); if (!K) return; inp = el; const { q } = seg(el); items = search(q, K); hi = -1;
+    if (!box) { box = document.createElement('div'); box.className = 'icd-ac'; box.setAttribute('role', 'listbox'); document.body.appendChild(box);
+      box.addEventListener('mousedown', (e) => e.preventDefault()); box.addEventListener('click', (e) => { const o = e.target.closest('[data-i]'); if (o) pick(+o.dataset.i); }); }
+    const empty = !q.trim(); const morph = /morph/.test(K.k);
+    box.innerHTML = (items.length ? `<div class="icd-ac-h">${empty ? (morph ? 'Morphology codes' : 'Codes your practice uses most — or type a code or words') : items.close ? 'No exact match — closest codes:' : items.length >= 40 ? 'Best 40 matches — type more to narrow' : items.length + ' match' + (items.length === 1 ? '' : 'es')}</div>`
+      + items.map((x, i) => `<div class="icd-ac-o" role="option" data-i="${i}"><b>${esc(morph ? x.code.replace(/^M/, '') : x.code)}</b><span>${mark(x.desc, q)}</span>${x.pmb ? '<i>PMB</i>' : ''}</div>`).join('')
+      : `<div class="icd-ac-none">No ICD-10 code matches “${esc(q)}”. Try fewer letters, part of a word, or the code (for example J06).</div>`);
+    el.setAttribute('aria-expanded', 'true'); place(); };
+  const pick = (i) => { const x = items[i]; if (!x || !inp) return; const K = kind(inp); const el = inp; const { pre } = seg(el); const morph = /morph/.test(K.k);
+    const v = morph ? x.code.replace(/^M/, '') : x.code; const full = (K.k === 'code' || K.k === 'morph-code') ? v : v + ' — ' + x.desc;
+    el.value = multi(el) && pre ? pre + v : full; close();
+    el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true }));
+    const act = ADD[el.id]; if (act) { const b = (el.closest('.cx-add, .row, .f') || document).querySelector(`[data-act="${act}"]`); if (b) b.click(); else if (A.H[act]) A.H[act](el); } };
+  const move = (d) => { if (!box || !items.length) return; hi = (hi + d + items.length) % items.length; box.querySelectorAll('.icd-ac-o').forEach((o, i) => o.classList.toggle('on', i === hi)); const o = box.querySelector('.icd-ac-o.on'); if (o) o.scrollIntoView({ block: 'nearest' }); };
+
+  document.addEventListener('focusin', (e) => { if (adopt(e.target)) setTimeout(() => { if (document.activeElement === e.target) show(e.target); }, 30); }, true);
+  document.addEventListener('input', (e) => { const t = e.target; if (!t || !t.dataset || !t.dataset.icdl) return; clearTimeout(tm); tm = setTimeout(() => show(t), 90); }, true);
+  document.addEventListener('keydown', (e) => { const t = e.target; if (!t || !t.dataset || !t.dataset.icdl) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (!box) show(t); else move(1); } else if (e.key === 'ArrowUp') { if (box) { e.preventDefault(); move(-1); } }
+    else if (e.key === 'Enter') { if (box && items.length) { e.preventDefault(); e.stopPropagation(); const { q } = seg(t); const exact = items.findIndex((x) => x.code.toUpperCase() === q.trim().toUpperCase()); pick(hi >= 0 ? hi : exact >= 0 ? exact : 0); } else if (ADD[t.id]) { e.preventDefault(); A.H[ADD[t.id]] && A.H[ADD[t.id]](t); } }
+    else if (e.key === 'Escape') { if (box) { e.preventDefault(); e.stopPropagation(); close(); } } }, true);
+  document.addEventListener('focusout', (e) => { if (e.target === inp) setTimeout(() => { if (document.activeElement !== inp) close(); }, 150); }, true);
+  document.addEventListener('mousedown', (e) => { if (box && !box.contains(e.target) && e.target !== inp) close(); }, true);
+  window.addEventListener('resize', place); document.addEventListener('scroll', () => { if (box) place(); }, true);
+  // the old filler must not refill a datalist we no longer use
+  const _fill = A.icdFill; A.icdFill = (el) => (el && el.dataset && el.dataset.icdl ? null : _fill && _fill(el));
+  A.icdSuggest = show;
 })();
 
 
@@ -16467,7 +16543,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     A.modal(`Macro Billing — ${m.name}`, `<p class="small muted">Check the lines, then add them. Each line becomes its own transaction; prices follow the patient's payment arrangement once added.</p>
       <div class="tbl-wrap"><table class="t small mb-prev"><thead><tr><th></th><th>Code</th><th>Description</th><th>Qty</th><th class="num">Estimate</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td colspan="4"><strong>Estimated total</strong></td><td class="num"><strong>${M(total(m, inv))}</strong></td></tr></tfoot></table></div>
       <div class="mb-icd"><strong class="small">ICD-10 for these lines</strong>${dx.length ? `<div class="mb-dx">${dx.map((c, i) => `<label class="check"><input type="checkbox" class="mb-dxc" value="${esc(c)}" ${i < 4 ? 'checked' : ''}> <span class="mono">${esc(c)}</span> ${esc((E.icd(db(), c) || {}).desc || '')}${i === 0 ? ' <span class="badge">primary</span>' : ''}</label>`).join('')}</div>` : '<p class="tiny warn-t">This visit has no diagnosis yet — add ICD-10 codes below, or each line will need one before submitting.</p>'}
-        <label class="f"><span>More ICD-10 codes (optional, separate with commas)</span><input id="mb-dx-more" list="icd-codes" placeholder="e.g. Z01.2" data-nodictate></label></div>`,
+        <label class="f"><span>More ICD-10 codes (optional, separate with commas)</span><input id="mb-dx-more" list="icd-codes" data-icd-multi placeholder="e.g. Z01.2" data-nodictate></label></div>`,
       `<button class="btn" data-act="mb-open">← All macros</button><button class="btn primary" data-act="mb-add" data-id="${m.id}">Add selected lines</button>`, { wide: true }); };
   H['mb-add'] = (el) => { const inv = curInv(); const enc = encById(A.params[0]); const m = list().find((x) => x.id === el.dataset.id); if (!inv || !m) return; if (inv.status !== 'draft') return A.toast('This invoice is no longer a draft.', 'error');
     const inc = new Set([...document.querySelectorAll('.mb-inc:checked')].map((x) => +x.dataset.i)); const qty = {}; document.querySelectorAll('.mb-qty').forEach((x) => { qty[+x.dataset.i] = Math.max(1, Math.min(99, +x.value || 1)); });
@@ -21422,6 +21498,22 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     const put = (grp, t, id) => { if (grp && !grp[1].some((x) => x[0] === t)) grp[1].push([t, id]); };
     put(g, 'Simple mode (switch and ⚙ customise)', 'simplemode'); put(g, 'Tablets and phones', 'tablets'); put(g, 'Print a report', 'printreport');
     put(cl, 'Request remittance and automatic follow-ups', 'remitreq'); put(cl, 'Auto-reconcile eRA remittances', 'eraauto'); }
+})();
+
+
+/* ===== ui-v080l.js ===== */
+/* Prac360 v0.80 — What's new + help: ICD-10 suggestions as you type. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.80')) A.RELEASES.unshift({ v: '0.80', date: '2026-11-25', title: 'ICD-10 suggestions as you type', items: [
+    { type: 'improved', area: 'clinical', title: 'Find ICD-10 codes by code, words or part of a word', text: 'In every ICD-10 field (Classic and AI Scribe consultations, billing, problems, hospital and oncology) matching codes now drop down as you type. Type a code (J06 or J069), any words or parts of words in any order (“diab typ 2”, “pharyng ac”), or everyday words like “sore throat”, “flu” or “sugar”. Use ↑ ↓ and Enter, or tap. In a consultation, picking a code adds it straight away.', link: '#/today' }] });
+  const steps = ['Click in the ICD-10 search box in the consultation (Diagnosis), the transaction or the problem list.', 'Start typing: a code (J06, J06.9 or J069), words or parts of words in any order (“diab typ 2”), or everyday words (“sore throat”, “flu”).', 'Matching codes drop down at once; the matched words are highlighted and PMB codes are marked.', 'Use ↑ ↓ and Enter, or click or tap a code. In a consultation it is added straight away.', 'With the box empty you see the codes your practice uses most.'];
+  if (!kb('icdsearch')) KB.push({ id: 'icdsearch', title: 'Search ICD-10 codes as you type', keys: ['icd', 'icd10', 'icd-10', 'diagnosis code', 'search code', 'find code', 'code lookup'], screens: ['consult', 'billing'], link: '#/today', steps });
+  const C = A.COURSES || []; const c = C.find((x) => /clinical|consult|doctor/i.test((x.id || '') + ' ' + (x.t || x.title || ''))) || C[0];
+  if (c && c.lessons && !c.lessons.some((l) => l.t === 'Find an ICD-10 code')) c.lessons.push({ t: 'Find an ICD-10 code', body: steps.join(' '), guide: '' });
+  if (c && c.quiz && !c.quiz.some((q) => /diab typ/.test(q.q))) c.quiz.push({ q: 'You type “diab typ 2” in the ICD-10 box. What happens?', o: ['Nothing — you must type the exact code', 'Type 2 diabetes codes drop down to pick from', 'An error appears'], a: 1 });
+  if (A.FUNCTIONS) { const g = A.FUNCTIONS.find((x) => /clinical|consult/i.test(x[0])) || A.FUNCTIONS[0]; if (g && !g[1].some((x) => /ICD-10 codes as you type/.test(x[0]))) g[1].push(['Search ICD-10 codes as you type', 'icdsearch']); }
 })();
 
 

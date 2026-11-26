@@ -23284,7 +23284,7 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
     if (keys.has('by') && keys.has('cby')) keys.delete('cby');
     keys.forEach((t, k) => { if (k.endsWith('#')) { const kk = k.slice(0, -1); F.push({ k: kk + '_n', l: 'Number of ' + label(kk).toLowerCase(), get: (r) => (r[kk] || []).length, t: 'number' }); return; }
       const user = USERF.test(k); const pid = /^(patientId|accountId)$/.test(k); F.push({ k, l: label(k), get: user ? (r) => uname(r[k]) : pid ? (r) => pnm(r[k]) : Array.isArray(sample.find((r) => r[k] != null)[k]) ? (r) => (r[k] || []).join(', ') : (r) => r[k], t: user || pid ? 'text' : t }); });
-    if (!F.some((f) => f.k === 'cby') && sample.some((r) => 'cby' in r)) F.push({ k: 'cby', l: 'Captured by', get: (r) => uname(r.cby), t: 'text' });
+    if (!F.some((f) => f.k === 'cby' || f.k === 'by') && sample.some((r) => 'cby' in r)) F.push({ k: 'cby', l: 'Captured by', get: (r) => uname(r.cby), t: 'text' });
     return F; };
   A.reportFields = (sid) => { const s = sources().find((x) => x.id === sid); return s ? fieldsOf(s) : []; };
 

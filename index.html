@@ -6900,7 +6900,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
   // Complete button: only shown once the sick note / referral letter has been saved (or signed, which also saves it).
   A.showComplete = () => { const mf = document.querySelector('#modal .mf'); if (!mf || mf.querySelector('[data-act="cert-complete"]')) return; const sv = mf.querySelector('[data-act="cert-save"]'); if (sv) sv.remove(); const cx = mf.querySelector('[data-act="modal-close"]'); if (cx) cx.textContent = 'Close'; const b = document.createElement('button'); b.className = 'btn primary'; b.dataset.act = 'cert-complete'; b.textContent = 'Complete'; mf.appendChild(b); };
   H['cert-complete'] = () => A.closeModal();
-  H['cert-save'] = (el) => { const enc = encById(el.dataset.id); const body = el.dataset.kind === 'Referral letter' ? 'To: ' + document.getElementById('ref-to').value + '\n\n' + document.getElementById('ref-body').value : document.getElementById('sn-preview').innerText; ['sn-from', 'sn-to', 'sn-consent', 'ref-to', 'ref-body'].forEach((id) => { const x = document.getElementById(id); if (x) x.disabled = true; }); const sb = document.getElementById('sign-box'); if (sb) sb.remove(); A.showComplete(); A.act(() => { db().documents.push({ id: E.id('doc'), patientId: enc.patientId, encounterId: enc.id, kind: el.dataset.kind, title: el.dataset.kind + ' ' + fd(enc.date), date: enc.date, body, acknowledged: true }); E.audit(db(), A.user, 'create-document', 'document', enc.id, enc.patientId, el.dataset.kind); }, el.dataset.kind + ' saved to the patient file.'); };
+  H['cert-save'] = (el) => { const enc = encById(el.dataset.id); const body = el.dataset.kind === 'Referral letter' ? 'To: ' + document.getElementById('ref-to').value + '\n\n' + document.getElementById('ref-body').value : document.getElementById('sn-preview').innerText; ['sn-from', 'sn-to', 'sn-consent', 'ref-to', 'ref-body'].forEach((id) => { const x = document.getElementById(id); if (x) x.disabled = true; }); document.querySelectorAll('#modal .sign-box').forEach((x) => x.remove()); const nl = document.querySelector('#modal .sn-sigline .tiny'); if (nl) nl.textContent = 'Saved to the patient file, not signed.'; A.showComplete(); A.act(() => { db().documents.push({ id: E.id('doc'), patientId: enc.patientId, encounterId: enc.id, kind: el.dataset.kind, title: el.dataset.kind + ' ' + fd(enc.date), date: enc.date, body, acknowledged: true }); E.audit(db(), A.user, 'create-document', 'document', enc.id, enc.patientId, el.dataset.kind); }, el.dataset.kind + ' saved to the patient file.'); };
 
   // =====================================================================
   // BILLING REVIEW
@@ -24751,6 +24751,38 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   q(gs, /AI guide.*Why/i, { q: 'In the AI guide, what does “Why?” show?', o: ['What the suggestion is based on', 'A video', 'The price'], a: 0 });
   q(gs, /AI guide sign/i, { q: 'Will the AI guide sign, submit or post anything for you?', o: ['Yes, automatically', 'No — it only points the way; you decide and do', 'Only claims'], a: 1 });
   if (A.FUNCTIONS) { const G = A.FUNCTIONS.find((x) => /start|general|basic|home/i.test(x[0])) || A.FUNCTIONS[0]; [['Future themes', 'futurethemes'], ['AI guide and My day', 'aiguide'], ['Ask or jump (Ctrl K)', 'askjump']].forEach(([t, id]) => { if (G && !G[1].some((x) => x[0] === t)) G[1].push([t, id]); }); }
+})();
+
+
+/* ===== ui-v091.js ===== */
+/* Prac360 v0.91 — What's new + Training Academy + help: Complete button on sick notes and referral letters,
+ * and Report a problem moved to a small link in the top bar. */
+(function () {
+  'use strict';
+  const A = window.APP; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.91')) A.RELEASES.unshift({ v: '0.91', date: '2026-11-27', title: 'A Complete button for sick notes and letters, and Report a problem in the top bar', items: [
+    { type: 'improved', area: 'clinical', title: 'Sick notes and referral letters: save, then Complete', text: 'After you save a sick note or referral letter (Save to file, or Sign with your PIN), it is locked and a green Complete button appears. Press Complete to finish and close. Before it is saved, there is no Complete button, so you always know whether the document is on the patient file.', link: '#/today', guide: 'sicknote' },
+    { type: 'improved', area: 'look', title: 'Report a problem is now a small button in the top bar', text: 'It no longer sits at the bottom of the menu on the left, where it got in the way. Look for the small pink and green 🐞 button next to the practice name at the top. It does the same as before: the screen you were on is filled in for you.', link: '#/feedback', guide: 'feedback' }] });
+
+  // Help articles and guided tours
+  const sn = kb('sicknote'); if (sn) sn.steps = ['In the consultation, choose "Sick note" or "Referral letter".', 'Check the dates and text — it is pre-filled from the note. For a referral, fill in who it is to and the reason.', 'Press "Save to file", or enter your PIN and press Sign. Either way it is saved to the patient file and locked.', 'The green "Complete" button now appears. Press it to finish. It only appears after the document is saved.', 'To print it, press "Save as PDF" (or print it later from the patient file).'];
+  const es = kb('esign'); if (es && es.steps && !es.steps.some((x) => /Complete/.test(x))) es.steps.push('After signing, press the green Complete button to finish.');
+  const fb = kb('feedback'); if (fb && fb.steps) fb.steps[0] = 'Press the small pink and green Report a problem button at the top of the screen (next to the practice name). The screen you were on is filled in for you.';
+  if (A.GUIDES) {
+    A.GUIDES.sicknote = { title: 'Write a sick note or referral', steps: [{ sel: '[data-act="sicknote"]', text: 'Click "Sick note" (or "Referral letter" next to it).', expect: 'click', missing: 'Open a consultation first.' }, { sel: '#sn-from', text: 'Check the dates and whether the patient consented to show the diagnosis.', expect: 'next' }, { sel: '[data-act="cert-save"]', text: 'Click "Save to file". The green "Complete" button then appears — press it to finish.', expect: 'click' }] };
+    A.GUIDES.feedback = { title: 'Report a problem or idea', steps: [{ sel: 'a[href="#/feedback"]', text: 'Report a problem is the small pink and green button at the top of the screen.', expect: 'next' }, { sel: '[data-act="fb-new"][data-type="bug"]', text: 'Report a problem — or Suggest an improvement next to it. Say what happened and what you expected.', expect: 'next', missing: 'Open Report a problem first, then press Show me again.' }] };
+  }
+
+  // Training Academy: update the lessons and add a quiz question where each topic is taught
+  const courses = A.COURSES || [];
+  const lesson = (re) => { for (const c of courses) { const l = (c.lessons || []).find((x) => re.test(x.t)); if (l) return { c, l }; } return null; };
+  const sl = lesson(/^Sick notes and referral letters/i);
+  if (sl) {
+    sl.l.body = 'Open Sick note or Referral letter in the consultation and check it. Then press Save to file, or sign with your PIN — both save it to the patient file. Only after it is saved does the green Complete button appear: press it to finish. Sick notes get a QR code employers can scan. Set up your signature and PIN once under Practice setup → Signatures and PINs.';
+    if (sl.c.quiz && !sl.c.quiz.some((x) => /Complete button/i.test(x.q))) sl.c.quiz.push({ q: 'When does the Complete button appear on a sick note or referral letter?', o: ['Straight away, before saving', 'Only after it has been saved to the patient file', 'Only for referral letters'], a: 1 });
+  }
+  const fl = lesson(/^Report a problem or an idea/i);
+  if (fl) fl.l.body = 'Press the small pink and green Report a problem button at the top of the screen. Choose Report a problem (what happened, what you expected, the steps) or Suggest an improvement (what, why, how it should work). You get a reference, can follow it, and are told when it is done.';
 })();
 
 

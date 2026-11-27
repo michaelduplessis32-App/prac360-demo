@@ -2861,6 +2861,8 @@ body.talk-min.vm-open .as-pill{display:inline-flex!important}
 .cu-tn{display:flex;flex-direction:column}.cu-ta{display:flex;gap:6px;align-items:center;justify-content:space-between;margin-top:auto}
 .cu-mk{display:flex;gap:16px;flex-wrap:wrap}.cu-mk-prev{width:180px;height:210px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-radius:12px}.cu-mk-prev img{max-width:170px;max-height:200px}.cu-mk-f{flex:1;min-width:220px}
 .linkish{background:none;border:0;padding:0;color:#2563eb;cursor:pointer;text-decoration:underline}
+.cu-robot{margin-bottom:16px}.cu-robot .am-switch{min-width:260px;padding:8px 0}.cu-robot .am-switch>span{display:flex;flex-direction:column}
+.cu-robot-f{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin-top:12px}.cu-robot-f input[type=number]{width:90px}.cu-robot-f .tiny{flex:1;min-width:220px;margin:0}
 /* v0.75 — staff sign-in: Support console or Admin tool */
 .auth-staff{display:grid;grid-template-columns:1fr 1fr;gap:8px}.auth-staff .btn{display:flex;align-items:center;justify-content:center;gap:6px}
 .adm-login-card .adm-to{display:flex;width:100%;margin:4px 0 14px}.adm-login-card .adm-to button{flex:1;padding:8px 6px;font-weight:600}
@@ -17063,9 +17065,13 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
  * when the browser tab is hidden, or for practices without the Assist add-on (Talk is part of Assist). */
 (function () {
   const A = window.APP, H = A.H;
-  const EVERY = 120000, FIRST = 30000, STAY = 8000;
+  const FIRST = 30000, STAY = 8000;
+  // How often it pops up, and whether practices see it at all, are set by Prac360 support (Support console → Customisation → Helper robot).
+  const cfg = () => { try { return A.robotSettings(); } catch (e) { return { on: false, minutes: 2 }; } };
+  const every = () => cfg().minutes * 60000;
+  const master = () => cfg().on;
   const LINES = ['Need help? Talk to me.', 'Stuck? Talk to me.', 'Need a hand? Talk to me.'];
-  let n = 0, hideT = null, last = Date.now() - (EVERY - FIRST);
+  let n = 0, hideT = null, last = Date.now() - (120000 - FIRST);
 
   const on = () => { try { return A.voicePrefs().robot !== false; } catch (e) { return true; } };
   A.robotOn = on;
@@ -17135,7 +17141,7 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
     at(3200, () => cls(['hop'], ['wave']));
     at(4400, () => cls(['wave'], ['hop']));
     at(6800, () => cls([], ['wave'])); };
-  const show = () => { if (!on() || busy() || !pill()) return; const box = el(); if (!place()) return; if (A.avatarRefresh) A.avatarRefresh();
+  const show = () => { if (!master() || !on() || busy() || !pill()) return; const box = el(); if (!place()) return; if (A.avatarRefresh) A.avatarRefresh();
     box.querySelector('.rb-say strong').textContent = LINES[n++ % LINES.length];
     box.removeAttribute('aria-hidden'); box.classList.add('up'); last = Date.now(); dance(box);
     clearTimeout(hideT); hideT = setTimeout(hide, STAY); };
@@ -17143,8 +17149,8 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
   A.robotShow = show; A.robotHide = hide;
 
   setInterval(() => { const box = document.getElementById('p360-robot');
-    if (box && box.classList.contains('up') && (busy() || !on() || !place())) hide();
-    if (Date.now() - last >= EVERY) { if (on() && !busy() && pill()) show(); else last = Date.now() - EVERY + 15000; } }, 1000);
+    if (box && box.classList.contains('up') && (busy() || !master() || !on() || !place())) hide();
+    const ev = every(); if (Date.now() - last >= ev) { if (master() && on() && !busy() && pill()) show(); else last = Date.now() - ev + Math.min(15000, ev); } }, 1000);
   addEventListener('resize', () => { if (document.querySelector('#p360-robot.up')) place(); });
 
   H['robot-talk'] = () => { hide(); if (H['vm-open']) H['vm-open'](); };
@@ -17152,12 +17158,13 @@ Answer with JSON only: {"codes":[{"code":"from the list","why":"max 10 words"}],
 
   // on/off switch in the Assist header, next to the speaker button
   const ROBO_ICO = (off) => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="4"/><path d="M12 7V4"/><circle cx="12" cy="3" r="1"/><circle cx="9" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="12" r="1.2" fill="currentColor"/><path d="M9.5 15.5h5"/>${off ? '<path d="M3 3l18 18"/>' : ''}</svg>`;
-  const btnHtml = () => { const o = on(); return `<button class="as-ib as-robot ${o ? 'on' : ''}" data-act="as-robot" aria-pressed="${o}" title="${o ? 'Helper robot is on: it pops up every 2 minutes. Click to switch it off' : 'Helper robot is off. Click to switch it on'}" aria-label="Helper robot ${o ? 'on' : 'off'}">${ROBO_ICO(!o)}</button>`; };
+  const minTxt = () => { const m = cfg().minutes; return m === 1 ? 'minute' : m + ' minutes'; };
+  const btnHtml = () => { const o = on(); return `<button class="as-ib as-robot ${o ? 'on' : ''}" data-act="as-robot" aria-pressed="${o}" title="${o ? (master() ? 'Helper robot is on: it pops up every ' + minTxt() + '. Click to switch it off' : 'Helper robot is on for you, but Prac360 support has it switched off for practices right now. Click to switch it off') : 'Helper robot is off. Click to switch it on'}" aria-label="Helper robot ${o ? 'on' : 'off'}">${ROBO_ICO(!o)}</button>`; };
   const addBtn = () => { const hd = document.querySelector('#assist .as-hd'); if (!hd || hd.querySelector('.as-robot')) return; const spk = hd.querySelector('[data-act="as-speak"]'); if (!spk) return; spk.insertAdjacentHTML('afterend', btnHtml()); };
   new MutationObserver(addBtn).observe(document.documentElement, { childList: true, subtree: true });
   H['as-robot'] = () => { const o = !on(); if (A.setVoicePrefs) A.setVoicePrefs({ robot: o }); if (!o) hide();
     const b = document.querySelector('#assist .as-robot'); if (b) b.outerHTML = btnHtml();
-    A.toast(o ? 'Helper robot on. It will pop up from behind the Assist button every 2 minutes.' : 'Helper robot off. Switch it back on with the robot button at the top of Assist.'); };
+    A.toast(o ? (master() ? 'Helper robot on. It will pop up from behind the Assist button every ' + minTxt() + '.' : 'Helper robot on for you, but Prac360 support has it switched off for practices right now.') : 'Helper robot off. Switch it back on with the robot button at the top of Assist.'); };
 })();
 (function () { const A = window.APP; if (!A.RELEASES) return; const r = A.RELEASES.find((x) => x.v === '0.33'); if (r && !r.items.some((i) => i.title === 'Helper robot and a new default voice')) r.items.unshift({ type: 'new', area: 'assist', title: 'Helper robot and a new default voice', text: 'Every 2 minutes a small robot peeks out from behind the Assist button to offer help. Click it to start talking. Switch it on or off with the robot button at the top of Assist, next to the speaker. Spoken replies now use Microsoft Andrew (Natural) at 1.20× when this computer has it; otherwise your browser’s own voice.', link: '#/whatsnew' }); })();
 
@@ -24783,6 +24790,41 @@ window.P360_HUB = { url: 'https://script.google.com/macros/s/AKfycbwS88_AQaxADgg
   }
   const fl = lesson(/^Report a problem or an idea/i);
   if (fl) fl.l.body = 'Press the small pink and green Report a problem button at the top of the screen. Choose Report a problem (what happened, what you expected, the steps) or Suggest an improvement (what, why, how it should work). You get a reference, can follow it, and are told when it is done.';
+})();
+
+
+/* ===== ui-v092.js ===== */
+/* Prac360 v0.92 — Support console → Customisation → Helper robot: how often it pops up at practices, and an on/off switch (off by default). */
+(function () {
+  'use strict';
+  const A = window.APP, H = A.H, esc = A.esc; const KB = A.KB || []; const kb = (id) => KB.find((k) => k.id === id);
+  const DEFAULT_MIN = 2, MIN = 1, MAX = 240;
+  // Shared with every practice, like the Assist avatar. Off until support switches it on.
+  A.robotSettings = () => { let r = {}; try { r = A.supportData().robot || {}; } catch (e) { r = {}; } const m = Math.round(+r.minutes); return { on: r.on === true, minutes: m >= MIN && m <= MAX ? m : DEFAULT_MIN }; };
+  const setRobot = (patch) => { const next = Object.assign({}, A.robotSettings(), patch, { at: new Date().toISOString() }); try { A.supportData().robot = next; window.PL.save(); } catch (e) { /* ignore */ } if (!next.on && A.robotHide) A.robotHide(); };
+
+  const card = () => { const r = A.robotSettings();
+    return `<div class="card cu-card cu-robot"><div class="row between" style="gap:12px;flex-wrap:wrap;align-items:flex-start"><div><h2 style="margin:0">Helper robot</h2><p class="small muted" style="margin:4px 0 0">The Assist avatar that pops up from behind the Assist button at every practice.</p></div>
+      <label class="am-switch"><span><b>Pop up at practices</b><span class="tiny muted">${r.on ? 'On' : 'Off — the default'}</span></span><input type="checkbox" role="switch" data-change="cu-robot-on" ${r.on ? 'checked' : ''} aria-label="Let the helper robot pop up at practices"><i></i></label></div>
+      <div class="cu-robot-f"><label class="f"><span>How often it pops up</span><span class="row" style="gap:8px;align-items:center"><input type="number" id="cu-robot-min" min="${MIN}" max="${MAX}" step="1" inputmode="numeric" value="${r.minutes}" data-change="cu-robot-min" aria-describedby="cu-robot-help"> <span>${r.minutes === 1 ? 'minute' : 'minutes'}</span></span></label>
+        <p class="tiny muted" id="cu-robot-help">${r.on ? `Each practice sees it about every ${r.minutes === 1 ? 'minute' : r.minutes + ' minutes'}, never while someone is talking to Assist or has a popup open. Users can still switch it off for themselves in Assist.` : 'It is switched off, so no practice sees it. Switch it on to let it pop up; it will then use the time set here.'} Choose ${MIN} to ${MAX} minutes.</p></div></div>`; };
+  const prev = A.CONSOLE && A.CONSOLE.custom;
+  if (A.CONSOLE && prev) A.CONSOLE.custom = (...a) => prev.apply(null, a).replace('<div class="card cu-card">', card() + '<div class="card cu-card">');
+
+  H['change:cu-robot-on'] = (el) => { setRobot({ on: !!el.checked }); A.toast(el.checked ? `Helper robot switched on. Practices will see it about every ${A.robotSettings().minutes} min.` : 'Helper robot switched off for every practice.'); A.render(); };
+  H['change:cu-robot-min'] = (el) => { const v = Number(String(el.value).trim()); if (!Number.isInteger(v) || v < MIN || v > MAX) { A.toast(`Enter a whole number of minutes from ${MIN} to ${MAX}.`, 'error'); A.render(); return; }
+    setRobot({ minutes: v }); A.toast(`The helper robot will pop up about every ${v === 1 ? 'minute' : v + ' minutes'}${A.robotSettings().on ? '.' : ' once it is switched on.'}`); A.render(); };
+
+  if (A.RELEASES && !A.RELEASES.some((r) => r.v === '0.92')) A.RELEASES.unshift({ v: '0.92', date: '2026-11-27', title: 'Prac360 support sets how often the helper robot pops up', items: [
+    { type: 'new', area: 'support', title: 'Helper robot: how often, and an on/off switch', text: 'In the Support console, Customisation now has a Helper robot card. Set how often the robot pops up at practices (1 to 240 minutes), and switch it on or off for every practice. It is off by default.', link: '#console/custom', guide: 'customisation' },
+    { type: 'improved', area: 'help', title: 'The helper robot is off until support switches it on', text: 'Practices no longer see the helper robot until Prac360 support switches it on. Once it is on, each user can still switch it off for themselves with the robot button at the top of Assist.', link: '#/today', guide: 'helperrobot' }] });
+
+  const hr = kb('helperrobot'); if (hr) hr.steps = ['When Prac360 support has switched it on, a friendly Assist avatar rises from behind the Assist button now and then and asks if you need help.', 'Click the avatar or its speech bubble to start talking to Assist. Click × to send it away for now.', 'It never appears while you are talking to Assist, during a walkthrough, while a popup is open or while AI Scribe is listening.', 'Switch it off (or on) for yourself with the robot button at the top of Assist, next to the speaker button.', 'Prac360 support decides whether it shows at all and how often, and chooses the picture. Practices cannot change that themselves.'];
+  const cu = kb('customisation'); if (cu) { cu.keys = Array.from(new Set((cu.keys || []).concat(['helper robot', 'robot', 'pop up', 'how often', 'switch off robot']))); if (cu.steps && !cu.steps.some((x) => /Helper robot/.test(x))) cu.steps.unshift('Helper robot card (top): the switch lets the robot pop up at every practice — it is off by default. “How often it pops up” sets the minutes (1 to 240). Changes save straight away.'); }
+  if (A.GUIDES) A.GUIDES.customisation = { title: 'Helper robot settings', steps: [{ sel: '.cu-robot [data-change="cu-robot-on"]', text: 'This switch lets the helper robot pop up at every practice. It is off by default.', expect: 'next', missing: 'Open Support console → Customisation first, then press Show me again.' }, { sel: '#cu-robot-min', text: 'Type how often it should pop up, in minutes (1 to 240). It saves when you leave the box.', expect: 'next' }] };
+  const ac = (A.COURSES || []).find((c) => c.id === 'assist');
+  if (ac && ac.lessons) { const l = ac.lessons.find((x) => /Assist avatar/.test(x.t)); if (l) l.body = 'The helper that rises from behind the Assist button is the Assist avatar. It only appears when Prac360 support has switched it on, and support decides how often. Click it to talk to Assist, or switch it off for yourself with the robot button at the top of Assist.'; }
+  if (ac && ac.quiz && !ac.quiz.some((q) => /how often the helper/i.test(q.q))) ac.quiz.push({ q: 'Who decides whether the helper robot appears at the practice, and how often?', o: ['Each user, in their own settings', 'Prac360 support, in Customisation', 'The medical aid'], a: 1 });
 })();
 
 

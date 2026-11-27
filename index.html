@@ -6887,7 +6887,10 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
     const meds = db().meds.filter((m) => m.patientId === p.id && m.active).map((m) => E.medicine(db(), m.medicineId).name + ' ' + m.dose).join('; ');
     const body = `Dear Colleague\n\nRe: ${p.firstName} ${p.lastName}, ${A.age(p)} y (ID ${p.idNumber})\n\nThank you for seeing this patient.\n\nHistory: ${enc.subjective || '—'}\nExamination: ${enc.objective || '—'}\nAssessment: ${enc.assessment || '—'}\nDiagnoses: ${(enc.diagnoses || []).map(A.icdLabel).join('; ') || '—'}\nCurrent medication: ${meds || 'none'}\nAllergies: ${db().allergies.filter((a) => a.patientId === p.id).map((a) => a.allergen + ' (' + a.reaction + ')').join('; ') || 'none known'}\n\nReason for referral: \n\nKind regards\n${dr.name}\nHPCSA ${dr.hpcsa} · ${db().practice.name} · ${db().practice.phone}`;
     A.modal('Referral letter', `<label class="f"><span>To</span><input id="ref-to" placeholder="Specialist name and practice"></label><div class="wm" data-watermark="DEMO"><textarea id="ref-body" rows="16" style="font-family:inherit">${esc(body)}</textarea></div><p class="tiny">Pre-filled from the note — check and complete the reason, then sign. Secure electronic delivery is planned (Phase 3).</p>${A.signBox ? A.signBox('referral', enc.id) : ''}`, `<button class="btn" data-act="modal-close">Cancel</button><button class="btn" data-act="cert-save" data-id="${enc.id}" data-kind="Referral letter">Save to file</button><button class="btn primary" data-act="print-modal">Save as PDF</button>`); };
-  H['cert-save'] = (el) => { const enc = encById(el.dataset.id); const body = el.dataset.kind === 'Referral letter' ? 'To: ' + document.getElementById('ref-to').value + '\n\n' + document.getElementById('ref-body').value : document.getElementById('sn-preview').innerText; A.closeModal(); A.act(() => { db().documents.push({ id: E.id('doc'), patientId: enc.patientId, encounterId: enc.id, kind: el.dataset.kind, title: el.dataset.kind + ' ' + fd(enc.date), date: enc.date, body, acknowledged: true }); E.audit(db(), A.user, 'create-document', 'document', enc.id, enc.patientId, el.dataset.kind); }, el.dataset.kind + ' saved to the patient file.'); };
+  // Complete button: only shown once the sick note / referral letter has been saved (or signed, which also saves it).
+  A.showComplete = () => { const mf = document.querySelector('#modal .mf'); if (!mf || mf.querySelector('[data-act="cert-complete"]')) return; const sv = mf.querySelector('[data-act="cert-save"]'); if (sv) sv.remove(); const cx = mf.querySelector('[data-act="modal-close"]'); if (cx) cx.textContent = 'Close'; const b = document.createElement('button'); b.className = 'btn primary'; b.dataset.act = 'cert-complete'; b.textContent = 'Complete'; mf.appendChild(b); };
+  H['cert-complete'] = () => A.closeModal();
+  H['cert-save'] = (el) => { const enc = encById(el.dataset.id); const body = el.dataset.kind === 'Referral letter' ? 'To: ' + document.getElementById('ref-to').value + '\n\n' + document.getElementById('ref-body').value : document.getElementById('sn-preview').innerText; ['sn-from', 'sn-to', 'sn-consent', 'ref-to', 'ref-body'].forEach((id) => { const x = document.getElementById(id); if (x) x.disabled = true; }); const sb = document.getElementById('sign-box'); if (sb) sb.remove(); A.showComplete(); A.act(() => { db().documents.push({ id: E.id('doc'), patientId: enc.patientId, encounterId: enc.id, kind: el.dataset.kind, title: el.dataset.kind + ' ' + fd(enc.date), date: enc.date, body, acknowledged: true }); E.audit(db(), A.user, 'create-document', 'document', enc.id, enc.patientId, el.dataset.kind); }, el.dataset.kind + ' saved to the patient file.'); };
 
   // =====================================================================
   // BILLING REVIEW
@@ -7744,7 +7747,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
       ['sn-from', 'sn-to', 'sn-consent'].forEach((id) => { document.getElementById(id).disabled = true; });
       const prev = document.getElementById('sn-preview'); prev.querySelector('.sn-issuer').textContent = `${me.name}`; const sl = prev.querySelector('.sn-sigline'); sl.outerHTML = sigBlock(sg) + qrBlock(sg.verifyUrl, sg.cert);
       document.getElementById('sign-box').outerHTML = `<div class="sign-box done">✓ Signed by ${esc(me.name)} and saved to the patient file. Certificate ${esc(sg.cert)}.</div>`;
-      const sv = document.querySelector('#modal [data-act="cert-save"]'); if (sv) sv.remove();
+      A.showComplete();
       A.act(() => { db().documents.push({ id: E.id('doc'), patientId: p.id, encounterId: enc.id, kind: 'Sick note', title: `Sick note ${fd(from)}–${fd(to)}`, date: enc.date, body, acknowledged: true, signature: sg }); E.audit(db(), me, 'document-signed', 'document', sg.cert, p.id, `Sick note ${from}→${to}`); }, null);
       A.toast(`Sick note signed. Certificate ${sg.cert}.`);
     } else {
@@ -7753,7 +7756,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
       ta.readOnly = true; document.getElementById('ref-to').readOnly = true;
       ta.insertAdjacentHTML('afterend', sigBlock(sg));
       document.getElementById('sign-box').outerHTML = `<div class="sign-box done">✓ Signed by ${esc(me.name)} and saved to the patient file.</div>`;
-      const sv = document.querySelector('#modal [data-act="cert-save"]'); if (sv) sv.remove();
+      A.showComplete();
       A.act(() => { db().documents.push({ id: E.id('doc'), patientId: p.id, encounterId: enc.id, kind: 'Referral letter', title: `Referral to ${to}`, date: enc.date, body: `To: ${to}\n\n${ta.value}`, acknowledged: true, signature: sg }); E.audit(db(), me, 'document-signed', 'document', enc.id, p.id, `Referral to ${to}`); }, null);
       A.toast('Referral letter signed and saved.');
     }

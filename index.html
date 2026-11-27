@@ -2554,6 +2554,12 @@ main.main,#main{scrollbar-gutter:stable;overflow-anchor:none}
 .fb-ai-out h4{margin:10px 0 2px}.fb-ai-out ul{margin:2px 0 6px 18px}.fb-qs{display:flex;flex-direction:column;gap:4px;margin:4px 0 8px}
 button.adm-tile{cursor:pointer;font:inherit;text-align:left}
 
+/* Report a problem or idea: small link in the header */
+a.fb-top{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:.75rem;font-weight:600;line-height:1.4;white-space:nowrap;text-decoration:none;color:#c2187a;border:1.5px solid #ff3fa4;background:linear-gradient(100deg,rgba(255,63,164,.10),rgba(34,212,126,.10))}
+a.fb-top:hover,a.fb-top.on{background:linear-gradient(100deg,rgba(255,63,164,.22),rgba(34,212,126,.22))}
+a.fb-top:focus-visible{outline:2px solid var(--accent,#2563eb);outline-offset:2px}
+a.fb-top .count{font-size:.65rem;padding:0 5px}
+[data-theme=dark] a.fb-top{color:#ff8cc8}
 /* v0.47 Report a problem or idea: under What's new, glowing pink and green so it stands out */
 a[data-tour="nav-feedback"]{position:relative;border-radius:10px;margin:6px 0 2px;font-weight:600;white-space:normal;line-height:1.2;color:#c2187a!important;background:linear-gradient(100deg,rgba(255,63,164,.16),rgba(34,212,126,.16))!important;animation:fbglow 2.4s ease-in-out infinite;isolation:isolate}
 a[data-tour="nav-feedback"]::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:linear-gradient(90deg,#ff3fa4,#22d47e,#ff3fa4);background-size:200% 100%;animation:fbborder 3s linear infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;z-index:-1}
@@ -5655,7 +5661,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
   A.NAV_IDS = () => NAV.filter(([, , perms, , show]) => (!perms || A.canAny(...perms)) && (!show || show())).map((x) => x[0]);
   A.billingQueue = () => A.db.encounters.filter((e) => e.status === 'signed' && !e.historical && (!e.invoiceId || (A.db.invoices.find((i) => i.id === e.invoiceId) || {}).status === 'draft'));
   const navHtml = () => {
-    const items = NAV.filter(([r, , perms, , show]) => (!perms || A.canAny(...perms)) && (!show || show()) && !(A.simpleHides && A.simpleHides(r)));
+    const items = NAV.filter(([r, , perms, , show]) => r !== 'feedback' && (!perms || A.canAny(...perms)) && (!show || show()) && !(A.simpleHides && A.simpleHides(r)));
     return items.map(([r, k, , cnt]) => { const n = cnt ? cnt() : 0; return `<a href="#/${r}" class="${A.route === r || (r === 'patients' && ['patient', 'consult'].includes(A.route)) ? 'on' : ''}" ${A.route === r ? 'aria-current="page"' : ''} data-tour="nav-${r}">${ICONS[r]}<span>${esc(t(k))}</span>${r === 'diary' && A.user ? '<span class="nav-cust" role="button" tabindex="0" data-act="diary-settings-nav" title="Diary settings" aria-label="Diary settings">⚙</span>' : ''}${r === 'today' && A.user ? `<span class="nav-cust" role="button" tabindex="0" data-act="home-customise" title="Customise your Home Dashboard" aria-label="Customise your Home Dashboard">⚙</span>` : ''}${n ? `<span class="count${r === 'clinical' || r === 'whatsnew' ? ' info' : ''}" aria-label="${n} need attention">${n}</span>` : ''}</a>`; }).join('')
       + `<div class="foot"><div class="foot-ver"><strong>Prac360</strong> v${A.appVersion ? A.appVersion() : '0.34'} · demo</div></div>`;
   };
@@ -5696,6 +5702,9 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
   const SUN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
   const MOON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>';
 
+  // Report a problem or idea: small link in the header (was a large glowing item at the bottom of the left menu)
+  A.feedbackTop = () => { if (A.simpleHides && A.simpleHides('feedback')) return ''; const n = A.fbPractice ? A.fbPractice() : 0;
+    return `<a href="#/feedback" class="fb-top${A.route === 'feedback' ? ' on' : ''}" data-tour="top-feedback" title="Report a problem or idea" aria-label="Report a problem or idea"${A.route === 'feedback' ? ' aria-current="page"' : ''}><span aria-hidden="true">🐞</span><span class="hide-sm">Report a problem</span>${n ? `<span class="count" aria-label="${n} need attention">${n}</span>` : ''}</a>`; };
   // ---------- shell ----------
   const shell = () => {
     const users = A.db.users.map((u) => `<option value="${u.id}" ${u.id === A.user.id ? 'selected' : ''}>${esc(u.name)} — ${esc(E.userRoles(u).map(E.roleLabel).join(' + '))}</option>`).join('');
@@ -5710,6 +5719,7 @@ window.TSVC_BASE = {"src":{"pas":"Payment_arrangements.csv","schemes":"Medical_a
           ${A.simplePill ? A.simplePill() : ''}
           ${A.licencePill ? A.licencePill() : ''}
           <span id="netpill" class="pill offline hide-sm" ${navigator.onLine ? 'hidden' : ''}>Offline — changes saved on this device</span>
+          ${A.feedbackTop ? A.feedbackTop() : ''}
           ${A.presenceStrip ? A.presenceStrip() : ''}
           <div class="userbox" data-tour="user">${A.acctHeader ? A.acctHeader(users) : ''}</div>
         </header>

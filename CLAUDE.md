@@ -6,7 +6,7 @@ Prac360 is a practice management system for **South African private healthcare p
 Users are practice staff: reception, nurses, doctors, billing clerks, practice managers and owners, plus Prac360 support and admin staff. Many are not technical, so the app must be plain, calm and safe: clear words, few clicks, no surprises. It is a demo with synthetic data only. Never put real patient information in it.
 
 ## How it is built
-- Almost everything is one file: `index.html` (about 25,000 lines). It has no build step. Features are added as small `(function () { ... })();` modules, each under a `/* ===== name.js ===== */` banner near the end of the file. Look at the latest one (currently `ui-v097.js`) for the pattern.
+- Almost everything is one file: `index.html` (about 25,000 lines). It has no build step. Features are added as small `(function () { ... })();` modules, each under a `/* ===== name.js ===== */` banner near the end of the file. Look at the latest one (currently `ui-v098.js`) for the pattern.
 - `server.js` (Node, no packages) serves the app and keeps the shared data in `data/` (git-ignored). `seed-data.json` is the starting demo data.
 - Without the server (GitHub Pages) the app still runs; each browser then keeps its own data.
 - Live site: https://michaelduplessis32-app.github.io/prac360-demo (served from `main`).
